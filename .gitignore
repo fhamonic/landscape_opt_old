@@ -1,0 +1,9 @@
+/build
+/output
+*/lp
+
+*.out
+.vscode
+
+/doc/html
+/doc/latex
