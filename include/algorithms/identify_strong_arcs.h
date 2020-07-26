@@ -151,9 +151,9 @@ namespace lemon {
 
             Node u=G->source(uv);
             Node v=G->target(uv);
-            assert(_heap->state(u) != Heap::IN_HEAP)
+            assert(_heap->state(u) != Heap::IN_HEAP);
             _heap->push(u,OperationTraits::zero());
-            assert(_heap->state(v) != Heap::IN_HEAP)
+            assert(_heap->state(v) != Heap::IN_HEAP);
             _heap->push(v,LabeledDist((*_worst_length)[uv], true));
 
             nb_candidates = 1;

@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 
+#include "indices/eca.hpp"
 #include "random_chooser.hpp"
 
 #include "parsers/std_restoration_plan_parser.hpp"
@@ -27,9 +28,7 @@ int main (int argc, const char *argv[]) {
             cpt++;
         }
     }
-    
     assert(cpt > wanted_nb_friches);
-
     for(int i=0; i < (cpt - wanted_nb_friches); i++)
         landscape->removeNode(friches_chooser.pick());
 
