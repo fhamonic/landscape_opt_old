@@ -122,9 +122,10 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
             option->getRestoredProbabilityRef(a) /= contracted_landscape->getProbability(a);
 
 
-
     for(Graph_t::Arc orig_a : orig_deletables_arcs) {   
         Graph_t::Arc a = (*refs.second)[orig_a];  
+        if(!graph.valid(a))
+            continue;
         contracted_landscape->removeArc(a);
     }
     for(Graph_t::Arc orig_a : orig_contractables_arcs) {

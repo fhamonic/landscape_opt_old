@@ -77,9 +77,9 @@ RestorationPlan * make_instance(Landscape & landscape, Graph_t::NodeMap<bool> & 
             const double scale_arcs_probability = std::exp(length_gain/2/alpha);
             std::vector<Graph_t::Arc> to_move;
             for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
-                landscape.getProbabilityRef(a) *= scale_arcs_probability;
+                landscape.getProbabilityRef(a) = std::min(1.0, scale_arcs_probability * landscape.getProbability(a));
             for(Graph_t::OutArcIt a(graph, v1); a != lemon::INVALID; ++a) {
-                landscape.getProbabilityRef(a) *= scale_arcs_probability;
+                landscape.getProbabilityRef(a) *= std::min(1.0, scale_arcs_probability * landscape.getProbability(a));;
                 to_move.push_back(a);
             }
             for(Graph_t::Arc a : to_move)
