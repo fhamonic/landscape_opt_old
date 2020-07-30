@@ -242,6 +242,7 @@ namespace lemon {
             init(uv);
             if(!_heap->empty()) processFirstNode(uv);
             while(nb_candidates > 0) processNextNode();
+            // while(!_heap->empty()) processNextNode();
         }
     };
 
@@ -418,6 +419,7 @@ namespace lemon {
                 if(_heap->state(w) == Heap::State::POST_HEAP) continue;
                 Traits::addNode(*_labeledNodesList, w);
             }
+            // while(!_heap->empty()) processNextNode();
         }
     };
 

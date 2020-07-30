@@ -102,34 +102,33 @@ int main (int argc, const char *argv[]) {
     gen.seed(seed+1);
     std::uniform_int_distribution<> dis(0, nb_options);
 
-    for(int i=0; i<100000; ++i) {
+    for(int i=0; i<10000; ++i) {
         std::vector<int> picked_options;
         double nb_picked_options = dis(gen);
         option_chooser.reset();
         for(int j=0; j<nb_picked_options; ++j)
             picked_options.push_back(option_chooser.pick());
 
+
         DecoredLandscape decored_landscape(*landscape);
         for(int option_id : picked_options)
             decored_landscape.apply(find_option(*plan, option_id));
 
 
-
         double sum_base = 0;
         double sum_contracted = 0;
 
-
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-            const double base = compute_value_reversed(decored_landscape, t);
+            const double base = landscape->getQuality(t) * compute_value_reversed(decored_landscape, t);
 
             ContractionResult result = (*results)[t];
             DecoredLandscape decored_contracted_landscape(*result.landscape);
             for(int option_id : picked_options)
                 decored_contracted_landscape.apply(find_option(*result.plan, option_id));
-            const double contracted = compute_value_reversed(decored_contracted_landscape, result.t);
+            const double contracted = landscape->getQuality(t) * compute_value_reversed(decored_contracted_landscape, result.t);
             
             if(fabs(base - contracted) > n * epsilon_n) {
-                std::cout << graph.id(t) << " : " << base << " != " << contracted << std::endl;
+                std::cout << "test " << i << " source " << graph.id(t) << " : " << base << " != " << contracted << std::endl;
                 //std::cout << *result.landscape << std::endl << *result.plan << std::endl;
             }
 
@@ -138,7 +137,7 @@ int main (int argc, const char *argv[]) {
         }
 
         if(fabs(sum_base - sum_contracted) > n * n * epsilon_n2) {
-            std::cout << "test " << i << " : " << sum_base << " != " << sum_contracted << std::endl;
+            std::cout << "test " << i << " sum : " << sum_base << " != " << sum_contracted << std::endl;
         }
     }
 

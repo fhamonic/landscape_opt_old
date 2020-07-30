@@ -32,24 +32,24 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     Solvers::Naive_ECA_Dec * naive_eca_dec = new Solvers::Naive_ECA_Dec();
     (*naive_eca_dec).setLogLevel(0).setParallel(true);
     Solvers::Glutton_ECA_Inc * glutton_eca_inc = new Solvers::Glutton_ECA_Inc();
-    (*glutton_eca_inc).setLogLevel(0).setParallel(true);
+    (*glutton_eca_inc).setLogLevel(2).setParallel(true);
     Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
-    (*glutton_eca_dec).setLogLevel(0).setParallel(true);
+    (*glutton_eca_dec).setLogLevel(2).setParallel(true);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(2).setNbThreads(10).setTimeout(36000);
+    (*pl_eca_3).setLogLevel(1).setNbThreads(10).setTimeout(36000);
     // Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
     // randomized_rounding_1000->setLogLevel(0).setNbDraws(1000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_10000 = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding_10000->setLogLevel(1).setNbDraws(10000).setParallel(true);
 
-    solvers.push_back(bogo);
-    solvers.push_back(naive_eca_inc);
-    solvers.push_back(naive_eca_dec);
+    // solvers.push_back(bogo);
+    // solvers.push_back(naive_eca_inc);
+    // solvers.push_back(naive_eca_dec);
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
     // solvers.push_back(pl_eca_3);
     // solvers.push_back(randomized_rounding_1000);
-    solvers.push_back(randomized_rounding_10000);
+    // solvers.push_back(randomized_rounding_10000);
 }
 
 static void clean(std::list<concepts::Solver*> & solvers) {
@@ -200,10 +200,15 @@ int main (int argc, const char *argv[]) {
 
                     seuiller(*landscape, thresold);
 
-
                     // StdLandscapeParser::get().write(*landscape, "output", "landscape");
+
             
                     RestorationPlan * plan = make_instance(*landscape, friches, length_gain, area_gain, median);
+
+
+                    StdLandscapeParser::get().write(*landscape, "output", "analysis_landscape", true);
+                    StdRestorationPlanParser(*landscape).write(*plan, "output", "analysis_plan", true);
+
 
                     Helper::assert_well_formed(*landscape, *plan);
 
@@ -211,6 +216,9 @@ int main (int argc, const char *argv[]) {
 
                     for(double budget : budget_values) {
                         for(concepts::Solver * solver : solvers) {
+
+                            std::cout << "before solve : " << pow(eca.eval(*landscape), 2) << std::endl;
+
                             Solution * solution = solver->solve(*landscape, *plan, budget);
 
                             DecoredLandscape decored_landscape(*landscape);
