@@ -34,7 +34,6 @@ double compute_value_reversed(const concepts::AbstractLandscape<GR, QM, PM, CM> 
         Graph_t::Node v = pair.first;
         const double p_tv = pair.second;
         sum += landscape.getQuality(v) * p_tv;
-
     }
     return sum;
 }

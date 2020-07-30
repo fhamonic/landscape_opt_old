@@ -85,7 +85,7 @@ RestorationPlan * make_instance(Landscape & landscape, Graph_t::NodeMap<bool> & 
             }
             for(Graph_t::Arc a : to_move)
                 landscape.changeSource(a, v2);
-            Graph_t::Arc v1v2 = landscape.addArc(v1, v2, std::numeric_limits<double>::epsilon());
+            Graph_t::Arc v1v2 = landscape.addArc(v1, v2, 0);
 
             option->addLink(v1v2, 1.0);
             /*/
@@ -150,7 +150,7 @@ int main (int argc, const char *argv[]) {
             "massifs_parcs_eca" << std::endl;
 
     std::vector<double> thresold_values{0.01};
-    std::vector<double> median_values{/*350,*/ 1400, 2800}; 
+    std::vector<double> alpha_values{/*500, */2000, 4000}; 
     std::vector<double> length_gain_values{30, 100, 200}; 
     std::vector<double> area_gain_values{0, 0.5};
     std::vector<double> budget_values;
@@ -158,10 +158,9 @@ int main (int argc, const char *argv[]) {
 
     ECA & eca = ECA::get();
 
-    auto p = [] (const double d, const double median, const double pow) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
 
     for(double thresold : thresold_values) {
-        for(double median : median_values) {
+        for(double alpha : alpha_values) {
             for(double length_gain : length_gain_values) {
                 for(double area_gain : area_gain_values) {
                     Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);
@@ -195,7 +194,7 @@ int main (int argc, const char *argv[]) {
 
 
                     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
-                        landscape->setProbability(a, p( landscape->getProbability(a) , median , 2 ));
+                        landscape->setProbability(a, ECA::P_func( landscape->getProbability(a) , alpha ));
                     }
 
                     seuiller(*landscape, thresold);
@@ -203,7 +202,7 @@ int main (int argc, const char *argv[]) {
 
                     // StdLandscapeParser::get().write(*landscape, "output", "landscape");
             
-                    RestorationPlan * plan = make_instance(*landscape, friches, length_gain, area_gain, median);
+                    RestorationPlan * plan = make_instance(*landscape, friches, length_gain, area_gain, alpha);
 
                     Helper::assert_well_formed(*landscape, *plan);
 
@@ -226,8 +225,7 @@ int main (int argc, const char *argv[]) {
                             data_log << thresold << " " 
                                     << length_gain << " " 
                                     << area_gain << " " 
-                                    << median << " "
-                                    // << alpha << " "
+                                    << alpha << " "
                                     << budget << " "
                                     << solver->toString() << " "
                                     << solution->getComputeTimeMs() << " "

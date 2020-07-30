@@ -175,6 +175,8 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
         }
     }
 
+    //std::cout << plan.getNbOptions() << std::endl;
+
     for(RestorationPlan::Option * option : plan.options()) {
         for(Graph_t::Node u : option->nodes()) {
             assert(graph.valid(u));
@@ -188,6 +190,7 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
         for(Graph_t::Arc a : option->arcs()) {
             assert(graph.valid(a));
             assert(option->contains(a));
+            //std::cout << graph.id(graph.source(a)) << " " << option->getRestoredProbability(a) << std::endl;
             assert(is_probability(option->getRestoredProbability(a)));
             assert(option->getRestoredProbability(a) > landscape.getProbability(a));
             assert(option->id(a) >= 0 && option->id(a) < option->getNbArcs());

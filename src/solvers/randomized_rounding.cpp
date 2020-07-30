@@ -64,6 +64,14 @@ Solution * Solvers::Randomized_Rounding_ECA::solve(const Landscape & landscape, 
 
     Solution * relaxed_solution = pl_eca_3.solve(landscape, plan, B);
 
+    std::cout << std::endl;
+    for(auto option_pair : relaxed_solution->getOptionCoefs()) {
+        const RestorationPlan::Option * option = option_pair.first;
+        const double coef = option_pair.second;
+        std::cout << coef << " ";
+    }
+    std::cout << std::endl;
+
     Solution * best_solution = nullptr;
     if(parallel) {
         const int nb_threads = std::thread::hardware_concurrency();

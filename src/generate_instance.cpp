@@ -26,7 +26,7 @@ Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, in
     Landscape * new_landscape = new Landscape();
     const Graph_t & new_graph = new_landscape->getNetwork();
         
-    const Graph_t::ArcMap<double> & difficultyMap = landscape.getDifficultyMap();
+    const Graph_t::ArcMap<double> & difficultyMap = landscape.getProbabilityMap();
     lemon::Dijkstra<Graph_t, Graph_t::ArcMap<double>> dijkstra(graph, difficultyMap);
     dijkstra.init();
     dijkstra.addSource(center);
@@ -36,7 +36,7 @@ Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, in
         Graph_t::Node x = dijkstra.processNextNode();
         if(cpt >= nb_nodes)
             break;
-        nodes[x] = new_landscape->addPatch(landscape.getQuality(x), landscape.getCoords(x));
+        nodes[x] = new_landscape->addNode(landscape.getQuality(x), landscape.getCoords(x));
         cpt++;
     }
 
@@ -51,7 +51,7 @@ Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, in
         Graph_t::Node v = nodes[graph.target(a)];
         if(! (new_graph.valid(u) && new_graph.valid(v)))
             continue;
-        new_landscape->addLink(u, v, landscape.getDifficulty(a));
+        new_landscape->addArc(u, v, landscape.getProbability(a));
     }
 
     return new_landscape;
