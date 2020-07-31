@@ -102,7 +102,11 @@ int main (int argc, const char *argv[]) {
     gen.seed(seed+1);
     std::uniform_int_distribution<> dis(0, nb_options);
 
-    for(int i=0; i<10000; ++i) {
+    const int nb_tests = 10000;
+
+    for(int i=0; i<nb_tests; ++i) {
+        bool error = false;
+
         std::vector<int> picked_options;
         double nb_picked_options = dis(gen);
         option_chooser.reset();
@@ -129,7 +133,7 @@ int main (int argc, const char *argv[]) {
             
             if(fabs(base - contracted) > n * epsilon_n) {
                 std::cout << "test " << i << " source " << graph.id(t) << " : " << base << " != " << contracted << std::endl;
-                //std::cout << *result.landscape << std::endl << *result.plan << std::endl;
+                error = true;
             }
 
             sum_base += base;
@@ -138,6 +142,11 @@ int main (int argc, const char *argv[]) {
 
         if(fabs(sum_base - sum_contracted) > n * n * epsilon_n2) {
             std::cout << "test " << i << " sum : " << sum_base << " != " << sum_contracted << std::endl;
+            error = true;
+        }
+
+        if(!error) {
+            std::cout << "test " << i << " / " << nb_tests << " : ok" << std::endl;
         }
     }
 

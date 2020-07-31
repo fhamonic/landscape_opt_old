@@ -26,19 +26,19 @@
 #include "solvers/randomized_rounding.hpp"
 
 static void populate(std::list<concepts::Solver*> & solvers) {
-    Solvers::Bogo * bogo = new Solvers::Bogo();
+    Solvers::Bogo * bogo = new Solvers::Bogo(); (void)bogo;
     Solvers::Naive_ECA_Inc * naive_eca_inc = new Solvers::Naive_ECA_Inc();
     (*naive_eca_inc).setLogLevel(0).setParallel(true);
     Solvers::Naive_ECA_Dec * naive_eca_dec = new Solvers::Naive_ECA_Dec();
     (*naive_eca_dec).setLogLevel(0).setParallel(true);
     Solvers::Glutton_ECA_Inc * glutton_eca_inc = new Solvers::Glutton_ECA_Inc();
-    (*glutton_eca_inc).setLogLevel(2).setParallel(true);
+    (*glutton_eca_inc).setLogLevel(0).setParallel(true);
     Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
-    (*glutton_eca_dec).setLogLevel(2).setParallel(true);
+    (*glutton_eca_dec).setLogLevel(0).setParallel(true);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
     (*pl_eca_3).setLogLevel(1).setNbThreads(10).setTimeout(36000);
-    // Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
-    // randomized_rounding_1000->setLogLevel(0).setNbDraws(1000);
+    Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
+    randomized_rounding_1000->setLogLevel(0).setNbDraws(1000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_10000 = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding_10000->setLogLevel(1).setNbDraws(10000).setParallel(true);
 
@@ -47,7 +47,7 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     // solvers.push_back(naive_eca_dec);
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
-    // solvers.push_back(pl_eca_3);
+    solvers.push_back(pl_eca_3);
     // solvers.push_back(randomized_rounding_1000);
     // solvers.push_back(randomized_rounding_10000);
 }
@@ -144,6 +144,7 @@ int main (int argc, const char *argv[]) {
             "budget " <<
             "solver " <<
             "time " <<
+            "cost " <<
             "total_eca " <<
             "massifs_eca " <<
             "parcs_eca " <<
@@ -221,9 +222,12 @@ int main (int argc, const char *argv[]) {
 
                             Solution * solution = solver->solve(*landscape, *plan, budget);
 
+                            double cost = 0.0;
                             DecoredLandscape decored_landscape(*landscape);
-                            for(auto option_pair : solution->getOptionCoefs())
+                            for(auto option_pair : solution->getOptionCoefs()) {
+                                cost += option_pair.first->getCost() * option_pair.second;
                                 decored_landscape.apply(option_pair.first, option_pair.second);   
+                            }
 
                             const double total_eca = pow(eca.eval(decored_landscape), 2);
                             const double massifs_eca = pow(eca.eval(decored_landscape, massifs), 2);
@@ -239,6 +243,7 @@ int main (int argc, const char *argv[]) {
                                     << budget << " "
                                     << solver->toString() << " "
                                     << solution->getComputeTimeMs() << " "
+                                    << cost << " "
                                     << total_eca << " "
                                     << massifs_eca << " "
                                     << parcs_eca << " "

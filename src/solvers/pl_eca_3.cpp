@@ -200,7 +200,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     auto M_x_const = [&] (Graph_t::Node t, Graph_t::Arc a) {
         ContractionResult & cr = (*contracted_instances)[t];
         const Graph_t & contracted_graph = cr.landscape->getNetwork();
-        return (*M_Maps_Map[t])[contracted_graph.source(a)];  
+        return (*M_Maps_Map[t])[contracted_graph.source(a)] * 1.1;  
     };
 
     auto M_f_const = [&] (Graph_t::Node t) {
@@ -237,28 +237,11 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     ////////////////////
     for(Graph_t::Node t : target_nodes) {
         // sum w(t) * f_t
-        if(!fortest) {
-            const int f_t = f_var.id(t);
-            solver_builder.setObjective(f_t, landscape.getQuality(t));
-            for(RestorationPlan::Option * option : plan.getOptions(t)) {   
-                const int restored_f_t = restored_f_var.id(t, option);
-                solver_builder.setObjective(restored_f_t, option->getQualityGain(t));
-            }
-        } else {
-            ContractionResult & cr = (*contracted_instances)[t];
-            const Landscape * contracted_landscape = cr.landscape;
-            const Graph_t & contracted_graph = contracted_landscape->getNetwork();
-            const RestorationPlan * contracted_plan = cr.plan;
-            const Vars vars = varsMap[t];
-
-            for(Graph_t::ArcIt b(contracted_graph); b != lemon::INVALID; ++b) {
-                const int x_tb = vars.x_var->id(b);
-                solver_builder.setObjective(x_tb, 1-contracted_landscape->getProbability(b));
-                for(RestorationPlan::Option * option : contracted_plan->getOptions(b)) {
-                    const int restored_x_t_b = vars.restored_x_var->id(b, option);
-                    solver_builder.setObjective(restored_x_t_b, 1-option->getRestoredProbability(b));
-                }
-            }
+        const int f_t = f_var.id(t);
+        solver_builder.setObjective(f_t, landscape.getQuality(t));
+        for(RestorationPlan::Option * option : plan.getOptions(t)) {   
+            const int restored_f_t = restored_f_var.id(t, option);
+            solver_builder.setObjective(restored_f_t, option->getQualityGain(t));
         }
     }
     ////////////////////////////////////////////////////////////////////////
@@ -349,7 +332,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiClpSolverInterface * solver = solver_builder.buildSolver( fortest ? OSI_Builder::MIN : OSI_Builder::MAX );
+    OsiClpSolverInterface * solver = solver_builder.buildSolver(OSI_Builder::MAX );
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {
