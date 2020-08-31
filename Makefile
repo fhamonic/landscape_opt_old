@@ -65,6 +65,9 @@ test: $(OBJ) $(BUILD_DIR)/test.o
 contraction_test: $(OBJ) $(BUILD_DIR)/contraction_test.o
 	$(CC) -o $@$(EXTENSION) $^ $(LDFLAGS)
 
+pl_test: $(OBJ) $(BUILD_DIR)/pl_test.o
+	$(CC) -o $@$(EXTENSION) $^ $(LDFLAGS)
+
 contracted_benefits: $(OBJ) $(BUILD_DIR)/contracted_benefits.o
 	$(CC) -o $@$(EXTENSION) $^ $(LDFLAGS)
 

@@ -17,7 +17,6 @@
 #include "precomputation/my_contraction_algorithm.hpp"
 
 #include "catch.hpp"
-#include "random_landscape_genereator.hpp"
 
 
 template <typename GR, typename QM, typename PM, typename CM>
@@ -48,23 +47,41 @@ RestorationPlan::Option * find_option(const RestorationPlan & plan, const int id
     return nullptr;
 }
 
-void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed) {
-    Helper::assert_well_formed(landscape, plan);
-    const Graph_t & graph = landscape.getNetwork();
 
-    const int nb_nodes = lemon::countNodes(graph);
-    const double epsilon_n = 1/*00*/ * nb_nodes * (std::pow(1+std::numeric_limits<double>::epsilon(), nb_nodes) - 1);
-    const double epsilon_n2 = nb_nodes * epsilon_n;
+int main (int argc, const char *argv[]) {
+    if(argc < 3) {
+        std::cerr << "input requiered : <landscape_file> <plan_file>" << std::endl;
+        return EXIT_FAILURE;
+    }
+    std::filesystem::path landscape_path = argv[1];
+    std::filesystem::path plan_path = argv[2];
+
+
+    const int seed = 1245;
+    std::cout << std::setprecision(20);
+
+    
+    Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);
+    const Graph_t & graph = landscape->getNetwork();
+    StdRestorationPlanParser parser(*landscape);
+    RestorationPlan * plan = parser.parse(plan_path);
+    
+    Helper::assert_well_formed(*landscape, *plan);
+
 
     std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
     MyContractionAlgorithm algo;
 
     t0 = std::chrono::high_resolution_clock::now();
-    Graph_t::NodeMap<ContractionResult> * results = algo.precompute(landscape, plan);
+    Graph_t::NodeMap<ContractionResult> * results = algo.precompute(*landscape, *plan);
     t1 = std::chrono::high_resolution_clock::now();
 
+    const int n = lemon::countNodes(graph);
+    const double epsilon_n = 2 * n * std::numeric_limits<double>::epsilon();
+    const double epsilon_n2 = 2 * n * n * std::numeric_limits<double>::epsilon();
+
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-        const double base = compute_value_reversed(landscape, t);
+        const double base = compute_value_reversed(*landscape, t);
                 
         ContractionResult result = (*results)[t];
         Helper::assert_well_formed(*result.landscape, *result.plan);
@@ -75,7 +92,8 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
         }
     }
 
-    const int nb_options = plan.getNbOptions();
+
+    const int nb_options = plan->getNbOptions();
     RandomChooser<int> option_chooser(seed);
     for(int i=0; i<nb_options; ++i)
         option_chooser.add(i, 1);
@@ -96,22 +114,24 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
             picked_options.push_back(option_chooser.pick());
 
 
-        DecoredLandscape decored_landscape(landscape);
+        DecoredLandscape decored_landscape(*landscape);
         for(int option_id : picked_options)
-            decored_landscape.apply(find_option(plan, option_id));
+            decored_landscape.apply(find_option(*plan, option_id));
+
 
         double sum_base = 0;
         double sum_contracted = 0;
+
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-            const double base = landscape.getQuality(t) * compute_value_reversed(decored_landscape, t);
+            const double base = landscape->getQuality(t) * compute_value_reversed(decored_landscape, t);
 
             ContractionResult result = (*results)[t];
             DecoredLandscape decored_contracted_landscape(*result.landscape);
             for(int option_id : picked_options)
                 decored_contracted_landscape.apply(find_option(*result.plan, option_id));
-            const double contracted = landscape.getQuality(t) * compute_value_reversed(decored_contracted_landscape, result.t);
+            const double contracted = landscape->getQuality(t) * compute_value_reversed(decored_contracted_landscape, result.t);
             
-            if(fabs(base - contracted) > epsilon_n) {
+            if(fabs(base - contracted) > n * epsilon_n) {
                 std::cout << "test " << i << " source " << graph.id(t) << " : " << base << " != " << contracted << std::endl;
                 error = true;
             }
@@ -120,16 +140,19 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
             sum_contracted += contracted;
         }
 
-        if(fabs(sum_base - sum_contracted) > epsilon_n2) {
+        if(fabs(sum_base - sum_contracted) > n * n * epsilon_n2) {
             std::cout << "test " << i << " sum : " << sum_base << " != " << sum_contracted << std::endl;
             error = true;
         }
 
-        // if(!error) {
-        //     std::cout << "test " << i << " / " << nb_tests << " : ok" << std::endl;
-        // }
+        if(!error) {
+            std::cout << "test " << i << " / " << nb_tests << " : ok" << std::endl;
+        }
     }
 
+
+
+    
     int sum_of_nb_nodes = 0;
     int sum_of_nb_arcs = 0;
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
@@ -137,36 +160,16 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
         sum_of_nb_nodes += lemon::countNodes(result.landscape->getNetwork());   
         sum_of_nb_arcs += lemon::countArcs(result.landscape->getNetwork());
     }
+
     std::cout << "Total nb of nodes : " << sum_of_nb_nodes << std::endl;
     std::cout << "Total nb of arcs : " << sum_of_nb_arcs << std::endl;
 
     int normal_time_us = std::chrono::duration_cast<std::chrono::microseconds>(t1-t0).count();
     std::cout << normal_time_us << std::endl;
 
+
     delete results;
-}
-
-
-int main (int argc, const char *argv[]) {
-    /*if(argc < 3) {
-        std::cerr << "input requiered : <landscape_file> <plan_file>" << std::endl;
-        return EXIT_FAILURE;
-    }*/
-
-    const int seed = 1245;
-    std::cout << std::setprecision(20);
-
-    RandomInstanceGenerator instance_generator;
-    const int nb_tests = 1;
-    for(int cpt_test=0; cpt_test<nb_tests; cpt_test++) {
-        Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, 10, 20);
-        RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, 10);
-        
-        do_test(*landscape, *plan, seed + cpt_test);
-
-        delete plan;
-        delete landscape;
-    }
+    delete landscape;
 
 
     return EXIT_SUCCESS;

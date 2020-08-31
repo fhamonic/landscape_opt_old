@@ -203,7 +203,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         return (*M_Maps_Map[t])[contracted_graph.source(a)];  
     };
     auto M_x_const = [&] (Graph_t::Node t, Graph_t::Arc a) {
-        return 1.5 * true_M_x_const(t,a);
+        return 1.01 * true_M_x_const(t,a);
     };
 
     auto M_f_const = [&] (Graph_t::Node t) {
@@ -408,8 +408,8 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
                 if(value > true_M_x_const(t,a))
                     std::cout << graph.id(t) << " : " << contracted_graph.id(a) << " : " << value << " > " << true_M_x_const(t,a) << std::endl;   
 
-                if(value_r > true_M_x_const(t,a))
-                    std::cout << graph.id(t) << " : restored : " << contracted_graph.id(a) << " : " << value_r << " > " << true_M_x_const(t,a) << std::endl;                
+                // if(value_r > true_M_x_const(t,a))
+                //     std::cout << graph.id(t) << " : restored : " << contracted_graph.id(a) << " : " << value_r << " > " << true_M_x_const(t,a) << std::endl;                
             }
         }
     }

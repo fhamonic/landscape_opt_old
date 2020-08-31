@@ -2,23 +2,25 @@
 #define RANDOM_LANDSCAPE_GENERATOR_HPP
 
 #include "landscape/landscape.hpp"
+#include "solvers/concept/restoration_plan.hpp"
 #include "random_chooser.hpp"
 
+#include <math.h>
 #include <random>
 #include <vector>
 
 #include <cassert>
 
-class RandomLandscapeGenerator {
-    private:
+class RandomInstanceGenerator {
     public:
-        RandomLandscapeGenerator() {};
-        ~RandomLandscapeGenerator() {};
+        RandomInstanceGenerator() {};
+        ~RandomInstanceGenerator() {};
 
-        Landscape * generate(int seed, int nb_nodes, int nb_arcs, bool symmetric=true);
+        Landscape * generate_landscape(int seed, int nb_nodes, int nb_arcs, bool symmetric=true);
+        RestorationPlan * generate_plan(int seed, const Landscape & landscape, int nb_arcs);
 };
 
-Landscape * RandomLandscapeGenerator::generate(int seed, int nb_nodes, int nb_arcs, bool symmetric) {
+Landscape * RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, int nb_links, bool symmetric) {
     typedef Graph_t Graph;
     typedef Graph_t::Node Node;
     typedef Graph_t::NodeIt NodeIt;
@@ -32,7 +34,7 @@ Landscape * RandomLandscapeGenerator::generate(int seed, int nb_nodes, int nb_ar
     Landscape * landscape = new Landscape();
     const Graph & graph = landscape->getNetwork(); 
 
-    const double angle = 2 * math.pi / nb_nodes;
+    const double angle = 2 * M_PI / nb_nodes;
     for(int i=0; i<nb_nodes; i++)
         landscape->addNode(q_dis(gen), Point(std::sin(i * angle),std::cos(i * angle)));
 
@@ -41,17 +43,53 @@ Landscape * RandomLandscapeGenerator::generate(int seed, int nb_nodes, int nb_ar
     for(NodeIt u(graph); u!=lemon::INVALID; ++u) {
         for(NodeIt v(graph); v!=lemon::INVALID; ++v) {
             if(u == v) continue;
+            if(symmetric && v < u) continue;
             arcs_chooser.add(NodePair(u,v), 1.0);
         }
     }
 
-    for(int i=0; i<nb_arcs; i++) {
+    for(int i=0; i<nb_links; i++) {
         assert(arcs_chooser.canPick());
         NodePair pair = arcs_chooser.pick();
-        landscape->addArc(pair.a, pair.b, p_dis(gen));
+        landscape->addArc(pair.first, pair.second, p_dis(gen));
+        if(symmetric)
+            landscape->addArc(pair.second, pair.first, p_dis(gen));
+
     }
         
+    return landscape;
+}
+
+
+RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landscape & landscape, int nb_arcs) {
+    typedef Graph_t Graph;
+    typedef Graph_t::Node Node;
+    typedef Graph_t::Arc Arc;
+    typedef Graph_t::ArcIt ArcIt;
+
+    std::default_random_engine gen;
+    gen.seed(seed);
     
+    const Graph & graph = landscape.getNetwork();
+    RestorationPlan * plan = new RestorationPlan(landscape);
+
+    RandomChooser<Arc> arcs_chooser(seed+1);
+
+    for(ArcIt a(graph); a!=lemon::INVALID; ++a) {
+        arcs_chooser.add(a, 1.0);
+    }
+
+    for(int i=0; i<nb_arcs; i++) {
+        assert(arcs_chooser.canPick());
+        Arc a = arcs_chooser.pick();
+        std::uniform_real_distribution<> p_dis(landscape.getProbability(a), 1);
+        
+        RestorationPlan::Option * option = plan->addOption();
+        option->setId(i);
+        option->addLink(a, p_dis(gen));
+    }
+        
+    return plan;
 }
 
 
