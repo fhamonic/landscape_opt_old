@@ -14,7 +14,7 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
         node_sizesMap[v] = radius(v);
     }
     Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
-    Graph_t::ArcMap<double> arc_widths(graph, 500);
+    Graph_t::ArcMap<double> arc_widths(graph, 5);
 
     for(auto option_pair : solution->getOptionCoefs()) {
         const double coef = option_pair.second;
@@ -83,9 +83,9 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
             .arcWidths(arc_widths)
             .drawArrows(true)
             .arrowLength(50)
-            .arrowWidth(r_max)
+            .arrowWidth(r_max / 6)
             .nodeTexts(node_idsMap)
-            .nodeTextSize(a_max * 2 /* /4 */)
+            .nodeTextSize(a_max / 4)
             .nodeColors(node_colorsMap)
             .arcColors(arcs_colorsMap)
             .enableParallel(true)

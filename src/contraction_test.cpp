@@ -63,7 +63,7 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     Graph_t::NodeMap<ContractionResult> * results = algo.precompute(landscape, plan);
     t1 = std::chrono::high_resolution_clock::now();
 
-    for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    for(Graph_t::NodeIt t(graph); t!=lemon::INVALID; ++t) {
         const double base = compute_value_reversed(landscape, t);
                 
         ContractionResult result = (*results)[t];

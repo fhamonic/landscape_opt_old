@@ -86,6 +86,7 @@ RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landsca
         
         RestorationPlan::Option * option = plan->addOption();
         option->setId(i);
+        option->setCost(1);
         option->addLink(a, p_dis(gen));
     }
         

@@ -41,3 +41,59 @@ with open('/home/plaiseek/Projects/landscape_opt_cpp/data/OSM/marseille.json') a
             print('Id: ' + p['properties']['@id'])
 
         print('Aire(m2): ' + str(get_projected_area(p['geometry']['coordinates'][0])))
+
+
+
+from enum import Enum
+class WayType(Enum):
+    ERROR = -1
+    NONE = 0
+    TERRAIN_SPORT = 1
+    CIMETIERE = 2
+    JARDIN = 3
+    PELOUSE = 4
+    PARC = 5
+    PISCINE = 6
+    BASSIN = 7
+
+class NodeType(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+
+
+def test_field(p, field_name):
+    return field_name in p
+
+def test_field_value(p, field_name, value):
+    if test_field(p, field_name):
+        return p[field_name] == value
+
+
+def identify(feature):
+    if not test_field(feature, 'properties'):
+        return WayType.ERROR
+    p = feature['properties']
+
+    if test_field_value(p, 'leisure', 'pitch'):
+        return WayType.TERRAIN_SPORT
+    if test_field_value(p, 'landuse', 'cemetery'):
+        return WayType.CIMETIERE
+    if test_field_value(p, 'leisure', 'garden'):
+        return WayType.JARDIN
+    if test_field_value(p, 'landuse', 'grass'):
+        return WayType.PELOUSE
+    if test_field_value(p, 'leisure', 'park'):
+        return WayType.PARC
+    if test_field_value(p, 'landuse', 'swimming_pool'):
+        return WayType.PISCINE
+    if test_field_value(p, 'landuse', 'basin'):
+        return WayType.BASSIN
+
+
+
+
+
+
+
+    return NodeType.NONE

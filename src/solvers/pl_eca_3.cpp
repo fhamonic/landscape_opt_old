@@ -168,7 +168,6 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     MyContractionAlgorithm alg2;
     Graph_t::NodeMap<ContractionResult> * contracted_instances = alg2.precompute(landscape, plan);
 
-
     Graph_t::NodeMap<Vars> varsMap(graph);
     for(Graph_t::Node v : target_nodes) {
         ContractionResult & cr = (*contracted_instances)[v];
@@ -286,7 +285,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
             if(u == cr.t)
                 solver_builder.buffEntry(f_t, 1);
             // injected flow
-            solver_builder.pushRow(contracted_landscape->getQuality(u), contracted_landscape->getQuality(u));
+            solver_builder.pushRow(0.0, contracted_landscape->getQuality(u));
         }
 
         // restored_x_a < y_i * M
