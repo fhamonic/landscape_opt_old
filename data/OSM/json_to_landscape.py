@@ -45,6 +45,7 @@ with open('/home/plaiseek/Projects/landscape_opt_cpp/data/OSM/marseille.json') a
 
 
 from enum import Enum
+
 class WayType(Enum):
     ERROR = -1
     NONE = 0
@@ -55,11 +56,14 @@ class WayType(Enum):
     PARC = 5
     PISCINE = 6
     BASSIN = 7
+    BROUSSAILLE = 8
+    FORET = 9
+    ALIGNEMENT_ARBRES = 10
 
 class NodeType(Enum):
-    RED = 1
-    GREEN = 2
-    BLUE = 3
+    ERROR = -1
+    NONE = 0
+    ARBRE = 1
 
 
 def test_field(p, field_name):
@@ -70,7 +74,8 @@ def test_field_value(p, field_name, value):
         return p[field_name] == value
 
 
-def identify(feature):
+
+def identify_way(feature):
     if not test_field(feature, 'properties'):
         return WayType.ERROR
     p = feature['properties']
@@ -89,11 +94,27 @@ def identify(feature):
         return WayType.PISCINE
     if test_field_value(p, 'landuse', 'basin'):
         return WayType.BASSIN
+    if test_field_value(p, 'natural', 'scrub'):
+        return WayType.BROUSSAILLE
+    if test_field_value(p, 'landcover', 'trees'):
+        return WayType.FORET
+    if test_field_value(p, 'landuse', 'forest'):
+        return WayType.FORET
+    if test_field_value(p, 'natural', 'wood'):
+        return WayType.FORET
+    if test_field_value(p, 'natural', 'tree_row'):
+        return WayType.ALIGNEMENT_ARBRES
+
+    return WayType.NONE
 
 
 
+def identify_node(feature):
+    if not test_field(feature, 'properties'):
+        return NodeType.ERROR
+    p = feature['properties']
 
-
-
+    if test_field_value(p, 'natural', 'tree'):
+        return NodeType.ARBRE
 
     return NodeType.NONE
