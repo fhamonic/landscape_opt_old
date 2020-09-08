@@ -59,6 +59,11 @@ class WayType(Enum):
     BROUSSAILLE = 8
     FORET = 9
     ALIGNEMENT_ARBRES = 10
+    ROUTE_PRINCIPALE = 11
+    ROUTE_SECONDAIRE = 12
+    ROUTE_TERTIAIRE = 12
+    AUTOROUTE = 13
+    ROUTE_AUTRE = 14
 
 class NodeType(Enum):
     ERROR = -1
@@ -66,55 +71,62 @@ class NodeType(Enum):
     ARBRE = 1
 
 
-def test_field(p, field_name):
-    return field_name in p
 
-def test_field_value(p, field_name, value):
-    if test_field(p, field_name):
-        return p[field_name] == value
-
-
-
+way_tags_table = {
+    'leisure': {
+        'pitch' : WayType.TERRAIN_SPORT,
+        'garden' : WayType.JARDIN,
+        'park' : WayType.PARC
+    },
+    'landuse': {
+        'cemetery' : WayType.CIMETIERE,
+        'grass' : WayType.PELOUSE,
+        'swimming_pool' : WayType.PISCINE,
+        'basin' : WayType.BASSIN,
+        'forest' : WayType.FORET,
+        'trees' : WayType.FORET
+    },
+    'highway': {
+        'motorway' : WayType.AUTOROUTE,
+        'motorway_link' : WayType.AUTOROUTE,
+        'trunk' : WayType.AUTOROUTE,
+        'trunk_link' : WayType.AUTOROUTE,
+        'primary' : WayType.ROUTE_PRINCIPALE,
+        'primary_link' : WayType.ROUTE_PRINCIPALE,
+        'secondary' : WayType.ROUTE_SECONDAIRE,
+        'secondary_link' : WayType.ROUTE_SECONDAIRE,
+        'tertiary' : WayType.ROUTE_TERTIAIRE,
+        'tertiary_link' : WayType.ROUTE_TERTIAIRE
+    },
+    'natural': {
+        'tree_row' : WayType.ALIGNEMENT_ARBRES,
+        'wood' : WayType.FORET,
+        'scrub' : WayType.BROUSSAILLE
+    }
+}
 def identify_way(feature):
-    if not test_field(feature, 'properties'):
+    if 'properties' not in feature:
         return WayType.ERROR
     p = feature['properties']
-
-    if test_field_value(p, 'leisure', 'pitch'):
-        return WayType.TERRAIN_SPORT
-    if test_field_value(p, 'landuse', 'cemetery'):
-        return WayType.CIMETIERE
-    if test_field_value(p, 'leisure', 'garden'):
-        return WayType.JARDIN
-    if test_field_value(p, 'landuse', 'grass'):
-        return WayType.PELOUSE
-    if test_field_value(p, 'leisure', 'park'):
-        return WayType.PARC
-    if test_field_value(p, 'landuse', 'swimming_pool'):
-        return WayType.PISCINE
-    if test_field_value(p, 'landuse', 'basin'):
-        return WayType.BASSIN
-    if test_field_value(p, 'natural', 'scrub'):
-        return WayType.BROUSSAILLE
-    if test_field_value(p, 'landcover', 'trees'):
-        return WayType.FORET
-    if test_field_value(p, 'landuse', 'forest'):
-        return WayType.FORET
-    if test_field_value(p, 'natural', 'wood'):
-        return WayType.FORET
-    if test_field_value(p, 'natural', 'tree_row'):
-        return WayType.ALIGNEMENT_ARBRES
-
+    for tag, correspondances in way_tags_table:
+        if tag in p:
+            if p[tag] in correspondances:
+                return correspondances[p[tag]]
     return WayType.NONE
 
 
 
+way_tags_table = {
+    'natural': {
+        'tree' : NodeType.ARBRE
+    }
+}
 def identify_node(feature):
-    if not test_field(feature, 'properties'):
-        return NodeType.ERROR
+    if 'properties' not in feature:
+        return WayType.ERROR
     p = feature['properties']
-
-    if test_field_value(p, 'natural', 'tree'):
-        return NodeType.ARBRE
-
+    for tag, correspondances in way_tags_table:
+        if tag in p:
+            if p[tag] in correspondances:
+                return correspondances[p[tag]]
     return NodeType.NONE
