@@ -1,6 +1,7 @@
 /build
 /output
-*/lp
+/cache
+*.lp
 
 *.out
 .vscode

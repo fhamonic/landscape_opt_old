@@ -51,7 +51,10 @@ way_tags_table = {
     'natural': {
         'tree_row' : WayType.ALIGNEMENT_ARBRES,
         'wood' : WayType.FORET,
-        'scrub' : WayType.BROUSSAILLE
+        'scrub' : WayType.BROUSSAILLE,
+        'grassland' : WayType, 
+        'heath' : 'lande',
+        'meadow' : 'pré'
     }
 }
 
@@ -59,12 +62,14 @@ way_tags_table = {
 city = "Marseille"
 
 query = "[out:json];\n"
-query += "area[name = '{}'];\n".format(city)
+query += "area[name = '{}']->.a;\n".format(city)
 query += "(\n"
 for tag, values in way_tags_table.items():
     for value in values:
-        query += "\tway['{}'='{}'](area);\n".format(tag, value)
+        #query += "\tnwr['{}'='{}']({{{{bbox}}}});\n".format(tag, value)
+        query += "\tnwr(area.a)['{}'='{}'];\n".format(tag, value)
 query += ");\n"
+query += "(._;>;);\n"
 query += "out;"
 
 
