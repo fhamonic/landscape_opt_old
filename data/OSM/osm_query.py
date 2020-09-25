@@ -1,4 +1,4 @@
-
+# coding: utf8
 from enum import Enum
 import overpy
 import json
@@ -54,7 +54,29 @@ way_tags_table = {
         'scrub' : WayType.BROUSSAILLE,
         'grassland' : WayType, 
         'heath' : 'lande',
-        'meadow' : 'pré'
+        'meadow' : 'pre'
+    }
+}
+
+
+
+green_tags_table = {
+    'leisure': {
+        'garden' : WayType.JARDIN,
+        'park' : WayType.PARC
+    },
+    'landuse': {
+        'grass' : WayType.PELOUSE,
+        'forest' : WayType.FORET,
+        'trees' : WayType.FORET
+    },
+    'natural': {
+        'tree_row' : WayType.ALIGNEMENT_ARBRES,
+        'wood' : WayType.FORET,
+        'scrub' : WayType.BROUSSAILLE,
+        'grassland' : WayType, 
+        'heath' : 'lande',
+        'meadow' : 'pre'
     }
 }
 
@@ -64,18 +86,27 @@ city = "Marseille"
 query = "[out:json];\n"
 query += "area[name = '{}']->.a;\n".format(city)
 query += "(\n"
-for tag, values in way_tags_table.items():
+for tag, values in green_tags_table.items():
     for value in values:
         #query += "\tnwr['{}'='{}']({{{{bbox}}}});\n".format(tag, value)
         query += "\tnwr(area.a)['{}'='{}'];\n".format(tag, value)
 query += ");\n"
 query += "(._;>;);\n"
-query += "out;"
+query += "out body geom;"
 
 
 print(query)
-"""
+
 api = overpy.Overpass()
 result = api.query(query)
 
-print(result)"""
+# print(result)
+
+for way in result.ways:
+    if "name" in way.tags:
+        print(way.tags["name"].encode('utf-8'))
+    else:
+        continue
+    if "geometry" in way.attributes:
+        print(way.attributes["geometry"])
+    # print(way.attributes)
