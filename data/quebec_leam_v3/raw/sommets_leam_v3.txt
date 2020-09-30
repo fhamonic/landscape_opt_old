@@ -1,4 +1,4 @@
-"name" "count" "area" "quality" "ecobound" "per.ecobound" "pool" "xcoord" "ycoord" "count2000" "count2050" "menace"
+"name" "count" "area" "quality" "offset" "ecobound" "per.ecobound" "pool" "xcoord" "ycoord" "count2000" "count2050" "menace"
 "1" "1" 1297 1167300 71.6183500386 0 0 1 241205.152503 5120874.95837 1297 1041 19.7378565921357
 "2" "2" 547 492300 76.9670932358 0 0 1 242877.838465 5121642.5064 547 547 0
 "3" "3" 5528 4975200 78.8120477569 0 0 1 244387.966195 5120297.32525 5528 5309 3.9616497829233
