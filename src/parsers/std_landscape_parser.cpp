@@ -19,7 +19,7 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
     patches.read_header(io::ignore_extra_column, "id", "weight", "x", "y");
     
     io::CSVReader<3> links(links_file);
-    links.read_header(io::ignore_extra_column, "source_id", "target_id", "length");
+    links.read_header(io::ignore_extra_column, "source_id", "target_id", "probability");
 
     Landscape * landscape = new Landscape();
     const Graph_t & g = landscape->getNetwork();
@@ -36,8 +36,8 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
     }
 
     int link_source_id, link_target_id;
-    double link_length;
-    while(links.read_row(link_source_id, link_target_id, link_length)) {
+    double link_probability;
+    while(links.read_row(link_source_id, link_target_id, link_probability)) {
         if(link_source_id < 0 || link_source_id > patch_id) {
             std::cerr << "StdLandscapeParser : Warning in file " << links_file << " line " << links.get_file_line() << " : invalid patch id : " << link_source_id << "." << std::endl;
             delete landscape;
@@ -51,7 +51,7 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
 
         const Graph_t::Node & u = g.nodeFromId(link_source_id);
         const Graph_t::Node & v = g.nodeFromId(link_target_id);
-        landscape->addArc(u, v, link_length);
+        landscape->addArc(u, v, link_probability);
     }
 
     return landscape;

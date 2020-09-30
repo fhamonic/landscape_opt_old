@@ -68,7 +68,8 @@ green_tags_table = {
     'landuse': {
         'grass' : WayType.PELOUSE,
         'forest' : WayType.FORET,
-        'trees' : WayType.FORET
+        'trees' : WayType.FORET,
+        'allotments' : WayType.JARDIN
     },
     'natural': {
         'tree_row' : WayType.ALIGNEMENT_ARBRES,
