@@ -12,13 +12,16 @@ EIGEN_INCLUDE_DIR=~/Libs/eigen-eigen-323c052e1731/
 COINOR_INCLUDE_DIR=~/Libs/coinor/dist/include/
 COINOR_LIB_PATH=~/Libs/coinor/dist/lib/
 LEMON_INCLUDE_DIR=~/Libs/lemon-1.3.1/
+GUROBI_INCLUDE_PATH=~/Libs/gurobi901/linux64/include/
+GUROBI_LIB_PATH=~/Libs/gurobi901/linux64/lib/
 
-INCLUDE_FLAGS=-I include -I thirdparty -I $(SRC_DIR) -I $(EIGEN_INCLUDE_DIR) -I $(COINOR_INCLUDE_DIR) -I $(LEMON_INCLUDE_DIR)
+
+INCLUDE_FLAGS=-I include -I thirdparty -I $(SRC_DIR) -I $(EIGEN_INCLUDE_DIR) -I $(COINOR_INCLUDE_DIR) -I $(LEMON_INCLUDE_DIR) -I $(GUROBI_INCLUDE_PATH)
 
 #-DNDEBUG
 CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -O2 -flto -march=native -pipe $(INCLUDE_FLAGS) -L $(COINOR_LIB_PATH)
-LDFLAGS=-L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lCoinUtils -lemon -pthread -ltbb
-LSFLAGS=-static -L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lCoinUtils -lemon -pthread -lmpi -ltbb
+LDFLAGS=-L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -pthread -ltbb
+LSFLAGS=-static -L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -pthread -lmpi -ltbb
 
 EXEC=pl_markov pl_eca glutton_eca
 EXTENSION=.out

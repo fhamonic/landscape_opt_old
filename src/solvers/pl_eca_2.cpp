@@ -1,6 +1,6 @@
 #include "solvers/pl_eca_2.hpp"
 
-
+#include "gurobi_c++.h"
 #include "coin/CoinStructuredModel.hpp"
 
 namespace Solvers::PL_ECA_2_Vars {
@@ -233,9 +233,13 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     if(log_level >= 1) {
         name_variables(solver, landscape, plan, x_var, restored_x_var, f_var, restored_f_var, y_var);
         solver->writeLp("pl_eca_2");
+        solver->writeMps("pl_eca_2");
     }
 
     CbcModel model(*solver);
+
+    model.setIntegerTolerance(1.0e-14);
+    model.setAllowableGap(1.0e-14);
 
     model.setLogLevel(log_level >= 2 ? 1 : 0);
 
@@ -277,6 +281,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
         std::cout << name() << ": ECA from obj : " << std::sqrt(model.getObjValue()) << std::endl;
+        std::cout << name() << ": Explored nodes : " << model.getNodeCount() << std::endl;
     }
     
     solution->obj = std::sqrt(model.getObjValue());

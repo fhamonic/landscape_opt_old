@@ -32,7 +32,10 @@ class Solution {
         }
 
         void set(const RestorationPlan::Option * option, double coef) { 
-            assert(0.0 <= coef && coef <= 1.0);
+            /*if(!(0.0 <= coef && coef <= 1.0))
+                std::cerr << coef << std::endl;
+            
+            assert(0.0 <= coef && coef <= 1.0);*/
             optionsCoefs[option] = coef;
         }
         void add(const RestorationPlan::Option * option) { set(option, 1.0); }

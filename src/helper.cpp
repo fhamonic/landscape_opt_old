@@ -59,6 +59,7 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
             << "restored ECA : " << restored_eca << std::endl 
             << "ECA gain : " << restored_eca - base_eca << std::endl 
             << "cost : " << cost << std::endl 
+            << "obj : " << solution->obj << std::endl 
             << "time_ms : " << time_ms << std::endl;
 
     std::string str_B = std::to_string(B);

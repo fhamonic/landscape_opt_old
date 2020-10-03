@@ -346,6 +346,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     if(log_level > 1) {
         name_variables(solver, landscape, plan, target_nodes, contracted_instances, varsMap, f_var, restored_f_var, y_var);
         solver->writeLp("pl_eca_3");
+        solver->writeMps("pl_eca_3");
     }
  
     CbcModel model(*solver);
@@ -387,30 +388,6 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         value = std::min(value, 1.0);
 
         solution->set(option, value);
-    }
-
-    for(Graph_t::Node t : target_nodes) {
-        ContractionResult & cr = (*contracted_instances)[t];
-        const Landscape * contracted_landscape = cr.landscape;
-        const Graph_t & contracted_graph = contracted_landscape->getNetwork();
-        const RestorationPlan * contracted_plan = cr.plan;
-        const Vars vars = varsMap[t];
-
-        for(RestorationPlan::Option * option : contracted_plan->options()) {
-            for(Graph_t::Arc a : option->arcs()) {
-                const int x_ta = vars.x_var->id(a);
-                const int x_ta_r = vars.restored_x_var->id(a, option);
-                double value = var_solution[x_ta];
-                double value_r = var_solution[x_ta_r];
-
-
-                if(value > true_M_x_const(t,a))
-                    std::cout << graph.id(t) << " : " << contracted_graph.id(a) << " : " << value << " > " << true_M_x_const(t,a) << std::endl;   
-
-                // if(value_r > true_M_x_const(t,a))
-                //     std::cout << graph.id(t) << " : restored : " << contracted_graph.id(a) << " : " << value_r << " > " << true_M_x_const(t,a) << std::endl;                
-            }
-        }
     }
 
 

@@ -32,10 +32,10 @@ Clp, Cbc, Dip : using coinbrew :
     mkdir coinor
     cd coinor
     git clone https://github.com/coin-or/coinbrew
-    export OPT_CXXFLAGS="-pipe -flto -O3 -march=native"
-    export OPT_CFLAGS="-pipe -flto -O3 -march=native"
+    export OPT_CXXFLAGS="-pipe -flto -march=native"
+    export OPT_CFLAGS="-pipe -flto -march=native"
     export LDFLAGS="-pipe -flto"
-    ./coinbrew/coinbrew build Clp:releases/1.17.5 --enable-static
+    ./coinbrew/coinbrew build Clp:releases/1.17.6 --enable-static
     ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --enable-static
     ./coinbrew/coinbrew build Dip --enable-cbc-parallel --enable-static
     add 'export LD_LIBRARY_PATH=/home/plaiseek/Libs/coinor/dist/lib' to your ~/.bashrc
