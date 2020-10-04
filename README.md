@@ -10,6 +10,35 @@ from package manager :
     
 I recommend getting librairies from sources for lattest versions : 
 
+
+Lemon : http://lemon.cs.elte.hu/trac/lemon/wiki/Downloads
+    cd lemon-x.y.z
+    mkdir build
+    cd build
+    cmake ..
+    make
+    sudo make install
+
+Eigen : headers only, just needs to be downloaded : http://eigen.tuxfamily.org/index.php?title=Main_Page
+
+Gurobi : https://www.gurobi.com/
+
+Clp, Cbc, Dip : using coinbrew :
+    mkdir coinor
+    cd coinor
+    git clone https://github.com/coin-or/coinbrew
+    export OPT_CXXFLAGS="-pipe -flto -march=native"
+    export OPT_CFLAGS="-pipe -flto -march=native"
+    export LDFLAGS="-L/home/plaiseek/Libs/gurobi901/linux64/lib/ -pipe -flto"
+     
+    ./coinbrew/coinbrew fetch Cbc:releases/2.10.5
+    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --with-gurobi-incdir="/home/plaiseek/Libs/gurobi901/linux64/include/" --with-gurobi-lib="-L /home/plaiseek/Libs/gurobi901/linux64/lib/ -lm -lpthread -lgurobi_c++ -lgurobi90"
+
+    add to .bashrc :
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/coinor/dist/lib/"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/gurobi901/linux64/lib/"
+
+      
 OpenBLAS:
     mkdir OpenBLAS
     git clone https://github.com/xianyi/OpenBLAS.git
@@ -23,41 +52,8 @@ Csdp:
     mkdir Csdp
     git clone https://github.com/coin-or/Csdp.git
 # edit Makefile.rules: CC = gcc ; FC = gfortran ; COMMON_OPT = -O2 -march=native
-    make all
-
-
-Eigen : headers only, just needs to be downloaded : http://eigen.tuxfamily.org/index.php?title=Main_Page
-
-Clp, Cbc, Dip : using coinbrew :
-    mkdir coinor
-    cd coinor
-    git clone https://github.com/coin-or/coinbrew
-    export OPT_CXXFLAGS="-pipe -flto -march=native"
-    export OPT_CFLAGS="-pipe -flto -march=native"
-    export LDFLAGS="-L/home/plaiseek/Libs/gurobi901/linux64/lib/ -pipe -flto"
-     
-    ./coinbrew/coinbrew fetch Cbc:releases/2.10.5
-    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --with-gurobi-incdir="/home/plaiseek/Libs/gurobi901/linux64/include/" --with-gurobi-lib="-L /home/plaiseek/Libs/gurobi901/linux64/lib/ -lm -lpthread -lgurobi_c++ -lgurobi90"
-
-
-    ./coinbrew/coinbrew build Dip --enable-cbc-parallel --enable-static
-
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/coinor/dist/lib/"
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/gurobi901/linux64/lib/"
-        
-Csdp:
-    cd coinor
-    mkdir Csdp
-    git clone https://github.com/coin-or/Csdp.git
 # edit Makefile.rules: replace /usr/local by ../dist modify BLAS linking to -L../../../OpenBLAS/lib -lopenblas
     make CC=gcc all
 
-Lemon : http://lemon.cs.elte.hu/trac/lemon/wiki/Downloads
-    cd lemon-x.y.z
-    mkdir build
-    cd build
-    cmake ..
-    make
-    sudo make install
 
 Then specify the paths in the makefile
