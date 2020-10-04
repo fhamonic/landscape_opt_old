@@ -145,7 +145,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     const int nb_threads = params.at("threads")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
     const int timeout = params.at("timeout")->getInt();
-    const bool fortest = params.at("fortest")->getBool();
+    //const bool fortest = params.at("fortest")->getBool();
 
     std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
     last_time = std::chrono::high_resolution_clock::now();
@@ -334,7 +334,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiClpSolverInterface * solver = solver_builder.buildSolver(OSI_Builder::MAX );
+    OsiClpSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {

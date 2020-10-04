@@ -66,9 +66,3 @@ OSI_Builder & OSI_Builder::pushRow(double lb, double ub) {
     clearEntryBuffer();
     return *this;
 }
-OsiClpSolverInterface * OSI_Builder::buildSolver(int sense) {
-    OsiClpSolverInterface * solver = new OsiClpSolverInterface();
-    solver->loadProblem(*matrix, col_lb, col_ub, objective, row_lb.data(), row_ub.data());
-    solver->setObjSense(sense);
-    return solver;
-}

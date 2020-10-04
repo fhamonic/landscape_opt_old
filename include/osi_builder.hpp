@@ -5,6 +5,7 @@
 #include<vector>
 
 #include "coin/OsiClpSolverInterface.hpp"
+#include "coin/OsiGrbSolverInterface.hpp"
 #include "coin/CoinPackedMatrix.hpp"
 
 class OSI_Builder {
@@ -62,8 +63,14 @@ class OSI_Builder {
         OSI_Builder & pushRowWithoutClearing(double lb, double ub);
         OSI_Builder & pushRow(double lb, double ub);
         OSI_Builder & setName(int var_id, std::string name);
-
-        OsiClpSolverInterface * buildSolver(int sense);
+        
+        template <class OsiSolver>
+        OsiSolver * buildSolver(int sense) {
+            OsiSolver * solver = new OsiSolver();
+            solver->loadProblem(*matrix, col_lb, col_ub, objective, row_lb.data(), row_ub.data());
+            solver->setObjSense(sense);
+            return solver;
+        }
 
         static int nb_pairs(int n) {
             return n*(n-1)/2;

@@ -27,9 +27,9 @@ y_min = min([float(row['ycoord']) for row in sommets_rows])
 y_max = max([float(row['ycoord']) for row in sommets_rows])
 
 xl_bound = x_min
-xu_bound = x_min + (x_max-x_min) / 8
+xu_bound = x_min + (x_max-x_min) / 6
 yl_bound = y_min
-yu_bound = y_min + (y_max-y_min) / 8
+yu_bound = y_min + (y_max-y_min) / 6
 
 def predicate(row):
     return xl_bound <= float(row['xcoord']) <= xu_bound and yl_bound <= float(row['ycoord']) <= yu_bound

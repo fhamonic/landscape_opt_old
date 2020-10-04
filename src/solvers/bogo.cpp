@@ -3,7 +3,9 @@
 #include "random_chooser.hpp"
 
 Solution * Solvers::Bogo::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
-    RandomChooser<const RestorationPlan::Option*> option_chooser;
+    const int seed = params.at("seed")->getInt();
+    
+    RandomChooser<const RestorationPlan::Option*> option_chooser(seed);
     for(RestorationPlan::Option * option : plan.options())
         option_chooser.add(option, 1);
 

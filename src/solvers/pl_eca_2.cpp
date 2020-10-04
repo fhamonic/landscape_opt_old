@@ -1,6 +1,6 @@
 #include "solvers/pl_eca_2.hpp"
 
-#include "gurobi_c++.h"
+#include "coin/OsiGrbSolverInterface.hpp"
 #include "coin/CoinStructuredModel.hpp"
 
 namespace Solvers::PL_ECA_2_Vars {
@@ -58,7 +58,7 @@ namespace Solvers::PL_ECA_2_Vars {
     };
 
 
-    void name_variables(OsiClpSolverInterface * solver, const Landscape & landscape, const RestorationPlan & plan, XVar & x_var, RestoredXVar & restored_x_var, FVar & f_var, RestoredFVar & restored_f_var, YVar & y_var) {
+    void name_variables(OsiSolverInterface * solver, const Landscape & landscape, const RestorationPlan & plan, XVar & x_var, RestoredXVar & restored_x_var, FVar & f_var, RestoredFVar & restored_f_var, YVar & y_var) {
         const Graph_t & graph = landscape.getNetwork();
         
         auto node_str = [&graph] (Graph_t::Node v) { return std::to_string(graph.id(v)); };
@@ -173,7 +173,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
             if(u == t)
                 solver_builder.buffEntry(f_t, 1);
             // injected flow
-            solver_builder.pushRow(landscape.getQuality(u), landscape.getQuality(u));
+            solver_builder.pushRow(0.0, landscape.getQuality(u));
         }
 
         // x_a < y_i * M
@@ -221,7 +221,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiClpSolverInterface * solver = solver_builder.buildSolver(OSI_Builder::MAX);
+    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {
@@ -236,42 +236,23 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
         solver->writeMps("pl_eca_2");
     }
 
-    CbcModel model(*solver);
-
-    model.setIntegerTolerance(1.0e-14);
-    model.setAllowableGap(1.0e-14);
-
-    model.setLogLevel(log_level >= 2 ? 1 : 0);
-
-    if(model.haveMultiThreadSupport())  {
-        model.setNumberThreads(nb_threads);
-        if(log_level >= 1)
-            std::cout << name() << ": Enabled multithread : " << model.getNumberThreads() << std::endl;
-    }
-    else 
-        if(log_level >= 1)
-            std::cerr << name() << ": multithread is disabled : to enable it build Cbc with --enable-cbc-parallel" << std::endl;
-          
     ////////////////////////////////////////////////////////////////////////
     // Compute
     ////////////////////
-    model.setMaximumSeconds(timeout);
-    model.branchAndBound();
+    solver->branchAndBound();
     
-    const double * var_solution = model.bestSolution();
+    const double * var_solution = solver->getColSolution();
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
         return nullptr;
     }
 
     Solution * solution = new Solution(landscape, plan);
-
     for(RestorationPlan::Option * option : plan.options()) {
         const int y_i = y_var.id(option);
         const double value = var_solution[y_i];
         solution->set(option, value);
     }
-
 
     current_time = std::chrono::high_resolution_clock::now();
     int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
@@ -280,13 +261,66 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
 
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << std::sqrt(model.getObjValue()) << std::endl;
-        std::cout << name() << ": Explored nodes : " << model.getNodeCount() << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solver->getObjValue()) << std::endl;
     }
+    solution->obj = std::sqrt(solver->getObjValue());
+
+
+
+
+
+
+    // CbcModel model(*solver);
+
+    // model.setIntegerTolerance(1.0e-14);
+    // model.setAllowableGap(1.0e-14);
+
+    // model.setLogLevel(log_level >= 2 ? 1 : 0);
+
+    // if(model.haveMultiThreadSupport())  {
+    //     model.setNumberThreads(nb_threads);
+    //     if(log_level >= 1)
+    //         std::cout << name() << ": Enabled multithread : " << model.getNumberThreads() << std::endl;
+    // }
+    // else 
+    //     if(log_level >= 1)
+    //         std::cerr << name() << ": multithread is disabled : to enable it build Cbc with --enable-cbc-parallel" << std::endl;
+          
+    // ////////////////////////////////////////////////////////////////////////
+    // // Compute
+    // ////////////////////
+    // model.setMaximumSeconds(timeout);
+    // model.branchAndBound();
     
-    solution->obj = std::sqrt(model.getObjValue());
-    solution->nb_vars = solver_builder.getNbVars();
-    solution->nb_constraints = solver_builder.getNbConstraints();
+    // const double * var_solution = model.bestSolution();
+    // if(var_solution == nullptr) {
+    //     std::cerr << name() << ": Fail" << std::endl;
+    //     return nullptr;
+    // }
+
+    // Solution * solution = new Solution(landscape, plan);
+
+    // for(RestorationPlan::Option * option : plan.options()) {
+    //     const int y_i = y_var.id(option);
+    //     const double value = var_solution[y_i];
+    //     solution->set(option, value);
+    // }
+
+
+    // current_time = std::chrono::high_resolution_clock::now();
+    // int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
+    // solution->setComputeTimeMs(time_ms);
+    // last_time = current_time;
+
+    // if(log_level >= 1) {
+    //     std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
+    //     std::cout << name() << ": ECA from obj : " << std::sqrt(model.getObjValue()) << std::endl;
+    //     std::cout << name() << ": Explored nodes : " << model.getNodeCount() << std::endl;
+    // }
+    
+    // solution->obj = std::sqrt(model.getObjValue());
+    // solution->nb_vars = solver_builder.getNbVars();
+    // solution->nb_constraints = solver_builder.getNbConstraints();
 
     delete solver;
 

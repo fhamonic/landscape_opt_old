@@ -8,16 +8,15 @@ namespace Solvers {
     class Bogo : public concepts::Solver {
         public:
             Bogo() {
-                params["log"] = new IntParam(0);
+                params["seed"] = new IntParam(0);
                 params["draws"] = new IntParam(0);
-            }
-
-            Bogo & setLogLevel(int log_level) {
-                params["log"]->set(log_level);
-                return *this;
             }
             Bogo & setNbDraws(int log_level) {
                 params["draws"]->set(log_level);
+                return *this;
+            }
+            Bogo & setSeed(int seed) {
+                params["seed"]->set(seed);
                 return *this;
             }
 
