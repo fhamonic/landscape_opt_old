@@ -1,6 +1,8 @@
 #include "solvers/pl_eca_2.hpp"
 
+#include "coin/OsiCbcSolverInterface.hpp"
 #include "coin/OsiGrbSolverInterface.hpp"
+
 #include "coin/CoinStructuredModel.hpp"
 
 namespace Solvers::PL_ECA_2_Vars {
@@ -221,7 +223,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiCbcSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {

@@ -20,8 +20,8 @@ INCLUDE_FLAGS=-I include -I thirdparty -I $(SRC_DIR) -I $(EIGEN_INCLUDE_DIR) -I 
 
 #-DNDEBUG
 CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -O2 -flto -march=native -pipe $(INCLUDE_FLAGS) -L $(COINOR_LIB_PATH)
-LDFLAGS=-L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
-LSFLAGS=-static -L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -lmpi -ltbb
+LDFLAGS=-L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lOsiCbc -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
+LSFLAGS=-static -L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lOsiCbc -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -lmpi -ltbb
 
 EXEC=pl_markov pl_eca glutton_eca
 EXTENSION=.out
