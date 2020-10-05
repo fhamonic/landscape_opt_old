@@ -22,21 +22,31 @@ Lemon : http://lemon.cs.elte.hu/trac/lemon/wiki/Downloads
 Eigen : headers only, just needs to be downloaded : http://eigen.tuxfamily.org/index.php?title=Main_Page
 
 Gurobi : https://www.gurobi.com/
+    add to .bashrc :
+    cd linux64/src/build
+    make
+
+    move libgurobi_c++.a to linux64/lib/
+
+    add to .bashrc
+    export GUROBI_HOME="/home/plaiseek/Libs/gurobi903/linux64"
+    export PATH="$PATH:$GUROBI_HOME/bin"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$GUROBI_HOME/lib"
 
 Clp, Cbc, Dip : using coinbrew :
     mkdir coinor
     cd coinor
     git clone https://github.com/coin-or/coinbrew
+    <!-- export OPT_CFLAGS="-pipe -flto -march=native"
     export OPT_CXXFLAGS="-pipe -flto -march=native"
-    export OPT_CFLAGS="-pipe -flto -march=native"
-    export LDFLAGS="-L/home/plaiseek/Libs/gurobi901/linux64/lib/ -pipe -flto"
+    export LDFLAGS="-L/home/plaiseek/Libs/gurobi903/linux64/lib/ -pipe -flto" -->
+    export LDFLAGS="-L/home/plaiseek/Libs/gurobi903/linux64/lib/"
      
     ./coinbrew/coinbrew fetch Cbc:releases/2.10.5
-    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --with-gurobi-incdir="/home/plaiseek/Libs/gurobi901/linux64/include/" --with-gurobi-lib="-L /home/plaiseek/Libs/gurobi901/linux64/lib/ -lm -lpthread -lgurobi_c++ -lgurobi90"
+    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --with-gurobi-incdir="/home/plaiseek/Libs/gurobi903/linux64/include/" --with-gurobi-lib="-L/home/plaiseek/Libs/gurobi903/linux64/lib/ -lm -lpthread -lgurobi_c++ -lgurobi90"
 
     add to .bashrc :
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/coinor/dist/lib/"
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/gurobi901/linux64/lib/"
 
       
 OpenBLAS:

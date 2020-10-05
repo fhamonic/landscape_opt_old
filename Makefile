@@ -12,8 +12,8 @@ EIGEN_INCLUDE_DIR=~/Libs/eigen-eigen-323c052e1731/
 COINOR_INCLUDE_DIR=~/Libs/coinor/dist/include/
 COINOR_LIB_PATH=~/Libs/coinor/dist/lib/
 LEMON_INCLUDE_DIR=~/Libs/lemon-1.3.1/
-GUROBI_INCLUDE_PATH=~/Libs/gurobi901/linux64/include/
-GUROBI_LIB_PATH=~/Libs/gurobi901/linux64/lib/
+GUROBI_INCLUDE_PATH=$(GUROBI_HOME)/include/
+GUROBI_LIB_PATH=$(GUROBI_HOME)/lib/
 
 
 INCLUDE_FLAGS=-I include -I thirdparty -I $(SRC_DIR) -I $(EIGEN_INCLUDE_DIR) -I $(COINOR_INCLUDE_DIR) -I $(LEMON_INCLUDE_DIR) -I $(GUROBI_INCLUDE_PATH)
