@@ -53,8 +53,8 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     const Graph_t & graph = landscape.getNetwork();
 
     const int nb_nodes = lemon::countNodes(graph);
-    const double epsilon_n = 1/*00*/ * nb_nodes * (std::pow(1+std::numeric_limits<double>::epsilon(), nb_nodes) - 1);
-    const double epsilon_n2 = nb_nodes * epsilon_n;
+    const double epsilon_n = 1e-8;
+    const double epsilon_n2 = 1e-7;
 
     std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
     MyContractionAlgorithm algo;
@@ -84,7 +84,7 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     gen.seed(seed+1);
     std::uniform_int_distribution<> dis(0, nb_options);
 
-    const int nb_tests = 10000;
+    const int nb_tests = 100;
 
     for(int i=0; i<nb_tests; ++i) {
         bool error = false;
@@ -130,18 +130,18 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
         // }
     }
 
-    int sum_of_nb_nodes = 0;
-    int sum_of_nb_arcs = 0;
-    for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-        ContractionResult result = (*results)[t];
-        sum_of_nb_nodes += lemon::countNodes(result.landscape->getNetwork());   
-        sum_of_nb_arcs += lemon::countArcs(result.landscape->getNetwork());
-    }
-    std::cout << "Total nb of nodes : " << sum_of_nb_nodes << std::endl;
-    std::cout << "Total nb of arcs : " << sum_of_nb_arcs << std::endl;
+    // int sum_of_nb_nodes = 0;
+    // int sum_of_nb_arcs = 0;
+    // for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    //     ContractionResult result = (*results)[t];
+    //     sum_of_nb_nodes += lemon::countNodes(result.landscape->getNetwork());   
+    //     sum_of_nb_arcs += lemon::countArcs(result.landscape->getNetwork());
+    // }
+    // std::cout << "Total nb of nodes : " << sum_of_nb_nodes << std::endl;
+    // std::cout << "Total nb of arcs : " << sum_of_nb_arcs << std::endl;
 
-    int normal_time_us = std::chrono::duration_cast<std::chrono::microseconds>(t1-t0).count();
-    std::cout << normal_time_us << std::endl;
+    // int normal_time_us = std::chrono::duration_cast<std::chrono::microseconds>(t1-t0).count();
+    // std::cout << normal_time_us << std::endl;
 
     delete results;
 }
@@ -153,14 +153,18 @@ int main (int argc, const char *argv[]) {
         return EXIT_FAILURE;
     }*/
 
-    const int seed = 1245;
+    const int nb_nodes = 20;
+    const int nb_arcs = 200;
+    const int nb_restored_arcs = 50;
+
+    const int seed = 9473;
     std::cout << std::setprecision(20);
 
     RandomInstanceGenerator instance_generator;
-    const int nb_tests = 1;
+    const int nb_tests = 10000;
     for(int cpt_test=0; cpt_test<nb_tests; cpt_test++) {
-        Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, 10, 20);
-        RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, 10);
+        Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, nb_nodes, nb_arcs, false);
+        RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, nb_restored_arcs);
         
         do_test(*landscape, *plan, seed + cpt_test);
 

@@ -1,5 +1,7 @@
 #include "solvers/pl_eca_2.hpp"
 
+#include "coin/CbcSolver.hpp"
+
 #include "coin/OsiCbcSolverInterface.hpp"
 #include "coin/OsiGrbSolverInterface.hpp"
 
@@ -241,6 +243,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     ////////////////////////////////////////////////////////////////////////
     // Compute
     ////////////////////
+    solver->setHintParam(OsiHintParam::OsiDoReducePrint);
     solver->branchAndBound();
     
     const double * var_solution = solver->getColSolution();
@@ -269,8 +272,9 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
 
 
 
+    
 
-
+    // TODO : Use CbcSolver cbc(*solver);
 
     // CbcModel model(*solver);
 
