@@ -72,11 +72,11 @@ namespace Solvers::PL_ECA_3_Vars {
     };
 
     typedef struct {
-        XVar * x_var;
-        RestoredXVar * restored_x_var;
+        XVar * x_var = nullptr;
+        RestoredXVar * restored_x_var = nullptr;
     } Vars;
 
-    void name_variables(OsiClpSolverInterface * solver, const Landscape & landscape, const RestorationPlan & plan, const std::vector<Graph_t::Node> target_nodes, Graph_t::NodeMap<ContractionResult> * contracted_instances, Graph_t::NodeMap<Vars> & varsMap, FVar & f_var, RestoredFVar & restored_f_var, YVar & y_var) {
+    void name_variables(OsiSolverInterface * solver, const Landscape & landscape, const RestorationPlan & plan, const std::vector<Graph_t::Node> target_nodes, Graph_t::NodeMap<ContractionResult> * contracted_instances, Graph_t::NodeMap<Vars> & varsMap, FVar & f_var, RestoredFVar & restored_f_var, YVar & y_var) {
         const Graph_t & graph = landscape.getNetwork();
         
         auto node_str = [&graph] (Graph_t::Node v) { return std::to_string(graph.id(v)); };
@@ -196,15 +196,11 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     });
 
 
-    auto true_M_x_const = [&] (Graph_t::Node t, Graph_t::Arc a) {
+    auto M_x_const = [&] (Graph_t::Node t, Graph_t::Arc a) {
         ContractionResult & cr = (*contracted_instances)[t];
         const Graph_t & contracted_graph = cr.landscape->getNetwork();
         return (*M_Maps_Map[t])[contracted_graph.source(a)];  
     };
-    auto M_x_const = [&] (Graph_t::Node t, Graph_t::Arc a) {
-        return 1.01 * true_M_x_const(t,a);
-    };
-
     auto M_f_const = [&] (Graph_t::Node t) {
         ContractionResult & cr = (*contracted_instances)[t];
         return (*M_Maps_Map[t])[cr.t]; 
@@ -334,7 +330,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiClpSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {

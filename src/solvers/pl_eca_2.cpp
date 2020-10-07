@@ -66,7 +66,7 @@ namespace Solvers::PL_ECA_2_Vars {
         const Graph_t & graph = landscape.getNetwork();
         
         auto node_str = [&graph] (Graph_t::Node v) { return std::to_string(graph.id(v)); };
-        auto arc_str = [&graph, &node_str] (Graph_t::Arc a) { return "(" + node_str(graph.source(a)) + "," + node_str(graph.target(a)) + ")"; };
+        auto arc_str = [&graph, &node_str] (Graph_t::Arc a) { return std::to_string(graph.id(a)) + "(" + node_str(graph.source(a)) + "," + node_str(graph.target(a)) + ")"; };
 
         // XVar
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t)
@@ -225,7 +225,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiCbcSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {
