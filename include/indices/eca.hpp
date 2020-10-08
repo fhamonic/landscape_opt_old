@@ -30,70 +30,64 @@ class ECA : public concepts::ConnectivityIndex {
             return -alpha * std::log(p);
         }
 
-        template <typename GR, typename QM, typename PM, typename CM>
-        double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape, const typename GR::template NodeMap<bool> & nodeFilter);
+        double eval_solution(const Landscape & landscape, const Solution & solution) const;
 
-        template <typename GR, typename QM, typename PM, typename CM>
-        double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape);
 
-        double eval(const Landscape & landscape, const Solution & solution) const;
+        /**
+         * @brief Computes the value of the ECA index of the specified landscape.
+         * 
+         * @time \f$ O(n \cdot (m + n) \log n) \f$ where \f$ n \f$ is the number of nodes and \f$ m \f$ the number of arcs
+         * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ the number of arcs
+         */
+        template <typename GR, typename QM, typename PM, typename CM>
+        double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape, const typename GR::template NodeMap<bool> & nodeFilter) {
+            const GR & g = landscape.getNetwork();
+            const QM & qualityMap = landscape.getQualityMap();
+            const PM & probabilityMap = landscape.getProbabilityMap();
+            
+            lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(g, probabilityMap);
+            double sum = 0;
+            for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
+                if(!nodeFilter[s])
+                    continue;
+                dijkstra.init(s);
+                while (!dijkstra.emptyQueue()) {
+                    std::pair<typename GR::Node, double> pair = dijkstra.processNextNode();
+                    typename GR::Node t = pair.first;
+                    if(!nodeFilter[t])
+                        continue;
+                    const double p_st = pair.second;
+                    sum += qualityMap[s] * qualityMap[t] * p_st;
+                }
+            }
+            return std::sqrt(sum);
+        }
+
+        /**
+         * @brief Computes the value of the ECA index of the specified landscape.
+         * 
+         * @time \f$ O(n \cdot (m + n) \log n) \f$ where \f$ n \f$ is the number of nodes and \f$ m \f$ the number of arcs
+         * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ the number of arcs
+         */
+        template <typename GR, typename QM, typename PM, typename CM>
+        double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape) {
+            const GR & g = landscape.getNetwork();
+            const QM & qualityMap = landscape.getQualityMap();
+            const PM & probabilityMap = landscape.getProbabilityMap();
+            
+            lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(g, probabilityMap);
+            double sum = 0;
+            for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
+                dijkstra.init(s);
+                while (!dijkstra.emptyQueue()) {
+                    std::pair<typename GR::Node, double> pair = dijkstra.processNextNode();
+                    typename GR::Node t = pair.first;
+                    const double p_st = pair.second;
+                    sum += qualityMap[s] * qualityMap[t] * p_st;
+                }
+            }
+            return std::sqrt(sum);
+        }
 };
-
-/**
- * @brief Computes the value of the ECA index of the specified landscape.
- * 
- * @time \f$ O(n \cdot (m + n) \log n) \f$ where \f$ n \f$ is the number of nodes and \f$ m \f$ the number of arcs
- * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ the number of arcs
- */
-template <typename GR, typename QM, typename PM, typename CM>
-double ECA::eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape, const typename GR::template NodeMap<bool> & nodeFilter) {
-    const GR & g = landscape.getNetwork();
-    const QM & qualityMap = landscape.getQualityMap();
-    const PM & probabilityMap = landscape.getProbabilityMap();
-    
-    lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(g, probabilityMap);
-    double sum = 0;
-    for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
-        if(!nodeFilter[s])
-            continue;
-        dijkstra.init(s);
-        while (!dijkstra.emptyQueue()) {
-            std::pair<typename GR::Node, double> pair = dijkstra.processNextNode();
-            typename GR::Node t = pair.first;
-            if(!nodeFilter[t])
-                continue;
-            const double p_st = pair.second;
-            sum += qualityMap[s] * qualityMap[t] * p_st;
-        }
-    }
-    return std::sqrt(sum);
-}
-
-/**
- * @brief Computes the value of the ECA index of the specified landscape.
- * 
- * @time \f$ O(n \cdot (m + n) \log n) \f$ where \f$ n \f$ is the number of nodes and \f$ m \f$ the number of arcs
- * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ the number of arcs
- */
-template <typename GR, typename QM, typename PM, typename CM>
-double ECA::eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape) {
-    const GR & g = landscape.getNetwork();
-    const QM & qualityMap = landscape.getQualityMap();
-    const PM & probabilityMap = landscape.getProbabilityMap();
-    
-    lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(g, probabilityMap);
-    double sum = 0;
-    for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
-        dijkstra.init(s);
-        while (!dijkstra.emptyQueue()) {
-            std::pair<typename GR::Node, double> pair = dijkstra.processNextNode();
-            typename GR::Node t = pair.first;
-            const double p_st = pair.second;
-            sum += qualityMap[s] * qualityMap[t] * p_st;
-        }
-    }
-    return std::sqrt(sum);
-}
-
 
 #endif //ECA_HPP

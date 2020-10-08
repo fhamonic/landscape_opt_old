@@ -15,7 +15,7 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         solution->add(option);
     }
 
-    double prec_eca = ECA::get().eval(landscape, *solution);
+    double prec_eca = ECA::get().eval_solution(landscape, *solution);
     if(log_level > 1) {
         std::cout << "base purchased: " << purchaised << std::endl;
         std::cout << "base ECA: " << prec_eca << std::endl;

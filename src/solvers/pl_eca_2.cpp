@@ -227,6 +227,9 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
         }
     }
 
+    if(log_level == 0)
+        solver->setHintParam(OsiDoReducePrint);
+
     if(log_level >= 1) {
         name_variables(solver, landscape, plan, x_var, restored_x_var, f_var, restored_f_var, y_var);
         solver->writeLp("pl_eca_2");

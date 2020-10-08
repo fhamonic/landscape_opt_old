@@ -10,9 +10,10 @@
 #include "parsers/std_restoration_plan_parser.hpp"
 #include "parsers/std_landscape_parser.hpp"
 
-#include "random_chooser.hpp"
+#include "indices/eca.hpp"
+#include "landscape/decored_landscape.hpp"
 
-#include "helper.hpp"
+#include "random_chooser.hpp"
 
 #include "precomputation/my_contraction_algorithm.hpp"
 
@@ -24,6 +25,8 @@
 #include "solvers/pl_eca_2.hpp"
 #include "solvers/pl_eca_3.hpp"
 #include "solvers/randomized_rounding.hpp"
+
+#include "helper.hpp"
 
 static void populate(std::list<concepts::Solver*> & solvers) {
     Solvers::Bogo * bogo = new Solvers::Bogo(); (void)bogo;
@@ -49,10 +52,10 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     solvers.push_back(naive_eca_dec);
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
-    solvers.push_back(pl_eca_2);
+    // solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
     solvers.push_back(randomized_rounding_1000);
-    solvers.push_back(randomized_rounding_10000);
+    // solvers.push_back(randomized_rounding_10000);
 }
 static void clean(std::list<concepts::Solver*> & solvers) {
     for(concepts::Solver * solver : solvers)
@@ -60,56 +63,92 @@ static void clean(std::list<concepts::Solver*> & solvers) {
 }
 
 
-typedef std::pair<Landscape*,RestorationPlan*> Instance;
+class Instance {
+    public:
+        Landscape landscape;
+        const Graph_t & graph;
+        RestorationPlan plan;
+        Graph_t::NodeMap<bool> massifs;
+        Graph_t::NodeMap<bool> parcs;
+        Graph_t::NodeMap<bool> friches;
+        Graph_t::NodeMap<bool> massifs_or_parcs;
 
-Instance make_instance(double thresold, double median, double length_gain, double quality_gain, double pow) {
-    Landscape * landscape = new Landscape();
-    const Graph_t & graph = landscape->getNetwork();
-    RestorationPlan * plan = new RestorationPlan(*landscape);
+        Instance() : graph(landscape.getNetwork()), plan(landscape), 
+            massifs(graph, false), parcs(graph, false),
+            friches(graph, false), massifs_or_parcs(graph, false) {}
+};
 
-    auto d = [landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape->getCoords(u) - landscape->getCoords(v)).normSquare()); }
+Instance * make_instance(double thresold, double median, double length_gain, double quality_gain, double pow) {
+    Instance * instance = new Instance;
+    
+    Landscape & landscape = instance->landscape;
+    const Graph_t & graph = instance->graph;
+    RestorationPlan & plan = instance->plan;
+    Graph_t::NodeMap<bool> & massifs = instance->massifs;
+    Graph_t::NodeMap<bool> & parcs = instance->parcs;
+    Graph_t::NodeMap<bool> & friches = instance->friches;
+    Graph_t::NodeMap<bool> & massifs_or_parcs = instance->massifs_or_parcs;
+
+    auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
     RandomChooser<Point> friches_chooser(12345);
-    std::vector<Graph_t::Node> friches();
+    std::vector<Graph_t::Node> friches_list;
 
     io::CSVReader<3> patches("data/Marseille/patchs_marseille.patches");
     patches.read_header(io::ignore_extra_column, "category","x","y");
     std::string category;
     double x, y;
     while(patches.read_row(category, x, y)) {
-        if(category == "massif") { landscape->addNode(20, Point(x,y)); continue; }
-        if(category == "Parc") { landscape->addNode(5, Point(x,y)); continue; }
-        if(category == "parc") { landscape->addNode(1, Point(x,y)); continue; }
-        if(category == "friche") { friches_chooser.add(Point(x,y)); continue; }
+        if(category.compare("\"massif\"") == 0) { massifs[landscape.addNode(20, Point(x,y))] = true; continue; }
+        if(category.compare("\"Parc\"") == 0) { parcs[landscape.addNode(5, Point(x,y))] = true; continue; }
+        if(category.compare("\"parc\"") == 0) { parcs[landscape.addNode(1, Point(x,y))] = true; continue; }
+        if(category.compare("\"friche\"") == 0) { friches_chooser.add(Point(x,y), 1); continue; }
+        assert(false);
     }
     for(int i=0; i<100; i++) {
-        assert(friches.canPick());
-        Graph_t::Node u = landscape->addNode(0, friches_chooser.pick());
-        friches.push_back(u);
+        if(!friches_chooser.canPick()) break;
+        Graph_t::Node u = landscape.addNode(0, friches_chooser.pick());
+        friches_list.push_back(u);
+        friches[u] = true;
     }
+    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v)
+        massifs_or_parcs[v] = parcs[v] || massifs[v];
+
+
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
         for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
             if(u == v) continue;
             double dist = d(u,v);
-            landscape.addLink(u,v,p(dist));
+            // if(dist > thresold) continue;
+            double probability = p(dist);
+            if(probability < thresold) continue;
+            landscape.addArc(u, v, probability);
         }
     }
 
 
     int cpt = 0;
-    for(Graph_t::Node v1 : friches) {
-        RestorationPlan::Option * option = plan->addOption();
+    for(Graph_t::Node v1 : friches_list) {
+        RestorationPlan::Option * option = plan.addOption();
         option->setCost(1);
         option->setId(cpt);
         cpt++;
         if(length_gain > 0) {
-            
+            Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
+            std::vector<Graph_t::Arc> to_move;
+            for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
+                to_move.push_back(a);
+            for(Graph_t::Arc a : to_move)
+                landscape.changeTarget(a, v2);
+
+            Graph_t::Arc v1v2 = landscape.addArc(v2, v1, std::numeric_limits<double>::epsilon());
+            option->addLink(v1v2, 1.0);
         }
         if(quality_gain > 0)
             option->addPatch(v1, quality_gain);
     }
-    return Instance(landscape, plan);
+    return instance;
 }
 
 void seuiller(Landscape & landscape, const double thresold) {
@@ -133,29 +172,25 @@ void count(Landscape & landscape, Graph_t::NodeMap<bool> & filter) {
     std::cout << cpt << std::endl;
 }
 
-int main (int argc, const char *argv[]) {
-    if(argc < 2) {
-        std::cerr << "input requiered : <landscape_file>" << std::endl;
-        return EXIT_FAILURE;
-    }
-    
+int main() {
     std::list<concepts::Solver*> solvers;
     populate(solvers);
     
     std::ofstream data_log("output/data.log");
     data_log << std::fixed << std::setprecision(6);
-    data_log << "thresold " <<
-            "length_gain " <<
-            "area_gain " <<
-            "alpha " <<
-            "budget " <<
-            "solver " <<
-            "time " <<
-            "cost " <<
-            "total_eca " <<
-            "massifs_eca " <<
-            "parcs_eca " <<
-            "massifs_parcs_eca" << std::endl;
+    data_log << "thresold "
+            << "length_gain "
+            << "area_gain "
+            << "median "
+            << "budget "
+            << "solver "
+            << "time "
+            << "cost "
+            << "total_eca "
+            // << "massifs_eca "
+            // << "parcs_eca "
+            // << "massifs_parcs_eca"
+            << std::endl;
 
     std::vector<double> thresold_values{0.01};
     std::vector<double> median_values{/*350,*/ 1400, 2800}; 
@@ -164,58 +199,62 @@ int main (int argc, const char *argv[]) {
     std::vector<double> budget_values;
     for(int i=5; i<=100; i+=5) budget_values.push_back(i);
 
+    const ECA & eca = ECA::get();
+
     for(double thresold : thresold_values) {
         for(double median : median_values) {
             for(double length_gain : length_gain_values) {
                 for(double area_gain : area_gain_values) {
-                    Instance instance = make_instance(thresold, meidan, length_gain, area_gain, 1);
+                    Instance * instance = make_instance(thresold, median, length_gain, area_gain, 1);
                     
-                    StdLandscapeParser::get().write(*landscape, "output", "analysis_landscape", true);
-                    StdRestorationPlanParser(*landscape).write(*plan, "output", "analysis_plan", true);
+                    const Landscape & landscape = instance->landscape;
+                    const RestorationPlan & plan = instance->plan;
+                    const Graph_t::NodeMap<bool> & massifs = instance->massifs;
+                    const Graph_t::NodeMap<bool> & parcs = instance->parcs;
+                    const Graph_t::NodeMap<bool> & massifs_or_parcs = instance->massifs_or_parcs;
+                    
+                    StdLandscapeParser::get().write(landscape, "output", "analysis_landscape", true);
+                    StdRestorationPlanParser(landscape).write(plan, "output", "analysis_plan", true);
 
-                    Helper::assert_well_formed(*landscape, *plan);
+                    Helper::assert_well_formed(landscape, plan);
 
                     for(double budget : budget_values) {
                         for(concepts::Solver * solver : solvers) {
-
-                            //std::cout << "before solve : " << pow(eca.eval(*landscape), 2) << std::endl;
-
-                            Solution * solution = solver->solve(*landscape, *plan, budget);
+                            Solution * solution = solver->solve(landscape, plan, budget);
 
                             double cost = 0.0;
-                            DecoredLandscape decored_landscape(*landscape);
-                            for(auto option_pair : solution->getOptionCoefs()) {
+                            for(auto option_pair : solution->getOptionCoefs())
                                 cost += option_pair.first->getCost() * option_pair.second;
-                                decored_landscape.apply(option_pair.first, option_pair.second);   
-                            }
+                            const double total_eca = pow(eca.eval_solution(landscape, *solution), 2);
 
-                            const ECA & eca = ECA::get();
 
-                            const double total_eca = pow(eca.eval(decored_landscape), 2);
-                            const double massifs_eca = pow(eca.eval(decored_landscape, massifs), 2);
-                            const double parcs_eca = pow(eca.eval(decored_landscape, parcs), 2);
+                            // DecoredLandscape decored_landscape(landscape);
+                            // for(auto option_pair : solution->getOptionCoefs()) {
+                            //     decored_landscape.apply(option_pair.first, option_pair.second);   
+                            // }
 
-                            const double massifs_parcs_eca = pow(eca.eval(decored_landscape, massifs_or_parcs), 2) - massifs_eca - parcs_eca;
+                            // // const double massifs_eca = pow(eca.eval_partial(decored_landscape, massifs), 2);
+                            // // const double parcs_eca = pow(eca.eval(decored_landscape, parcs), 2);
+                            // // const double massifs_parcs_eca = pow(eca.eval(decored_landscape, massifs_or_parcs), 2) - massifs_eca - parcs_eca;
 
                             data_log << thresold << " " 
                                     << length_gain << " " 
                                     << area_gain << " " 
                                     << median << " "
-                                    // << alpha << " "
                                     << budget << " "
                                     << solver->toString() << " "
                                     << solution->getComputeTimeMs() << " "
                                     << cost << " "
                                     << total_eca << " "
-                                    << massifs_eca << " "
-                                    << parcs_eca << " "
-                                    << massifs_parcs_eca << std::endl;
+                                    // << massifs_eca << " "
+                                    // << parcs_eca << " "
+                                    // << massifs_parcs_eca
+                                    << std::endl;
 
                             delete solution;
                         }
                     }   
-                    delete plan;
-                    delete landscape;
+                    delete instance;
                 }             
             }
         }

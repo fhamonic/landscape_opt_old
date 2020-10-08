@@ -22,7 +22,7 @@ void OSI_Builder::init() {
         const int offset = varType->getOffset();
         const int last_id = varType->getOffset() + varType->getNumber() - 1; 
         for(int i=offset; i<=last_id; i++) {
-            //assert(0<= i && i <= nb_vars);
+            assert(0<= i && i <= nb_vars);
             setObjective(i, 0);
             setBounds(i, varType->getDefaultLB(), varType->getDefaultUB());
         }
@@ -32,15 +32,20 @@ void OSI_Builder::init() {
     matrix->setDimensions(0, nb_vars);
 }
 OSI_Builder & OSI_Builder::setObjective(int var_id, double coef) {
+    assert(coef == coef);
     objective[var_id] = coef;
     return *this;
 }
 OSI_Builder & OSI_Builder::setBounds(int var_id, double lb, double ub) {
+    assert(lb == lb);
+    assert(ub == ub);
     col_lb[var_id] = lb;
     col_ub[var_id] = ub;
     return *this;
 }
 OSI_Builder & OSI_Builder::buffEntry(int var_id, double coef) {
+    assert(0<= var_id && var_id <= nb_vars);
+    assert(coef == coef);
     row_indices_buffer.push_back(var_id);
     row_coeffs_buffer.push_back(coef);
     return *this;
@@ -56,6 +61,8 @@ OSI_Builder & OSI_Builder::clearEntryBuffer() {
     return *this;
 }
 OSI_Builder & OSI_Builder::pushRowWithoutClearing(double lb, double ub) {
+    assert(lb == lb);
+    assert(ub == ub);
     matrix->appendRow(row_indices_buffer.size(), row_indices_buffer.data(), row_coeffs_buffer.data());
     row_lb.push_back(lb);
     row_ub.push_back(ub);

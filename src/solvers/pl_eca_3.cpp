@@ -24,7 +24,7 @@ namespace Solvers::PL_ECA_3_Vars {
                 for(RestorationPlan::Option * option : cr.plan->options()) { offsets[option] = cpt; cpt += option->getNbArcs(); }
                 _number = cpt;
             }
-            int id(Graph_t::Arc a, RestorationPlan::Option * option) { 
+            int id(Graph_t::Arc a, RestorationPlan::Option * option) {
                 assert(_cr.landscape->getNetwork().valid(a) && offsets.contains(option)); 
                 const int id = offsets.at(option) + option->id(a);
                 assert(id >=0 && id < _number); return _offset + id; 
@@ -87,7 +87,8 @@ namespace Solvers::PL_ECA_3_Vars {
             const RestorationPlan * contracted_plan = cr.plan;
 
             for(Graph_t::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
-                solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)));
+                // solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)));
+                solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "(" + std::to_string(contracted_graph.id(cr.t)) + ")_a_" + std::to_string(contracted_graph.id(a)) + "(" + std::to_string(contracted_graph.id(contracted_graph.source(a))) + ","+ std::to_string(contracted_graph.id(contracted_graph.target(a))) + ")" );
                 // RestoredXVar
                 for(RestorationPlan::Option * option : contracted_plan->getOptions(a))
                     solver->setColName(restored_x_var->id(a, option), "restored_x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)) + "_" + std::to_string(option->getId()));
@@ -325,7 +326,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiCbcSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {
@@ -334,6 +335,9 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         }
     }
  
+    if(log_level == 0)
+        solver->setHintParam(OsiDoReducePrint);
+
     if(log_level > 1) {
         name_variables(solver, landscape, plan, target_nodes, contracted_instances, varsMap, f_var, restored_f_var, y_var);
         solver->writeLp("pl_eca_3");

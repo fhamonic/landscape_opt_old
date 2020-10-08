@@ -38,68 +38,56 @@ class NodeDist {
         }
 };
 
-/**
- * Exact, to proove
- * 
- * @time O(Dijkstra)
- * @space O(Dijkstra)
- */
-void MyContractionAlgorithm::getStrongs(const Graph_t & graph, const Graph_t::ArcMap<double> & l_min, const Graph_t::ArcMap<double> & l_max, Graph_t::Arc uv, std::vector<Graph_t::Node> & strong_nodes) const {
-    const Graph_t::Node u = graph.source(uv);
+// void MyContractionAlgorithm::getStrongs(const Graph_t & graph, const Graph_t::ArcMap<double> & l_min, const Graph_t::ArcMap<double> & l_max, Graph_t::Arc uv, std::vector<Graph_t::Node> & strong_nodes) const {
+//     const Graph_t::Node u = graph.source(uv);
     
-    Graph_t::ArcMap<NodeDist> lengths(graph);
-    for(Graph_t::ArcIt b(graph); b != lemon::INVALID; ++b)
-        lengths[b] = NodeDist(l_min[b], false);
-    lengths[uv] = NodeDist(l_max[uv], true);
+//     Graph_t::ArcMap<NodeDist> lengths(graph);
+//     for(Graph_t::ArcIt b(graph); b != lemon::INVALID; ++b)
+//         lengths[b] = NodeDist(l_min[b], false);
+//     lengths[uv] = NodeDist(l_max[uv], true);
 
-    lemon::Dijkstra<Graph_t, Graph_t::ArcMap<NodeDist>> dijkstra(graph, lengths);
-    dijkstra.init();
-    dijkstra.addSource(u, NodeDist(0, false));
+//     lemon::Dijkstra<Graph_t, Graph_t::ArcMap<NodeDist>> dijkstra(graph, lengths);
+//     dijkstra.init();
+//     dijkstra.addSource(u, NodeDist(0, false));
 
-    while (!dijkstra.emptyQueue()) {
-        Graph_t::Node x = dijkstra.nextNode();
-        NodeDist dx =  dijkstra.currentDist(x);
-        const bool strong = dx.b;
-        if(strong) {
-            for(Graph_t::OutArcIt b(graph, x); b != lemon::INVALID; ++b)
-                lengths[b] = NodeDist(l_max[b], false);
-            strong_nodes.push_back(x);
-        }
-        dijkstra.processNextNode();
-    }
-}
+//     while (!dijkstra.emptyQueue()) {
+//         Graph_t::Node x = dijkstra.nextNode();
+//         NodeDist dx =  dijkstra.currentDist(x);
+//         const bool strong = dx.b;
+//         if(strong) {
+//             for(Graph_t::OutArcIt b(graph, x); b != lemon::INVALID; ++b)
+//                 lengths[b] = NodeDist(l_max[b], false);
+//             strong_nodes.push_back(x);
+//         }
+//         dijkstra.processNextNode();
+//     }
+// }
 
-/**
- * Exact, to proove
- * 
- * @time O(Dijkstra)
- * @space O(Dijkstra)
- */
-void MyContractionAlgorithm::getNonWeaks(const Graph_t & graph, const Graph_t::ArcMap<double> & l_min, const Graph_t::ArcMap<double> & l_max, Graph_t::Arc uv, std::vector<Graph_t::Node> & non_weak_nodes) const {
-    const Graph_t::Node u = graph.source(uv);
+// void MyContractionAlgorithm::getNonWeaks(const Graph_t & graph, const Graph_t::ArcMap<double> & l_min, const Graph_t::ArcMap<double> & l_max, Graph_t::Arc uv, std::vector<Graph_t::Node> & non_weak_nodes) const {
+//     const Graph_t::Node u = graph.source(uv);
     
-    Graph_t::ArcMap<NodeDist> lengths(graph);
-    for(Graph_t::ArcIt b(graph); b != lemon::INVALID; ++b)
-        lengths[b] = NodeDist(l_max[b], false);
-    lengths[uv] = NodeDist(l_min[uv], true);
+//     Graph_t::ArcMap<NodeDist> lengths(graph);
+//     for(Graph_t::ArcIt b(graph); b != lemon::INVALID; ++b)
+//         lengths[b] = NodeDist(l_max[b], false);
+//     lengths[uv] = NodeDist(l_min[uv], true);
 
-    lemon::Dijkstra<Graph_t, Graph_t::ArcMap<NodeDist>> dijkstra(graph, lengths);
-    dijkstra.init();
-    dijkstra.addSource(u, NodeDist(0, false));
+//     lemon::Dijkstra<Graph_t, Graph_t::ArcMap<NodeDist>> dijkstra(graph, lengths);
+//     dijkstra.init();
+//     dijkstra.addSource(u, NodeDist(0, false));
 
-    while (!dijkstra.emptyQueue()) {
-        Graph_t::Node x = dijkstra.nextNode();
-        NodeDist dx = dijkstra.currentDist(x);
-        const bool weak = dx.b;
-        if(weak) {
-            for(Graph_t::OutArcIt b(graph, x); b != lemon::INVALID; ++b)
-                lengths[b] = NodeDist(l_min[b], false);
-        } else {
-            non_weak_nodes.push_back(x);
-        }
-        dijkstra.processNextNode();
-    }
-}
+//     while (!dijkstra.emptyQueue()) {
+//         Graph_t::Node x = dijkstra.nextNode();
+//         NodeDist dx = dijkstra.currentDist(x);
+//         const bool weak = dx.b;
+//         if(weak) {
+//             for(Graph_t::OutArcIt b(graph, x); b != lemon::INVALID; ++b)
+//                 lengths[b] = NodeDist(l_min[b], false);
+//         } else {
+//             non_weak_nodes.push_back(x);
+//         }
+//         dijkstra.processNextNode();
+//     }
+// }
 
 
 

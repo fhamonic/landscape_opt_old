@@ -48,9 +48,9 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
     double node_scale = 3;
     //*/
     
-    //TODO ECA::eval(landscape, alpha, solution)
+    //TODO ECA::eval_solution(landscape, alpha, solution)
     const double base_eca = ECA::get().eval(landscape);
-    const double restored_eca = ECA::get().eval(landscape, *solution);
+    const double restored_eca = ECA::get().eval_solution(landscape, *solution);
     
     const double cost = solution->getCost();
     const double time_ms = solution->getComputeTimeMs();
