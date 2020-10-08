@@ -34,8 +34,8 @@ class RestorationPlan {
                 bool contains(Graph_t::Node v) const;
                 bool contains(Graph_t::Arc a) const;
 
-                void addPatch(Graph_t::Node v, double quality);
-                void addLink(Graph_t::Arc a, double length);
+                void addPatch(Graph_t::Node v, double quality_gain);
+                void addLink(Graph_t::Arc a, double restored_probability);
                 void setCost(double cost);
 
                 void removePatch(Graph_t::Node v);

@@ -325,7 +325,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiCbcSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {

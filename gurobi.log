@@ -4,3 +4,165 @@ Gurobi 9.0.3 (linux64, gurobi_cl) logging started Mon Oct  5 15:00:33 2020
 Using license file /home/plaiseek/gurobi.lic
 Set parameter LogFile to value gurobi.log
 Academic license - for non-commercial use only
+
+Gurobi 9.0.1 (linux64, gurobi_cl) logging started Thu Oct  8 03:01:19 2020
+
+Using license file /home/plaiseek/gurobi.lic
+Set parameter LogFile to value gurobi.log
+Academic license - for non-commercial use only
+
+Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+Copyright (c) 2020, Gurobi Optimization, LLC
+
+Read LP format model from file pl_eca_2.lp
+Reading time = 0.30 seconds
+obj: 95740 rows, 195602 columns, 727864 nonzeros
+Optimize a model with 95740 rows, 195602 columns and 727864 nonzeros
+Model fingerprint: 0x451f51b9
+Variable types: 195499 continuous, 103 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [1e-05, 6e+04]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [2e+01, 1e+04]
+Found heuristic solution: objective -8.30622e+07
+Presolve removed 31842 rows and 38892 columns
+Presolve time: 1.12s
+Presolved: 63898 rows, 156710 columns, 446751 nonzeros
+Variable types: 156607 continuous, 103 integer (103 binary)
+
+Deterministic concurrent LP optimizer: primal and dual simplex
+Showing first log only...
+
+Warning: Markowitz tolerance tightened to 0.03125
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+   18232   -1.4120953e+08   0.000000e+00   1.660683e+11      5s
+   20126   -1.4247386e+08   0.000000e+00   3.170327e-01     10s
+   21702   -1.4247388e+08   0.000000e+00   8.131337e-02     15s
+
+
+Root relaxation: interrupted, 22213 iterations, 16.65 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0          -    0      -8.306e+07          -      -     -   17s
+
+Explored 0 nodes (22213 simplex iterations) in 17.95 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 1: -8.30622e+07 
+
+Solve interrupted
+Best objective -8.306221600000e+07, best bound -, gap -
+
+Gurobi 9.0.1 (linux64, gurobi_cl) logging started Thu Oct  8 03:01:42 2020
+
+Using license file /home/plaiseek/gurobi.lic
+Set parameter LogFile to value gurobi.log
+Academic license - for non-commercial use only
+
+Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+Copyright (c) 2020, Gurobi Optimization, LLC
+
+Read LP format model from file pl_eca_3.lp
+Reading time = 0.09 seconds
+OBJROW: 41481 rows, 49757 columns, 163679 nonzeros
+Optimize a model with 41481 rows, 49757 columns and 163679 nonzeros
+Model fingerprint: 0x19dd0d26
+Variable types: 49654 continuous, 103 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [1e-05, 9e+03]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [2e-02, 1e+04]
+Found heuristic solution: objective -1.17664e+08
+Presolve removed 41441 rows and 49673 columns
+Presolve time: 0.08s
+Presolved: 40 rows, 84 columns, 175 nonzeros
+Found heuristic solution: objective -1.17778e+08
+Variable types: 84 continuous, 0 integer (0 binary)
+
+Explored 0 nodes (0 simplex iterations) in 0.09 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 2: -1.17778e+08 -1.17664e+08 
+No other solutions better than -1.17778e+08
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -1.177776294249e+08, best bound -1.177776294249e+08, gap 0.0000%
+
+Gurobi 9.0.1 (linux64, gurobi_cl) logging started Thu Oct  8 03:03:35 2020
+
+Using license file /home/plaiseek/gurobi.lic
+Set parameter LogFile to value gurobi.log
+Academic license - for non-commercial use only
+
+Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+Copyright (c) 2020, Gurobi Optimization, LLC
+
+Read LP format model from file pl_eca_3.lp
+Reading time = 0.08 seconds
+OBJROW: 41481 rows, 49757 columns, 163679 nonzeros
+Optimize a model with 41481 rows, 49757 columns and 163679 nonzeros
+Model fingerprint: 0x19dd0d26
+Variable types: 49654 continuous, 103 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [1e-05, 9e+03]
+  Objective range  [1e+00, 8e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [2e-02, 1e+04]
+Found heuristic solution: objective -1.17664e+08
+Presolve removed 41441 rows and 49673 columns
+Presolve time: 0.08s
+Presolved: 40 rows, 84 columns, 175 nonzeros
+Found heuristic solution: objective -1.17778e+08
+Variable types: 84 continuous, 0 integer (0 binary)
+
+Explored 0 nodes (0 simplex iterations) in 0.09 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 2: -1.17778e+08 -1.17664e+08 
+No other solutions better than -1.17778e+08
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -1.177776294249e+08, best bound -1.177776294249e+08, gap 0.0000%
+
+Gurobi 9.0.1 (linux64, gurobi_cl) logging started Thu Oct  8 03:10:31 2020
+
+Using license file /home/plaiseek/gurobi.lic
+Set parameter LogFile to value gurobi.log
+Academic license - for non-commercial use only
+
+Gurobi Optimizer version 9.0.1 build v9.0.1rc0 (linux64)
+Copyright (c) 2020, Gurobi Optimization, LLC
+
+Read LP format model from file pl_eca_3.lp
+Reading time = 0.94 seconds
+obj: 498128 rows, 997046 columns, 2334933 nonzeros
+Optimize a model with 498128 rows, 997046 columns and 2334933 nonzeros
+Model fingerprint: 0xa5c55a0f
+Variable types: 996946 continuous, 100 integer (0 binary)
+Coefficient statistics:
+  Matrix range     [2e-03, 7e+01]
+  Objective range  [1e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 5e+01]
+Found heuristic solution: objective -12473.39897
+Presolve removed 498031 rows and 996712 columns
+Presolve time: 1.11s
+Presolved: 97 rows, 334 columns, 668 nonzeros
+Found heuristic solution: objective -24142.69041
+Variable types: 334 continuous, 0 integer (0 binary)
+
+Explored 0 nodes (0 simplex iterations) in 1.27 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 2: -24142.7 -12473.4 
+No other solutions better than -24142.7
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective -2.414269041005e+04, best bound -2.414269041005e+04, gap 0.0000%

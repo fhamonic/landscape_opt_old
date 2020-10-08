@@ -35,8 +35,10 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     (*glutton_eca_inc).setLogLevel(0).setParallel(true);
     Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
     (*glutton_eca_dec).setLogLevel(0).setParallel(true);
+    Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
+    (*pl_eca_2).setLogLevel(2).setNbThreads(10).setTimeout(36000);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(1).setNbThreads(10).setTimeout(36000);
+    (*pl_eca_3).setLogLevel(2).setNbThreads(10).setTimeout(36000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding_1000->setLogLevel(0).setNbDraws(1000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_10000 = new Solvers::Randomized_Rounding_ECA();
@@ -47,6 +49,7 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     solvers.push_back(naive_eca_dec);
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
+    solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
     solvers.push_back(randomized_rounding_1000);
     solvers.push_back(randomized_rounding_10000);
@@ -89,12 +92,17 @@ RestorationPlan * make_instance(Landscape & landscape, Graph_t::NodeMap<bool> & 
 
             option->addLink(v1v2, 1.0);
             /*/
-            const double scale_arcs_probability = std::exp(length_gain/2/alpha);
-            for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
-                option->addLink(a, std::min(1.0, scale_arcs_probability * landscape.getProbability(a)));
+            // const double scale_arcs_probability = std::exp(length_gain/2/alpha);
+            // for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
+            //     option->addLink(a, std::min(1.0, scale_arcs_probability * landscape.getProbability(a)));
             // for(Graph_t::OutArcIt a(graph, v1); a != lemon::INVALID; ++a)
             //     option->addLink(a, std::min(1.0, scale_arcs_probability * landscape.getProbability(a)));
             //*/
+
+            // for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a) {
+            //     option->addLink(a, landscape.getProbability(a));
+            //     landscape.setProbability(a, 0.0);
+            // }
         }
         if(quality_gain > 0)
             option->addPatch(v1, quality_gain);
@@ -194,7 +202,7 @@ int main (int argc, const char *argv[]) {
 
 
                     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
-                        landscape->setProbability(a, p( landscape->getProbability(a) , median , 2 ));
+                        landscape->setProbability(a, p( landscape->getProbability(a) , median , 1 ));
                     }
 
                     seuiller(*landscape, thresold);
@@ -207,6 +215,7 @@ int main (int argc, const char *argv[]) {
 
                     StdLandscapeParser::get().write(*landscape, "output", "analysis_landscape", true);
                     StdRestorationPlanParser(*landscape).write(*plan, "output", "analysis_plan", true);
+
 
 
                     Helper::assert_well_formed(*landscape, *plan);

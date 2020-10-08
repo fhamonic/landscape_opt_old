@@ -13,21 +13,21 @@ int RestorationPlan::Option::getNbElems() const { return _nodes.size()+_arcs.siz
 bool RestorationPlan::Option::contains(Graph_t::Node v) const { return _nodeMap.find(v) != _nodeMap.end(); }
 bool RestorationPlan::Option::contains(Graph_t::Arc a) const { return _arcMap.find(a) != _arcMap.end(); }
 
-void RestorationPlan::Option::addPatch(Graph_t::Node v, double quality) {
+void RestorationPlan::Option::addPatch(Graph_t::Node v, double quality_gain) {
     if(this->contains(v)) return;
     
     _nodes.push_back(v);
     const int node_id = _nodes.size()-1;
-    _nodeMap[v] = std::pair<double, int> (quality, node_id);
+    _nodeMap[v] = std::pair<double, int> (quality_gain, node_id);
 
     _plan.notifyAddNode(this, v); 
 }
-void RestorationPlan::Option::addLink(Graph_t::Arc a, double length_gain) {
+void RestorationPlan::Option::addLink(Graph_t::Arc a, double restored_probability) {
     if(this->contains(a)) return;
 
     _arcs.push_back(a);  
     const int arc_id = _arcs.size()-1;
-    _arcMap[a] = std::pair<double, int> (length_gain, arc_id); 
+    _arcMap[a] = std::pair<double, int> (restored_probability, arc_id); 
 
     _plan.notifyAddArc(this, a);
 }
