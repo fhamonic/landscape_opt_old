@@ -54,60 +54,65 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     solvers.push_back(randomized_rounding_1000);
     solvers.push_back(randomized_rounding_10000);
 }
-
 static void clean(std::list<concepts::Solver*> & solvers) {
     for(concepts::Solver * solver : solvers)
         delete solver;
 }
 
-RestorationPlan * make_instance(Landscape & landscape, Graph_t::NodeMap<bool> & friches_filter, double length_gain, double quality_gain, const double alpha) {
-    const Graph_t & graph = landscape.getNetwork();
-    RestorationPlan * plan = new RestorationPlan(landscape);
-    int cpt=0;
-    std::vector<Graph_t::Node> friches;
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-        if(!friches_filter[v]) continue;
-        friches.push_back(v);
+
+typedef std::pair<Landscape*,RestorationPlan*> Instance;
+
+Instance make_instance(double thresold, double median, double length_gain, double quality_gain, double pow) {
+    Landscape * landscape = new Landscape();
+    const Graph_t & graph = landscape->getNetwork();
+    RestorationPlan * plan = new RestorationPlan(*landscape);
+
+    auto d = [landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape->getCoords(u) - landscape->getCoords(v)).normSquare()); }
+    auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
+    
+    RandomChooser<Point> friches_chooser(12345);
+    std::vector<Graph_t::Node> friches();
+
+    io::CSVReader<3> patches("data/Marseille/patchs_marseille.patches");
+    patches.read_header(io::ignore_extra_column, "category","x","y");
+    std::string category;
+    double x, y;
+    while(patches.read_row(category, x, y)) {
+        switch(category) {
+            case "massif": landscape->addNode(20, Point(x,y)); break;
+            case "Parc": landscape->addNode(5, Point(x,y)); break;
+            case "parc": landscape->addNode(1, Point(x,y)); break;
+            case "friche": friches_chooser.add(Point(x,y)); break;
+            default: assert(false);
+        }
+    }
+    for(int i=0; i<100; i++) {
+        assert(friches.canPick());
+        Graph_t::Node u = landscape->addNode(0, friches_chooser.pick());
+        friches.push_back(u);
+    }
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            if(u == v) continue;
+            double dist = d(u,v);
+            landscape.addLink(u,v,p(dist));
+        }
     }
 
+
+    int cpt = 0;
     for(Graph_t::Node v1 : friches) {
         RestorationPlan::Option * option = plan->addOption();
         option->setCost(1);
         option->setId(cpt);
         cpt++;
         if(length_gain > 0) {
-            /*
-            Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1));
-            // const double scale_arcs_probability = std::exp(length_gain/2/alpha);
-            // for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
-            //     landscape.getProbabilityRef(a) = std::min(1.0, scale_arcs_probability * landscape.getProbability(a));
-            std::vector<Graph_t::Arc> to_move;
-            for(Graph_t::OutArcIt a(graph, v1); a != lemon::INVALID; ++a) {
-                //landscape.getProbabilityRef(a) *= std::min(1.0, scale_arcs_probability * landscape.getProbability(a));
-                to_move.push_back(a);
-            }
-            for(Graph_t::Arc a : to_move)
-                landscape.changeSource(a, v2);
-            Graph_t::Arc v1v2 = landscape.addArc(v1, v2, std::numeric_limits<double>::epsilon());
-
-            option->addLink(v1v2, 1.0);
-            /*/
-            // const double scale_arcs_probability = std::exp(length_gain/2/alpha);
-            // for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
-            //     option->addLink(a, std::min(1.0, scale_arcs_probability * landscape.getProbability(a)));
-            // for(Graph_t::OutArcIt a(graph, v1); a != lemon::INVALID; ++a)
-            //     option->addLink(a, std::min(1.0, scale_arcs_probability * landscape.getProbability(a)));
-            //*/
-
-            // for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a) {
-            //     option->addLink(a, landscape.getProbability(a));
-            //     landscape.setProbability(a, 0.0);
-            // }
+            
         }
         if(quality_gain > 0)
             option->addPatch(v1, quality_gain);
     }
-    return plan;
+    return Instance(landscape, plan);
 }
 
 void seuiller(Landscape & landscape, const double thresold) {
@@ -136,8 +141,7 @@ int main (int argc, const char *argv[]) {
         std::cerr << "input requiered : <landscape_file>" << std::endl;
         return EXIT_FAILURE;
     }
-    std::filesystem::path landscape_path = argv[1];
-
+    
     std::list<concepts::Solver*> solvers;
     populate(solvers);
     
@@ -163,64 +167,16 @@ int main (int argc, const char *argv[]) {
     std::vector<double> budget_values;
     for(int i=5; i<=100; i+=5) budget_values.push_back(i);
 
-    ECA & eca = ECA::get();
-
-    auto p = [] (const double d, const double median, const double pow) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
-
     for(double thresold : thresold_values) {
         for(double median : median_values) {
             for(double length_gain : length_gain_values) {
                 for(double area_gain : area_gain_values) {
-                    Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);
-                    const Graph_t & graph = landscape->getNetwork();
-
-                    Graph_t::NodeMap<bool> massifs(graph, false);
-                    Graph_t::NodeMap<bool> parcs(graph, false);
-                    Graph_t::NodeMap<bool> friches(graph, false);
-                    Graph_t::NodeMap<bool> massifs_or_parcs(graph, false);
-
-                    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-                        const int quality = landscape->getQuality(v);
-                        switch(quality) {
-                            case 3: massifs[v] = true; landscape->setQuality(v, 10);
-                                break;
-                            case 25: parcs[v] = true; landscape->setQuality(v, 5);
-                                break;
-                            case 21: parcs[v] = true; landscape->setQuality(v, 1);
-                                break;
-                            case 1: friches[v] = true; landscape->setQuality(v, 0);
-                                break;
-                            default: assert(false);
-                        }
-                        massifs_or_parcs[v] = parcs[v] || massifs[v];
-                    }
-
-                    count(*landscape, massifs);
-                    count(*landscape, parcs);
-                    count(*landscape, friches);
-                    count(*landscape, massifs_or_parcs);
-
-
-                    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
-                        landscape->setProbability(a, p( landscape->getProbability(a) , median , 1 ));
-                    }
-
-                    seuiller(*landscape, thresold);
-
-                    // StdLandscapeParser::get().write(*landscape, "output", "landscape");
-
-            
-                    RestorationPlan * plan = make_instance(*landscape, friches, length_gain, area_gain, median);
-
-
+                    Instance instance = make_instance(thresold, meidan, length_gain, area_gain, 1);
+                    
                     StdLandscapeParser::get().write(*landscape, "output", "analysis_landscape", true);
                     StdRestorationPlanParser(*landscape).write(*plan, "output", "analysis_plan", true);
 
-
-
                     Helper::assert_well_formed(*landscape, *plan);
-
-
 
                     for(double budget : budget_values) {
                         for(concepts::Solver * solver : solvers) {
@@ -235,6 +191,8 @@ int main (int argc, const char *argv[]) {
                                 cost += option_pair.first->getCost() * option_pair.second;
                                 decored_landscape.apply(option_pair.first, option_pair.second);   
                             }
+
+                            const ECA & eca = ECA::get();
 
                             const double total_eca = pow(eca.eval(decored_landscape), 2);
                             const double massifs_eca = pow(eca.eval(decored_landscape, massifs), 2);
