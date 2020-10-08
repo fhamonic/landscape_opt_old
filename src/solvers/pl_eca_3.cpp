@@ -1,11 +1,6 @@
 #include "solvers/pl_eca_3.hpp"
 
-#include "solvers/glutton_eca_dec.hpp"
-
 #include "precomputation/my_contraction_algorithm.hpp"
-
-#include "coin/CbcHeuristicGreedy.hpp"
-#include "coin/CbcHeuristicRandRound.hpp"
 
 namespace Solvers::PL_ECA_3_Vars {
     class XVar : public OSI_Builder::VarType {
@@ -142,10 +137,10 @@ using namespace Solvers::PL_ECA_3_Vars;
 
 Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
-    const int nb_threads = params.at("threads")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
-    const int timeout = params.at("timeout")->getInt();
-    //const bool fortest = params.at("fortest")->getBool();
+    // const int nb_threads = params.at("threads")->getInt();
+    // const int timeout = params.at("timeout")->getInt();
+    // const bool fortest = params.at("fortest")->getBool();
 
     std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
     last_time = std::chrono::high_resolution_clock::now();
@@ -159,8 +154,8 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     const Graph_t & graph = landscape.getNetwork();
     std::vector<Graph_t::Node> target_nodes;
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
-        if(landscape.getQuality(u) == 0.0 && !plan.contains(u))
-            continue;
+        // if(landscape.getQuality(u) == 0.0 && !plan.contains(u))
+        //     continue;
         target_nodes.push_back(u);
     }
 
@@ -330,7 +325,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     }
     last_time = current_time;
 
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
 
     if(!relaxed) {
         for(RestorationPlan::Option * option : plan.options()) {
@@ -345,30 +340,13 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         solver->writeMps("pl_eca_3");
     }
  
-    CbcModel model(*solver);
 
-    model.setLogLevel(log_level >= 2 ? 1 : 0);
-
-    if(model.haveMultiThreadSupport())  {
-        model.setNumberThreads(nb_threads);
-        if(log_level >= 1 && nb_threads > 1)
-            std::cout << name() << ": Enabled multithread : " << model.getNumberThreads() << std::endl;
-    }
-    else 
-        if(log_level >= 1 && nb_threads > 1)
-            std::cerr << name() << ": multithread is disabled : to enable it build Cbc with --enable-cbc-parallel" << std::endl;
-     
     ////////////////////////////////////////////////////////////////////////
     // Compute
     ////////////////////
-    model.setMaximumSeconds(timeout);
-    model.branchAndBound();
+    solver->branchAndBound();
 
-    //model.addHeuristic(new CbcHeuristicGreedyCover());
-
-
-    
-    const double * var_solution = model.bestSolution();
+    const double * var_solution = solver->getColSolution();
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
         delete solver;
@@ -394,14 +372,77 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
 
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << std::sqrt(model.getObjValue()) << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solver->getObjValue()) << std::endl;
     }
     
-    solution->obj = std::sqrt(model.getObjValue());
+    solution->obj = std::sqrt(solver->getObjValue());
     solution->nb_vars = solver_builder.getNbVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
 
     delete solver;
+
+
+
+
+
+
+    // CbcModel model(*solver);
+
+    // model.setLogLevel(log_level >= 2 ? 1 : 0);
+
+    // if(model.haveMultiThreadSupport())  {
+    //     model.setNumberThreads(nb_threads);
+    //     if(log_level >= 1 && nb_threads > 1)
+    //         std::cout << name() << ": Enabled multithread : " << model.getNumberThreads() << std::endl;
+    // }
+    // else 
+    //     if(log_level >= 1 && nb_threads > 1)
+    //         std::cerr << name() << ": multithread is disabled : to enable it build Cbc with --enable-cbc-parallel" << std::endl;
+     
+    // ////////////////////////////////////////////////////////////////////////
+    // // Compute
+    // ////////////////////
+    // model.setMaximumSeconds(timeout);
+    // model.branchAndBound();
+
+    // //model.addHeuristic(new CbcHeuristicGreedyCover());
+
+
+    
+    // const double * var_solution = model.bestSolution();
+    // if(var_solution == nullptr) {
+    //     std::cerr << name() << ": Fail" << std::endl;
+    //     delete solver;
+    //     return nullptr;
+    // }
+
+    // // Fill Solution
+    // for(RestorationPlan::Option * option : plan.options()) {
+    //     const int y_i = y_var.id(option);
+    //     double value = var_solution[y_i];
+    //     // remove torelance from solution
+    //     value = std::max(value, 0.0);
+    //     value = std::min(value, 1.0);
+
+    //     solution->set(option, value);
+    // }
+
+
+    // current_time = std::chrono::high_resolution_clock::now();
+    // int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
+    // solution->getComputeTimeMsRef() += time_ms;
+    // last_time = current_time;
+
+    // if(log_level >= 1) {
+    //     std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
+    //     std::cout << name() << ": ECA from obj : " << std::sqrt(model.getObjValue()) << std::endl;
+    // }
+    
+    // solution->obj = std::sqrt(model.getObjValue());
+    // solution->nb_vars = solver_builder.getNbVars();
+    // solution->nb_constraints = solver_builder.getNbConstraints();
+
+    // delete solver;
 
     return solution;
 }

@@ -1,16 +1,17 @@
 #ifndef PL_ECA_3_SOLVER_HPP
 #define PL_ECA_3_SOLVER_HPP
 
+#include <algorithm>
+#include <execution>
+
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
 #include "helper.hpp"
 
 #include "osi_builder.hpp"
 
-#include "coin/CbcModel.hpp"
-
-#include <algorithm>
-#include <execution>
+#include "coin/CbcModel.hpp" // deprecated
+#include "coin/CbcSolver.hpp"
 
 namespace Solvers {
     class PL_ECA_3 : public concepts::Solver {

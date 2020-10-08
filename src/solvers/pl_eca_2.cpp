@@ -1,12 +1,5 @@
 #include "solvers/pl_eca_2.hpp"
 
-#include "coin/CbcSolver.hpp"
-
-#include "coin/OsiCbcSolverInterface.hpp"
-#include "coin/OsiGrbSolverInterface.hpp"
-
-#include "coin/CoinStructuredModel.hpp"
-
 namespace Solvers::PL_ECA_2_Vars {
     class XVar : public OSI_Builder::VarType {
         private:
@@ -92,10 +85,10 @@ using namespace Solvers::PL_ECA_2_Vars;
 
 Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
-    const int nb_threads = params.at("threads")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
-    const int timeout = params.at("timeout")->getInt();
-    //const bool fortest = params.at("fortest")->getBool();
+    // const int nb_threads = params.at("threads")->getInt();
+    // const int timeout = params.at("timeout")->getInt();
+    // const bool fortest = params.at("fortest")->getBool();
     std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
 
     const Graph_t & graph = landscape.getNetwork();

@@ -23,7 +23,7 @@ CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcep
 LDFLAGS=-L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lOsiCbc -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
 LSFLAGS=-static -L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lOsiCbc -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -lmpi -ltbb
 
-EXEC=pl_markov pl_eca glutton_eca
+EXEC=solve solver_analysis
 EXTENSION=.out
 
 LANDSCAPE_SRC:=landscape/landscape.cpp landscape/decored_landscape.cpp

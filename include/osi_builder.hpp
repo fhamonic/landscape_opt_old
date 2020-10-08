@@ -5,7 +5,9 @@
 #include<vector>
 
 #include "coin/OsiClpSolverInterface.hpp"
+#include "coin/OsiCbcSolverInterface.hpp" // deprecated
 #include "coin/OsiGrbSolverInterface.hpp"
+
 #include "coin/CoinPackedMatrix.hpp"
 
 class OSI_Builder {

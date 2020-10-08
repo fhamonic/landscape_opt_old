@@ -9,9 +9,6 @@
 
 #include "coin/CbcModel.hpp"
 
-#define RESTORED 0
-#define DEFAULT 1
-
 namespace Solvers {
     class PL_ECA_2 : public concepts::Solver {
         public:
