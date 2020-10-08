@@ -78,13 +78,10 @@ Instance make_instance(double thresold, double median, double length_gain, doubl
     std::string category;
     double x, y;
     while(patches.read_row(category, x, y)) {
-        switch(category) {
-            case "massif": landscape->addNode(20, Point(x,y)); break;
-            case "Parc": landscape->addNode(5, Point(x,y)); break;
-            case "parc": landscape->addNode(1, Point(x,y)); break;
-            case "friche": friches_chooser.add(Point(x,y)); break;
-            default: assert(false);
-        }
+        if(category == "massif") { landscape->addNode(20, Point(x,y)); continue; }
+        if(category == "Parc") { landscape->addNode(5, Point(x,y)); continue; }
+        if(category == "parc") { landscape->addNode(1, Point(x,y)); continue; }
+        if(category == "friche") { friches_chooser.add(Point(x,y)); continue; }
     }
     for(int i=0; i<100; i++) {
         assert(friches.canPick());
