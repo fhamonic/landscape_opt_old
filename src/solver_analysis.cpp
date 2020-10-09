@@ -68,26 +68,16 @@ class Instance {
         Landscape landscape;
         const Graph_t & graph;
         RestorationPlan plan;
-        Graph_t::NodeMap<bool> massifs;
-        Graph_t::NodeMap<bool> parcs;
-        Graph_t::NodeMap<bool> friches;
-        Graph_t::NodeMap<bool> massifs_or_parcs;
 
-        Instance() : graph(landscape.getNetwork()), plan(landscape), 
-            massifs(graph, false), parcs(graph, false),
-            friches(graph, false), massifs_or_parcs(graph, false) {}
+        Instance() : graph(landscape.getNetwork()), plan(landscape) {}
 };
 
-Instance * make_instance(double pow, double thresold, double median, double length_gain, double quality_gain) {
+Instance * make_instance_marseille(double pow, double thresold, double median, double length_gain, double quality_gain) {
     Instance * instance = new Instance;
     
     Landscape & landscape = instance->landscape;
     const Graph_t & graph = instance->graph;
     RestorationPlan & plan = instance->plan;
-    Graph_t::NodeMap<bool> & massifs = instance->massifs;
-    Graph_t::NodeMap<bool> & parcs = instance->parcs;
-    Graph_t::NodeMap<bool> & friches = instance->friches;
-    Graph_t::NodeMap<bool> & massifs_or_parcs = instance->massifs_or_parcs;
 
     auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
@@ -100,9 +90,9 @@ Instance * make_instance(double pow, double thresold, double median, double leng
     std::string category;
     double x, y;
     while(patches.read_row(category, x, y)) {
-        if(category.compare("\"massif\"") == 0) { massifs[landscape.addNode(20, Point(x,y))] = true; continue; }
-        if(category.compare("\"Parc\"") == 0) { parcs[landscape.addNode(5, Point(x,y))] = true; continue; }
-        if(category.compare("\"parc\"") == 0) { parcs[landscape.addNode(1, Point(x,y))] = true; continue; }
+        if(category.compare("\"massif\"") == 0) { landscape.addNode(20, Point(x,y)); continue; }
+        if(category.compare("\"Parc\"") == 0) { landscape.addNode(5, Point(x,y)); continue; }
+        if(category.compare("\"parc\"") == 0) { landscape.addNode(1, Point(x,y)); continue; }
         if(category.compare("\"friche\"") == 0) { friches_chooser.add(Point(x,y), 1); continue; }
         assert(false);
     }
@@ -110,17 +100,12 @@ Instance * make_instance(double pow, double thresold, double median, double leng
         if(!friches_chooser.canPick()) break;
         Graph_t::Node u = landscape.addNode(0, friches_chooser.pick());
         friches_list.push_back(u);
-        friches[u] = true;
     }
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v)
-        massifs_or_parcs[v] = parcs[v] || massifs[v];
-
 
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
         for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
             if(u == v) continue;
             double dist = d(u,v);
-            // if(dist > thresold) continue;
             double probability = p(dist);
             if(probability < thresold) continue;
             landscape.addArc(u, v, probability);
@@ -148,6 +133,74 @@ Instance * make_instance(double pow, double thresold, double median, double leng
         if(quality_gain > 0)
             option->addPatch(v1, quality_gain);
     }
+
+    return instance;
+}
+
+Instance * make_instance_quebec(double pow, double thresold, double median, double length_gain, double quality_gain) {
+    Instance * instance = new Instance;
+    
+    Landscape & landscape = instance->landscape;
+    const Graph_t & graph = instance->graph;
+    RestorationPlan & plan = instance->plan;
+
+    auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
+    
+    std::vector<Graph_t::Node> total_threaten;
+    int cpt = 0;
+
+    io::CSVReader<5> patches("data/quebec_leam_v3/raw/sommets_leam_v3.txt");
+    patches.read_header(io::ignore_extra_column, "count","area","xcoord","ycoord","count2050");
+    int count;
+    double area, xcoord, ycoord, count2050;
+    while(patches.read_row(count, area, xcoord, ycoord, count2050)) {
+        Graph_t::Node u = landscape.addNode(count2050, Point(xcoord,ycoord));
+        assert(graph.id(u) == count-1);
+        if(area == count2050)
+            continue;
+        if(area > 0 && count2050 == 0) {
+            total_threaten.push_back(u);
+            continue;
+        }
+        RestorationPlan::Option * option = plan.addOption();
+        option->setCost(1);
+        option->setId(cpt);
+        cpt++;
+        option->addPatch(u, area-count2050);
+    }
+
+    io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.txt");
+    links.read_header(io::ignore_extra_column, "from","to","Dist");
+    int from, to;
+    double Dist;
+    while(links.read_row(from, to, Dist)) {
+        Graph_t::Node u = graph.nodeFromId(from-1);
+        Graph_t::Node v = graph.nodeFromId(to-1);
+        double probability = p(Dist);
+        if(probability < thresold) continue;
+        landscape.addArc(u, v, probability);
+    }
+
+    for(Graph_t::Node v1 : total_threaten) {
+        RestorationPlan::Option * option = plan.addOption();
+        option->setCost(1);
+        option->setId(cpt);
+        cpt++;
+        if(length_gain > 0) {
+            Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
+            std::vector<Graph_t::Arc> to_move;
+            for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
+                to_move.push_back(a);
+            for(Graph_t::Arc a : to_move)
+                landscape.changeTarget(a, v2);
+
+            Graph_t::Arc v2v1 = landscape.addArc(v2, v1, std::numeric_limits<double>::epsilon());
+            option->addLink(v2v1, 1.0);
+        }
+        if(quality_gain > 0)
+            option->addPatch(v1, quality_gain);
+    }
+
     return instance;
 }
 
@@ -170,14 +223,11 @@ int main() {
             << "time "
             << "cost "
             << "total_eca "
-            // << "massifs_eca "
-            // << "parcs_eca "
-            // << "massifs_parcs_eca"
             << std::endl;
 
-    std::vector<double> pow_values{1, 2};
+    std::vector<double> pow_values{2};
     std::vector<double> thresold_values{0.01};
-    std::vector<double> median_values{/*350,*/ 1400, 2800}; 
+    std::vector<double> median_values{/*350,*/ 1400/*, 2800*/}; 
     std::vector<double> length_gain_values{0, 1}; 
     std::vector<double> area_gain_values{0, 1};
     std::vector<double> budget_values;
@@ -192,13 +242,10 @@ int main() {
                     for(double area_gain : area_gain_values) {
                         if(length_gain == 0 && area_gain == 0) continue;
                         
-                        Instance * instance = make_instance(1, thresold, median, length_gain, area_gain);
+                        Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
                         
                         const Landscape & landscape = instance->landscape;
                         const RestorationPlan & plan = instance->plan;
-                        // const Graph_t::NodeMap<bool> & massifs = instance->massifs;
-                        // const Graph_t::NodeMap<bool> & parcs = instance->parcs;
-                        // const Graph_t::NodeMap<bool> & massifs_or_parcs = instance->massifs_or_parcs;
                         
                         StdLandscapeParser::get().write(landscape, "output", "analysis_landscape", true);
                         StdRestorationPlanParser(landscape).write(plan, "output", "analysis_plan", true);
@@ -214,16 +261,6 @@ int main() {
                                     cost += option_pair.first->getCost() * option_pair.second;
                                 const double total_eca = std::pow(eca.eval_solution(landscape, *solution), 2);
 
-
-                                // DecoredLandscape decored_landscape(landscape);
-                                // for(auto option_pair : solution->getOptionCoefs()) {
-                                //     decored_landscape.apply(option_pair.first, option_pair.second);   
-                                // }
-
-                                // // const double massifs_eca = pow(eca.eval_partial(decored_landscape, massifs), 2);
-                                // // const double parcs_eca = pow(eca.eval(decored_landscape, parcs), 2);
-                                // // const double massifs_parcs_eca = pow(eca.eval(decored_landscape, massifs_or_parcs), 2) - massifs_eca - parcs_eca;
-
                                 data_log << pow << " " 
                                         << thresold << " " 
                                         << length_gain << " " 
@@ -233,10 +270,7 @@ int main() {
                                         << solver->toString() << " "
                                         << solution->getComputeTimeMs() << " "
                                         << cost << " "
-                                        << total_eca << " "
-                                        // << massifs_eca << " "
-                                        // << parcs_eca << " "
-                                        // << massifs_parcs_eca
+                                        << total_eca
                                         << std::endl;
 
                                 delete solution;
