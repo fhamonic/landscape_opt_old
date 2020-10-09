@@ -2,6 +2,7 @@
 /output
 /cache
 *.lp
+*.mps.gz
 
 *.out
 .vscode

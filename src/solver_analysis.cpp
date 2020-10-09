@@ -78,7 +78,7 @@ class Instance {
             friches(graph, false), massifs_or_parcs(graph, false) {}
 };
 
-Instance * make_instance(double thresold, double median, double length_gain, double quality_gain, double pow) {
+Instance * make_instance(double pow, double thresold, double median, double length_gain, double quality_gain) {
     Instance * instance = new Instance;
     
     Landscape & landscape = instance->landscape;
@@ -151,26 +151,8 @@ Instance * make_instance(double thresold, double median, double length_gain, dou
     return instance;
 }
 
-void seuiller(Landscape & landscape, const double thresold) {
-    const Graph_t & graph = landscape.getNetwork();
-    std::vector<Graph_t::ArcIt> arcs_to_delete;
-    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a)
-        if(landscape.getProbability(a) < thresold)
-            arcs_to_delete.push_back(a);
-    for(Graph_t::ArcIt a : arcs_to_delete)
-        landscape.removeArc(a);
-}
 
-void count(Landscape & landscape, Graph_t::NodeMap<bool> & filter) {
-    const Graph_t & graph = landscape.getNetwork();
-    int cpt = 0;
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-        if(!filter[v])
-            continue;
-        cpt++;
-    }
-    std::cout << cpt << std::endl;
-}
+
 
 int main() {
     std::list<concepts::Solver*> solvers;
@@ -178,7 +160,8 @@ int main() {
     
     std::ofstream data_log("output/data.log");
     data_log << std::fixed << std::setprecision(6);
-    data_log << "thresold "
+    data_log << "pow "
+            << "thresold "
             << "length_gain "
             << "area_gain "
             << "median "
@@ -192,70 +175,76 @@ int main() {
             // << "massifs_parcs_eca"
             << std::endl;
 
+    std::vector<double> pow_values{1, 2};
     std::vector<double> thresold_values{0.01};
     std::vector<double> median_values{/*350,*/ 1400, 2800}; 
-    std::vector<double> length_gain_values{30, 100, 200}; 
-    std::vector<double> area_gain_values{0, 0.5};
+    std::vector<double> length_gain_values{0, 1}; 
+    std::vector<double> area_gain_values{0, 1};
     std::vector<double> budget_values;
     for(int i=5; i<=100; i+=5) budget_values.push_back(i);
 
     const ECA & eca = ECA::get();
 
-    for(double thresold : thresold_values) {
-        for(double median : median_values) {
-            for(double length_gain : length_gain_values) {
-                for(double area_gain : area_gain_values) {
-                    Instance * instance = make_instance(thresold, median, length_gain, area_gain, 1);
-                    
-                    const Landscape & landscape = instance->landscape;
-                    const RestorationPlan & plan = instance->plan;
-                    const Graph_t::NodeMap<bool> & massifs = instance->massifs;
-                    const Graph_t::NodeMap<bool> & parcs = instance->parcs;
-                    const Graph_t::NodeMap<bool> & massifs_or_parcs = instance->massifs_or_parcs;
-                    
-                    StdLandscapeParser::get().write(landscape, "output", "analysis_landscape", true);
-                    StdRestorationPlanParser(landscape).write(plan, "output", "analysis_plan", true);
+    for(double pow : pow_values) {
+        for(double thresold : thresold_values) {
+            for(double median : median_values) {
+                for(double length_gain : length_gain_values) {
+                    for(double area_gain : area_gain_values) {
+                        if(length_gain == 0 && area_gain == 0) continue;
+                        
+                        Instance * instance = make_instance(1, thresold, median, length_gain, area_gain);
+                        
+                        const Landscape & landscape = instance->landscape;
+                        const RestorationPlan & plan = instance->plan;
+                        // const Graph_t::NodeMap<bool> & massifs = instance->massifs;
+                        // const Graph_t::NodeMap<bool> & parcs = instance->parcs;
+                        // const Graph_t::NodeMap<bool> & massifs_or_parcs = instance->massifs_or_parcs;
+                        
+                        StdLandscapeParser::get().write(landscape, "output", "analysis_landscape", true);
+                        StdRestorationPlanParser(landscape).write(plan, "output", "analysis_plan", true);
 
-                    Helper::assert_well_formed(landscape, plan);
+                        Helper::assert_well_formed(landscape, plan);
 
-                    for(double budget : budget_values) {
-                        for(concepts::Solver * solver : solvers) {
-                            Solution * solution = solver->solve(landscape, plan, budget);
+                        for(double budget : budget_values) {
+                            for(concepts::Solver * solver : solvers) {
+                                Solution * solution = solver->solve(landscape, plan, budget);
 
-                            double cost = 0.0;
-                            for(auto option_pair : solution->getOptionCoefs())
-                                cost += option_pair.first->getCost() * option_pair.second;
-                            const double total_eca = pow(eca.eval_solution(landscape, *solution), 2);
+                                double cost = 0.0;
+                                for(auto option_pair : solution->getOptionCoefs())
+                                    cost += option_pair.first->getCost() * option_pair.second;
+                                const double total_eca = std::pow(eca.eval_solution(landscape, *solution), 2);
 
 
-                            // DecoredLandscape decored_landscape(landscape);
-                            // for(auto option_pair : solution->getOptionCoefs()) {
-                            //     decored_landscape.apply(option_pair.first, option_pair.second);   
-                            // }
+                                // DecoredLandscape decored_landscape(landscape);
+                                // for(auto option_pair : solution->getOptionCoefs()) {
+                                //     decored_landscape.apply(option_pair.first, option_pair.second);   
+                                // }
 
-                            // // const double massifs_eca = pow(eca.eval_partial(decored_landscape, massifs), 2);
-                            // // const double parcs_eca = pow(eca.eval(decored_landscape, parcs), 2);
-                            // // const double massifs_parcs_eca = pow(eca.eval(decored_landscape, massifs_or_parcs), 2) - massifs_eca - parcs_eca;
+                                // // const double massifs_eca = pow(eca.eval_partial(decored_landscape, massifs), 2);
+                                // // const double parcs_eca = pow(eca.eval(decored_landscape, parcs), 2);
+                                // // const double massifs_parcs_eca = pow(eca.eval(decored_landscape, massifs_or_parcs), 2) - massifs_eca - parcs_eca;
 
-                            data_log << thresold << " " 
-                                    << length_gain << " " 
-                                    << area_gain << " " 
-                                    << median << " "
-                                    << budget << " "
-                                    << solver->toString() << " "
-                                    << solution->getComputeTimeMs() << " "
-                                    << cost << " "
-                                    << total_eca << " "
-                                    // << massifs_eca << " "
-                                    // << parcs_eca << " "
-                                    // << massifs_parcs_eca
-                                    << std::endl;
+                                data_log << pow << " " 
+                                        << thresold << " " 
+                                        << length_gain << " " 
+                                        << area_gain << " " 
+                                        << median << " "
+                                        << budget << " "
+                                        << solver->toString() << " "
+                                        << solution->getComputeTimeMs() << " "
+                                        << cost << " "
+                                        << total_eca << " "
+                                        // << massifs_eca << " "
+                                        // << parcs_eca << " "
+                                        // << massifs_parcs_eca
+                                        << std::endl;
 
-                            delete solution;
-                        }
-                    }   
-                    delete instance;
-                }             
+                                delete solution;
+                            }
+                        }   
+                        delete instance;
+                    }             
+                }
             }
         }
     }
