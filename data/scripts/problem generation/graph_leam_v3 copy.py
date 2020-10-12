@@ -12,8 +12,8 @@ def createGraphFiles(output, name):
     index.close()
     return (open(patches_file_name, "w") , open(links_file_name, "w"))
 
-sommets_rows = readCSV('data/quebec_leam_v3/raw/sommets_leam_v3.txt', ' ')
-arretes_rows = readCSV('data/quebec_leam_v3/raw/aretes_leam_v3.txt', ' ')
+sommets_rows = readCSV('data/quebec_leam_v3/raw/sommets_leam_v3.txt', ',')
+arretes_rows = readCSV('data/quebec_leam_v3/raw/aretes_leam_v3.txt', ',')
 
 output = 'data/quebec_leam_v3/'
 name = 'quebec'
@@ -31,6 +31,13 @@ xu_bound = x_min + (x_max-x_min) / 8
 yl_bound = y_min
 yu_bound = y_min + (y_max-y_min) / 8
 
+
+print(xl_bound)
+print(xu_bound)
+print(yl_bound)
+print(yu_bound)
+
+"""
 def predicate(row):
     return xl_bound <= float(row['xcoord']) <= xu_bound and yl_bound <= float(row['ycoord']) <= yu_bound
 
@@ -93,4 +100,4 @@ for row in kept_sommets_rows:
 
     quality_gain = float(row['area']) - float(row['count2050'])
     problem.write("{} 2\n\tn {} {}\n\ta {} {} 1\n".format(row['area'], id, quality_gain, in_id, id))
-
+"""

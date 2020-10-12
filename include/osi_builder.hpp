@@ -47,6 +47,8 @@ class OSI_Builder {
         std::vector<double> row_lb;
         std::vector<double> row_ub;
 
+        std::vector<int> integers_variables;
+
         CoinPackedMatrix * matrix;
     public:
         OSI_Builder();
@@ -65,12 +67,19 @@ class OSI_Builder {
         OSI_Builder & pushRowWithoutClearing(double lb, double ub);
         OSI_Builder & pushRow(double lb, double ub);
         OSI_Builder & setName(int var_id, std::string name);
+
+        OSI_Builder & setContinuous(int var_id);
+        OSI_Builder & setInteger(int var_id);
         
         template <class OsiSolver>
-        OsiSolver * buildSolver(int sense) {
+        OsiSolver * buildSolver(int sense, bool relaxed=false) {
             OsiSolver * solver = new OsiSolver();
             solver->loadProblem(*matrix, col_lb, col_ub, objective, row_lb.data(), row_ub.data());
             solver->setObjSense(sense);
+            if(relaxed)
+                return solver;
+            for(int i : integers_variables) 
+                solver->setInteger(i);
             return solver;
         }
 
