@@ -52,7 +52,7 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     solvers.push_back(naive_eca_dec);
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
-    // solvers.push_back(pl_eca_2);
+    solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
     solvers.push_back(randomized_rounding_1000);
     // solvers.push_back(randomized_rounding_10000);
@@ -72,7 +72,7 @@ class Instance {
         Instance() : graph(landscape.getNetwork()), plan(landscape) {}
 };
 
-Instance * make_instance_marseille(double pow, double thresold, double median, double length_gain, double quality_gain) {
+Instance * make_instance_marseille(double pow, double thresold, double median, bool length_gain, bool quality_gain) {
     Instance * instance = new Instance;
     
     Landscape & landscape = instance->landscape;
@@ -112,14 +112,13 @@ Instance * make_instance_marseille(double pow, double thresold, double median, d
         }
     }
 
-
     int cpt = 0;
     for(Graph_t::Node v1 : friches_list) {
         RestorationPlan::Option * option = plan.addOption();
         option->setCost(1);
         option->setId(cpt);
         cpt++;
-        if(length_gain > 0) {
+        if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;
             for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
@@ -130,14 +129,15 @@ Instance * make_instance_marseille(double pow, double thresold, double median, d
             Graph_t::Arc v1v2 = landscape.addArc(v2, v1, std::numeric_limits<double>::epsilon());
             option->addLink(v1v2, 1.0);
         }
-        if(quality_gain > 0)
+        if(quality_gain)
             option->addPatch(v1, quality_gain);
     }
 
     return instance;
 }
 
-Instance * make_instance_quebec(double pow, double thresold, double median, double length_gain, double quality_gain) {
+
+Instance * make_instance_quebec(double pow, double thresold, double median, bool length_gain, bool quality_gain) {
     Instance * instance = new Instance;
     
     Landscape & landscape = instance->landscape;
@@ -146,6 +146,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, doub
 
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
+    std::vector<Graph_t::Node> node_correspondance;
     std::vector<Graph_t::Node> total_threaten;
     int cpt = 0;
 
@@ -154,8 +155,16 @@ Instance * make_instance_quebec(double pow, double thresold, double median, doub
     int count;
     double area, xcoord, ycoord, count2050;
     while(patches.read_row(count, area, xcoord, ycoord, count2050)) {
+        node_correspondance.push_back(lemon::INVALID);
+        if(xcoord < 240548.456514) continue;
+        if(xcoord >= 263015.4829015) continue;
+        if(ycoord < 4986893.0) continue;
+        if(ycoord >= 5003751.29081625) continue;
+        
         Graph_t::Node u = landscape.addNode(count2050, Point(xcoord,ycoord));
-        assert(graph.id(u) == count-1);
+        assert(static_cast<int>(node_correspondance.size()) == count);
+        node_correspondance[count-1] = u;
+
         if(area == count2050)
             continue;
         if(area > 0 && count2050 == 0) {
@@ -174,8 +183,9 @@ Instance * make_instance_quebec(double pow, double thresold, double median, doub
     int from, to;
     double Dist;
     while(links.read_row(from, to, Dist)) {
-        Graph_t::Node u = graph.nodeFromId(from-1);
-        Graph_t::Node v = graph.nodeFromId(to-1);
+        Graph_t::Node u = node_correspondance[from-1];
+        Graph_t::Node v = node_correspondance[to-1];
+        if(u == lemon::INVALID || v == lemon::INVALID) continue;
         double probability = p(Dist);
         if(probability < thresold) continue;
         landscape.addArc(u, v, probability);
@@ -186,7 +196,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, doub
         option->setCost(1);
         option->setId(cpt);
         cpt++;
-        if(length_gain > 0) {
+        if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;
             for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
@@ -197,7 +207,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, doub
             Graph_t::Arc v2v1 = landscape.addArc(v2, v1, std::numeric_limits<double>::epsilon());
             option->addLink(v2v1, 1.0);
         }
-        if(quality_gain > 0)
+        if(quality_gain)
             option->addPatch(v1, quality_gain);
     }
 
@@ -225,24 +235,24 @@ int main() {
             << "total_eca "
             << std::endl;
 
-    std::vector<double> pow_values{2};
+    std::vector<double> pow_values{1, 2};
     std::vector<double> thresold_values{0.01};
     std::vector<double> median_values{/*350,*/ 1400/*, 2800*/}; 
-    std::vector<double> length_gain_values{0, 1}; 
-    std::vector<double> area_gain_values{0, 1};
+    std::vector<bool> length_gain_values{true}; 
+    std::vector<bool> area_gain_values{false, true};
     std::vector<double> budget_values;
-    for(int i=5; i<=100; i+=5) budget_values.push_back(i);
+    for(int i=0; i<=100; i+=5) budget_values.push_back(i);
 
     const ECA & eca = ECA::get();
 
     for(double pow : pow_values) {
         for(double thresold : thresold_values) {
             for(double median : median_values) {
-                for(double length_gain : length_gain_values) {
-                    for(double area_gain : area_gain_values) {
+                for(bool length_gain : length_gain_values) {
+                    for(bool area_gain : area_gain_values) {
                         if(length_gain == 0 && area_gain == 0) continue;
                         
-                        Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
+                        Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
                         
                         const Landscape & landscape = instance->landscape;
                         const RestorationPlan & plan = instance->plan;

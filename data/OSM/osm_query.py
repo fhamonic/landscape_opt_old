@@ -21,6 +21,7 @@ class WayType(Enum):
     ROUTE_TERTIAIRE = 12
     AUTOROUTE = 13
     ROUTE_AUTRE = 14
+    ARBRE = 15
     
 way_tags_table = {
     'leisure': {
@@ -49,6 +50,7 @@ way_tags_table = {
         'tertiary_link' : WayType.ROUTE_TERTIAIRE
     },
     'natural': {
+        'tree' : WayType.ARBRE,
         'tree_row' : WayType.ALIGNEMENT_ARBRES,
         'wood' : WayType.FORET,
         'scrub' : WayType.BROUSSAILLE,
@@ -72,6 +74,7 @@ green_tags_table = {
         'allotments' : WayType.JARDIN
     },
     'natural': {
+        'tree' : WayType.ARBRE,
         'tree_row' : WayType.ALIGNEMENT_ARBRES,
         'wood' : WayType.FORET,
         'scrub' : WayType.BROUSSAILLE,
@@ -87,7 +90,7 @@ city = "Marseille"
 query = "[out:json];\n"
 query += "area[name = '{}']->.a;\n".format(city)
 query += "(\n"
-for tag, values in green_tags_table.items():
+for tag, values in way_tags_table.items():
     for value in values:
         #query += "\tnwr['{}'='{}']({{{{bbox}}}});\n".format(tag, value)
         query += "\tnwr(area.a)['{}'='{}'];\n".format(tag, value)

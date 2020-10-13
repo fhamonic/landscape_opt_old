@@ -73,3 +73,11 @@ OSI_Builder & OSI_Builder::pushRow(double lb, double ub) {
     clearEntryBuffer();
     return *this;
 }
+OSI_Builder & OSI_Builder::setContinuous(int var_id) {
+    std::remove(integers_variables.begin(), integers_variables.end(), var_id);
+    return *this;
+}
+OSI_Builder & OSI_Builder::setInteger(int var_id) {
+    integers_variables.push_back(var_id);
+    return *this;
+}

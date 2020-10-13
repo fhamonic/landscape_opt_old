@@ -83,13 +83,10 @@ namespace Solvers::PL_ECA_2_Vars {
 
 using namespace Solvers::PL_ECA_2_Vars;
 
-Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
+void Solvers::PL_ECA_2::fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan & plan, const double B) {
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
-    // const int nb_threads = params.at("threads")->getInt();
-    // const int timeout = params.at("timeout")->getInt();
-    // const bool fortest = params.at("fortest")->getBool();
-    std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
+    /////////////////////////////////////////////////////
 
     const Graph_t & graph = landscape.getNetwork();
 
@@ -109,9 +106,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
             sum += option->getQualityGain(v);
     }
     const double M = sum;
-
-    OSI_Builder solver_builder = OSI_Builder();
-
+    
     solver_builder.addVarType(&x_var);
     solver_builder.addVarType(&restored_x_var);
     solver_builder.addVarType(&f_var);
@@ -121,7 +116,6 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     
     if(log_level > 0)
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
-    last_time = std::chrono::high_resolution_clock::now();
 
     ////////////////////////////////////////////////////////////////////////
     // Columns : Objective
@@ -207,6 +201,25 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
         solver_builder.buffEntry(y_i, option->getCost());
     }
     solver_builder.pushRow(0, B);
+    ////////////////////
+    // integer constraints
+    if(!relaxed) {
+        for(RestorationPlan::Option * option : plan.options()) {
+            const int y_i = y_var.id(option);
+            solver_builder.setInteger(y_i);
+        }
+    }
+}
+
+Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
+    const int log_level = params.at("log")->getInt();
+    // const int nb_threads = params.at("threads")->getInt();
+    // const int timeout = params.at("timeout")->getInt();
+    // const bool fortest = params.at("fortest")->getBool();
+    std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
+
+    OSI_Builder solver_builder = OSI_Builder();
+    fill_solver(solver_builder, landscape, plan, B);
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
     
@@ -220,12 +233,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
 
     OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
 
-    if(!relaxed) {
-        for(RestorationPlan::Option * option : plan.options()) {
-            const int y_i = y_var.id(option);
-            solver->setInteger(y_i);
-        }
-    }
+    
 
     if(log_level == 0)
         solver->setHintParam(OsiDoReducePrint);
@@ -271,58 +279,6 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     
 
     // TODO : Use CbcSolver cbc(*solver);
-
-    // CbcModel model(*solver);
-
-    // model.setIntegerTolerance(1.0e-14);
-    // model.setAllowableGap(1.0e-14);
-
-    // model.setLogLevel(log_level >= 2 ? 1 : 0);
-
-    // if(model.haveMultiThreadSupport())  {
-    //     model.setNumberThreads(nb_threads);
-    //     if(log_level >= 1)
-    //         std::cout << name() << ": Enabled multithread : " << model.getNumberThreads() << std::endl;
-    // }
-    // else 
-    //     if(log_level >= 1)
-    //         std::cerr << name() << ": multithread is disabled : to enable it build Cbc with --enable-cbc-parallel" << std::endl;
-          
-    // ////////////////////////////////////////////////////////////////////////
-    // // Compute
-    // ////////////////////
-    // model.setMaximumSeconds(timeout);
-    // model.branchAndBound();
-    
-    // const double * var_solution = model.bestSolution();
-    // if(var_solution == nullptr) {
-    //     std::cerr << name() << ": Fail" << std::endl;
-    //     return nullptr;
-    // }
-
-    // Solution * solution = new Solution(landscape, plan);
-
-    // for(RestorationPlan::Option * option : plan.options()) {
-    //     const int y_i = y_var.id(option);
-    //     const double value = var_solution[y_i];
-    //     solution->set(option, value);
-    // }
-
-
-    // current_time = std::chrono::high_resolution_clock::now();
-    // int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-    // solution->setComputeTimeMs(time_ms);
-    // last_time = current_time;
-
-    // if(log_level >= 1) {
-    //     std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
-    //     std::cout << name() << ": ECA from obj : " << std::sqrt(model.getObjValue()) << std::endl;
-    //     std::cout << name() << ": Explored nodes : " << model.getNodeCount() << std::endl;
-    // }
-    
-    // solution->obj = std::sqrt(model.getObjValue());
-    // solution->nb_vars = solver_builder.getNbVars();
-    // solution->nb_constraints = solver_builder.getNbConstraints();
 
     delete solver;
 
