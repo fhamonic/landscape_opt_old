@@ -4,7 +4,14 @@
 #include <lemon/dijkstra.h>
 
 namespace lemon {
-
+    /**
+     * @brief Multiplicative operation traits for the Dijkstra algorithm class.
+     * 
+     * This operation traits class defines all computational operations and 
+     * constants which are used in the multiplicative version of Dijkstra algorithm.
+     * 
+     * @tparam V 
+     */
     template <typename V>
     struct DijkstraMultiplicativeOperationTraits {
         typedef V Value;
@@ -49,6 +56,13 @@ namespace lemon {
 
 
 namespace lemon {
+    /**
+     * @brief A minimalist Dijkstra algorithm class based on Dijkstra
+     * 
+     * @tparam GR 
+     * @tparam ArcMap<int> 
+     * @tparam TR 
+     */
     template <typename GR=ListDigraph,
                 typename LEN=typename GR::template ArcMap<int>,
                 typename TR=DijkstraDefaultTraits<GR,LEN> >

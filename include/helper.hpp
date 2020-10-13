@@ -86,7 +86,7 @@ namespace Helper {
         Eigen::Matrix<Value,Eigen::Dynamic, Eigen::Dynamic> * distances = new Eigen::Matrix<Value, Eigen::Dynamic, Eigen::Dynamic>(n, n);
         distances->fill(std::numeric_limits<Value>::max());
         
-        lemon::Dijkstra<GR, DM> dijkstra(g, l);  
+        lemon::SimplerDijkstra<GR, DM> dijkstra(g, l);  
         
         for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
             const int id_s = g.id(s);
@@ -110,7 +110,7 @@ namespace Helper {
     }
 
     /**
-     * @brief 
+     * @brief Compute the centrality of each arc, i.e the number of shortest paths that contain it
      * 
      * @tparam GR 
      * @tparam LM 
