@@ -28,6 +28,8 @@ void OSI_Builder::init() {
         }
     }
 
+    colNames.resize(nb_vars);
+
     matrix =  new CoinPackedMatrix(false, 2, 0);
     matrix->setDimensions(0, nb_vars);
 }
@@ -72,6 +74,9 @@ OSI_Builder & OSI_Builder::pushRow(double lb, double ub) {
     pushRowWithoutClearing(lb, ub);
     clearEntryBuffer();
     return *this;
+}
+OSI_Builder & OSI_Builder::setColName(int var_id, std::string name) {
+    colNames[var_id] = name;
 }
 OSI_Builder & OSI_Builder::setContinuous(int var_id) {
     std::remove(integers_variables.begin(), integers_variables.end(), var_id);

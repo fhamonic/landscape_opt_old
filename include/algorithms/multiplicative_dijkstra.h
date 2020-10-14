@@ -21,6 +21,12 @@ namespace lemon {
         static bool less(const Value& left, const Value& right) { return left > right; }
     };
 
+    /**
+     * @brief Multiplicative traits class of Dijkstra class.
+     * 
+     * @tparam GR The type of the digraph.
+     * @tparam LEN The type of the length map.
+     */
     template<typename GR, typename LEN>
     struct DijkstraMultiplicativeTraits {
         typedef GR Digraph;
@@ -46,7 +52,13 @@ namespace lemon {
         static DistMap *createDistMap(const Digraph &g) { return new DistMap(g); }
     };
 
-
+    /**
+     * @ingroup shortest_path
+     * @brief Template alias for "Dijkstra<GR,LEN,DijkstraMultiplicativeTraits<GR,LEN>>"
+     * 
+     * @tparam GR 
+     * @tparam LEN 
+     */
     template <typename GR=ListDigraph,
             typename LEN=typename GR::template ArcMap<double>>
     using MultiplicativeDijkstra = Dijkstra<GR, LEN, DijkstraMultiplicativeTraits<GR, LEN>>;
@@ -57,11 +69,13 @@ namespace lemon {
 
 namespace lemon {
     /**
-     * @brief A minimalist Dijkstra algorithm class based on Dijkstra
+     * @ingroup shortest_path
+     * @brief A minimalist Dijkstra algorithm class based on \ref Dijkstra
      * 
-     * @tparam GR 
-     * @tparam ArcMap<int> 
-     * @tparam TR 
+     * @tparam GR The type of the digraph the algorithm runs on.
+     * @tparam LEN \ref concepts::ReadMap "readable" arc map that specifies the lengths of the arcs.
+     * @tparam TR The traits class that defines various types used by the 
+     * algorithm. By default, it is \ref DijkstraDefaultTraits "DijkstraDefaultTraits<GR, LEN>"
      */
     template <typename GR=ListDigraph,
                 typename LEN=typename GR::template ArcMap<int>,
@@ -126,7 +140,7 @@ namespace lemon {
                     Value newvalue = OperationTraits::plus(oldvalue, (*_length)[e]);
                     if ( OperationTraits::less(newvalue, (*_heap)[w]) )
                         _heap->decrease(w, newvalue);
-                }
+                    }
                     break;
                 case Heap::POST_HEAP:
                     break;
@@ -136,6 +150,13 @@ namespace lemon {
         }
     };
 
+    /**
+     * @ingroup shortest_path
+     * @brief Template alias for "SimplerDijkstra<GR,LEN,DijkstraMultiplicativeTraits<GR,LEN>>"
+     * 
+     * @tparam GR 
+     * @tparam LEN 
+     */
     template <typename GR=ListDigraph,
             typename LEN=typename GR::template ArcMap<double>>
     using MultiplicativeSimplerDijkstra = SimplerDijkstra<GR, LEN, DijkstraMultiplicativeTraits<GR, LEN>>;

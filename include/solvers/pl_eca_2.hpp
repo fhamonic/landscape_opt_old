@@ -39,8 +39,8 @@ namespace Solvers {
             PL_ECA_2 & setFortest(int fortest) {
                 params["fortest"]->set(fortest);
                 return *this;
-            }       
-            void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan & plan, const double B) const;
+            }
+            
             Solution * solve(const Landscape & landscape, const RestorationPlan & options, const double B) const;
 
             const std::string name() const { return "pl_eca_2"; } 

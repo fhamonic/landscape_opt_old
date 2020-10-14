@@ -49,6 +49,8 @@ class OSI_Builder {
 
         std::vector<int> integers_variables;
 
+        OsiSolverInterface::OsiNameVec colNames;
+
         CoinPackedMatrix * matrix;
     public:
         OSI_Builder();
@@ -66,7 +68,7 @@ class OSI_Builder {
         OSI_Builder & clearEntryBuffer();
         OSI_Builder & pushRowWithoutClearing(double lb, double ub);
         OSI_Builder & pushRow(double lb, double ub);
-        OSI_Builder & setName(int var_id, std::string name);
+        OSI_Builder & setColName(int var_id, std::string name);
 
         OSI_Builder & setContinuous(int var_id);
         OSI_Builder & setInteger(int var_id);
@@ -80,6 +82,7 @@ class OSI_Builder {
                 return solver;
             for(int i : integers_variables) 
                 solver->setInteger(i);
+            solver->setColNames(colNames, 0, nb_vars, 0);
             return solver;
         }
 
