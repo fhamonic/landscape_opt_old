@@ -17,11 +17,12 @@ GUROBI_LIB_PATH=$(GUROBI_HOME)/lib/
 
 
 INCLUDE_FLAGS=-I include -I thirdparty -I $(SRC_DIR) -I $(EIGEN_INCLUDE_DIR) -I $(COINOR_INCLUDE_DIR) -I $(LEMON_INCLUDE_DIR) -I $(GUROBI_INCLUDE_PATH)
+LIBS_FLAGS=-L $(COINOR_LIB_PATH) -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
 
 #-DNDEBUG
 CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -O2 -flto -march=native -pipe $(INCLUDE_FLAGS) -L $(COINOR_LIB_PATH)
-LDFLAGS=-L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lOsiCbc -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
-LSFLAGS=-static -L $(COINOR_LIB_PATH) -lCbc -lClp -lOsiClp -lOsiCbc -lCoinUtils -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -lmpi -ltbb
+LDFLAGS=$(LIBS_FLAGS)
+LSFLAGS=-static $(LIBS_FLAGS) -lmpi
 
 EXEC=solve solver_analysis
 EXTENSION=.out

@@ -7,8 +7,6 @@
 
 #include "osi_builder.hpp"
 
-#include "coin/CbcModel.hpp"
-
 namespace Solvers {
     class PL_ECA_2 : public concepts::Solver {
         public:
@@ -44,6 +42,8 @@ namespace Solvers {
             Solution * solve(const Landscape & landscape, const RestorationPlan & options, const double B) const;
 
             const std::string name() const { return "pl_eca_2"; } 
+
+            double eval(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution & solution) const;
     };
 }
 

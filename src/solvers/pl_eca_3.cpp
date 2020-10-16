@@ -7,7 +7,7 @@ namespace Solvers::PL_ECA_3_Vars {
         private:
             const ContractionResult & _cr;
         public:
-            XVar(ContractionResult & cr): VarType(lemon::countArcs(cr.landscape->getNetwork())), _cr(cr) {}
+            XVar(const ContractionResult & cr): VarType(lemon::countArcs(cr.landscape->getNetwork())), _cr(cr) {}
             int id(Graph_t::Arc a) { 
                 assert(_cr.landscape->getNetwork().valid(a)); 
                 const int id = _cr.landscape->getNetwork().id(a);
@@ -19,7 +19,7 @@ namespace Solvers::PL_ECA_3_Vars {
             const ContractionResult & _cr;
             std::map<RestorationPlan::Option *, int> offsets;
         public:
-            RestoredXVar(ContractionResult & cr): _cr(cr) {
+            RestoredXVar(const ContractionResult & cr): _cr(cr) {
                 int cpt = 0;
                 for(RestorationPlan::Option * option : cr.plan->options()) { offsets[option] = cpt; cpt += option->getNbArcs(); }
                 _number = cpt;
@@ -66,14 +66,21 @@ namespace Solvers::PL_ECA_3_Vars {
             }
     };
 
+
     typedef struct {
         XVar * x_var = nullptr;
         RestoredXVar * restored_x_var = nullptr;
     } Vars;
 
+    class ContractedVars {
+        XVar x;
+        RestoredXVar restored_x;
+
+        ContractedVars(const ContractionResult & cr) : x(cr), restored_x(cr) {};
+    };
+
     void name_variables(OsiSolverInterface * solver, const Landscape & landscape, const RestorationPlan & plan, const std::vector<Graph_t::Node> target_nodes, Graph_t::NodeMap<ContractionResult> * contracted_instances, Graph_t::NodeMap<Vars> & varsMap, FVar & f_var, RestoredFVar & restored_f_var, YVar & y_var) {
         const Graph_t & graph = landscape.getNetwork();
-        
         auto node_str = [&graph] (Graph_t::Node v) { return std::to_string(graph.id(v)); };
         
         // XVar
@@ -139,12 +146,7 @@ using namespace Solvers::PL_ECA_3_Vars;
 Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
-    // const int nb_threads = params.at("threads")->getInt();
-    // const int timeout = params.at("timeout")->getInt();
-    // const bool fortest = params.at("fortest")->getBool();
-
-    std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
-    last_time = std::chrono::high_resolution_clock::now();
+    Helper::Chrono chrono;
     
     Solution * solution = new Solution(landscape, plan);
 
@@ -218,12 +220,8 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     solver_builder.init();
     
     if(log_level > 0) {
-        current_time = std::chrono::high_resolution_clock::now();
-        int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-        solution->getComputeTimeMsRef() += time_ms;
-        std::cout << name() << ": Complete preprocessing : " << time_ms << " ms" << std::endl;
+        std::cout << name() << ": Complete preprocessing : " << chrono.lapTimeMs() << " ms" << std::endl;
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
-        last_time = current_time;
     }
 
     ////////////////////////////////////////////////////////////////////////
@@ -277,7 +275,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
             if(u == cr.t)
                 solver_builder.buffEntry(f_t, 1);
             // injected flow
-            solver_builder.pushRow(0.0, contracted_landscape->getQuality(u));
+            solver_builder.pushRow(-OSI_Builder::INFTY, contracted_landscape->getQuality(u));
         }
 
         // restored_x_a < y_i * M
@@ -317,14 +315,10 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     ////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////
     
-    current_time = std::chrono::high_resolution_clock::now();
     if(log_level >= 1) {
-        int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-        solution->getComputeTimeMsRef() += time_ms;
-        std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints in " << time_ms << " ms" << std::endl;
+        std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints in " << chrono.lapTimeMs() << " ms" << std::endl;
         std::cout << name() << ": Start solving" << std::endl;
     }
-    last_time = current_time;
 
     OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
 
@@ -369,84 +363,17 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     }
 
 
-    current_time = std::chrono::high_resolution_clock::now();
-    int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-    solution->getComputeTimeMsRef() += time_ms;
-    last_time = current_time;
-
-    if(log_level >= 1) {
-        std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << std::sqrt(solver->getObjValue()) << std::endl;
-    }
-    
-    solution->obj = std::sqrt(solver->getObjValue());
+    solution->setComputeTimeMs(chrono.timeMs());
+    solution->obj = solver->getObjValue();
     solution->nb_vars = solver_builder.getNbVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
 
+    if(log_level >= 1) {
+        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
+    }    
+    
     delete solver;
-
-
-
-
-
-
-    // CbcModel model(*solver);
-
-    // model.setLogLevel(log_level >= 2 ? 1 : 0);
-
-    // if(model.haveMultiThreadSupport())  {
-    //     model.setNumberThreads(nb_threads);
-    //     if(log_level >= 1 && nb_threads > 1)
-    //         std::cout << name() << ": Enabled multithread : " << model.getNumberThreads() << std::endl;
-    // }
-    // else 
-    //     if(log_level >= 1 && nb_threads > 1)
-    //         std::cerr << name() << ": multithread is disabled : to enable it build Cbc with --enable-cbc-parallel" << std::endl;
-     
-    // ////////////////////////////////////////////////////////////////////////
-    // // Compute
-    // ////////////////////
-    // model.setMaximumSeconds(timeout);
-    // model.branchAndBound();
-
-    // //model.addHeuristic(new CbcHeuristicGreedyCover());
-
-
-    
-    // const double * var_solution = model.bestSolution();
-    // if(var_solution == nullptr) {
-    //     std::cerr << name() << ": Fail" << std::endl;
-    //     delete solver;
-    //     return nullptr;
-    // }
-
-    // // Fill Solution
-    // for(RestorationPlan::Option * option : plan.options()) {
-    //     const int y_i = y_var.id(option);
-    //     double value = var_solution[y_i];
-    //     // remove torelance from solution
-    //     value = std::max(value, 0.0);
-    //     value = std::min(value, 1.0);
-
-    //     solution->set(option, value);
-    // }
-
-
-    // current_time = std::chrono::high_resolution_clock::now();
-    // int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-    // solution->getComputeTimeMsRef() += time_ms;
-    // last_time = current_time;
-
-    // if(log_level >= 1) {
-    //     std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
-    //     std::cout << name() << ": ECA from obj : " << std::sqrt(model.getObjValue()) << std::endl;
-    // }
-    
-    // solution->obj = std::sqrt(model.getObjValue());
-    // solution->nb_vars = solver_builder.getNbVars();
-    // solution->nb_constraints = solver_builder.getNbConstraints();
-
-    // delete solver;
 
     return solution;
 }

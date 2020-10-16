@@ -10,9 +10,6 @@
 
 #include "osi_builder.hpp"
 
-#include "coin/CbcModel.hpp" // deprecated
-#include "coin/CbcSolver.hpp"
-
 namespace Solvers {
     class PL_ECA_3 : public concepts::Solver {
         public:

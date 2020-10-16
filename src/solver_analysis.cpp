@@ -29,6 +29,8 @@
 #include "helper.hpp"
 
 static void populate(std::list<concepts::Solver*> & solvers) {
+    int log_pl = 2;
+
     Solvers::Bogo * bogo = new Solvers::Bogo(); (void)bogo;
     Solvers::Naive_ECA_Inc * naive_eca_inc = new Solvers::Naive_ECA_Inc();
     (*naive_eca_inc).setLogLevel(0).setParallel(true);
@@ -39,9 +41,9 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
     (*glutton_eca_dec).setLogLevel(0).setParallel(true);
     Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
-    (*pl_eca_2).setLogLevel(2).setNbThreads(10).setTimeout(36000);
+    (*pl_eca_2).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(2).setNbThreads(10).setTimeout(36000);
+    (*pl_eca_3).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding_1000->setLogLevel(0).setNbDraws(1000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_10000 = new Solvers::Randomized_Rounding_ECA();
@@ -232,7 +234,9 @@ int main() {
             << "solver "
             << "time "
             << "cost "
+            << "objective "
             << "total_eca "
+            << "eval_pl_eca_2 "
             << std::endl;
 
     std::vector<double> pow_values{1, 2};
@@ -271,6 +275,10 @@ int main() {
                                     cost += option_pair.first->getCost() * option_pair.second;
                                 const double total_eca = std::pow(eca.eval_solution(landscape, *solution), 2);
 
+
+                                Solvers::PL_ECA_2 pl_eca_2;
+                                double eval_pl_eca_2 = pl_eca_2.eval(landscape, plan, budget, *solution);
+
                                 data_log << pow << " " 
                                         << thresold << " " 
                                         << length_gain << " " 
@@ -280,7 +288,9 @@ int main() {
                                         << solver->toString() << " "
                                         << solution->getComputeTimeMs() << " "
                                         << cost << " "
-                                        << total_eca
+                                        << solution->obj << " "
+                                        << total_eca << " "
+                                        << eval_pl_eca_2
                                         << std::endl;
 
                                 delete solution;

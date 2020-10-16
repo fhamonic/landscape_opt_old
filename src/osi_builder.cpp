@@ -77,6 +77,7 @@ OSI_Builder & OSI_Builder::pushRow(double lb, double ub) {
 }
 OSI_Builder & OSI_Builder::setColName(int var_id, std::string name) {
     colNames[var_id] = name;
+    return *this;
 }
 OSI_Builder & OSI_Builder::setContinuous(int var_id) {
     std::remove(integers_variables.begin(), integers_variables.end(), var_id);

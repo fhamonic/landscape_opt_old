@@ -15,6 +15,8 @@ class Solution {
     private:
         const Landscape & landscape;
         const RestorationPlan & plan;
+
+        // TODO replace by vector<std::pair<const RestorationPlan::Option *, double>>
         std::map<const RestorationPlan::Option *, double> optionsCoefs;
 
         int compute_time_ms;
@@ -25,17 +27,13 @@ class Solution {
         };
         ~Solution() {};
 
-        const RestorationPlan & getPlan() { return plan; };
+        const RestorationPlan & getPlan() const { return plan; };
 
-        bool contains(const RestorationPlan::Option * option) {
+        bool contains(const RestorationPlan::Option * option) const {
             return optionsCoefs.at(option) > __DBL_EPSILON__;
         }
 
-        void set(const RestorationPlan::Option * option, double coef) { 
-            /*if(!(0.0 <= coef && coef <= 1.0))
-                std::cerr << coef << std::endl;
-            
-            assert(0.0 <= coef && coef <= 1.0);*/
+        void set(const RestorationPlan::Option * option, double coef) {
             optionsCoefs[option] = coef;
         }
         void add(const RestorationPlan::Option * option) { set(option, 1.0); }
@@ -47,9 +45,8 @@ class Solution {
 
         void setComputeTimeMs(int time_ms) { compute_time_ms = time_ms; }
         int getComputeTimeMs() const { return compute_time_ms; }
-        int & getComputeTimeMsRef() { return compute_time_ms; }
 
-        double getCost() {
+        double getCost() const {
             double sum = 0;
 
             for(auto option_pair : optionsCoefs) {

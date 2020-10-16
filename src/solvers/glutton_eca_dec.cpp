@@ -3,8 +3,7 @@
 Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool parallel = params.at("parallel")->getBool();
-    std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
-    last_time = std::chrono::high_resolution_clock::now();
+    Helper::Chrono chrono;
  
     Solution * solution = new Solution(landscape, plan);
 
@@ -70,10 +69,7 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         }
     }
 
-    current_time = std::chrono::high_resolution_clock::now();
-    int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-
-    solution->setComputeTimeMs(time_ms);
+    solution->setComputeTimeMs(chrono.timeMs());
     solution->obj = prec_eca;
 
     return solution;

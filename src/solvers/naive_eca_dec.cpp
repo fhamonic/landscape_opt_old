@@ -3,9 +3,7 @@
 Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool parallel = params.at("parallel")->getBool();
-    
-    std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
-    last_time = std::chrono::high_resolution_clock::now();
+    Helper::Chrono chrono;
     
     Solution * solution = new Solution(landscape, plan);
 
@@ -35,14 +33,11 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         }
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (prec_eca - eca) / option->getCost();
-        
         return std::make_pair(ratio, option);
     };
 
-    if(parallel)
-        std::transform(std::execution::par, options.begin(), options.end(), ratio_options.begin(), compute);
-    else
-        std::transform(std::execution::seq, options.begin(), options.end(), ratio_options.begin(), compute);
+    if(parallel) std::transform(std::execution::par, options.begin(), options.end(), ratio_options.begin(), compute);
+    else std::transform(std::execution::seq, options.begin(), options.end(), ratio_options.begin(), compute);
 
     std::sort(ratio_options.begin(), ratio_options.end(), [](std::pair<double, const RestorationPlan::Option *> & e1, std::pair<double, const RestorationPlan::Option *> & e2) {
         return e1.first < e2.first;
@@ -51,18 +46,13 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
     for(std::pair<double, const RestorationPlan::Option *> elem : ratio_options) {
         if(purchaised <= B)
             break;
-
         purchaised -= elem.second->getCost();;
         solution->remove(elem.second);
-
         if(log_level > 1)
             std::cout << elem.first << " " << elem.second->getId() << std::endl;
     }
 
-    current_time = std::chrono::high_resolution_clock::now();
-    int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-
-    solution->setComputeTimeMs(time_ms);
+    solution->setComputeTimeMs(chrono.timeMs());
 
     return solution;
 }

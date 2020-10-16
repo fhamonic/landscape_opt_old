@@ -8,6 +8,9 @@
 #include "coin/OsiCbcSolverInterface.hpp" // deprecated
 #include "coin/OsiGrbSolverInterface.hpp"
 
+#include "coin/CbcModel.hpp" // deprecated
+#include "coin/CbcSolver.hpp"
+
 #include "coin/CoinPackedMatrix.hpp"
 
 class OSI_Builder {

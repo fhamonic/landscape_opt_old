@@ -1,5 +1,7 @@
 #include "solvers/pl_eca_2.hpp"
 
+#include "coin/CglFlowCover.hpp"
+
 namespace Solvers::PL_ECA_2_Vars {
     class XVar : public OSI_Builder::VarType {
         private:
@@ -94,15 +96,22 @@ namespace Solvers::PL_ECA_2_Vars {
                 solver.setColName(vars.restored_f.id(t, option), "restored_f_t_" + node_str(t) + "_" + std::to_string(option->getId()));
         // YVar
         for(RestorationPlan::Option * option : plan.options()) solver.setColName(vars.y.id(option), "y_" + std::to_string(option->getId()));
-    };
+    }
 }
 
 using namespace Solvers::PL_ECA_2_Vars;
 
-YVar fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan & plan, const double B, bool relaxed) {
+void insert_variables(OSI_Builder & solver_builder, Variables & vars) {
+    solver_builder.addVarType(&vars.x);
+    solver_builder.addVarType(&vars.restored_x);
+    solver_builder.addVarType(&vars.f);
+    solver_builder.addVarType(&vars.restored_f);
+    solver_builder.addVarType(&vars.y);
+    solver_builder.init();
+}
+
+void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan & plan, const double B, Variables & vars, bool relaxed) {
     const Graph_t & graph = landscape.getNetwork();
-    
-    Variables vars(landscape, plan);
 
     double sum = 0;
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) { 
@@ -111,14 +120,7 @@ YVar fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             sum += option->getQualityGain(v);
     }
     const double M = sum;
-    
-    solver_builder.addVarType(&vars.x);
-    solver_builder.addVarType(&vars.restored_x);
-    solver_builder.addVarType(&vars.f);
-    solver_builder.addVarType(&vars.restored_f);
-    solver_builder.addVarType(&vars.y);
-    solver_builder.init();
-    
+
     ////////////////////////////////////////////////////////////////////////
     // Columns : Objective
     ////////////////////
@@ -165,7 +167,7 @@ YVar fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             if(u == t)
                 solver_builder.buffEntry(f_t, 1);
             // injected flow
-            solver_builder.pushRow(0.0, landscape.getQuality(u));
+            solver_builder.pushRow(-OSI_Builder::INFTY, landscape.getQuality(u));
         }
 
         // x_a < y_i * M
@@ -210,78 +212,87 @@ YVar fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             solver_builder.setInteger(y_i);
         }
     }
-
-    if(log_level >= 1)
-        name_variables(solver_builder, landscape, plan, vars);
 }
 
 Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
-    // const int nb_threads = params.at("threads")->getInt();
-    // const int timeout = params.at("timeout")->getInt();
-    // const bool fortest = params.at("fortest")->getBool();
-    std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
+    const bool relaxed = params.at("relaxed")->getBool();
+    Helper::Chrono chrono;
 
     OSI_Builder solver_builder = OSI_Builder();
-
-
-    if(log_level > 0)
-        std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
-        
-    YVar y_var = fill_solver(solver_builder, landscape, plan, B);
-    ////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////
     
-    current_time = std::chrono::high_resolution_clock::now();
-    if(log_level >= 1) {
-        int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-        std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints in " << time_ms << " ms" << std::endl;
-        std::cout << name() << ": Start solving" << std::endl;
-    }
-    last_time = current_time;
+    Variables vars(landscape, plan);
+    insert_variables(solver_builder, vars);
 
+    if(log_level > 0) std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
+    
+    fill_solver(solver_builder, landscape, plan, B, vars, relaxed);
     OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
    
-
-    if(log_level == 0)
-        solver->setHintParam(OsiDoReducePrint);
-
+    if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
-        solver->writeLp("pl_eca_2");
-        solver->writeMps("pl_eca_2");
+        if(log_level >= 2) {
+            name_variables(solver_builder, landscape, plan, vars);
+            solver->writeLp("pl_eca_2");
+            std::cout << name() << ": LP printed to 'pl_eca_2.lp'" << std::endl;
+        }
+        std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints in " << chrono.lapTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": Start solving" << std::endl;
     }
-
-    ////////////////////////////////////////////////////////////////////////
-    // Compute
     ////////////////////
-    solver->setHintParam(OsiHintParam::OsiDoReducePrint);
     solver->branchAndBound();
-    
     const double * var_solution = solver->getColSolution();
+
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
+        delete solver;
         return nullptr;
     }
 
     Solution * solution = new Solution(landscape, plan);
     for(RestorationPlan::Option * option : plan.options()) {
-        const int y_i = y_var.id(option);
+        const int y_i = vars.y.id(option);
         const double value = var_solution[y_i];
         solution->set(option, value);
     }
-
-    current_time = std::chrono::high_resolution_clock::now();
-    int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-    solution->setComputeTimeMs(time_ms);
-    last_time = current_time;
+    solution->setComputeTimeMs(chrono.timeMs());
+    solution->obj = solver->getObjValue();
 
     if(log_level >= 1) {
-        std::cout << name() << ": Complete solving : " << time_ms << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << std::sqrt(solver->getObjValue()) << std::endl;
+        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
     }
-    solution->obj = std::sqrt(solver->getObjValue());
 
     delete solver;
 
     return solution;
+}
+
+
+double Solvers::PL_ECA_2::eval(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution & solution) const {
+    const int log_level = params.at("log")->getInt();
+    OSI_Builder solver_builder = OSI_Builder();
+    Variables vars(landscape, plan);
+    insert_variables(solver_builder, vars);
+    if(log_level > 0) std::cout << name() << ": Start eval" << std::endl;
+    fill_solver(solver_builder, landscape, plan, B, vars, false);
+    for(auto option_pair : solution.getOptionCoefs()) {
+        const RestorationPlan::Option * option = option_pair.first;
+        const int y_i = vars.y.id(option);
+        double y_i_value = option_pair.second;
+        solver_builder.setBounds(y_i, y_i_value, y_i_value);
+    }
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
+    ////////////////////
+    solver->initialSolve();    
+    const double * var_solution = solver->getColSolution();
+    if(var_solution == nullptr) {
+        std::cerr << name() << ": eval failed" << std::endl;
+        return 0.0;
+    }
+    double obj = solver->getObjValue();
+    if(log_level >= 1) std::cout << name() << ": eval : " << obj << std::endl;
+    delete solver;
+    return obj;
 }
