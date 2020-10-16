@@ -84,7 +84,7 @@ Instance * make_instance_marseille(double pow, double thresold, double median, b
     auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
-    RandomChooser<Point> friches_chooser(12345);
+    RandomChooser<Point> friches_chooser(9876);
     std::vector<Graph_t::Node> friches_list;
 
     io::CSVReader<3> patches("data/Marseille/patchs_marseille.patches");
@@ -241,11 +241,11 @@ int main() {
 
     std::vector<double> pow_values{1, 2};
     std::vector<double> thresold_values{0.01};
-    std::vector<double> median_values{/*350,*/ 1400/*, 2800*/}; 
+    std::vector<double> median_values{700, 1400, 2800}; 
     std::vector<bool> length_gain_values{true}; 
     std::vector<bool> area_gain_values{false, true};
     std::vector<double> budget_values;
-    for(int i=0; i<=100; i+=5) budget_values.push_back(i);
+    for(int i=0; i<=20; i+=2) budget_values.push_back(i);
 
     const ECA & eca = ECA::get();
 
@@ -256,7 +256,8 @@ int main() {
                     for(bool area_gain : area_gain_values) {
                         if(length_gain == 0 && area_gain == 0) continue;
                         
-                        Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
+                        // Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
+                        Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
                         
                         const Landscape & landscape = instance->landscape;
                         const RestorationPlan & plan = instance->plan;
