@@ -1,23 +1,24 @@
 #ifndef CONTRACTION_PRECOMPUTATION_HPP
 #define CONTRACTION_PRECOMPUTATION_HPP
 
+#include <memory>
+
 #include "landscape/landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
 #include "indices/eca.hpp"
 
+#include "helper.hpp"
+
 class ContractionResult {
     public:
-        const Landscape * landscape;
-        const RestorationPlan * plan;
+        std::shared_ptr<Landscape> landscape;
+        std::shared_ptr<RestorationPlan> plan;
         Graph_t::Node t;
 
-        ContractionResult() : landscape(nullptr), plan(nullptr), t(lemon::INVALID) {}
-        ContractionResult(Landscape * landscape, RestorationPlan * plan, Graph_t::Node t) : landscape(landscape), plan(plan), t(t) {}
-        ~ContractionResult() {
-            /*delete landscape;
-            delete plan;*/
-        }
+        ContractionResult() {}
+        ContractionResult(Landscape * l, RestorationPlan * p, Graph_t::Node t) : landscape(l), plan(p), t(t) {}
+        ~ContractionResult() {}
 };
 
 class ContractionPrecomputation {

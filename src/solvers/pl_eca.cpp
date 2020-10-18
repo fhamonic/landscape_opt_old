@@ -91,10 +91,10 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
 
     OSI_Builder solver_builder = OSI_Builder();
 
-    solver_builder.addVarType(l_var_number, NULL, 0, solver_builder.infty());
-    solver_builder.addVarType(I_var_number, NULL, 0, 1);
-    solver_builder.addVarType(x_var_number, NULL, 0, 1);
-    solver_builder.addVarType(H_var_number, NULL, 0, 1);
+    solver_builder.addVarType(l_var_number, nullptr, 0, solver_builder.infty());
+    solver_builder.addVarType(I_var_number, nullptr, 0, 1);
+    solver_builder.addVarType(x_var_number, nullptr, 0, 1);
+    solver_builder.addVarType(H_var_number, nullptr, 0, 1);
     solver_builder.init();
 
     if(log_level > 0)
@@ -103,7 +103,7 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
 
 
     if(solver_builder.getNbVars() > 1000000) {
-        return NULL;
+        return nullptr;
     }
 
 
@@ -268,12 +268,12 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
     model.branchAndBound();
     
     const double * var_solution = model.bestSolution();
-    if(var_solution == NULL) {
+    if(var_solution == nullptr) {
         std::cerr << "Fail " << model.getCurrentSeconds() << std::endl;
 
         
 
-        return NULL;
+        return nullptr;
     }
 
     Solution * solution = new Solution(landscape, plan);

@@ -128,7 +128,7 @@ namespace lemon {
                 G(&g), _worst_length(&worst_length), _best_length(&best_length),
                 _heap_cross_ref(Traits::createHeapCrossRef(*G)),
                 _heap(Traits::createHeap(*_heap_cross_ref)),
-                _labeledNodesList(NULL), local_labeledNodesList(false) { }
+                _labeledNodesList(nullptr), local_labeledNodesList(false) { }
 
         ~IdentifyStrong() {
             if(local_labeledNodesList) delete _labeledNodesList;
@@ -300,7 +300,7 @@ namespace lemon {
                 G(&g), _worst_length(&worst_length), _best_length(&best_length),
                 _heap_cross_ref(Traits::createHeapCrossRef(*G)),
                 _heap(Traits::createHeap(*_heap_cross_ref)),
-                _labeledNodesList(NULL), local_labeledNodesList(false) { }
+                _labeledNodesList(nullptr), local_labeledNodesList(false) { }
 
         ~IdentifyUseless() {
             if(local_labeledNodesList) delete _labeledNodesList;

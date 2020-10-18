@@ -66,7 +66,7 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
     str_B.erase ( str_B.find_last_not_of('0') + 1, std::string::npos );
     
     std::string out_eps = name + "_B=" + str_B + "_" + solver.toString();
-    std::string title = (solution == NULL ? "Fail" : std::to_string(time_ms)) + " ms, ECA = " + std::to_string(restored_eca) + " cost = " + std::to_string(cost);
+    std::string title = (solution == nullptr ? "Fail" : std::to_string(time_ms)) + " ms, ECA = " + std::to_string(restored_eca) + " cost = " + std::to_string(cost);
 
     const double r_max = findNodeScale(landscape);
     const double a_max = 2*r_max*M_PI;

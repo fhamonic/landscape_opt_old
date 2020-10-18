@@ -42,12 +42,10 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     (*glutton_eca_dec).setLogLevel(0).setParallel(true);
     Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
     (*pl_eca_2).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
-    Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
+    // Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
+    // (*pl_eca_3).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding_1000->setLogLevel(0).setNbDraws(1000);
-    Solvers::Randomized_Rounding_ECA * randomized_rounding_10000 = new Solvers::Randomized_Rounding_ECA();
-    randomized_rounding_10000->setLogLevel(1).setNbDraws(10000).setParallel(true);
 
     solvers.push_back(bogo);
     solvers.push_back(naive_eca_inc);
@@ -55,9 +53,8 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
     solvers.push_back(pl_eca_2);
-    solvers.push_back(pl_eca_3);
+    //solvers.push_back(pl_eca_3);
     solvers.push_back(randomized_rounding_1000);
-    // solvers.push_back(randomized_rounding_10000);
 }
 static void clean(std::list<concepts::Solver*> & solvers) {
     for(concepts::Solver * solver : solvers)
@@ -237,6 +234,7 @@ int main() {
             << "objective "
             << "total_eca "
             << "eval_pl_eca_2 "
+            << "eval_pl_eca_3 "
             << std::endl;
 
     std::vector<double> pow_values{1, 2};
@@ -256,8 +254,8 @@ int main() {
                     for(bool area_gain : area_gain_values) {
                         if(length_gain == 0 && area_gain == 0) continue;
                         
-                        // Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
-                        Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
+                        Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
+                        // Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
                         
                         const Landscape & landscape = instance->landscape;
                         const RestorationPlan & plan = instance->plan;
@@ -276,9 +274,10 @@ int main() {
                                     cost += option_pair.first->getCost() * option_pair.second;
                                 const double total_eca = std::pow(eca.eval_solution(landscape, *solution), 2);
 
-
                                 Solvers::PL_ECA_2 pl_eca_2;
                                 double eval_pl_eca_2 = pl_eca_2.eval(landscape, plan, budget, *solution);
+                                Solvers::PL_ECA_3 pl_eca_3;
+                                double eval_pl_eca_3 = pl_eca_3.eval(landscape, plan, budget, *solution);
 
                                 data_log << pow << " " 
                                         << thresold << " " 
@@ -291,11 +290,18 @@ int main() {
                                         << cost << " "
                                         << solution->obj << " "
                                         << total_eca << " "
-                                        << eval_pl_eca_2
+                                        << eval_pl_eca_2 << " "
+                                        << eval_pl_eca_3
                                         << std::endl;
 
                                 delete solution;
                             }
+
+
+
+                            // delete instance;
+                            // clean(solvers);
+                            // return 1;
                         }   
                         delete instance;
                     }             

@@ -12,7 +12,7 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
     std::string patches_file, links_file;
     if(! landscape_files.read_row(patches_file, links_file)){
         std::cerr << "StdLandscapeParser : failed reading " << file_name << std::endl;
-        return NULL;
+        return nullptr;
     }
 
     io::CSVReader<4> patches(patches_file);
@@ -31,7 +31,7 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
         if(g.id(new_node) != patch_id) {
             std::cerr << "StdLandscapeParser : Warning in file " << patches_file << " line " << patches.get_file_line() << " : expexted id " << g.id(new_node) << " but was " << patch_id << "." << std::endl;
             delete landscape;
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -41,12 +41,12 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
         if(link_source_id < 0 || link_source_id > patch_id) {
             std::cerr << "StdLandscapeParser : Warning in file " << links_file << " line " << links.get_file_line() << " : invalid patch id : " << link_source_id << "." << std::endl;
             delete landscape;
-            return NULL;
+            return nullptr;
         }
         if(link_target_id < 0 || link_target_id > patch_id) {
             std::cerr << "StdLandscapeParser : Warning in file " << links_file << " line " << links.get_file_line() << " : invalid patch id : " << link_target_id << "." << std::endl;
             delete landscape;
-            return NULL;
+            return nullptr;
         }
 
         const Graph_t::Node & u = g.nodeFromId(link_source_id);

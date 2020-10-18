@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <execution>
 
-
 #include "algorithms/identify_strong_arcs.h"
 
 class NodeDist {
@@ -91,9 +90,6 @@ class NodeDist {
 
 
 
-
-
-
 ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node orig_t, const std::vector<Graph_t::Arc> & orig_contractables_arcs, const std::vector<Graph_t::Arc> & orig_deletables_arcs) const {
     Landscape * contracted_landscape = new Landscape();
     std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> refs = contracted_landscape->copy(landscape);
@@ -108,7 +104,6 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     for(RestorationPlan::Option * option : contracted_plan->options())
         for(Graph_t::Arc a : option->arcs())
             option->getRestoredProbabilityRef(a) /= contracted_landscape->getProbability(a);
-
 
     for(Graph_t::Arc orig_a : orig_deletables_arcs) {   
         Graph_t::Arc a = (*refs.second)[orig_a];  
@@ -125,7 +120,6 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
         contract_arc(*contracted_landscape, a);
     }
     
-
     retrive_quality_gains(*contracted_landscape, *contracted_plan, options_nodes);
     for(RestorationPlan::Option * option : contracted_plan->options())
         for(Graph_t::Arc a : option->arcs()) {
@@ -137,9 +131,17 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     contracted_plan->cleanInvalidElements();
     contracted_plan->removeEmptyOptions();
 
+    // ///////// reduce memory usage -> TODO StaticLandscape class
+    // std::shared_ptr<ContractionResult> cr(new ContractionResult(contracted_landscape, contracted_plan, contracted_t));
 
-    //return ContractionResult(contracted_landscape, contracted_plan, contracted_t);
-    ///////// reduce memory usage -> TODO StaticLandscape class and declare contracted... in stack
+    // delete contracted_landscape;
+    // delete contracted_plan;
+    // delete refs.first;
+    // delete refs.second;
+    
+    // return cr;
+
+
     Landscape * final_landscape = new Landscape();
     std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> final_refs = final_landscape->copy(*contracted_landscape);
     RestorationPlan * final_plan = new RestorationPlan(*final_landscape);
@@ -153,9 +155,6 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     delete final_refs.first;
     delete final_refs.second;
 
-//for debug purposes
-//Helper::assert_well_formed(*final_landscape, *final_plan);
-
     return ContractionResult(final_landscape, final_plan, final_t);
 }
 
@@ -164,7 +163,7 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
     const Graph_t & graph = landscape.getNetwork();
     Graph_t::NodeMap<ContractionResult> * results = new Graph_t::NodeMap<ContractionResult>(graph);
 
-    //const Graph_t::ArcMap<double> & p_min = landscape.getProbabilityMap();
+    //const Graph_t::ArcMap<double> & p_min = landscape.getProbabilityMap(); // since log is needed
     Graph_t::ArcMap<double> p_min(graph);
     Graph_t::ArcMap<double> p_max(graph);
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
@@ -173,17 +172,14 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
             p_max[a] = std::max(p_max[a], option->getRestoredProbability(a));
     }
 
+    // TODO use graph iterator
     std::vector<Graph_t::Node> nodes;
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u)
-        nodes.push_back(u);
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) nodes.push_back(u);
     std::vector<Graph_t::Arc> arcs;
-    for(Graph_t::ArcIt b(graph); b != lemon::INVALID; ++b)
-        arcs.push_back(b);
+    for(Graph_t::ArcIt b(graph); b != lemon::INVALID; ++b) arcs.push_back(b);
 
     Graph_t::ArcMap<std::vector<Graph_t::Node>> strong_nodes(graph);
     Graph_t::ArcMap<std::vector<Graph_t::Node>> non_weak_nodes(graph);
-
-
 
     //*
     for(Graph_t::ArcIt b(graph); b != lemon::INVALID; ++b) {
@@ -201,10 +197,6 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
         getNonWeaks(graph, p_max, p_min, a, non_weak_nodes[a]);
         //*/
     });
-
-
-    
-
 
     // transpose
     Graph_t::NodeMap<std::vector<Graph_t::Arc>> contractables_arcs(graph);

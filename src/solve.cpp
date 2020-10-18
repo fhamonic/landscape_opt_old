@@ -128,7 +128,7 @@ int main (int argc, const char *argv[]) {
 
     Solution * solution = solver.solve(*landscape, *plan, B);
 
-    if(solution != NULL) {
+    if(solution != nullptr) {
         Helper::printSolution(*landscape, name, solver, B, solution);
         delete solution;
     } else {

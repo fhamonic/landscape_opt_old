@@ -43,7 +43,7 @@ RestorationPlan::Option * find_option(const RestorationPlan & plan, const int id
     for(RestorationPlan::Option * option : plan.options())
         if(option->getId() == id)
             return option;
-    return NULL;
+    return nullptr;
 }
 
 

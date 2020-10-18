@@ -20,7 +20,7 @@ Graph_t::NodeMap<bool> * getMaxIndependentMap(const Graph_t & graph) {
 
     OSI_Builder * solver_builder = new OSI_Builder();
 
-    solver_builder->addVarType(x_var_number, NULL, NULL, 0, 1);
+    solver_builder->addVarType(x_var_number, nullptr, nullptr, 0, 1);
     solver_builder->init();
 
     ////////// Objective ///////////
@@ -59,9 +59,9 @@ Graph_t::NodeMap<bool> * getMaxIndependentMap(const Graph_t & graph) {
     model.branchAndBound();
     
     const double * var_solution = model.bestSolution();
-    if(var_solution == NULL) {
+    if(var_solution == nullptr) {
         std::cerr << "Fail" << std::endl;
-        return NULL;
+        return nullptr;
     }
 
     Graph_t::NodeMap<bool> * independentMap = new Graph_t::NodeMap<bool>(graph);
