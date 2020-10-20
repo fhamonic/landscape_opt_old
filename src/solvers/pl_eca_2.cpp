@@ -218,18 +218,13 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
     Helper::Chrono chrono;
-
     OSI_Builder solver_builder = OSI_Builder();
-    
     Variables vars(landscape, plan);
     insert_variables(solver_builder, vars);
-
     if(log_level > 0) std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
-    
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed);
     OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
-   
-    if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
+       if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 2) {
             name_variables(solver_builder, landscape, plan, vars);
@@ -241,14 +236,13 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     }
     ////////////////////
     solver->branchAndBound();
+    ////////////////////
     const double * var_solution = solver->getColSolution();
-
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
         delete solver;
         return nullptr;
     }
-
     Solution * solution = new Solution(landscape, plan);
     for(RestorationPlan::Option * option : plan.options()) {
         const int y_i = vars.y.id(option);
@@ -257,12 +251,10 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     }
     solution->setComputeTimeMs(chrono.timeMs());
     solution->obj = solver->getObjValue();
-
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
         std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
     }
-
     delete solver;
 
     return solution;
@@ -285,7 +277,8 @@ double Solvers::PL_ECA_2::eval(const Landscape & landscape, const RestorationPla
     OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
     if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     ////////////////////
-    solver->initialSolve();    
+    solver->initialSolve();  
+    ////////////////////  
     const double * var_solution = solver->getColSolution();
     if(var_solution == nullptr) {
         std::cerr << name() << ": eval failed" << std::endl;

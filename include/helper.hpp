@@ -46,7 +46,7 @@ namespace Helper {
             template <class chrono_unit>
             int time() {
                 std::chrono::time_point<std::chrono::high_resolution_clock> current_time = std::chrono::high_resolution_clock::now();
-                return std::chrono::duration_cast<chrono_unit>(current_time-last_time).count();
+                return std::chrono::duration_cast<chrono_unit>(current_time-start_time).count();
             }
             int timeUs() { return time<std::chrono::microseconds>(); }
             int timeMs() { return time<std::chrono::milliseconds>(); }

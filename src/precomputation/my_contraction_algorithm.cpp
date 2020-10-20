@@ -132,16 +132,6 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     contracted_plan->removeEmptyOptions();
 
     // ///////// reduce memory usage -> TODO StaticLandscape class
-    // std::shared_ptr<ContractionResult> cr(new ContractionResult(contracted_landscape, contracted_plan, contracted_t));
-
-    // delete contracted_landscape;
-    // delete contracted_plan;
-    // delete refs.first;
-    // delete refs.second;
-    
-    // return cr;
-
-
     Landscape * final_landscape = new Landscape();
     std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> final_refs = final_landscape->copy(*contracted_landscape);
     RestorationPlan * final_plan = new RestorationPlan(*final_landscape);

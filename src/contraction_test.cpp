@@ -52,7 +52,7 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     Helper::assert_well_formed(landscape, plan);
     const Graph_t & graph = landscape.getNetwork();
 
-    const int nb_nodes = lemon::countNodes(graph);
+    // const int nb_nodes = lemon::countNodes(graph);
     const double epsilon_n = 1e-8;
     const double epsilon_n2 = 1e-7;
 
@@ -87,8 +87,6 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     const int nb_tests = 100;
 
     for(int i=0; i<nb_tests; ++i) {
-        bool error = false;
-
         std::vector<int> picked_options;
         double nb_picked_options = dis(gen);
         option_chooser.reset();
@@ -113,7 +111,6 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
             
             if(fabs(base - contracted) > epsilon_n) {
                 std::cout << "test " << i << " source " << graph.id(t) << " : " << base << " != " << contracted << std::endl;
-                error = true;
             }
 
             sum_base += base;
@@ -122,12 +119,7 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
 
         if(fabs(sum_base - sum_contracted) > epsilon_n2) {
             std::cout << "test " << i << " sum : " << sum_base << " != " << sum_contracted << std::endl;
-            error = true;
         }
-
-        // if(!error) {
-        //     std::cout << "test " << i << " / " << nb_tests << " : ok" << std::endl;
-        // }
     }
 
     // int sum_of_nb_nodes = 0;
@@ -147,15 +139,11 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
 }
 
 
-int main (int argc, const char *argv[]) {
-    /*if(argc < 3) {
-        std::cerr << "input requiered : <landscape_file> <plan_file>" << std::endl;
-        return EXIT_FAILURE;
-    }*/
-
+int main() {
     const int nb_nodes = 20;
     const int nb_arcs = 200;
-    const int nb_restored_arcs = 50;
+    const int nb_options = 50;
+    const bool restore_nodes = true;
 
     const int seed = 9473;
     std::cout << std::setprecision(20);
@@ -164,14 +152,13 @@ int main (int argc, const char *argv[]) {
     const int nb_tests = 10000;
     for(int cpt_test=0; cpt_test<nb_tests; cpt_test++) {
         Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, nb_nodes, nb_arcs, false);
-        RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, nb_restored_arcs);
+        RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, nb_options, restore_nodes);
         
         do_test(*landscape, *plan, seed + cpt_test);
 
         delete plan;
         delete landscape;
     }
-
 
     return EXIT_SUCCESS;
 }

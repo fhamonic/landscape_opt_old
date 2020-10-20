@@ -3,6 +3,7 @@
 /cache
 *.lp
 *.mps.gz
+*.log
 
 *.out
 .vscode

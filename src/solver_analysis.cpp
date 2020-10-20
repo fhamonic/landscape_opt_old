@@ -40,10 +40,10 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     (*glutton_eca_inc).setLogLevel(0).setParallel(true);
     Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
     (*glutton_eca_dec).setLogLevel(0).setParallel(true);
-    Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
-    (*pl_eca_2).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
-    // Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    // (*pl_eca_3).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
+    // Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
+    // (*pl_eca_2).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
+    Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
+    (*pl_eca_3).setLogLevel(log_pl).setNbThreads(10).setTimeout(36000);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding_1000->setLogLevel(0).setNbDraws(1000);
 
@@ -52,8 +52,8 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     solvers.push_back(naive_eca_dec);
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
-    solvers.push_back(pl_eca_2);
-    //solvers.push_back(pl_eca_3);
+    // solvers.push_back(pl_eca_2);
+    solvers.push_back(pl_eca_3);
     solvers.push_back(randomized_rounding_1000);
 }
 static void clean(std::list<concepts::Solver*> & solvers) {
@@ -241,7 +241,7 @@ int main() {
     std::vector<double> thresold_values{0.01};
     std::vector<double> median_values{700, 1400, 2800}; 
     std::vector<bool> length_gain_values{true}; 
-    std::vector<bool> area_gain_values{false, true};
+    std::vector<bool> area_gain_values{/*false, */true};
     std::vector<double> budget_values;
     for(int i=0; i<=20; i+=2) budget_values.push_back(i);
 
@@ -254,8 +254,8 @@ int main() {
                     for(bool area_gain : area_gain_values) {
                         if(length_gain == 0 && area_gain == 0) continue;
                         
-                        Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
-                        // Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
+                        // Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
+                        Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
                         
                         const Landscape & landscape = instance->landscape;
                         const RestorationPlan & plan = instance->plan;

@@ -120,7 +120,6 @@ T SumTree<T>::pick_and_reset() {
     assert(canPick());
     std::uniform_real_distribution<> dis(0, _root->weight);
     double val = dis(gen);
-
     return find(_root, val)->u.leaf.data;
 }
 
