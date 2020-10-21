@@ -98,12 +98,10 @@ namespace Solvers::PL_ECA_3_Vars {
         private:
             std::map<int, int> offsets;
         public:
-            RestoredFVar(const ContractionResult & cr) {
-                int cpt = 0;
+            RestoredFVar(const ContractionResult & cr) : VarType(0) {
                 for(RestorationPlan::Option * option : cr.plan->getOptions(cr.t)) {
-                    offsets[option->getId()] = cpt++;
+                    offsets[option->getId()] = _number++;
                 }
-                _number = cpt;
             }
             int id(const RestorationPlan::Option * option) const { 
                 assert(offsets.contains(option->getId())); 
@@ -141,7 +139,7 @@ namespace Solvers::PL_ECA_3_Vars {
             ContractedVars & operator[](Graph_t::Node t) const { return *contracted[t]; }
     };
 
-    void name_variables(OsiSolverInterface * solver, const Landscape & landscape, const RestorationPlan & plan, PreprocessedDatas & pdatas, const Variables & vars) {
+    void name_variables(OSI_Builder & solver, const Landscape & landscape, const RestorationPlan & plan, PreprocessedDatas & pdatas, const Variables & vars) {
         const Graph_t & graph = landscape.getNetwork();
         auto node_str = [&graph] (Graph_t::Node v) { return std::to_string(graph.id(v)); };
         // XVar
@@ -153,20 +151,20 @@ namespace Solvers::PL_ECA_3_Vars {
             const RestorationPlan & contracted_plan = *cr.plan;
             for(Graph_t::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
                 // solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)));
-                solver->setColName(cvars.x.id(a), "x_t_" + node_str(t) + "(" + std::to_string(contracted_graph.id(cr.t)) + ")_a_" + std::to_string(contracted_graph.id(a)) + "(" + std::to_string(contracted_graph.id(contracted_graph.source(a))) + ","+ std::to_string(contracted_graph.id(contracted_graph.target(a))) + ")" );
+                solver.setColName(cvars.x.id(a), "x_t_" + node_str(t) + "(" + std::to_string(contracted_graph.id(cr.t)) + ")_a_" + std::to_string(contracted_graph.id(a)) + "(" + std::to_string(contracted_graph.id(contracted_graph.source(a))) + ","+ std::to_string(contracted_graph.id(contracted_graph.target(a))) + ")" );
                 // RestoredXVar
                 for(RestorationPlan::Option * option : contracted_plan.getOptions(a))
-                    solver->setColName(cvars.restored_x.id(a, option), "restored_x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)) + "_" + std::to_string(option->getId()));
+                    solver.setColName(cvars.restored_x.id(a, option), "restored_x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)) + "_" + std::to_string(option->getId()));
             }
         }
         // FVar
-        for(Graph_t::Node t : pdatas.target_nodes) solver->setColName(vars[t].f.id(), "f_t_" + node_str(t));
+        for(Graph_t::Node t : pdatas.target_nodes) solver.setColName(vars[t].f.id(), "f_t_" + node_str(t));
         // RestoredFVar
         for(Graph_t::Node t : pdatas.target_nodes)
             for(RestorationPlan::Option * option : plan.getOptions(t))
-                solver->setColName(vars[t].restored_f.id(option), "restored_f_t_" + node_str(t) + "_" + std::to_string(option->getId()));
+                solver.setColName(vars[t].restored_f.id(option), "restored_f_t_" + node_str(t) + "_" + std::to_string(option->getId()));
         // YVar
-        for(RestorationPlan::Option * option : plan.options()) solver->setColName(vars.y.id(option), "y_" + std::to_string(option->getId()));
+        for(RestorationPlan::Option * option : plan.options()) solver.setColName(vars.y.id(option), "y_" + std::to_string(option->getId()));
     }
 }
 
@@ -306,12 +304,14 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     }
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
-    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
     if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 2) {
-        name_variables(solver, landscape, plan, preprocessed_datas, vars);
-            solver->writeLp("pl_eca_3");
+            name_variables(solver_builder, landscape, plan, preprocessed_datas, vars);
+            OsiClpSolverInterface * solver_clp = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+            solver_clp->writeLp("pl_eca_3");
+            delete solver_clp;
             std::cout << name() << ": LP printed to 'pl_eca_3.lp'" << std::endl;
         }
         std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints in " << chrono.lapTimeMs() << " ms" << std::endl;

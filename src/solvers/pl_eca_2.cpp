@@ -228,7 +228,9 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     if(log_level >= 1) {
         if(log_level >= 2) {
             name_variables(solver_builder, landscape, plan, vars);
-            solver->writeLp("pl_eca_2");
+            OsiClpSolverInterface * solver_clp = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+            solver_clp->writeLp("pl_eca_2");
+            delete solver_clp;
             std::cout << name() << ": LP printed to 'pl_eca_2.lp'" << std::endl;
         }
         std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints in " << chrono.lapTimeMs() << " ms" << std::endl;

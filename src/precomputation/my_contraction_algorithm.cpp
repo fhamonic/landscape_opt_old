@@ -98,6 +98,7 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     Graph_t::Node contracted_t = (*refs.first)[orig_t];
 
     const Graph_t & graph = contracted_landscape->getNetwork();
+    erase_non_connected(graph, contracted_t);
 
     std::vector<std::vector<Graph_t::Arc>> options_nodes;
     model_quality_gains(*contracted_landscape, *contracted_plan, options_nodes);

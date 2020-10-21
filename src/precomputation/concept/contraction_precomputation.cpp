@@ -1,5 +1,25 @@
 #include "precomputation/concept/contraction_precomputation.hpp"
 
+#include <lemon/bfs.h>
+
+
+/**
+ * Contracts specified uv arc preserving graph ids
+ * 
+ * @time O(deg v)
+ * @space O(deg v)
+ */
+void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph_t::Node t) const {    
+    typedef lemon::ReverseDigraph<const Graph_t> Reversed;
+    
+    const Graph_t & graph = landscape.getNetwork();
+
+    Reversed rg(graph);
+    lemon::Bfs<Reversed> bfs(rg);
+
+    landscape.removeNode(u);
+}
+
 /**
  * Contracts specified uv arc preserving graph ids
  * 
