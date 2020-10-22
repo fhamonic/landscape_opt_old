@@ -8,6 +8,8 @@
 #define INNER 0
 #define LEAF 1
 
+// TODO unit tests
+
 template <typename T>
 class SumTree {
     private:

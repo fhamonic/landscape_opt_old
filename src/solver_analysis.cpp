@@ -13,7 +13,7 @@
 #include "indices/eca.hpp"
 #include "landscape/decored_landscape.hpp"
 
-#include "random_chooser.hpp"
+#include "utils/random_chooser.hpp"
 
 #include "precomputation/my_contraction_algorithm.hpp"
 

@@ -10,6 +10,8 @@
 #include "solvers/concept/solution.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
+#include "utils/chrono.hpp"
+
 namespace concepts {
     class Solver {
         protected:

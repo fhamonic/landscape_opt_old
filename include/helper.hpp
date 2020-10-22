@@ -9,7 +9,6 @@
 #define HELPER_HPP
 
 #include <math.h>
-#include <chrono>
 
 #include "landscape/landscape.hpp"
 #include "landscape/decored_landscape.hpp"
@@ -26,45 +25,6 @@
 #include "indices/eca.hpp"
 
 namespace Helper {
-    /**
-     * @brief Chronometer class
-     * 
-     */
-    class Chrono {
-        private:
-            std::chrono::time_point<std::chrono::high_resolution_clock> start_time, last_time;
-
-        public:
-            Chrono() : start_time(std::chrono::high_resolution_clock::now()), 
-                    last_time(std::chrono::high_resolution_clock::now()) {}
-
-            void reset() {
-                start_time = std::chrono::high_resolution_clock::now();
-                last_time = std::chrono::high_resolution_clock::now();
-            }
-
-            template <class chrono_unit>
-            int time() {
-                std::chrono::time_point<std::chrono::high_resolution_clock> current_time = std::chrono::high_resolution_clock::now();
-                return std::chrono::duration_cast<chrono_unit>(current_time-start_time).count();
-            }
-            int timeUs() { return time<std::chrono::microseconds>(); }
-            int timeMs() { return time<std::chrono::milliseconds>(); }
-            int timeS() { return time<std::chrono::seconds>(); }
-
-            template <class chrono_unit>
-            int lapTime() {
-                std::chrono::time_point<std::chrono::high_resolution_clock> current_time = std::chrono::high_resolution_clock::now();
-                int time = std::chrono::duration_cast<chrono_unit>(current_time-last_time).count();
-                last_time = current_time;
-                return time;
-            }
-            int lapTimeUs() { return lapTime<std::chrono::microseconds>(); }
-            int lapTimeMs() { return lapTime<std::chrono::milliseconds>(); }
-            int lapTimeS() { return lapTime<std::chrono::seconds>(); }
-    };
-
-
     /**
      * @brief Finds the maximum node scaling for which no nodes overlaps.
      * 

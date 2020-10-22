@@ -10,14 +10,14 @@
 #include "parsers/std_restoration_plan_parser.hpp"
 #include "parsers/std_landscape_parser.hpp"
 
-#include "random_chooser.hpp"
+#include "utils/random_chooser.hpp"
 
 #include "helper.hpp"
 
 #include "precomputation/my_contraction_algorithm.hpp"
 
 #include "catch.hpp"
-#include "random_landscape_genereator.hpp"
+#include "utils/random_instance_generator.hpp"
 
 
 template <typename GR, typename QM, typename PM, typename CM>

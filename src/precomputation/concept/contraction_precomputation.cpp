@@ -4,7 +4,7 @@
 
 
 /**
- * Contracts specified uv arc preserving graph ids
+ * Erase the nodes from wich there is not path to t
  * 
  * @time O(deg v)
  * @space O(deg v)
@@ -16,8 +16,16 @@ void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph
 
     Reversed rg(graph);
     lemon::Bfs<Reversed> bfs(rg);
+    bfs.run(t);
 
-    landscape.removeNode(u);
+    std::vector<Graph_t::Node> to_delete;
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+        if(bfs.reached(u)) continue;
+        to_delete.push_back(u);
+    }
+    for(Graph_t::Node u : to_delete)
+        if(graph.valid(u))
+            landscape.removeNode(u);
 }
 
 /**

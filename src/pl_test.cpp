@@ -10,7 +10,8 @@
 #include "parsers/std_restoration_plan_parser.hpp"
 #include "parsers/std_landscape_parser.hpp"
 
-#include "random_chooser.hpp"
+#include "utils/random_chooser.hpp"
+#include "utils/random_instance_generator.hpp"
 
 #include "helper.hpp"
 
@@ -18,7 +19,6 @@
 
 #include "catch.hpp"
 
-#include "random_landscape_genereator.hpp"
 
 #include "solvers/glutton_eca_inc.hpp"
 #include "solvers/glutton_eca_dec.hpp"

@@ -35,13 +35,14 @@ GLUTTON_SOLVERS_SRC:=solvers/glutton_eca_inc.cpp solvers/glutton_eca_dec.cpp
 PL_SOLVERS_SRC:=solvers/pl_eca_2.cpp solvers/pl_eca_3.cpp solvers/randomized_rounding.cpp
 PARSERS_SRC:=parsers/std_landscape_parser.cpp parsers/std_restoration_plan_parser.cpp
 PRECOMPUTATION_SRC:=precomputation/concept/contraction_precomputation.cpp precomputation/my_contraction_algorithm.cpp
+UTILS_SRC:=utils/osi_builder.cpp
 
-SRC:=$(LANDSCAPE_SRC) $(INDICES_SRC) $(PLANS_SRC) $(NAIVE_SOLVERS_SRC) $(GLUTTON_SOLVERS_SRC) $(PL_SOLVERS_SRC) $(PARSERS_SRC) $(PRECOMPUTATION_SRC) helper.cpp osi_builder.cpp
+SRC:=$(LANDSCAPE_SRC) $(INDICES_SRC) $(PLANS_SRC) $(NAIVE_SOLVERS_SRC) $(GLUTTON_SOLVERS_SRC) $(PL_SOLVERS_SRC) $(PARSERS_SRC) $(PRECOMPUTATION_SRC) $(UTILS_SRC) helper.cpp 
 
 OBJ=$(addprefix $(BUILD_DIR)/,$(SRC:.cpp=.o))
 
 build_dir: 
-	mkdir -p $(BUILD_DIR) $(BUILD_DIR)/landscape $(BUILD_DIR)/indices $(BUILD_DIR)/solvers $(BUILD_DIR)/solvers/concept $(BUILD_DIR)/parsers $(BUILD_DIR)/precomputation $(BUILD_DIR)/precomputation/concept
+	mkdir -p $(BUILD_DIR) $(BUILD_DIR)/landscape $(BUILD_DIR)/indices $(BUILD_DIR)/solvers $(BUILD_DIR)/solvers/concept $(BUILD_DIR)/parsers $(BUILD_DIR)/precomputation $(BUILD_DIR)/precomputation/concept $(BUILD_DIR)/utils
 output_dir: 
 	mkdir -p output
 dir : build_dir output_dir

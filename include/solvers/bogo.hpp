@@ -2,7 +2,6 @@
 #define BOGO_SOLVER_HPP
 
 #include "solvers/concept/solver.hpp"
- #include "helper.hpp"
 
 namespace Solvers {
     class Bogo : public concepts::Solver {

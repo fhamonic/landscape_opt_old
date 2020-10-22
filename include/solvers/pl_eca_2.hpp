@@ -3,9 +3,8 @@
 
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
-#include "helper.hpp"
 
-#include "osi_builder.hpp"
+#include "utils/osi_builder.hpp"
 
 namespace Solvers {
     class PL_ECA_2 : public concepts::Solver {

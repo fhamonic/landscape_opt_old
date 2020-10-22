@@ -4,10 +4,7 @@
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
 
-#include "helper.hpp"
-
 #include <execution>
-#include <numeric>
 
 namespace Solvers {
     class Glutton_ECA_Dec : public concepts::Solver {

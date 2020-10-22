@@ -3,7 +3,7 @@
 Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool parallel = params.at("parallel")->getBool();
-    Helper::Chrono chrono;
+    Chrono chrono;
  
     Solution * solution = new Solution(landscape, plan);
 

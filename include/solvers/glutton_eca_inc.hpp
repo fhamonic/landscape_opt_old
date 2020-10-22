@@ -4,10 +4,7 @@
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
 
-#include "helper.hpp"
-
 #include <execution>
-#include <numeric>
 
 namespace Solvers {
     class Glutton_ECA_Inc : public concepts::Solver {
@@ -32,6 +29,5 @@ namespace Solvers {
             const std::string name() const { return "glutton_eca_inc"; } 
     };
 }
-
 
 #endif // GLUTTON_ECA_SOLVER_HPP

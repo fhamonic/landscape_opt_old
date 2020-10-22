@@ -11,7 +11,7 @@
 #include "parsers/std_restoration_plan_parser.hpp"
 #include "parsers/std_landscape_parser.hpp"
 
-#include "random_chooser.hpp"
+#include "utils/random_chooser.hpp"
 
 #include "helper.hpp"
 

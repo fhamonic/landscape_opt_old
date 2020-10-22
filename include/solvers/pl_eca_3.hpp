@@ -6,9 +6,8 @@
 
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
-#include "helper.hpp"
 
-#include "osi_builder.hpp"
+#include "utils/osi_builder.hpp"
 
 namespace Solvers {
     class PL_ECA_3 : public concepts::Solver {
@@ -49,6 +48,5 @@ namespace Solvers {
             double eval(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution & solution) const;
     };
 }
-
 
 #endif // PL_ECA_SOLVER_HPP

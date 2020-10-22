@@ -293,7 +293,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
 Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
-    Helper::Chrono chrono;
+    Chrono chrono;
     if(log_level > 0) std::cout << name() << ": Start preprocessing" << std::endl;
     PreprocessedDatas preprocessed_datas(landscape, plan);
     OSI_Builder solver_builder = OSI_Builder();
@@ -347,7 +347,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
 double Solvers::PL_ECA_3::eval(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution & solution) const {
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
-    Helper::Chrono chrono;
+    Chrono chrono;
     PreprocessedDatas preprocessed_datas(landscape, plan);
     OSI_Builder solver_builder = OSI_Builder();
     Variables vars(landscape, plan, preprocessed_datas);

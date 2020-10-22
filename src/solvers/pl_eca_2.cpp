@@ -217,7 +217,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
 Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
-    Helper::Chrono chrono;
+    Chrono chrono;
     OSI_Builder solver_builder = OSI_Builder();
     Variables vars(landscape, plan);
     insert_variables(solver_builder, vars);

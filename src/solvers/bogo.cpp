@@ -1,10 +1,11 @@
 #include "solvers/bogo.hpp"
 
-#include "random_chooser.hpp"
+#include "utils/random_chooser.hpp"
 
 Solution * Solvers::Bogo::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
     const int seed = params.at("seed")->getInt();
-    
+    Chrono chrono;
+
     RandomChooser<const RestorationPlan::Option*> option_chooser(seed);
     for(RestorationPlan::Option * option : plan.options())
         option_chooser.add(option, 1);
@@ -19,5 +20,7 @@ Solution * Solvers::Bogo::solve(const Landscape & landscape, const RestorationPl
         solution->add(option);
     }
 
+    solution->setComputeTimeMs(chrono.timeMs());
+    
     return solution;
 }

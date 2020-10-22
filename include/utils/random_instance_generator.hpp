@@ -1,9 +1,10 @@
-#ifndef RANDOM_LANDSCAPE_GENERATOR_HPP
-#define RANDOM_LANDSCAPE_GENERATOR_HPP
+#ifndef RANDOM_INSRANCE_GENERATOR_HPP
+#define RANDOM_INSRANCE_GENERATOR_HPP
 
 #include "landscape/landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
-#include "random_chooser.hpp"
+
+#include "utils/random_chooser.hpp"
 
 #include <math.h>
 #include <random>
@@ -54,7 +55,6 @@ Landscape * RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, 
         landscape->addArc(pair.first, pair.second, p_dis(gen));
         if(symmetric)
             landscape->addArc(pair.second, pair.first, p_dis(gen));
-
     }
         
     return landscape;
@@ -114,4 +114,4 @@ RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landsca
 
 
 
-#endif //RANDOM_LANDSCAPE_GENERATOR_HPP
+#endif //RANDOM_INSRANCE_GENERATOR_HPP

@@ -8,8 +8,6 @@
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
 
-#include "helper.hpp"
-
 namespace Solvers {
     class Naive_ECA_Inc : public concepts::Solver {
         public:

@@ -1,9 +1,5 @@
 #include "solvers/randomized_rounding.hpp"
 
-#include "solvers/pl_eca_3.hpp"
-
-#include "random_chooser.hpp"
-
 static Solution * job(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution * relaxed_solution, int nb_draws) {
     RandomChooser<const RestorationPlan::Option*> option_chooser;
     for(auto option_pair : relaxed_solution->getOptionCoefs()) {
@@ -56,8 +52,7 @@ Solution * Solvers::Randomized_Rounding_ECA::solve(const Landscape & landscape, 
     const int log_level = params.at("log")->getInt();
     const int nb_draws = params.at("draws")->getInt();
     const bool parallel = params.at("parallel")->getBool();
-    std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
-    last_time = std::chrono::high_resolution_clock::now();
+    Chrono chrono;
     
     Solvers::PL_ECA_3 pl_eca_3;
     pl_eca_3.setLogLevel(log_level).setNbThreads(1).setRelaxed(1);
@@ -91,10 +86,7 @@ Solution * Solvers::Randomized_Rounding_ECA::solve(const Landscape & landscape, 
         best_solution = job(landscape, plan, B, relaxed_solution, nb_draws);
     }
 
-    current_time = std::chrono::high_resolution_clock::now();
-    int time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(current_time-last_time).count();
-
-    best_solution->setComputeTimeMs(time_ms);
+    best_solution->setComputeTimeMs(chrono.timeMs());
 
     return best_solution;
 }

@@ -1,8 +1,8 @@
 #include <iostream>
 #include <chrono>
 
-#include "random_chooser_2.hpp"
-#include "random_chooser.hpp"
+#include "utils/random_chooser_2.hpp"
+#include "utils/random_chooser.hpp"
 
 int main () {
     //*

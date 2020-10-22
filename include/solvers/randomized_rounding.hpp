@@ -2,7 +2,12 @@
 #define RANDOMIZED_ROUNDING_SOLVER_HPP
 
 #include "solvers/concept/solver.hpp"
- #include "helper.hpp"
+
+#include <execution>
+#include <thread>
+
+#include "solvers/pl_eca_3.hpp"
+#include "utils/random_chooser.hpp"
 
 namespace Solvers {
     class Randomized_Rounding_ECA : public concepts::Solver {
@@ -31,6 +36,5 @@ namespace Solvers {
             const std::string name() const { return "randomized_rounding"; } 
     };
 }
-
 
 #endif // RANDOMIZED_ROUNDING_SOLVER_HPP

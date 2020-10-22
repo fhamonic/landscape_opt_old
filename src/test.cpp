@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <fstream>
 
-#include "random_chooser.hpp"
+#include "utils/random_chooser.hpp"
 #include "indices/eca.hpp"
 
 #include "helper.hpp"
