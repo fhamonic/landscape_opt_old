@@ -98,27 +98,24 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     Graph_t::Node contracted_t = (*refs.first)[orig_t];
 
     const Graph_t & graph = contracted_landscape->getNetwork();
-    erase_non_connected(*contracted_landscape, contracted_t);
-    contracted_plan->cleanInvalidElements();
+    // erase_non_connected(*contracted_landscape, contracted_t);
+    // contracted_plan->cleanInvalidElements();
 
     std::vector<std::vector<Graph_t::Arc>> options_nodes;
     model_quality_gains(*contracted_landscape, *contracted_plan, options_nodes);
     for(RestorationPlan::Option * option : contracted_plan->options())
         for(Graph_t::Arc a : option->arcs())
-            option->getRestoredProbabilityRef(a) /= contracted_landscape->getProbability(a);
+            option->getRestoredProbabilityRef(a) /= std::max(contracted_landscape->getProbability(a), std::numeric_limits<double>::epsilon());
 
     for(Graph_t::Arc orig_a : orig_deletables_arcs) {   
         Graph_t::Arc a = (*refs.second)[orig_a];  
-        if(!graph.valid(a))
-            continue;
+        if(!graph.valid(a)) continue;
         contracted_landscape->removeArc(a);
     }
     for(Graph_t::Arc orig_a : orig_contractables_arcs) {
         Graph_t::Arc a = (*refs.second)[orig_a];
-        if(!graph.valid(a))
-            continue;
-        if(contracted_plan->contains(a))
-            continue;
+        if(!graph.valid(a)) continue;
+        if(contracted_plan->contains(a)) continue;
         contract_arc(*contracted_landscape, a);
     }
     

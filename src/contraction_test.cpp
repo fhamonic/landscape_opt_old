@@ -56,12 +56,11 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     const double epsilon_n = 1e-8;
     const double epsilon_n2 = 1e-7;
 
-    std::chrono::time_point<std::chrono::high_resolution_clock> t0, t1;
+    Chrono chrono;
     MyContractionAlgorithm algo;
 
-    t0 = std::chrono::high_resolution_clock::now();
     Graph_t::NodeMap<ContractionResult> * results = algo.precompute(landscape, plan);
-    t1 = std::chrono::high_resolution_clock::now();
+    int precompute_time_ms = chrono.lapTimeMs();
 
     for(Graph_t::NodeIt t(graph); t!=lemon::INVALID; ++t) {
         const double base = compute_value_reversed(landscape, t);

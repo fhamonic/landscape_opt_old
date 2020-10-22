@@ -37,7 +37,7 @@ class ECA : public concepts::ConnectivityIndex {
          * @brief Computes the value of the ECA index of the specified landscape.
          * 
          * @time \f$ O(n \cdot (m + n) \log n) \f$ where \f$ n \f$ is the number of nodes and \f$ m \f$ the number of arcs
-         * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ the number of arcs
+         * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ is the number of arcs
          */
         template <typename GR, typename QM, typename PM, typename CM>
         double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape, const typename GR::template NodeMap<bool> & nodeFilter) {
@@ -67,7 +67,7 @@ class ECA : public concepts::ConnectivityIndex {
          * @brief Computes the value of the ECA index of the specified landscape.
          * 
          * @time \f$ O(n \cdot (m + n) \log n) \f$ where \f$ n \f$ is the number of nodes and \f$ m \f$ the number of arcs
-         * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ the number of arcs
+         * @space \f$ O(m) \f$ running and \f$ O(1) \f$ returning where \f$ m \f$ is the number of arcs
          */
         template <typename GR, typename QM, typename PM, typename CM>
         double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape) {

@@ -6,16 +6,20 @@
 /**
  * Erase the nodes from wich there is not path to t
  * 
- * @time O(deg v)
- * @space O(deg v)
+ * @time O(V)
+ * @space O(V)
  */
 void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph_t::Node t) const {    
     typedef lemon::ReverseDigraph<const Graph_t> Reversed;
     
     const Graph_t & graph = landscape.getNetwork();
 
+    //*
     Reversed rg(graph);
     lemon::Bfs<Reversed> bfs(rg);
+    /*/
+    lemon::Bfs<Graph_t> bfs(graph);
+    //*/
     bfs.run(t);
 
     std::vector<Graph_t::Node> to_delete;
@@ -31,15 +35,13 @@ void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph
 /**
  * Contracts specified uv arc preserving graph ids
  * 
- * @time O(deg v)
- * @space O(deg v)
+ * @time O(deg u)
+ * @space O(deg u)
  */
 void ContractionPrecomputation::contract_arc(Landscape & landscape, Graph_t::Arc a) const {    
     const Graph_t & graph = landscape.getNetwork();
 
     assert(graph.valid(a));
-
-    //*
     Graph_t::Node u = graph.source(a);
     Graph_t::Node v = graph.target(a);
     
