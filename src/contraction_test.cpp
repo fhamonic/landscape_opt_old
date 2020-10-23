@@ -20,6 +20,9 @@
 #include "utils/random_instance_generator.hpp"
 
 
+#include "instances_helper.hpp"
+
+
 template <typename GR, typename QM, typename PM, typename CM>
 double compute_value_reversed(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape, Graph_t::Node t) {
     typedef lemon::ReverseDigraph<const Graph_t> Reversed;
@@ -66,7 +69,7 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
         const double base = compute_value_reversed(landscape, t);
                 
         ContractionResult result = (*results)[t];
-        Helper::assert_well_formed(*result.landscape, *result.plan);
+        // Helper::assert_well_formed(*result.landscape, *result.plan);
         const double contracted = compute_value_reversed(*result.landscape, result.t);
         
         if(fabs(base - contracted) > epsilon_n2) {
@@ -139,10 +142,10 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
 
 
 int main() {
-    const int nb_nodes = 20;
-    const int nb_arcs = 200;
-    const int nb_options = 50;
-    const bool restore_nodes = true;
+    // const int nb_nodes = 20;
+    // const int nb_arcs = 200;
+    // const int nb_options = 50;
+    // const bool restore_nodes = true;
 
     const int seed = 9473;
     std::cout << std::setprecision(20);
@@ -150,13 +153,19 @@ int main() {
     RandomInstanceGenerator instance_generator;
     const int nb_tests = 10000;
     for(int cpt_test=0; cpt_test<nb_tests; cpt_test++) {
-        Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, nb_nodes, nb_arcs, false);
-        RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, nb_options, restore_nodes);
+        Instance * instance = make_instance_quebec(1.0, 0.01, 700, true, true);
         
-        do_test(*landscape, *plan, seed + cpt_test);
+        // Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, nb_nodes, nb_arcs, false);
+        // RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, nb_options, restore_nodes);
+        const Landscape & landscape = instance->landscape;
+        const RestorationPlan & plan = instance->plan;
+        
+        Helper::assert_well_formed(landscape, plan);
 
-        delete plan;
-        delete landscape;
+        do_test(instance->landscape, instance->plan, seed + cpt_test);
+
+        // delete plan;
+        // delete landscape;
     }
 
     return EXIT_SUCCESS;

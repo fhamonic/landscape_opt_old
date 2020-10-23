@@ -98,16 +98,14 @@ int main() {
             for(double median : median_values) {
                 for(bool length_gain : length_gain_values) {
                     for(bool area_gain : area_gain_values) {
-                        if(length_gain == 0 && area_gain == 0) continue;
-                        
                         Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
                         // Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
                         
                         const Landscape & landscape = instance->landscape;
                         const RestorationPlan & plan = instance->plan;
                         
-                        StdLandscapeParser::get().write(landscape, "output", "analysis_landscape", true);
-                        StdRestorationPlanParser(landscape).write(plan, "output", "analysis_plan", true);
+                        // StdLandscapeParser::get().write(landscape, "output", "analysis_landscape", true);
+                        // StdRestorationPlanParser(landscape).write(plan, "output", "analysis_plan", true);
 
                         Helper::assert_well_formed(landscape, plan);
 

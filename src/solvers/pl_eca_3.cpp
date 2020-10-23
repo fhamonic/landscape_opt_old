@@ -5,7 +5,7 @@
 double max_flow_in(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node t) {
     typedef lemon::ReverseDigraph<const Graph_t> Reversed;
     const Graph_t & original_g = landscape.getNetwork();
-    Reversed reversed_g(original_g); 
+    Reversed reversed_g(original_g);
     Graph_t::ArcMap<double> probabilities(original_g);
     for(Graph_t::ArcIt b(original_g); b != lemon::INVALID; ++b)
         probabilities[b] = landscape.getProbability(b);
