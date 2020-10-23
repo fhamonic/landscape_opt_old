@@ -69,7 +69,7 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
         const double base = compute_value_reversed(landscape, t);
                 
         ContractionResult result = (*results)[t];
-        // Helper::assert_well_formed(*result.landscape, *result.plan);
+        Helper::assert_well_formed(*result.landscape, *result.plan);
         const double contracted = compute_value_reversed(*result.landscape, result.t);
         
         if(fabs(base - contracted) > epsilon_n2) {

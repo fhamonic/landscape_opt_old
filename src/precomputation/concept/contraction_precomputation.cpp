@@ -38,7 +38,7 @@ void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph
  * @time O(deg u)
  * @space O(deg u)
  */
-void ContractionPrecomputation::contract_arc(Landscape & landscape, Graph_t::Arc a) const {    
+void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationPlan & plan, Graph_t::Arc a) const {    
     const Graph_t & graph = landscape.getNetwork();
 
     assert(graph.valid(a));
@@ -54,6 +54,8 @@ void ContractionPrecomputation::contract_arc(Landscape & landscape, Graph_t::Arc
     for(Graph_t::Arc b : arcs_to_move) {
         landscape.changeTarget(b, v);
         landscape.getProbabilityRef(b) *= a_probability;
+        for(RestorationPlan::Option * option : plan.getOptions(b))
+            option->getRestoredProbabilityRef(b) *= a_probability;
     }
     landscape.getQualityRef(v) += a_probability * landscape.getQuality(u);
     landscape.removeNode(u);
