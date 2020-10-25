@@ -16,11 +16,11 @@ class RestorationPlan2 {
         Graph_t::NodeMap<std::map<Option, double>> _nodeMap;
         Graph_t::ArcMap<std::map<Option, double>> _arcMap;
 
-        std::vector<std::map<Graph_t::Node, double>> _options_nodesMap;
-        std::vector<std::map<Graph_t::Arc, double>> _options_arcsMap;
-
         std::vector<std::map<Graph_t::Node, int>> _options_nodes_idsMap;
         std::vector<std::map<Graph_t::Arc, int>> _options_arcs_idsMap;
+
+        std::vector<std::vector<std::pair<Graph_t::Node, double>>> _options_nodes;
+        std::vector<std::vector<std::pair<Graph_t::Arc, double>>> _options_arcs;
 
         std::vector<double> _costs;
     public:
@@ -58,7 +58,7 @@ class RestorationPlan2 {
         void setCost(Option i, double cost);
         double getCost(Option i) const;
 
-        bool containsOption(Option i) const;
+        bool isEmpty(Option i) const;
         void removeOption(Option i);
         int getNbOptions() const;
         
