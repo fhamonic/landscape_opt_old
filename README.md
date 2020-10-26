@@ -1,17 +1,20 @@
-requires base packages build-essential git gcc-9 g++-9 litbb-dev
-and cmake gfortran for compiling the thirdparties
+## Dependencies
+
+### From package manager
+
+    sudo apt install build-essential git gcc-9 g++-9 litbb-dev cmake gfortran
 
 requires Eigen, Clp, Cbc, Lemon:
 
-from package manager :
     sudo apt install libeigen3-dev
     sudo apt install coinor-libclp-dev coinor-libcbc-dev
     sudo apt install liblemon-dev
     
-I recommend getting librairies from sources for lattest versions : 
+### From sources (recommended)
 
 
-Lemon : http://lemon.cs.elte.hu/trac/lemon/wiki/Downloads
+#### Lemon : http://lemon.cs.elte.hu/trac/lemon/wiki/Downloads
+
     cd lemon-x.y.z
     mkdir build
     cd build
@@ -19,9 +22,10 @@ Lemon : http://lemon.cs.elte.hu/trac/lemon/wiki/Downloads
     make
     sudo make install
 
-Eigen : headers only, just needs to be downloaded : http://eigen.tuxfamily.org/index.php?title=Main_Page
+#### Eigen : headers only, just needs to be downloaded : http://eigen.tuxfamily.org/index.php?title=Main_Page
 
-Gurobi : https://www.gurobi.com/
+#### Gurobi : https://www.gurobi.com/
+
     add to .bashrc :
     cd linux64/src/build
     make
@@ -33,7 +37,8 @@ Gurobi : https://www.gurobi.com/
     export PATH="$PATH:$GUROBI_HOME/bin"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$GUROBI_HOME/lib"
 
-Clp, Cbc, Dip : using coinbrew :
+#### Clp, Cbc, Dip : using coinbrew :
+
     mkdir coinor
     cd coinor
     git clone https://github.com/coin-or/coinbrew
@@ -49,20 +54,21 @@ Clp, Cbc, Dip : using coinbrew :
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/coinor/dist/lib/"
 
       
-OpenBLAS:
+#### OpenBLAS:
+
     mkdir OpenBLAS
     git clone https://github.com/xianyi/OpenBLAS.git
-# edit Makefile.rules: CC = gcc ; FC = gfortran ; COMMON_OPT = -O2 -march=native
+<!--- edit Makefile.rules: CC = gcc ; FC = gfortran ; COMMON_OPT = -O2 -march=native -->
     make all
     mkdir ../build
     make PREFIX=/home/plaiseek/Libs/OpenBlas/dist install
 
-Csdp:
+#### Csdp:
     cd coinor
     mkdir Csdp
     git clone https://github.com/coin-or/Csdp.git
-# edit Makefile.rules: CC = gcc ; FC = gfortran ; COMMON_OPT = -O2 -march=native
-# edit Makefile.rules: replace /usr/local by ../dist modify BLAS linking to -L../../../OpenBLAS/lib -lopenblas
+<!---  edit Makefile.rules: CC = gcc ; FC = gfortran ; COMMON_OPT = -O2 -march=native -->
+<!---  edit Makefile.rules: replace /usr/local by ../dist modify BLAS linking to -L../../../OpenBLAS/lib -lopenblas -->
     make CC=gcc all
 
 
