@@ -306,9 +306,8 @@ class RestorationPlan2 {
      */
     const std::map<Option, double> & getOptions(Graph_t::Arc a) const { return _arcMap[a]; }
 
-    void cleanInvalidElements() {
+    void cleanInvalidNodes() {
         const Graph_t & graph = _landscape.getNetwork();
-    
         for(Option i=0; i<getNbOptions(); ++i) {
             std::vector<int> free_ids;
             std::map<lemon::ListDigraph::Node, int> & m = _options_nodes_idsMap[i];
@@ -320,30 +319,50 @@ class RestorationPlan2 {
                 free_ids.push_back(id);             
                 m.erase(it);
             }
-            for(auto it = m.begin(), next_it = it; it != m.end(); ++it) {
+            auto it_free_id = free_ids.begin();
+            for(auto it = m.begin(); it != m.end(); ++it) {
                 Graph_t::Node v = it->first;
                 const int id = it->second;
-                const int last_id = _options_nodes[i].size()-1;
-                if(graph.valid(it->first)) {
-                    if(id >= _options_nodes[i].size()-free_ids.size()) {
-                        const int free_id = free_ids.back();
-                        free_ids.pop_back();
-                        std::swap(_options_nodes[i][id], _options_nodes[i][last_id]);
-                        it->second = id;
-                        _options_nodes[i].pop_back();
-                    }
-                    continue;
-                }              
-                if(id < last_id) {
-                    std::swap(_options_nodes[i][id], _options_nodes[i][last_id]);
-                    _options_nodes_idsMap[i][_options_nodes[i][id].first] = id;
-                }
+                if(id < _options_nodes[i].size()-free_ids.size()) continue;
+                _options_nodes[i][*it_free_id] = _options_nodes[i][id];
+                it->second = *it_free_id;
+                ++it_free_id;
+            }
+            for(int j=0; j<free_ids.size(); ++j)
+                _options_nodes[i].pop_back();
+        } 
+    }
+
+    void cleanInvalidArcs() {
+        const Graph_t & graph = _landscape.getNetwork();
+        for(Option i=0; i<getNbOptions(); ++i) {
+            std::vector<int> free_ids;
+            std::map<lemon::ListDigraph::Arc, int> & m = _options_arcs_idsMap[i];
+            for(auto it = m.cbegin(), next_it = it; it != m.cend(); it = next_it) {
+                ++next_it;
+                Graph_t::Arc a = it->first;
+                const int id = it->second;
+                if(graph.valid(a)) continue;
+                free_ids.push_back(id);             
                 m.erase(it);
             }
-        }
-
-
-        
+            auto it_free_id = free_ids.begin();
+            for(auto it = m.begin(); it != m.end(); ++it) {
+                Graph_t::Arc a = it->first;
+                const int id = it->second;
+                if(id < _options_arcs[i].size()-free_ids.size()) continue;
+                _options_arcs[i][*it_free_id] = _options_arcs[i][id];
+                it->second = *it_free_id;
+                ++it_free_id;
+            }
+            for(int j=0; j<free_ids.size(); ++j)
+                _options_arcs[i].pop_back();
+        } 
+    }
+    
+    void cleanInvalidElements() {
+        cleanInvalidNodes();
+        cleanInvalidArcs();
     }
 };
 
