@@ -169,7 +169,7 @@ class RestorationPlan2 {
         /**
          * @brief Remove the node **v** from every option
          * @param v - Node
-         * @time \f$O(\#options(v) \log \#nodes(i))\f$
+         * @time \f$O(\sum_{i \in options(v)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
         void removeNode(Graph_t::Node v) {
@@ -189,7 +189,7 @@ class RestorationPlan2 {
         /**
          * @brief Remove the arc **a** from every option
          * @param a - Arc
-         * @time \f$O(\#options(a) \log \#arcs(i))\f$
+         * @time \f$O(\sum_{i \in options(a)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
         void removeArc(Graph_t::Arc a) {
@@ -311,7 +311,7 @@ class RestorationPlan2 {
 
         /**
          * @brief Erase invalid nodes from the restoration plan
-         * @time \f$O(\#options * \#nodes)\f$
+         * @time \f$O(\sum_{i \in options} \#nodes(i))\f$
          * @space \f$O(\#invalid\_nodes)\f$ 
          */
         void eraseInvalidNodes() {
@@ -343,7 +343,7 @@ class RestorationPlan2 {
 
         /**
          * @brief Erase invalid nodes from the restoration plan
-         * @time \f$O(\#options * \#arcs)\f$
+         * @time \f$O(\sum_{i \in options} \#arcs(i))\f$
          * @space \f$O(\#invalid\_arcs)\f$ 
          */
         void eraseInvalidArcs() {
@@ -375,7 +375,7 @@ class RestorationPlan2 {
 
         /**
          * @brief Erase invalid nodes and arcs from the restoration plan
-         * @time \f$O(\#options * (\#nodes + \#arcs))\f$
+         * @time \f$O(\sum_{i \in options} \#nodes(i) + \#arcs(i))\f$
          * @space \f$O(\#invalid\_nodes + \#invalid\_arcs)\f$ 
          */
         void eraseInvalidElements() {
