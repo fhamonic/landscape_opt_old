@@ -1,15 +1,20 @@
 /**
  * @file chrono.hpp
- * @author francois.hamonic@gmail.com
- * @brief 
+ * @author François Hamonic (francois.hamonic@gmail.com)
+ * @brief Chrono class declaration
  * @version 0.1
- * @date 2020-05-08 
+ * @date 2020-10-27
+ * 
+ * @copyright Copyright (c) 2020
  */
 #ifndef CHRONO_HPP
 #define CHRONO_HPP
 
 #include <chrono>
 
+/**
+ * @brief A simple chronometer class
+ */
 class Chrono {
     private:
         std::chrono::time_point<std::chrono::high_resolution_clock> start_time, last_time;

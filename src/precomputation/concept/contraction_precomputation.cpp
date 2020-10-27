@@ -6,20 +6,16 @@
 /**
  * Erase the nodes from wich there is not path to t
  * 
- * @time O(V)
- * @space O(V)
+ * @time \f$O(V)\f$
+ * @space \f$O(V)\f$
  */
 void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph_t::Node t) const {    
     typedef lemon::ReverseDigraph<const Graph_t> Reversed;
     
     const Graph_t & graph = landscape.getNetwork();
 
-    //*
     Reversed rg(graph);
     lemon::Bfs<Reversed> bfs(rg);
-    /*/
-    lemon::Bfs<Graph_t> bfs(graph);
-    //*/
     bfs.run(t);
 
     std::vector<Graph_t::Node> to_delete;
@@ -35,8 +31,8 @@ void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph
 /**
  * Contracts specified uv arc preserving graph ids
  * 
- * @time O(deg u)
- * @space O(deg u)
+ * @time \f$O(deg(u))\f$
+ * @space \f$O(deg(u))\f$
  */
 void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationPlan & plan, Graph_t::Arc a) const {    
     const Graph_t & graph = landscape.getNetwork();
@@ -64,8 +60,8 @@ void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationP
 /**
  * Model quality gains options by appending nodes in the Landscape and saves the arcs created in the vector passed by reference.
  * 
- * @time O(#options)
- * @space O(#options)
+ * @time \f$O(\#options)\f$
+ * @space \f$O(\#options)\f$
  */
 void ContractionPrecomputation::model_quality_gains(Landscape & landscape, RestorationPlan & plan, std::vector<std::vector<Graph_t::Arc>> & options_nodes) const {
     const Graph_t & graph = landscape.getNetwork();
@@ -88,8 +84,8 @@ void ContractionPrecomputation::model_quality_gains(Landscape & landscape, Resto
 /**
  * Retrives quality gains options by deleting previously added nodes in the Landscape and reconstruct the corresponding option.
  * 
- * @time O(#options)
- * @space O(#options)
+ * @time \f$O(\#options)\f$
+ * @space \f$O(\#options)\f$
  */
 void ContractionPrecomputation::retrive_quality_gains(Landscape & landscape, RestorationPlan & plan, const std::vector<std::vector<Graph_t::Arc>> & options_nodes) const {
     const Graph_t & graph = landscape.getNetwork();

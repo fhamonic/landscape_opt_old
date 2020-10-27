@@ -1,4 +1,12 @@
-#ifndef OSI_BUILDER_HPP
+/**
+ * @file osi_builder.hpp
+ * @author François Hamonic (francois.hamonic@gmail.com)
+ * @brief OSI_Builder class declaration
+ * @version 0.1
+ * @date 2020-10-27
+ * 
+ * @copyright Copyright (c) 2020
+ */
 #define OSI_BUILDER_HPP
 
 #include<functional>
@@ -13,6 +21,9 @@
 
 #include "coin/CoinPackedMatrix.hpp"
 
+/**
+ * @brief A practical class for building OsiSolver instances 
+ */
 class OSI_Builder {
     public:
         static const int MIN = 1;
@@ -98,8 +109,7 @@ class OSI_Builder {
 
         static int compose_pair(int i, int j) {
             assert(i != j);
-            if(i > j)
-                std::swap(i,j);
+            if(i > j) std::swap(i,j);
             return nb_pairs(j)+i;
         };
         static std::pair<int,int> retrieve_pair(int id) {
@@ -112,8 +122,7 @@ class OSI_Builder {
         };
         static std::pair<int,int> retrieve_couple(int id) {
             std::pair<int,int> p = retrieve_pair(id / 2);
-            if(id % 2 == 1)
-                std::swap(p.first, p.second);
+            if(id % 2 == 1) std::swap(p.first, p.second);
             return p;
         };
 
