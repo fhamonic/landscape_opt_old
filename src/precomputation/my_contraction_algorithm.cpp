@@ -99,14 +99,6 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
 
     const Graph_t & graph = contracted_landscape->getNetwork();
     erase_non_connected(*contracted_landscape, contracted_t);
-    contracted_plan->cleanInvalidElements();
-    // contracted_plan->removeEmptyOptions();
-
-    std::vector<std::vector<Graph_t::Arc>> options_nodes;
-    model_quality_gains(*contracted_landscape, *contracted_plan, options_nodes);
-    // for(RestorationPlan::Option * option : contracted_plan->options())
-    //     for(Graph_t::Arc a : option->arcs())
-    //         option->getRestoredProbabilityRef(a) /= std::max(contracted_landscape->getProbability(a), std::numeric_limits<double>::epsilon());
 
     for(Graph_t::Arc orig_a : orig_deletables_arcs) {   
         Graph_t::Arc a = (*refs.second)[orig_a];  
@@ -120,16 +112,7 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
         contract_arc(*contracted_landscape, *contracted_plan, a);
     }
     
-    retrive_quality_gains(*contracted_landscape, *contracted_plan, options_nodes);
-    // for(RestorationPlan::Option * option : contracted_plan->options())
-    //     for(Graph_t::Arc a : option->arcs()) {
-    //         if(!graph.valid(a))
-    //             continue;
-    //         option->getRestoredProbabilityRef(a) *= contracted_landscape->getProbability(a);
-    //     }
-
-    contracted_plan->cleanInvalidElements();
-    contracted_plan->removeEmptyOptions();
+    contracted_plan->eraseInvalidElements();
 
     // ///////// reduce memory usage -> TODO StaticLandscape class
     Landscape * final_landscape = new Landscape();
@@ -158,8 +141,8 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
     Graph_t::ArcMap<double> p_max(graph);
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
         p_max[a] = p_min[a] = landscape.getProbability(a);
-        for(RestorationPlan::Option * option : plan.getOptions(a))
-            p_max[a] = std::max(p_max[a], option->getRestoredProbability(a));
+        for(auto const& [i, restored_probability] : plan.getOptions(a))
+            p_max[a] = std::max(p_max[a], restored_probability);
     }
 
     // TODO use graph iterator

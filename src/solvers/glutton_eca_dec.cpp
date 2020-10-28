@@ -9,12 +9,12 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
 
     const Graph_t & graph = landscape.getNetwork();
 
-    std::vector<const RestorationPlan::Option*> options;
+    std::vector<const RestorationPlan::Option> options;
     double purchaised = 0.0;
-    for(RestorationPlan::Option * option : plan.options()) {
-        purchaised += option->getCost();
-        solution->add(option);
-        options.push_back(option);
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        purchaised += plan.getCost(i);
+        solution->add(i);
+        options.push_back(i);
     }
 
     double prec_eca = ECA::get().eval_solution(landscape, *solution);
@@ -23,45 +23,48 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
 
-    auto min_option = [](std::pair<double, const RestorationPlan::Option*> p1, std::pair<double, const RestorationPlan::Option*> p2) {
+    auto min_option = [] (std::pair<double, const RestorationPlan::Option> p1, std::pair<double, const RestorationPlan::Option> p2) {
         return (p1.first < p2.first) ? p1 : p2;
     };
-    auto compute_option = [&landscape, &prec_eca, solution] (const RestorationPlan::Option* option) {
+    auto compute_option = [&landscape, &plan, &prec_eca, solution] (const RestorationPlan::Option option) {
         DecoredLandscape decored_landscape(landscape);
-        for(auto option_pair : solution->getOptionCoefs()) {
-            if(option == option_pair.first)
-                continue;
-            decored_landscape.apply(option_pair.first, option_pair.second);
+        
+        for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+            if(i == option) continue;
+            decored_landscape.apply(plan, i, solution->getCoef(i));
         }
         const double eca = ECA::get().eval(decored_landscape);
-        const double ratio = (prec_eca - eca) / option->getCost();
+        const double ratio = (prec_eca - eca) / plan.getCost(option);
 
-        return std::pair<double, const RestorationPlan::Option*>(ratio, option);
+        return std::pair<double, const RestorationPlan::Option>(ratio, option);
     };
     while(purchaised > B) {
-        std::pair<double, const RestorationPlan::Option*> worst = parallel ?
+        std::pair<double, const RestorationPlan::Option> worst = parallel ?
                 std::transform_reduce(std::execution::par, options.begin(), options.end(),
-                        std::make_pair(std::numeric_limits<double>::max(), (const RestorationPlan::Option*) nullptr), min_option, compute_option) :
+                        std::make_pair(std::numeric_limits<double>::max(), -1), min_option, compute_option) :
                 std::transform_reduce(std::execution::seq, options.begin(), options.end(),
-                        std::make_pair(std::numeric_limits<double>::max(), (const RestorationPlan::Option*) nullptr), min_option, compute_option);        
+                        std::make_pair(std::numeric_limits<double>::max(), -1), min_option, compute_option);        
 
         const double worst_ratio = worst.first;
-        const RestorationPlan::Option * worst_option = worst.second;
+        const RestorationPlan::Option worst_option = worst.second;
+        const double worst_option_cost = plan.getCost(worst_option);
 
         options.erase(std::find(options.begin(), options.end(), worst_option));
 
         solution->remove(worst_option);
-        purchaised -= worst_option->getCost();
-        prec_eca -= worst_ratio * worst_option->getCost();
+        purchaised -= worst_option_cost;
+        prec_eca -= worst_ratio * worst_option_cost;
 
         if(log_level > 1) {
-            std::cout << "remove option: " << worst_option->getCost() << std::endl;
-            for(Graph_t::Node u : worst_option->nodes())
-                std::cout << "\tn " << graph.id(u) << std::endl;
-            for(Graph_t::Arc a : worst_option->arcs()) {
-                Graph_t::Node source = graph.source(a);
-                Graph_t::Node target = graph.target(a);
-                std::cout << "\ta " << " " << graph.id(source) << " " << graph.id(target) << std::endl;
+            std::cout << "remove option: " << worst_option_cost << std::endl;
+            if(log_level > 2) {
+                for(auto const& [u, quality_gain] : plan.getNodes(worst_option))
+                    std::cout << "\tn " << graph.id(u) << std::endl;
+                for(auto const& [a, restored_probability] : plan.getArcs(worst_option)) {
+                    Graph_t::Node source = graph.source(a);
+                    Graph_t::Node target = graph.target(a);
+                    std::cout << "\ta " << " " << graph.id(source) << " " << graph.id(target) << std::endl;
+                }
             }
             std::cout << "current purchaised: " << purchaised << std::endl;
             std::cout << "current ECA: " << prec_eca << std::endl;

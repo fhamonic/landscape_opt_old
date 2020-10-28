@@ -26,6 +26,12 @@ void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph
     for(Graph_t::Node u : to_delete)
         if(graph.valid(u))
             landscape.removeNode(u);
+
+    // for(Graph_t::NodeIt u(graph), next_u = u; u != lemon::INVALID; u = next_u) {
+    //     ++next_u;
+    //     if(bfs.reached(u)) continue;
+    //     landscape.removeNode(u);
+    // }
 }
 
 /**
@@ -50,53 +56,18 @@ void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationP
     for(Graph_t::Arc b : arcs_to_move) {
         landscape.changeTarget(b, v);
         landscape.getProbabilityRef(b) *= a_probability;
-        for(RestorationPlan::Option * option : plan.getOptions(b))
-            option->getRestoredProbabilityRef(b) *= a_probability;
+        plan.updateProbability(b, a_probability);
     }
-    landscape.getQualityRef(v) += a_probability * landscape.getQuality(u);
+
+    // for(Graph_t::InArcIt b(graph, u), next_b = b; b != lemon::INVALID; b = next_b) {
+    //     ++next_b;
+    //     landscape.changeTarget(b, v);
+    //     landscape.getProbabilityRef(b) *= a_probability;
+    //     plan.updateProbability(b, a_probability);
+    // }
+
+    const double quality_increase = a_probability * landscape.getQuality(u);
+    landscape.getQualityRef(v) += quality_increase;
+    plan.updateQuality(v, quality_increase);
     landscape.removeNode(u);
-}
-
-/**
- * Model quality gains options by appending nodes in the Landscape and saves the arcs created in the vector passed by reference.
- * 
- * @time \f$O(\#options)\f$
- * @space \f$O(\#options)\f$
- */
-void ContractionPrecomputation::model_quality_gains(Landscape & landscape, RestorationPlan & plan, std::vector<std::vector<Graph_t::Arc>> & options_nodes) const {
-    const Graph_t & graph = landscape.getNetwork();
-    options_nodes = std::vector<std::vector<Graph_t::Arc>>(plan.options().size(), std::vector<Graph_t::Arc>());
-    
-    for(RestorationPlan::Option * option : plan.options()) {
-        const int option_id = option->getId();
-        for(Graph_t::Node v : option->nodes()) {
-            Graph_t::Node u = landscape.addNode(option->getQualityGain(v), landscape.getCoords(v));
-            Graph_t::Arc uv = landscape.addArc(u, v, 1.0);
-            options_nodes[option_id].push_back(uv);
-        }
-        for(Graph_t::Arc uv : options_nodes[option_id]) { // needed because it will invalid the iterator
-            Graph_t::Node v = graph.target(uv);
-            option->removePatch(v);
-        }
-    }
-}
-
-/**
- * Retrives quality gains options by deleting previously added nodes in the Landscape and reconstruct the corresponding option.
- * 
- * @time \f$O(\#options)\f$
- * @space \f$O(\#options)\f$
- */
-void ContractionPrecomputation::retrive_quality_gains(Landscape & landscape, RestorationPlan & plan, const std::vector<std::vector<Graph_t::Arc>> & options_nodes) const {
-    const Graph_t & graph = landscape.getNetwork();
-    
-    for(RestorationPlan::Option * option : plan.options()) {
-        for(Graph_t::Arc uv : options_nodes[option->getId()]) { // these arcs are not in contractable_arcs and v is degree 1 so they can't be deleted by contraction
-            Graph_t::Node u = graph.source(uv);
-            Graph_t::Node v = graph.target(uv);
-            const double quality_gain = landscape.getProbability(uv) * landscape.getQuality(u);
-            option->addPatch(v, quality_gain);
-            landscape.removeNode(u);
-        }
-    }
 }

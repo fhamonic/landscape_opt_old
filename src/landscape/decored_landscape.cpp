@@ -48,14 +48,14 @@ void DecoredLandscape::reset() {
         setProbability(a, original_probabilityMap[a]);
 }
 
-void DecoredLandscape::apply(const RestorationPlan::Option * option, double coef) {
-    if(option == nullptr) return;
-    for(Graph_t::Node u : option->nodes()) {
-        const double interpolated_gain = coef * option->getQualityGain(u);
-        qualityMap[u] += interpolated_gain;
+void DecoredLandscape::apply(const RestorationPlan & plan, const RestorationPlan::Option i, double coef) {
+    if(!plan.contains(i)) return;
+    if(coef == 0.0) return;
+    for(auto const& [v, quality_gain] : plan.getNodes(i)) {
+        qualityMap[v] += coef * quality_gain;;
     }
-    for(Graph_t::Arc a : option->arcs()) {
-        const double interpolated_length = getOriginalProbability(a) + coef * (option->getRestoredProbability(a) - getOriginalProbability(a));
-        probabilityMap[a] = std::max(interpolated_length, probabilityMap[a]);
+    for(auto const& [a, restored_probability] : plan.getArcs(i)) {
+        const double interpolated_probability = getOriginalProbability(a) + coef * (restored_probability - getOriginalProbability(a));
+        probabilityMap[a] = std::max(interpolated_probability, probabilityMap[a]);
     }
 }

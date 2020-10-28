@@ -41,9 +41,7 @@ RestorationPlan * StdRestorationPlanParser::parse(std::filesystem::path file_pat
 
         file >> nb_elems; if(unexpected_eof()) { delete plan; return nullptr; }
 
-        RestorationPlan::Option * option = plan->addOption();
-        option->setCost(cost);
-        option->setId(cpt);
+        RestorationPlan::Option option = plan->addOption(cost);
 
         for(int i=0; i<nb_elems; i++) {
             char type;
@@ -59,7 +57,7 @@ RestorationPlan * StdRestorationPlanParser::parse(std::filesystem::path file_pat
                 file >> quality;
                 Graph_t::Node u = graph.nodeFromId(id);
                 if(!assert_node(id, u)) { delete plan; return nullptr; }
-                option->addPatch(u, quality);
+                plan->addNode(option, u, quality);
                 continue;
             }
             if(type == 'a') {
@@ -71,7 +69,7 @@ RestorationPlan * StdRestorationPlanParser::parse(std::filesystem::path file_pat
                 Graph_t::Node source = graph.nodeFromId(id_source); if(!assert_node(id_source, source)) { delete plan; return nullptr; }
                 Graph_t::Node target = graph.nodeFromId(id_target); if(!assert_node(id_target, target)) { delete plan; return nullptr; }
                 Graph_t::Arc a = lemon::findArc(graph, source, target); if(!assert_arc(id_source, id_target, a)) { delete plan; return nullptr; }
-                option->addLink(a, length);
+                plan->addArc(option, a, length);
                 continue;
             }
         }
@@ -97,16 +95,16 @@ bool StdRestorationPlanParser::write(const RestorationPlan & plan, const std::fi
 
     problem_file << std::setprecision(16);
 
-    for(RestorationPlan::Option * option : plan.options()) {
-        problem_file << option->getCost() << " " << option->getNbElems() << std::endl;
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        problem_file << plan.getCost(i) << " " << plan.getNbElements(i) << std::endl;
 
-        for(Graph_t::Node u : option->nodes()) {
-            problem_file << "\tn " << id(u) << " " << option->getQualityGain(u) << std::endl;
+        for(auto const& [v, quality_gain] : plan.getNodes(i)) {
+            problem_file << "\tn " << id(v) << " " << quality_gain << std::endl;
         }
-        for(Graph_t::Arc a : option->arcs()) {
+        for(auto const& [a, restored_probability] : plan.getArcs(i)) {
             Graph_t::Node source = graph.source(a);
             Graph_t::Node target = graph.target(a);
-            problem_file << "\ta " << id(source) << " " << id(target) << " " << option->getRestoredProbability(a) << std::endl;
+            problem_file << "\ta " << id(source) << " " << id(target) << " " << restored_probability << std::endl;
         }
     }
 

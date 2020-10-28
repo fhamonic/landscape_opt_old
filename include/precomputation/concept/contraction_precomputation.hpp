@@ -25,9 +25,7 @@ class ContractionPrecomputation {
     public:
         void erase_non_connected(Landscape & landscape, Graph_t::Node t) const;
         void contract_arc(Landscape & contracted_landscape, RestorationPlan & plan, Graph_t::Arc a) const;
-        void model_quality_gains(Landscape & landscape, RestorationPlan & plan, std::vector<std::vector<Graph_t::Arc>> & options_nodes) const;
-        void retrive_quality_gains(Landscape & landscape, RestorationPlan & plan, const std::vector<std::vector<Graph_t::Arc>> & options_nodes) const;
-
+        
         virtual Graph_t::NodeMap<ContractionResult> * precompute(const Landscape & landscape, const RestorationPlan & plan) const=0;
 };
 

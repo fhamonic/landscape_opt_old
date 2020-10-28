@@ -6,18 +6,19 @@ Solution * Solvers::Bogo::solve(const Landscape & landscape, const RestorationPl
     const int seed = params.at("seed")->getInt();
     Chrono chrono;
 
-    RandomChooser<const RestorationPlan::Option*> option_chooser(seed);
-    for(RestorationPlan::Option * option : plan.options())
-        option_chooser.add(option, 1);
+    RandomChooser<const RestorationPlan::Option> option_chooser(seed);
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+        option_chooser.add(i, 1);
 
     Solution * solution = new Solution(landscape, plan);
     double purschaised = 0.0;
     while(option_chooser.canPick()) {
-        const RestorationPlan::Option * option = option_chooser.pick();
-        if(purschaised + option->getCost() > B)
+        const RestorationPlan::Option i = option_chooser.pick();
+        const double cost = plan.getCost(i);
+        if(purschaised + cost > B)
             continue;
-        purschaised += option->getCost();
-        solution->add(option);
+        purschaised += cost;
+        solution->add(i);
     }
 
     solution->setComputeTimeMs(chrono.timeMs());

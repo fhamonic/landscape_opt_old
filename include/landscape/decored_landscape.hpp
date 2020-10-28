@@ -77,14 +77,16 @@ class DecoredLandscape : public concepts::AbstractLandscape<Graph_t> {
         void reset();
 
         /**
-         * @brief Decorates the landscape by applying the specified resotoration option.
+         * @brief Decorates the landscape by applying the specified restoration option.
          * 
-         * Enhances the propoerties of the elements concerned by the specified restoration option according to a coefficient.
+         * Enhances the nodes qualities and arcs probabilities concerned by the option **i** of the restoration plan.
+         * **coef** permits to partially apply the restoration option.
          * 
-         * @param option 
-         * @param coef : $[0,1]$, the portion of option to consider  
+         * @param plan - RestorationPlan
+         * @param option - Option
+         * @param coef - $[0,1]$, the portion of option to consider  
          */
-        void apply(const RestorationPlan::Option * option, double coef=1.0);
+        void apply(const RestorationPlan & plan, const RestorationPlan::Option i, double coef=1.0);
 };
 
 #endif //DECORED_LANDSCAPE_HPP

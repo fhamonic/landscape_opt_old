@@ -12,16 +12,19 @@ Solution * Solvers::Naive_ECA_Inc::solve(const Landscape & landscape, const Rest
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
 
-    std::vector<std::pair<double, const RestorationPlan::Option *>> ratio_options;
-    const std::vector<RestorationPlan::Option*> & options = plan.options();
+    std::vector<std::pair<double, const RestorationPlan::Option>> ratio_options;
+
+    std::vector<RestorationPlan::Option> options;
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+        options.push_back(i);
     
     ratio_options.resize(options.size());
 
-    auto compute = [&landscape, prec_eca] (RestorationPlan::Option * option) {
+    auto compute = [&landscape, &plan, prec_eca] (RestorationPlan::Option option) {
         DecoredLandscape decored_landscape(landscape);
-        decored_landscape.apply(option, 1);
+        decored_landscape.apply(plan, option, 1);
         const double eca = ECA::get().eval(decored_landscape);
-        const double ratio = (eca - prec_eca) / option->getCost();
+        const double ratio = (eca - prec_eca) / plan.getCost(option);
         
         return std::make_pair(ratio, option);
     };
@@ -29,17 +32,17 @@ Solution * Solvers::Naive_ECA_Inc::solve(const Landscape & landscape, const Rest
     if(parallel) std::transform(std::execution::par, options.begin(), options.end(), ratio_options.begin(), compute);
     else std::transform(std::execution::seq, options.begin(), options.end(), ratio_options.begin(), compute);
 
-    std::sort(ratio_options.begin(), ratio_options.end(), [](std::pair<double, const RestorationPlan::Option *> & e1, std::pair<double, const RestorationPlan::Option *> & e2) {
+    std::sort(ratio_options.begin(), ratio_options.end(), [](std::pair<double, const RestorationPlan::Option> & e1, std::pair<double, const RestorationPlan::Option> & e2) {
         return e1.first > e2.first;
     });
 
     double purchaised = 0.0;
-    for(std::pair<double, const RestorationPlan::Option *> elem : ratio_options) {
-        const double price = elem.second->getCost();
+    for(std::pair<double, const RestorationPlan::Option> elem : ratio_options) {
+        const double price = plan.getCost(elem.second);
         if(purchaised + price > B)
             continue;
         if(log_level > 1)
-            std::cout << elem.first << " " << elem.second->getId() << std::endl;
+            std::cout << elem.first << " " << elem.second << std::endl;
         purchaised += price;
         solution->set(elem.second, 1.0);
     }

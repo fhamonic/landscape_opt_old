@@ -21,11 +21,13 @@ namespace Solvers::PL_ECA_2_Vars {
             RestoredXVar(const RestorationPlan & plan, int n): VarType(0, 0, OSI_Builder::INFTY, false), _graph(plan.getLandscape().getNetwork()) {
                 offsets.resize(plan.getNbOptions());
                 int cpt = 0;
-                for(RestorationPlan::Option * option : plan.options()) { offsets[option->getId()] = cpt; cpt += option->getNbArcs(); }
+                for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+                { offsets[i] = cpt; cpt += plan.getNbArcs(i); }
                 _nb_vars_by_node = cpt;
                 _number = n * _nb_vars_by_node;
             }
-            int id(Graph_t::Node t, Graph_t::Arc a, RestorationPlan::Option * option) { const int id = _graph.id(t) * _nb_vars_by_node + offsets.at(option->getId()) + option->id(a);
+            int id(Graph_t::Node t, Graph_t::Arc a, RestorationPlan::Option option) { 
+                const int id = _graph.id(t) * _nb_vars_by_node + offsets.at(option) + option->id(a);
                 assert(id >=0 && id < _number); return _offset + id;}
     };
     class FVar : public OSI_Builder::VarType {
@@ -43,7 +45,7 @@ namespace Solvers::PL_ECA_2_Vars {
         public:
             RestoredFVar(const RestorationPlan & plan): VarType(0, 0, OSI_Builder::INFTY, false), _plan(plan) {
                 int cpt = 0;
-                for(RestorationPlan::Option * option : plan.options()) { offsets[option] = cpt; cpt += option->getNbNodes(); }
+                for(RestorationPlan::Option option : plan.options()) { offsets[option] = cpt; cpt += option->getNbNodes(); }
                 _number = cpt;
             }
             int id(Graph_t::Node t, const RestorationPlan::Option * option) { const int id = offsets.at(option) + option->id(t);
