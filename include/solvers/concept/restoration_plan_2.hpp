@@ -39,7 +39,7 @@ class RestorationPlan2 {
         std::vector<double> _costs;
     public:
         RestorationPlan2(const Landscape & l) : _landscape(l), _nodeMap(l.getNetwork()), _arcMap(l.getNetwork()) {  }
-        ~RestorationPlan2() {  }
+        ~RestorationPlan2() {}
             
         const Landscape & getLandscape() const { return _landscape; }
 
@@ -50,7 +50,10 @@ class RestorationPlan2 {
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        int getNbNodes(Option i) const { return _options_nodes[i].size(); }
+        int getNbNodes(Option i) const {
+            assert(contains(i));
+            return _options_nodes[i].size();
+        }
 
         /**
          * @brief Get the number of arcs concerned by option **i**
@@ -59,7 +62,10 @@ class RestorationPlan2 {
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        int getNbArcs(Option i) const { return _options_arcs[i].size(); }
+        int getNbArcs(Option i) const {
+            assert(contains(i));
+            return _options_arcs[i].size();
+        }
 
         /**
          * @brief Return true if the option **i** concerns node **v**
@@ -69,7 +75,10 @@ class RestorationPlan2 {
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Option i, Graph_t::Node v) const { return _options_nodes_idsMap[i].contains(v); }
+        bool contains(Option i, Graph_t::Node v) const {
+            assert(contains(i));
+            return _options_nodes_idsMap[i].contains(v);
+        }
 
         /**
          * @brief Return true if the option **i** concerns arc **a**
@@ -79,7 +88,10 @@ class RestorationPlan2 {
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Option i, Graph_t::Arc a) const { return _options_arcs_idsMap[i].contains(a); }
+        bool contains(Option i, Graph_t::Arc a) const { 
+            assert(contains(i)); 
+            return _options_arcs_idsMap[i].contains(a);
+        }
 
         /**
          * @brief Test if there is an option concerning the node **v**
@@ -89,6 +101,7 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$
          */
         bool contains(Graph_t::Node v) const { return _nodeMap[v].size() > 0; }
+
         /**
          * @brief Test if there is an option concerning the arc **a**
          * @param a - Arc
@@ -107,11 +120,13 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         void addNode(Option i, Graph_t::Node v, double quality_gain) {
+            assert(contains(i));
             if(contains(i, v)) return;
             _options_nodes[i].push_back(std::pair<Graph_t::Node, double>(v, quality_gain));
             _options_nodes_idsMap[i][v] = _options_nodes[i].size()-1;
             _nodeMap[v][i] = quality_gain;
         }
+
         /**
          * @brief Add the arc **a** to the option **i**
          * @param i - Option
@@ -121,6 +136,7 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         void addArc(Option i, Graph_t::Arc a, double restored_probability) {
+            assert(contains(i)); 
             if(contains(i, a)) return;
             _options_arcs[i].push_back(std::pair<Graph_t::Arc, double>(a, restored_probability));
             _options_arcs_idsMap[i][a] = _options_arcs[i].size()-1;
@@ -135,6 +151,7 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         void removeNode(Option i, Graph_t::Node v) {
+            assert(contains(i)); 
             if(!contains(i, v)) return;
             const int id = _options_nodes_idsMap[i][v];
             const int last_id = _options_nodes[i].size()-1;
@@ -146,6 +163,7 @@ class RestorationPlan2 {
             _options_nodes_idsMap[i].erase(v);
             _nodeMap[v].erase(i);  
         }
+
         /**
          * @brief Remove the arc **a** from the option **i**
          * @param i - Option
@@ -154,6 +172,7 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         void removeArc(Option i, Graph_t::Arc a) {
+            assert(contains(i));
             if(!contains(i, a)) return;
             const int id = _options_arcs_idsMap[i][a];
             const int last_id = _options_arcs[i].size()-1;
@@ -186,6 +205,7 @@ class RestorationPlan2 {
             }
             _nodeMap[v].clear();
         }
+
         /**
          * @brief Remove the arc **a** from every option
          * @param a - Arc
@@ -215,7 +235,11 @@ class RestorationPlan2 {
          * @time \f$O(\log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        double getQualityGain(Option i, Graph_t::Node v) const { return _nodeMap[v].at(i); }
+        double getQualityGain(Option i, Graph_t::Node v) const { 
+            assert(contains(i, v)); 
+            return _nodeMap[v].at(i);
+        }
+
         /**
          * @brief Get the RestoredProbability of arc **a** in the option **i**
          * @param i - Option
@@ -224,7 +248,41 @@ class RestorationPlan2 {
          * @time \f$O(\log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        double getRestoredProbability(Option i, Graph_t::Arc a) const { return _arcMap[a].at(i); }
+        double getRestoredProbability(Option i, Graph_t::Arc a) const {
+            assert(contains(i, a)); 
+            return _arcMap[a].at(i);
+        }
+
+        /**
+         * @brief Set the QualityGain of node **v** in the option **i**
+         * @param i - Option
+         * @param v - Node
+         * @param quality_gain - quality gain on **v**
+         * @time \f$O(\log \#options(v))\f$
+         * @space \f$O(1)\f$ 
+         */
+        void setQualityGain(Option i, Graph_t::Node v, double quality_gain) {
+            if(!contains(i, v)) return;
+            const int id = _options_nodes_idsMap[i][v];
+            _options_nodes[i][id].second = quality_gain;
+            _nodeMap[v][i] = quality_gain;
+
+        }
+
+        /**
+         * @brief Set the RestoredProbability of arc **a** in the option **i**
+         * @param i - Option
+         * @param a - Arc
+         * @param restored_probability - restored probability of **a**
+         * @time \f$O(\log \#options(a))\f$
+         * @space \f$O(1)\f$ 
+         */
+        void setRestoredProbability(Option i, Graph_t::Arc a, double restored_probability) {
+            if(!contains(i, a)) return;
+            const int id = _options_arcs_idsMap[i][a];
+            _options_arcs[i][id].second = restored_probability;
+            _arcMap[a][i] = restored_probability;
+        }
 
         /**
          * @brief  Get the id of the node **v** in the option **i**
@@ -234,7 +292,8 @@ class RestorationPlan2 {
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        double id(Option i, Graph_t::Node v) const { return _options_nodes_idsMap[i].at(v); }
+        double id(Option i, Graph_t::Node v) const { return _options_nodes_idsMap.at(i).at(v); }
+
         /**
          * @brief  Get the id of the arc **a** in the option **i**
          * @param i - Option
@@ -243,7 +302,9 @@ class RestorationPlan2 {
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
-        double id(Option i, Graph_t::Arc a) const { return _options_arcs_idsMap[i].at(a); }
+        double id(Option i, Graph_t::Arc a) const { 
+            return _options_arcs_idsMap.at(i).at(a);
+        }
 
         /**
          * @brief add an option of cost **c** and returns its id
@@ -258,6 +319,24 @@ class RestorationPlan2 {
             _costs.push_back(c);
             return _costs.size()-1;
         }
+
+        /**
+         * @brief Get the number of options
+         * @return int 
+         * @time \f$O(1)\f$
+         * @space \f$O(1)\f$ 
+         */
+        int getNbOptions() const { return _costs.size(); }
+
+        /**
+         * @brief Return true if the restoration plan contains an option of id **i**
+         * @param i - Option
+         * @return bool 
+         * @time \f$O(1)\f$
+         * @space \f$O(1)\f$ 
+         */
+        bool contains(Option i) const { return i>=0 && i<getNbOptions(); }
+
         /**
          * @brief Set the cost of option **i**
          * @param i - Option
@@ -266,6 +345,7 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         void setCost(Option i, double cost) { _costs[i] = cost; }
+
         /**
          * @brief Get the cost of option **i**
          * @param i - Option
@@ -284,13 +364,6 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         bool isEmpty(Option i) const { return _options_nodes[i].size()>0 || _options_arcs[i].size()>0; }
-        /**
-         * @brief Get the number of options
-         * @return int 
-         * @time \f$O(1)\f$
-         * @space \f$O(1)\f$ 
-         */
-        int getNbOptions() const { return _costs.size(); }
 
         /**
          * @brief Returns the map of options concerning the node **v**
@@ -300,6 +373,7 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         const std::map<Option, double> & getOptions(Graph_t::Node v) const { return _nodeMap[v]; }
+
         /**
          * @brief Returns the map of options concerning the arc **a**
          * @param a - Arc
@@ -308,6 +382,24 @@ class RestorationPlan2 {
          * @space \f$O(1)\f$ 
          */
         const std::map<Option, double> & getOptions(Graph_t::Arc a) const { return _arcMap[a]; }
+
+        /**
+         * @brief Returns the map of options concerning the node **v**
+         * @param v - Node
+         * @return int 
+         * @time \f$O(1)\f$
+         * @space \f$O(1)\f$ 
+         */
+        const std::vector<std::pair<Graph_t::Node, double>> & getNodes(Option i) const { return _options_nodes[i]; }
+
+        /**
+         * @brief Returns the map of options concerning the arc **a**
+         * @param a - Arc
+         * @return int 
+         * @time \f$O(1)\f$
+         * @space \f$O(1)\f$ 
+         */
+        const std::vector<std::pair<Graph_t::Arc, double>> & getArcs(Option i) const { return _options_arcs[i]; }
 
         /**
          * @brief Erase invalid nodes from the restoration plan
