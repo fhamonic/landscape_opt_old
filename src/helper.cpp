@@ -1,6 +1,6 @@
 #include "helper.hpp"
 
-void Helper::printSolution(const Landscape & landscape, std::string name, concepts::Solver & solver, double B, Solution * solution) {
+void Helper::printSolution(const Landscape & landscape, const RestorationPlan & plan, std::string name, concepts::Solver & solver, double B, Solution * solution) {
     const Graph_t & graph = landscape.getNetwork();
     
     
@@ -16,12 +16,12 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
     Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
     Graph_t::ArcMap<double> arc_widths(graph, 5);
 
-    for(auto option_pair : solution->getOptionCoefs()) {
-        const double coef = option_pair.second;
-        for(Graph_t::Node u : option_pair.first->nodes()) {
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        const double coef = solution->getCoef(i);
+        for(auto const& [u, quality_gain] : plan.getNodes(i)) {
             node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
         }
-        for(Graph_t::Arc a : option_pair.first->arcs()) {
+        for(auto const& [a, restored_probability] : plan.getArcs(i)) {
             arcs_colorsMap[a] = lemon::Color(1-coef, coef, 0.0);
         }
     }
@@ -50,7 +50,7 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
     
     //TODO ECA::eval_solution(landscape, alpha, solution)
     const double base_eca = ECA::get().eval(landscape);
-    const double restored_eca = ECA::get().eval_solution(landscape, *solution);
+    const double restored_eca = ECA::get().eval_solution(landscape, plan, *solution);
     
     const double cost = solution->getCost();
     const double time_ms = solution->getComputeTimeMs();
@@ -96,14 +96,13 @@ void Helper::printSolution(const Landscape & landscape, std::string name, concep
 }
 
 void Helper::copyPlan(RestorationPlan & contracted_plan, const RestorationPlan & plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef) {
-    for(RestorationPlan::Option * option : plan.options()) {
-        RestorationPlan::Option * copied_option = contracted_plan.addOption();
-        copied_option->setId(option->getId());
-        copied_option->setCost(option->getCost());
-        for(Graph_t::Node u : option->nodes())
-            copied_option->addPatch(nodesRef[u], option->getQualityGain(u));
-        for(Graph_t::Arc a : option->arcs())
-            copied_option->addLink(arcsRef[a], option->getRestoredProbability(a));
+    assert(contracted_plan.getNbOptions() == 0);
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        contracted_plan.addOption(plan.getCost(i));
+        for(auto const& [u, quality_gain] : plan.getNodes(i))
+            contracted_plan.addNode(i, nodesRef[u], quality_gain);
+        for(auto const& [a, restored_probability] : plan.getArcs(i))
+            contracted_plan.addArc(i, arcsRef[a], restored_probability);
     }  
 }
 
@@ -150,7 +149,6 @@ std::pair<Graph_t::Node, Graph_t::Node> Helper::neerestNodes(const Landscape & l
     return neerestPair;
 }
 
-
 bool is_probability(const double p) {
     return (p >= 0) && (p <= 1);
 }
@@ -163,41 +161,41 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a)
         assert(is_probability(landscape.getProbability(a)));
 
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-        for(RestorationPlan::Option * option : plan.getOptions(v)) {
-            const std::vector<RestorationPlan::Option*> & opt_list = plan.options();
-            assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-        }
-    }
-    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
-        for(RestorationPlan::Option * option : plan.getOptions(a)) {
-            const std::vector<RestorationPlan::Option*> & opt_list = plan.options();
-            assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-        }
-    }
+    // for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+    //     for(RestorationPlan::Option * option : plan.getOptions(v)) {
+    //         const std::vector<RestorationPlan::Option*> & opt_list = plan.options();
+    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
+    //     }
+    // }
+    // for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+    //     for(RestorationPlan::Option * option : plan.getOptions(a)) {
+    //         const std::vector<RestorationPlan::Option*> & opt_list = plan.options();
+    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
+    //     }
+    // }
 
-    //std::cout << plan.getNbOptions() << std::endl;
+    // //std::cout << plan.getNbOptions() << std::endl;
 
-    for(RestorationPlan::Option * option : plan.options()) {
-        for(Graph_t::Node u : option->nodes()) {
-            assert(graph.valid(u));
-            assert(option->contains(u));
-            assert(option->getQualityGain(u) > 0);
-            assert(option->id(u) >= 0 && option->id(u) < option->getNbNodes());
-            assert(plan.contains(u));
-            const std::list<RestorationPlan::Option*> & opt_list = plan.getOptions(u);
-            assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-        }
-        for(Graph_t::Arc a : option->arcs()) {
-            assert(graph.valid(a));
-            assert(option->contains(a));
-            //std::cout << graph.id(graph.source(a)) << " " << option->getRestoredProbability(a) << std::endl;
-            assert(is_probability(option->getRestoredProbability(a)));
-            assert(option->getRestoredProbability(a) > landscape.getProbability(a));
-            assert(option->id(a) >= 0 && option->id(a) < option->getNbArcs());
-            assert(plan.contains(a));
-            const std::list<RestorationPlan::Option*> & opt_list = plan.getOptions(a);
-            assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-        }
-    }
+    // for(RestorationPlan::Option * option : plan.options()) {
+    //     for(Graph_t::Node u : option->nodes()) {
+    //         assert(graph.valid(u));
+    //         assert(option->contains(u));
+    //         assert(option->getQualityGain(u) > 0);
+    //         assert(option->id(u) >= 0 && option->id(u) < option->getNbNodes());
+    //         assert(plan.contains(u));
+    //         const std::list<RestorationPlan::Option*> & opt_list = plan.getOptions(u);
+    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
+    //     }
+    //     for(Graph_t::Arc a : option->arcs()) {
+    //         assert(graph.valid(a));
+    //         assert(option->contains(a));
+    //         //std::cout << graph.id(graph.source(a)) << " " << option->getRestoredProbability(a) << std::endl;
+    //         assert(is_probability(option->getRestoredProbability(a)));
+    //         assert(option->getRestoredProbability(a) > landscape.getProbability(a));
+    //         assert(option->id(a) >= 0 && option->id(a) < option->getNbArcs());
+    //         assert(plan.contains(a));
+    //         const std::list<RestorationPlan::Option*> & opt_list = plan.getOptions(a);
+    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
+    //     }
+    // }
 }

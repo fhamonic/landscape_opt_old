@@ -279,7 +279,7 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
     Solution * solution = new Solution(landscape, plan);
 
     for(int i=0; i<nb_options; i++) {
-        const RestorationPlan::Option * option = plan.options()[i];
+        RestorationPlan::Option * option = plan.options()[i];
         const int y_i = x_var(i);
         const double value = var_solution[y_i];
         

@@ -67,12 +67,8 @@ Instance * make_instance_marseille(double pow, double thresold, double median, b
         }
     }
 
-    int cpt = 0;
     for(Graph_t::Node v1 : friches_list) {
-        RestorationPlan::Option * option = plan.addOption();
-        option->setCost(1);
-        option->setId(cpt);
-        cpt++;
+        RestorationPlan::Option option = plan.addOption(1);
         if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;
@@ -82,10 +78,10 @@ Instance * make_instance_marseille(double pow, double thresold, double median, b
                 landscape.changeTarget(a, v2);
 
             Graph_t::Arc v1v2 = landscape.addArc(v2, v1, 0);
-            option->addLink(v1v2, 1.0);
+            plan.addArc(option, v1v2, 1.0);
         }
         if(quality_gain)
-            option->addPatch(v1, quality_gain);
+            plan.addNode(option, v1, quality_gain);
     }
 
     return instance;
@@ -103,7 +99,6 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
     
     std::vector<Graph_t::Node> node_correspondance;
     std::vector<Graph_t::Node> total_threaten;
-    int cpt = 0;
 
     io::CSVReader<5> patches("data/quebec_leam_v3/raw/sommets_leam_v3.txt");
     patches.read_header(io::ignore_extra_column, "count","area","xcoord","ycoord","count2050");
@@ -126,11 +121,8 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
             total_threaten.push_back(u);
             continue;
         }
-        RestorationPlan::Option * option = plan.addOption();
-        option->setCost(1);
-        option->setId(cpt);
-        cpt++;
-        option->addPatch(u, area-count2050);
+        RestorationPlan::Option option = plan.addOption(1);
+        plan.addNode(option, u, area-count2050);
     }
 
     io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.txt");
@@ -147,10 +139,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
     }
 
     for(Graph_t::Node v1 : total_threaten) {
-        RestorationPlan::Option * option = plan.addOption();
-        option->setCost(1);
-        option->setId(cpt);
-        cpt++;
+        RestorationPlan::Option option = plan.addOption(1);
         if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;
@@ -160,10 +149,10 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
                 landscape.changeTarget(a, v2);
 
             Graph_t::Arc v2v1 = landscape.addArc(v2, v1, 0);
-            option->addLink(v2v1, 1.0);
+            plan.addArc(option, v2v1, 1.0);
         }
         if(quality_gain)
-            option->addPatch(v1, quality_gain);
+            plan.addNode(option, v1, quality_gain);
     }
 
     return instance;

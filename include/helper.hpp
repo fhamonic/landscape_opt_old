@@ -148,7 +148,7 @@ namespace Helper {
     }
 
 
-    void printSolution(const Landscape & landscape, std::string name, concepts::Solver & solver, double B, Solution * solution);
+    void printSolution(const Landscape & landscape, const RestorationPlan & plan, std::string name, concepts::Solver & solver, double B, Solution * solution);
 
     void copyPlan(RestorationPlan & contracted_plan, const RestorationPlan & plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef);
 

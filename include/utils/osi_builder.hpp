@@ -7,6 +7,7 @@
  * 
  * @copyright Copyright (c) 2020
  */
+#ifndef OSI_BUILDER_HPP
 #define OSI_BUILDER_HPP
 
 #include<functional>

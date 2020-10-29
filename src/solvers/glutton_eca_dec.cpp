@@ -9,7 +9,7 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
 
     const Graph_t & graph = landscape.getNetwork();
 
-    std::vector<const RestorationPlan::Option> options;
+    std::vector<RestorationPlan::Option> options;
     double purchaised = 0.0;
     for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
         purchaised += plan.getCost(i);
@@ -17,16 +17,16 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         options.push_back(i);
     }
 
-    double prec_eca = ECA::get().eval_solution(landscape, *solution);
+    double prec_eca = ECA::get().eval_solution(landscape, plan, *solution);
     if(log_level > 1) {
         std::cout << "base purchaised: " << purchaised << std::endl;
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
 
-    auto min_option = [] (std::pair<double, const RestorationPlan::Option> p1, std::pair<double, const RestorationPlan::Option> p2) {
+    auto min_option = [] (std::pair<double, RestorationPlan::Option> p1, std::pair<double, RestorationPlan::Option> p2) {
         return (p1.first < p2.first) ? p1 : p2;
     };
-    auto compute_option = [&landscape, &plan, &prec_eca, solution] (const RestorationPlan::Option option) {
+    auto compute_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan::Option option) {
         DecoredLandscape decored_landscape(landscape);
         
         for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
@@ -36,17 +36,17 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (prec_eca - eca) / plan.getCost(option);
 
-        return std::pair<double, const RestorationPlan::Option>(ratio, option);
+        return std::pair<double, RestorationPlan::Option>(ratio, option);
     };
     while(purchaised > B) {
-        std::pair<double, const RestorationPlan::Option> worst = parallel ?
+        std::pair<double, RestorationPlan::Option> worst = parallel ?
                 std::transform_reduce(std::execution::par, options.begin(), options.end(),
                         std::make_pair(std::numeric_limits<double>::max(), -1), min_option, compute_option) :
                 std::transform_reduce(std::execution::seq, options.begin(), options.end(),
                         std::make_pair(std::numeric_limits<double>::max(), -1), min_option, compute_option);        
 
         const double worst_ratio = worst.first;
-        const RestorationPlan::Option worst_option = worst.second;
+        RestorationPlan::Option worst_option = worst.second;
         const double worst_option_cost = plan.getCost(worst_option);
 
         options.erase(std::find(options.begin(), options.end(), worst_option));

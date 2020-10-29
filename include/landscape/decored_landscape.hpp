@@ -86,7 +86,7 @@ class DecoredLandscape : public concepts::AbstractLandscape<Graph_t> {
          * @param option - Option
          * @param coef - $[0,1]$, the portion of option to consider  
          */
-        void apply(const RestorationPlan & plan, const RestorationPlan::Option i, double coef=1.0);
+        void apply(const RestorationPlan & plan, RestorationPlan::Option i, double coef=1.0);
 };
 
 #endif //DECORED_LANDSCAPE_HPP

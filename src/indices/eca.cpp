@@ -5,10 +5,10 @@ ECA ECA::singleton;
 ECA::ECA() {}
 ECA::~ECA() {}
 
-double ECA::eval_solution(const Landscape & landscape, const Solution & solution) const {
+double ECA::eval_solution(const Landscape & landscape, const RestorationPlan & plan, const Solution & solution) const {
     DecoredLandscape decored_landscape(landscape);
-    for(auto option_pair : solution.getOptionCoefs())
-        decored_landscape.apply(option_pair.first, option_pair.second);    
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+        decored_landscape.apply(plan, i, solution.getCoef(i));
     double value = ECA::get().eval(decored_landscape);
     return value;
 }

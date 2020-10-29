@@ -26,13 +26,13 @@ class Solution {
 
         const RestorationPlan & getPlan() const { return plan; };
 
-        bool contains(const RestorationPlan::Option option) const {
+        bool contains(RestorationPlan::Option option) const {
             return coefs.at(option) > std::numeric_limits<double>::epsilon();
         }
 
-        void set(const RestorationPlan::Option option, double coef) { coefs[option] = coef; }
-        void add(const RestorationPlan::Option option) { set(option, 1.0); }
-        void remove(const RestorationPlan::Option option) { set(option, 0.0); }
+        void set(RestorationPlan::Option option, double coef) { coefs[option] = coef; }
+        void add(RestorationPlan::Option option) { set(option, 1.0); }
+        void remove(RestorationPlan::Option option) { set(option, 0.0); }
 
         const std::vector<double> & getCoefs() const { return coefs; }
 

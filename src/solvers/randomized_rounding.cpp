@@ -1,18 +1,16 @@
 #include "solvers/randomized_rounding.hpp"
 
 static Solution * job(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution * relaxed_solution, int nb_draws) {
-    RandomChooser<const RestorationPlan::Option*> option_chooser;
-    for(auto option_pair : relaxed_solution->getOptionCoefs()) {
-        const RestorationPlan::Option * option = option_pair.first;
-        const double coef = option_pair.second;
-        if(coef == 0)
-            continue;
-        option_chooser.add(option, coef);
+    RandomChooser<RestorationPlan::Option> option_chooser;
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        const double coef = relaxed_solution->getCoef(i);
+        if(coef == 0) continue;
+        option_chooser.add(i, coef);
     }
 
     Solution * best_solution = new Solution(landscape, plan);
 
-    std::vector<const RestorationPlan::Option *> purschaised_options;
+    std::vector<RestorationPlan::Option> purschaised_options;
     double purschaised;
     DecoredLandscape decored_landscape(landscape);
     double best_eca = 0.0;
@@ -23,20 +21,19 @@ static Solution * job(const Landscape & landscape, const RestorationPlan & plan,
         purschaised = 0.0;
         decored_landscape.reset();
         while(option_chooser.canPick()) {
-            const RestorationPlan::Option * option = option_chooser.pick();
-            if(purschaised + option->getCost() > B)
-                continue;
+            RestorationPlan::Option option = option_chooser.pick();
+            if(purschaised + plan.getCost(option) > B) continue;
             purschaised_options.push_back(option);
-            purschaised += option->getCost();
+            purschaised += plan.getCost(option);
 
-            decored_landscape.apply(option, 1);
+            decored_landscape.apply(plan, option);
         }
         double eca = ECA::get().eval(decored_landscape);
 
         if(eca > best_eca) {
-            for(const RestorationPlan::Option * option : plan.options())
-                best_solution->set(option, 0);
-            for(const RestorationPlan::Option * option : purschaised_options)
+            for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+                best_solution->set(i, 0);
+            for(RestorationPlan::Option option : purschaised_options)
                 best_solution->set(option, 1);
 
             best_eca = eca;
@@ -62,7 +59,7 @@ Solution * Solvers::Randomized_Rounding_ECA::solve(const Landscape & landscape, 
     std::cout << std::endl;
     // //for debug
     // for(auto option_pair : relaxed_solution->getOptionCoefs()) {
-    //     const RestorationPlan::Option * option = option_pair.first;
+    //     RestorationPlan::Option * option = option_pair.first;
     //     const double coef = option_pair.second;
     //     std::cout << coef << " ";
     // }

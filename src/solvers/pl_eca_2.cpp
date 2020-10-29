@@ -21,10 +21,9 @@ namespace Solvers::PL_ECA_2_Vars {
         public:
             RestoredXVar(const RestorationPlan & plan, int n): VarType(0, 0, OSI_Builder::INFTY, false), 
                     _graph(plan.getLandscape().getNetwork()), _plan(plan) {
-                offsets.resize(plan.getNbOptions());
                 int cpt = 0;
                 for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
-                { offsets[i] = cpt; cpt += plan.getNbArcs(i); }
+                { offsets.push_back(cpt); cpt += plan.getNbArcs(i); }
                 _nb_vars_by_node = cpt;
                 _number = n * _nb_vars_by_node;
             }
@@ -48,17 +47,17 @@ namespace Solvers::PL_ECA_2_Vars {
             RestoredFVar(const RestorationPlan & plan): VarType(0, 0, OSI_Builder::INFTY, false), _plan(plan) {
                 int cpt = 0;
                 for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
-                { offsets[i] = cpt; cpt += plan.getNbNodes(i); }
+                { offsets.push_back(cpt); cpt += plan.getNbNodes(i); }
                 _number = cpt;
             }
-            int id(Graph_t::Node t, const RestorationPlan::Option i) { 
+            int id(Graph_t::Node t, RestorationPlan::Option i) { 
                 const int id = offsets.at(i) + _plan.id(i, t);
                 assert(id >=0 && id < _number); return _offset + id;}
     };
     class YVar : public OSI_Builder::VarType {
         public:
             YVar(const RestorationPlan & plan): VarType(plan.getNbOptions(), 0, 1, true) {}
-            int id(const RestorationPlan::Option option) { const int id = option;
+            int id(RestorationPlan::Option option) { const int id = option;
                 assert(id >=0 && id < _number); return _offset + id;}
     };
 
@@ -252,10 +251,10 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
         return nullptr;
     }
     Solution * solution = new Solution(landscape, plan);
-    for(RestorationPlan::Option * option : plan.options()) {
-        const int y_i = vars.y.id(option);
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        const int y_i = vars.y.id(i);
         const double value = var_solution[y_i];
-        solution->set(option, value);
+        solution->set(i, value);
     }
     solution->setComputeTimeMs(chrono.timeMs());
     solution->obj = solver->getObjValue();
@@ -276,10 +275,9 @@ double Solvers::PL_ECA_2::eval(const Landscape & landscape, const RestorationPla
     insert_variables(solver_builder, vars);
     if(log_level > 0) std::cout << name() << ": Start eval" << std::endl;
     fill_solver(solver_builder, landscape, plan, B, vars, false);
-    for(auto option_pair : solution.getOptionCoefs()) {
-        const RestorationPlan::Option * option = option_pair.first;
-        const int y_i = vars.y.id(option);
-        double y_i_value = option_pair.second;
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        const int y_i = vars.y.id(i);
+        double y_i_value = solution[i];
         solver_builder.setBounds(y_i, y_i_value, y_i_value);
     }
     OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);

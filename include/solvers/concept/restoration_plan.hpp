@@ -294,7 +294,7 @@ class RestorationPlan {
             for(auto it = m.begin(); it != m.end(); ++it) {
                 const Option i = it->first;
                 const int id = _options_nodes_idsMap[i][v];
-                _options_arcs[i][id].second += quality_increase;
+                _options_nodes[i][id].second += quality_increase;
                 it->second += quality_increase;
             }
         }
@@ -362,6 +362,8 @@ class RestorationPlan {
          * @space \f$O(1)\f$ 
          */
         Option addOption(double c) {
+            _options_nodes_idsMap.push_back(std::map<Graph_t::Node, int>());
+            _options_arcs_idsMap.push_back(std::map<Graph_t::Arc, int>());
             _options_nodes.push_back(std::vector<std::pair<Graph_t::Node, double>>());
             _options_arcs.push_back(std::vector<std::pair<Graph_t::Arc, double>>());
             _costs.push_back(c);
@@ -469,14 +471,13 @@ class RestorationPlan {
                 }
                 auto it_free_id = free_ids.begin();
                 for(auto it = m.begin(); it != m.end(); ++it) {
-                    Graph_t::Node v = it->first;
                     const int id = it->second;
-                    if(id < _options_nodes[i].size()-free_ids.size()) continue;
+                    if(id < static_cast<int>(_options_nodes[i].size()) - static_cast<int>(free_ids.size())) continue;
                     _options_nodes[i][*it_free_id] = _options_nodes[i][id];
                     it->second = *it_free_id;
                     ++it_free_id;
                 }
-                for(int j=0; j<free_ids.size(); ++j)
+                for(int j=0; j<static_cast<int>(free_ids.size()); ++j)
                     _options_nodes[i].pop_back();
             } 
         }
@@ -501,14 +502,13 @@ class RestorationPlan {
                 }
                 auto it_free_id = free_ids.begin();
                 for(auto it = m.begin(); it != m.end(); ++it) {
-                    Graph_t::Arc a = it->first;
                     const int id = it->second;
-                    if(id < _options_arcs[i].size()-free_ids.size()) continue;
+                    if(id < static_cast<int>(_options_arcs[i].size()) - static_cast<int>(free_ids.size())) continue;
                     _options_arcs[i][*it_free_id] = _options_arcs[i][id];
                     it->second = *it_free_id;
                     ++it_free_id;
                 }
-                for(int j=0; j<free_ids.size(); ++j)
+                for(int j=0; j<static_cast<int>(free_ids.size()); ++j)
                     _options_arcs[i].pop_back();
             } 
         }

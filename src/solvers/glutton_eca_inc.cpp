@@ -9,7 +9,7 @@ Solution * Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Re
 
     const Graph_t & graph = landscape.getNetwork();
 
-    std::vector<const RestorationPlan::Option> options;
+    std::vector<RestorationPlan::Option> options;
     double purchaised = 0.0;
     
     for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
@@ -20,10 +20,10 @@ Solution * Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Re
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
 
-    auto max_option = [](std::pair<double,const RestorationPlan::Option> p1, std::pair<double,const RestorationPlan::Option> p2) {
+    auto max_option = [](std::pair<double, RestorationPlan::Option> p1, std::pair<double, RestorationPlan::Option> p2) {
         return (p1.first > p2.first) ? p1 : p2;
     };
-    auto compute_option = [&landscape, &plan, &prec_eca, solution] (const RestorationPlan::Option option) {
+    auto compute_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan::Option option) {
         DecoredLandscape decored_landscape(landscape);
         for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
             decored_landscape.apply(plan, i, solution->getCoef(i));
@@ -32,17 +32,17 @@ Solution * Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Re
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
 
-        return std::pair<double, const RestorationPlan::Option>(ratio, option);
+        return std::pair<double, RestorationPlan::Option>(ratio, option);
     };
     while(!options.empty()) {
-        std::pair<double, const RestorationPlan::Option> best = parallel ?
+        std::pair<double, RestorationPlan::Option> best = parallel ?
                 std::transform_reduce(std::execution::par, options.begin(), options.end(),
-                        std::make_pair(0.0, (const RestorationPlan::Option) nullptr), max_option, compute_option) :
+                        std::make_pair(0.0, -1), max_option, compute_option) :
                 std::transform_reduce(std::execution::seq, options.begin(), options.end(),
-                        std::make_pair(0.0, (const RestorationPlan::Option) nullptr), max_option, compute_option);    
+                        std::make_pair(0.0, -1), max_option, compute_option);    
 
         const double best_ratio = best.first;
-        const RestorationPlan::Option best_option = best.second;
+        RestorationPlan::Option best_option = best.second;
         const double best_option_cost = plan.getCost(best_option);
 
         options.erase(std::find(options.begin(), options.end(), best_option));

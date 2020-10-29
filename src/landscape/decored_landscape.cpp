@@ -48,7 +48,7 @@ void DecoredLandscape::reset() {
         setProbability(a, original_probabilityMap[a]);
 }
 
-void DecoredLandscape::apply(const RestorationPlan & plan, const RestorationPlan::Option i, double coef) {
+void DecoredLandscape::apply(const RestorationPlan & plan, RestorationPlan::Option i, double coef) {
     if(!plan.contains(i)) return;
     if(coef == 0.0) return;
     for(auto const& [v, quality_gain] : plan.getNodes(i)) {

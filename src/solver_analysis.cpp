@@ -113,10 +113,8 @@ int main() {
                             for(concepts::Solver * solver : solvers) {
                                 Solution * solution = solver->solve(landscape, plan, budget);
 
-                                double cost = 0.0;
-                                for(auto option_pair : solution->getOptionCoefs())
-                                    cost += option_pair.first->getCost() * option_pair.second;
-                                const double total_eca = std::pow(eca.eval_solution(landscape, *solution), 2);
+                                const double cost = solution->getCost();
+                                const double total_eca = std::pow(eca.eval_solution(landscape, plan, *solution), 2);
 
                                 Solvers::PL_ECA_2 pl_eca_2;
                                 double eval_pl_eca_2 = pl_eca_2.eval(landscape, plan, budget, *solution);
