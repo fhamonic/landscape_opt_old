@@ -83,10 +83,8 @@ RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landsca
         Arc a = arcs_chooser.pick();
         std::uniform_real_distribution<> p_dis(landscape.getProbability(a), 1);
         
-        RestorationPlan::Option * option = plan->addOption();
-        option->setId(i);
-        option->setCost(1);
-        option->addLink(a, p_dis(gen));
+        RestorationPlan::Option option = plan->addOption(1);
+        plan->addArc(option, a, p_dis(gen));
     }
 
     if(!restore_nodes) return plan;
@@ -103,10 +101,8 @@ RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landsca
         nodes_chooser.reset();
         std::uniform_real_distribution<> q_dis(0, avg_quality);
         
-        RestorationPlan::Option * option = plan->addOption();
-        option->setId(i);
-        option->setCost(1);
-        option->addPatch(u, q_dis(gen));
+        RestorationPlan::Option option = plan->addOption(1);
+        plan->addNode(option, u, q_dis(gen));
     }
         
     return plan;

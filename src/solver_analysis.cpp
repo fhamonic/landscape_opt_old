@@ -89,7 +89,7 @@ int main() {
     std::vector<bool> length_gain_values{true}; 
     std::vector<bool> area_gain_values{/*false, */true};
     std::vector<double> budget_values;
-    for(int i=0; i<=20; i+=2) budget_values.push_back(i);
+    for(int i=16; i<=20; i+=2) budget_values.push_back(i);
 
     const ECA & eca = ECA::get();
 
@@ -137,13 +137,12 @@ int main() {
                                         << std::endl;
 
                                 delete solution;
+
+                                // delete instance;
+                                // clean(solvers);
+                                // return 1;
                             }
 
-
-
-                            // delete instance;
-                            // clean(solvers);
-                            // return 1;
                         }   
                         delete instance;
                     }             

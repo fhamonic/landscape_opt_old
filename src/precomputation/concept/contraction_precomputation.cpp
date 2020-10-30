@@ -18,20 +18,11 @@ void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph
     lemon::Bfs<Reversed> bfs(rg);
     bfs.run(t);
 
-    std::vector<Graph_t::Node> to_delete;
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+    for(Graph_t::NodeIt u(graph), next_u = u; u != lemon::INVALID; u = next_u) {
+        ++next_u;
         if(bfs.reached(u)) continue;
-        to_delete.push_back(u);
+        landscape.removeNode(u);
     }
-    for(Graph_t::Node u : to_delete)
-        if(graph.valid(u))
-            landscape.removeNode(u);
-
-    // for(Graph_t::NodeIt u(graph), next_u = u; u != lemon::INVALID; u = next_u) {
-    //     ++next_u;
-    //     if(bfs.reached(u)) continue;
-    //     landscape.removeNode(u);
-    // }
 }
 
 /**
@@ -49,25 +40,14 @@ void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationP
     
     const double a_probability = landscape.getProbability(a);
 
-    std::vector<Graph_t::Arc> arcs_to_move;
-    for(Graph_t::InArcIt b(graph, u); b != lemon::INVALID; ++b) {
-        arcs_to_move.push_back(b);
-    }
-    for(Graph_t::Arc b : arcs_to_move) {
+    for(Graph_t::InArcIt b(graph, u), next_b = b; b != lemon::INVALID; b = next_b) {
+        ++next_b;
         landscape.changeTarget(b, v);
         landscape.getProbabilityRef(b) *= a_probability;
         plan.updateProbability(b, a_probability);
     }
 
-    // for(Graph_t::InArcIt b(graph, u), next_b = b; b != lemon::INVALID; b = next_b) {
-    //     ++next_b;
-    //     landscape.changeTarget(b, v);
-    //     landscape.getProbabilityRef(b) *= a_probability;
-    //     plan.updateProbability(b, a_probability);
-    // }
-
-    const double quality_increase = a_probability * landscape.getQuality(u);
-    landscape.getQualityRef(v) += quality_increase;
-    plan.updateQuality(v, quality_increase);
+    landscape.getQualityRef(v) += a_probability * landscape.getQuality(u);
+    plan.moveQualityGains(u, v, a_probability);
     landscape.removeNode(u);
 }

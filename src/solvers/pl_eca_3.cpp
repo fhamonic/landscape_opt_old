@@ -76,16 +76,17 @@ namespace Solvers::PL_ECA_3_Vars {
     class RestoredXVar : public OSI_Builder::VarType {
         private:
             const ContractionResult & _cr;
-            std::map<RestorationPlan::Option, int> offsets;
+            std::vector<int> offsets;
         public:
             RestoredXVar(const ContractionResult & cr): _cr(cr) {
+                offsets.resize(cr.plan->getNbOptions(), -1);
                 int cpt = 0;
                 for(RestorationPlan::Option i=0; i<cr.plan->getNbOptions(); ++i)
                 { offsets[i] = cpt; cpt += cr.plan->getNbArcs(i); }
                 _number = cpt;
             }
             int id(Graph_t::Arc a, RestorationPlan::Option option) const {
-                assert(_cr.landscape->getNetwork().valid(a) && offsets.contains(option)); 
+                assert(_cr.landscape->getNetwork().valid(a) && offsets[option] >= 0); 
                 const int id = offsets.at(option) + _cr.plan->id(option, a);
                 assert(id >=0 && id < _number); return _offset + id; 
             }
@@ -97,14 +98,14 @@ namespace Solvers::PL_ECA_3_Vars {
     };
     class RestoredFVar : public OSI_Builder::VarType {
         private:
-            std::map<int, int> offsets;
+            std::vector<int> offsets;
         public:
             RestoredFVar(const ContractionResult & cr) : VarType(0) {
+                offsets.resize(cr.plan->getNbOptions(), -1);
                 for(auto const& [option, quality_gain] : cr.plan->getOptions(cr.t))
                     offsets[option] = _number++;
             }
-            int id(RestorationPlan::Option option) const { 
-                assert(offsets.contains(option)); 
+            int id(RestorationPlan::Option option) const {
                 const int id = offsets.at(option);
                 assert(id >=0 && id < _number); return _offset + id;
             }
@@ -131,10 +132,14 @@ namespace Solvers::PL_ECA_3_Vars {
         public:
             Graph_t::NodeMap<ContractedVars*> contracted;
             YVar y;
+            const PreprocessedDatas & _pdatas;
             Variables(const Landscape & landscape, const RestorationPlan & plan, PreprocessedDatas & pdatas) :
-                    contracted(landscape.getNetwork(), nullptr), y(plan) {
+                    contracted(landscape.getNetwork(), nullptr), y(plan), _pdatas(pdatas) {
                 for(Graph_t::Node v : pdatas.target_nodes)
                     contracted[v] = new ContractedVars((*pdatas.contracted_instances)[v]);
+            }
+            ~Variables() {
+                for(Graph_t::Node v : _pdatas.target_nodes) delete contracted[v];
             }
             ContractedVars & operator[](Graph_t::Node t) const { return *contracted[t]; }
     };

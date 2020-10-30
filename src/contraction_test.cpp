@@ -42,15 +42,6 @@ double compute_value_reversed(const concepts::AbstractLandscape<GR, QM, PM, CM> 
     return sum;
 }
 
-RestorationPlan::Option * find_option(const RestorationPlan & plan, const int id) {
-    for(RestorationPlan::Option * option : plan.options()) {
-        if(option->getId() == id)
-            return option;
-        // std::cout << option->getId() << " " << id << std::endl;
-    }
-    return nullptr;
-}
-
 void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed) {
     Helper::assert_well_formed(landscape, plan);
     const Graph_t & graph = landscape.getNetwork();
@@ -77,28 +68,26 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
         }
     }
 
-    const int nb_options = plan.getNbOptions();
-    RandomChooser<int> option_chooser(seed);
-    for(int i=0; i<nb_options; ++i)
+    RandomChooser<RestorationPlan::Option> option_chooser(seed);
+    for(int i=0; i<plan.getNbOptions(); ++i)
         option_chooser.add(i, 1);
 
     std::default_random_engine gen;
     gen.seed(seed+1);
-    std::uniform_int_distribution<> dis(0, nb_options);
+    std::uniform_int_distribution<> dis(0, plan.getNbOptions());
 
     const int nb_tests = 100;
 
     for(int i=0; i<nb_tests; ++i) {
-        std::vector<int> picked_options;
+        std::vector<RestorationPlan::Option> picked_options;
         double nb_picked_options = dis(gen);
         option_chooser.reset();
         for(int j=0; j<nb_picked_options; ++j)
             picked_options.push_back(option_chooser.pick());
 
-
         DecoredLandscape decored_landscape(landscape);
-        for(int option_id : picked_options)
-            decored_landscape.apply(find_option(plan, option_id));
+        for(RestorationPlan::Option option : picked_options)
+            decored_landscape.apply(plan, option);
 
         double sum_base = 0;
         double sum_contracted = 0;
@@ -107,8 +96,8 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
 
             ContractionResult result = (*results)[t];
             DecoredLandscape decored_contracted_landscape(*result.landscape);
-            for(int option_id : picked_options)
-                decored_contracted_landscape.apply(find_option(*result.plan, option_id));
+            for(RestorationPlan::Option option : picked_options)
+                decored_contracted_landscape.apply(*result.plan, option);
             const double contracted = landscape.getQuality(t) * compute_value_reversed(decored_contracted_landscape, result.t);
             
             if(fabs(base - contracted) > epsilon_n) {

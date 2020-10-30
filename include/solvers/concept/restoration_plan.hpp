@@ -133,7 +133,10 @@ class RestorationPlan {
          */
         void addNode(Option i, Graph_t::Node v, double quality_gain) {
             assert(contains(i));
-            if(contains(i, v)) return;
+            if(contains(i, v)) {
+                setQualityGain(i, v, getQualityGain(i,v) + quality_gain);
+                return;
+            }
             _options_nodes[i].push_back(std::pair<Graph_t::Node, double>(v, quality_gain));
             _options_nodes_idsMap[i][v] = _options_nodes[i].size()-1;
             _nodeMap[v][i] = quality_gain;
@@ -149,7 +152,10 @@ class RestorationPlan {
          */
         void addArc(Option i, Graph_t::Arc a, double restored_probability) {
             assert(contains(i)); 
-            if(contains(i, a)) return;
+            if(contains(i, a)) {
+                setRestoredProbability(i, a, std::max(getRestoredProbability(i,a), restored_probability));
+                return;
+            }
             _options_arcs[i].push_back(std::pair<Graph_t::Arc, double>(a, restored_probability));
             _options_arcs_idsMap[i][a] = _options_arcs[i].size()-1;
             _arcMap[a][i] = restored_probability;
@@ -282,21 +288,22 @@ class RestorationPlan {
         }
 
         /**
-         * @brief Increase the quality gain of **v** in every options by **quality_increase**
-         * @param v - Node
-         * @param quality_increase - double
+         * @brief Moves the quality gains of **from** to **to** in every options scaled by **scale**
+         * @param from - Node
+         * @param to - Node
+         * @param scale - double
          * @time \f$O(\sum_{i \in options(a)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void updateQuality(Graph_t::Node v, double quality_increase) {
-            if(!contains(v)) return;
-            std::map<Option, double> & m = _nodeMap[v];
-            for(auto it = m.begin(); it != m.end(); ++it) {
+        void moveQualityGains(Graph_t::Node from, Graph_t::Node to, double scale=1.0) {
+            if(!contains(from)) return;            
+            std::map<Option, double> & from_m = _nodeMap[from];
+            for(auto it = from_m.begin(); it != from_m.end(); ++it) {
                 const Option i = it->first;
-                const int id = _options_nodes_idsMap[i][v];
-                _options_nodes[i][id].second += quality_increase;
-                it->second += quality_increase;
+                const double quality_gain = it->second;
+                addNode(i, to, scale * quality_gain);
             }
+            removeNode(from);
         }
 
         /**
