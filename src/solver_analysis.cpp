@@ -85,7 +85,7 @@ int main() {
 
     std::vector<double> pow_values{1, 2};
     std::vector<double> thresold_values{0.01};
-    std::vector<double> median_values{700, 1400, 2800}; 
+    std::vector<double> median_values{/*700, 1400,*/ 2800}; 
     std::vector<bool> length_gain_values{true}; 
     std::vector<bool> area_gain_values{/*false, */true};
     std::vector<double> budget_values;
@@ -133,8 +133,11 @@ int main() {
                                         << solution->obj << " "
                                         << total_eca << " "
                                         << eval_pl_eca_2 << " "
-                                        << eval_pl_eca_3
+                                        << eval_pl_eca_3 << " "
+                                        << (std::abs(eval_pl_eca_2 - eval_pl_eca_3) < 1e-4)
                                         << std::endl;
+
+                                assert((std::abs(eval_pl_eca_2 - eval_pl_eca_3) < 1e-4));
 
                                 delete solution;
 

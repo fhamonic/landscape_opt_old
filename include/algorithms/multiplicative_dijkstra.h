@@ -118,7 +118,7 @@ namespace lemon {
     public:
         void init(Node s) {
             _heap->clear();
-            for ( NodeIt u(*G) ; u!=INVALID ; ++u )
+            for(NodeIt u(*G) ; u!=INVALID ; ++u )
                 _heap_cross_ref->set(u,Heap::PRE_HEAP);
             if(_heap->state(s) != Heap::IN_HEAP)
                 _heap->push(s,OperationTraits::zero());
@@ -138,9 +138,9 @@ namespace lemon {
                     break;
                 case Heap::IN_HEAP: {
                     Value newvalue = OperationTraits::plus(oldvalue, (*_length)[e]);
-                    if ( OperationTraits::less(newvalue, (*_heap)[w]) )
+                    if(OperationTraits::less(newvalue, (*_heap)[w]))
                         _heap->decrease(w, newvalue);
-                    }
+                }
                     break;
                 case Heap::POST_HEAP:
                     break;

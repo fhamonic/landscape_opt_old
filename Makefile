@@ -20,7 +20,7 @@ INCLUDE_FLAGS=-I include -I thirdparty -I $(SRC_DIR) -I $(EIGEN_INCLUDE_DIR) -I 
 LIBS_FLAGS=-L $(COINOR_LIB_PATH) -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -L $(GUROBI_LIB_PATH) -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
 
 #-DNDEBUG -O2
-CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -flto -march=native -pipe $(INCLUDE_FLAGS) -L $(COINOR_LIB_PATH)
+CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -O2 -flto -march=native -pipe $(INCLUDE_FLAGS) -L $(COINOR_LIB_PATH)
 LDFLAGS=$(LIBS_FLAGS)
 LSFLAGS=-static $(LIBS_FLAGS) -lmpi
 

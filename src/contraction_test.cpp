@@ -47,8 +47,8 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     const Graph_t & graph = landscape.getNetwork();
 
     // const int nb_nodes = lemon::countNodes(graph);
-    const double epsilon_n = 1e-8;
-    const double epsilon_n2 = 1e-7;
+    const double epsilon_n = 1e-6;
+    const double epsilon_n2 = 1e-5;
 
     Chrono chrono;
     MyContractionAlgorithm algo;

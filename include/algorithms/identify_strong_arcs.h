@@ -10,28 +10,26 @@
 
 namespace lemon {
 
-    template <typename V>
+    template <typename TR>
     class LabeledValue {
-        typedef V Value;
+        typedef TR OperationTraits;
+        typedef OperationTraits::Value Value;
 
         public:
             Value value;
             bool label;
 
-            LabeledValue() : value{1}, label{false} {}
+            LabeledValue() : value{OperationTraits::zero()}, label{false} {}
             LabeledValue(const Value &value, bool label=false) : value{value}, label{label} {}
-            LabeledValue(const LabeledValue<Value> &o) : value{o.value}, label{o.label} {}
+            LabeledValue(const LabeledValue<TR> &o) : value{o.value}, label{o.label} {}
             
-            bool operator<(const LabeledValue<Value> &o) const { return value < o.value || (value == o.value && label && !o.label); }
-            bool operator>(const LabeledValue<Value> &o) const { return o < *this; }
+            bool operator<(const LabeledValue<TR> &o) const { return OperationTraits::less(value, o.value) || (value == o.value && label && !o.label); }
+            bool operator==(const LabeledValue<TR> &o) const { return value == o.value && label == o.label; }
 
-            bool operator==(const LabeledValue<Value> &o) const { return value == o.value && label == o.label; }
-
-            void operator=(const LabeledValue<Value> &o) { value = o.value; label = o.label; }
+            void operator=(const LabeledValue<TR> &o) { value = o.value; label = o.label; }
             void operator=(const Value &o) { value = o.value; label = false; }
 
-            LabeledValue<Value> operator+(const LabeledValue<Value> &o) const { return LabeledValue<Value>(value + o.value, label || o.label); }
-            LabeledValue<Value> operator*(const LabeledValue<Value> &o) const { return LabeledValue<Value>(value * o.value, label || o.label); }
+            LabeledValue<TR> operator+(const LabeledValue<TR> &o) const { return LabeledValue<TR>(OperationTraits::plus(value, o.value), label || o.label); }
     };
 
 
@@ -41,9 +39,9 @@ namespace lemon {
 
         typedef LEN LengthMap;
         typedef typename LEN::Value Value;
-        typedef LabeledValue<Value> LabeledDist;
 
-        typedef DijkstraDefaultOperationTraits<LabeledDist> OperationTraits;
+        typedef DijkstraDefaultOperationTraits<Value> OperationTraits;
+        typedef LabeledValue<OperationTraits> LabeledDist;
 
         typedef typename Digraph::template NodeMap<int> HeapCrossRef;
         static HeapCrossRef *createHeapCrossRef(const Digraph &g) { return new HeapCrossRef(g); }
@@ -63,14 +61,14 @@ namespace lemon {
 
         typedef LEN LengthMap;
         typedef typename LEN::Value Value;
-        typedef LabeledValue<Value> LabeledDist;
-
-        typedef DijkstraMultiplicativeOperationTraits<LabeledDist> OperationTraits;
+        
+        typedef DijkstraMultiplicativeOperationTraits<Value> OperationTraits;
+        typedef LabeledValue<OperationTraits> LabeledDist;
 
         typedef typename Digraph::template NodeMap<int> HeapCrossRef;
         static HeapCrossRef *createHeapCrossRef(const Digraph &g) { return new HeapCrossRef(g); }
 
-        typedef BinHeap<LabeledDist, HeapCrossRef, std::greater<LabeledDist>> Heap;
+        typedef BinHeap<LabeledDist, HeapCrossRef, std::less<LabeledDist>> Heap;
         static Heap *createHeap(HeapCrossRef& r) { return new Heap(r); }
 
         typedef typename Digraph::Node Node;
@@ -111,7 +109,7 @@ namespace lemon {
         
         HeapCrossRef *_heap_cross_ref;
         Heap *_heap;
-        int nb_candidates;
+        int nb_strong_candidates;
 
         NodeList *_labeledNodesList;
         bool local_labeledNodesList;
@@ -150,28 +148,25 @@ namespace lemon {
                 _heap_cross_ref->set(w,Heap::PRE_HEAP);
 
             Node u=G->source(uv);
-            Node v=G->target(uv);
             assert(_heap->state(u) != Heap::IN_HEAP);
-            _heap->push(u,OperationTraits::zero());
-            assert(_heap->state(v) != Heap::IN_HEAP);
-            _heap->push(v,LabeledDist((*_worst_length)[uv], true));
-
-            nb_candidates = 1;
+            _heap->push(u, LabeledDist());
+            nb_strong_candidates = 0;
         }
 
-        void updateStrong(LabeledDist &oldvalue, Arc &e) {
+
+        void updateStrong(Value &oldvalue, Arc &e) {
             Node w=G->target(e);
+            const LabeledDist w_newvalue(OperationTraits::plus(oldvalue, (*_worst_length)[e]), true);
             switch(_heap->state(w)) {
             case Heap::PRE_HEAP:
-                _heap->push(w,OperationTraits::plus(oldvalue, (*_worst_length)[e]));
-                nb_candidates++;
+                _heap->push(w, w_newvalue);
+                nb_strong_candidates++;
                 break;
             case Heap::IN_HEAP: {
-                const LabeledDist w_newvalue = OperationTraits::plus(oldvalue, (*_worst_length)[e]);
                 const LabeledDist w_oldvalue = (*_heap)[w];
-                if(OperationTraits::less(w_newvalue, w_oldvalue)) {
+                if(w_newvalue < w_oldvalue) {
                     if(!w_oldvalue.label)
-                        nb_candidates++;
+                        nb_strong_candidates++;
                     _heap->decrease(w, w_newvalue);
                 }
             }
@@ -181,44 +176,24 @@ namespace lemon {
             }
         }
 
-        void updateNonStrong(LabeledDist &oldvalue, Arc &e) {
+        void updateNonStrong(Value &oldvalue, Arc &e) {
             Node w=G->target(e);
+            const LabeledDist w_newvalue(OperationTraits::plus(oldvalue, (*_best_length)[e]), false);
             switch(_heap->state(w)) {
             case Heap::PRE_HEAP:
-                _heap->push(w,OperationTraits::plus(oldvalue, (*_best_length)[e]));
+                _heap->push(w, w_newvalue);
                 break;
             case Heap::IN_HEAP: {
-                const LabeledDist w_newvalue = OperationTraits::plus(oldvalue, (*_best_length)[e]);
                 const LabeledDist w_oldvalue = (*_heap)[w];
-                if(OperationTraits::less(w_newvalue, w_oldvalue)) {
+                if(w_newvalue < w_oldvalue) {
                     if(w_oldvalue.label)
-                        nb_candidates--;
+                        nb_strong_candidates--;
                     _heap->decrease(w, w_newvalue);
                 }
             }
                 break;
             case Heap::POST_HEAP:
                 break;
-            }
-        }
-
-        void processFirstNode(Arc &uv) {
-            Node u=_heap->top();
-            LabeledDist oldvalue=_heap->prio();
-            _heap->pop();
-            
-            if(oldvalue.label) {
-                Traits::addNode(*_labeledNodesList, u);
-                nb_candidates--;
-                for(OutArcIt a(*G,u); a!=INVALID; ++a) {
-                    if(a == uv) continue;
-                    updateStrong(oldvalue, a);
-                }
-            } else {
-                for(OutArcIt a(*G,u); a!=INVALID; ++a) {
-                    if(a == uv) continue;
-                    updateNonStrong(oldvalue, a);
-                }             
             }
         }
 
@@ -229,19 +204,32 @@ namespace lemon {
             
             if(oldvalue.label) {
                 Traits::addNode(*_labeledNodesList, v);
-                nb_candidates--;
+                nb_strong_candidates--;
                 for(OutArcIt e(*G,v); e!=INVALID; ++e)
-                    updateStrong(oldvalue, e);
+                    updateStrong(oldvalue.value, e);
             } else {
                 for(OutArcIt e(*G,v); e!=INVALID; ++e)
-                    updateNonStrong(oldvalue, e);                
+                    updateNonStrong(oldvalue.value, e);                
             }
+        }
+
+        void processFirstNode(Arc &uv) {
+            Node u=_heap->top();
+            LabeledDist oldvalue=_heap->prio();
+            _heap->pop();
+            Traits::addNode(*_labeledNodesList, u);
+
+            updateStrong(oldvalue.value, uv);
+            for(OutArcIt e(*G,u); e!=INVALID; ++e) {
+                if(e == uv) continue;
+                updateNonStrong(oldvalue.value, e);
+            }   
         }
 
         void run(Arc uv) {
             init(uv);
-            if(!_heap->empty()) processFirstNode(uv);
-            while(nb_candidates > 0) processNextNode();
+            processFirstNode(uv);
+            while(nb_strong_candidates > 0) processNextNode();
             // while(!_heap->empty()) processNextNode();
         }
     };
@@ -249,7 +237,6 @@ namespace lemon {
     template <typename GR=ListDigraph,
                 typename LEN=typename GR::template ArcMap<double>>
     using MultiplicativeIdentifyStrong = IdentifyStrong<GR, LEN, IdentifyMultiplicativeTraits<GR, LEN>>;
-
 
 
 
@@ -283,7 +270,7 @@ namespace lemon {
         
         HeapCrossRef *_heap_cross_ref;
         Heap *_heap;
-        int nb_candidates;
+        int nb_usefull_candidates;
 
         NodeList *_labeledNodesList;
         bool local_labeledNodesList;
@@ -318,32 +305,28 @@ namespace lemon {
         void init(Arc uv) {
             create_local();
             _heap->clear();
-            for ( NodeIt w(*G) ; w!=INVALID ; ++w )
+            for(NodeIt w(*G) ; w!=INVALID ; ++w)
                 _heap_cross_ref->set(w,Heap::PRE_HEAP);
-
             Node u=G->source(uv);
-            Node v=G->target(uv);
-            if(_heap->state(u) != Heap::IN_HEAP)
-                _heap->push(u,OperationTraits::zero());
-            if(_heap->state(v) != Heap::IN_HEAP)
-                _heap->push(v,LabeledDist((*_best_length)[uv], true));
-
-            nb_candidates = 1;
+            assert(_heap->state(u) != Heap::IN_HEAP);
+            _heap->push(u, LabeledDist());
+            nb_usefull_candidates = 0;  
         }
 
-        void updateUsefull(LabeledDist &oldvalue, Arc &e) {
+
+        void updateUsefull(Value &oldvalue, Arc &e) {
             Node w=G->target(e);
+            const LabeledDist w_newvalue(OperationTraits::plus(oldvalue, (*_best_length)[e]), true);
             switch(_heap->state(w)) {
             case Heap::PRE_HEAP:
-                _heap->push(w,OperationTraits::plus(oldvalue, (*_best_length)[e]));
-                nb_candidates++;
+                _heap->push(w, w_newvalue);
+                nb_usefull_candidates++;
                 break;
             case Heap::IN_HEAP: {
-                const LabeledDist w_newvalue = OperationTraits::plus(oldvalue, (*_best_length)[e]);
                 const LabeledDist w_oldvalue = (*_heap)[w];
-                if(OperationTraits::less(w_newvalue, w_oldvalue)) {
+                if(w_newvalue < w_oldvalue) {
                     if(!w_oldvalue.label)
-                        nb_candidates++;
+                        nb_usefull_candidates++;
                     _heap->decrease(w, w_newvalue);
                 }
             }
@@ -353,18 +336,18 @@ namespace lemon {
             }
         }
         
-        void updateUseless(LabeledDist &oldvalue, Arc &e) {
+        void updateUseless(Value &oldvalue, Arc &e) {
             Node w=G->target(e);
+            const LabeledDist w_newvalue(OperationTraits::plus(oldvalue, (*_worst_length)[e]), false);
             switch(_heap->state(w)) {
             case Heap::PRE_HEAP:
-                _heap->push(w,OperationTraits::plus(oldvalue, (*_worst_length)[e]));
+                _heap->push(w, w_newvalue);
                 break;
             case Heap::IN_HEAP: {
-                const LabeledDist w_newvalue = OperationTraits::plus(oldvalue, (*_worst_length)[e]);
                 const LabeledDist w_oldvalue = (*_heap)[w];
-                if(OperationTraits::less(w_newvalue, w_oldvalue)) {
+                if(w_newvalue < w_oldvalue) {
                     if(w_oldvalue.label)
-                        nb_candidates--;
+                        nb_usefull_candidates--;
                     _heap->decrease(w, w_newvalue);
                 }
             }
@@ -374,52 +357,44 @@ namespace lemon {
             }
         }
 
-        void processFirstNode(Arc &uv) {
-            Node u=_heap->top();
-            LabeledDist oldvalue=_heap->prio();
-            _heap->pop();
-            Traits::addNode(*_labeledNodesList, u);
-
-            if(oldvalue.label) {
-                Traits::addNode(*_labeledNodesList, u);
-                nb_candidates--;
-                for(OutArcIt e(*G,u); e!=INVALID; ++e) {
-                    if(e == uv) continue;
-                    updateUsefull(oldvalue, e);
-                }
-            } else {
-                for(OutArcIt e(*G,u); e!=INVALID; ++e) {
-                    if(e == uv) continue;
-                    updateUseless(oldvalue, e);
-                }             
-            }
-        }
-
         void processNextNode() {
             Node v=_heap->top();
             LabeledDist oldvalue=_heap->prio();
             _heap->pop();
             
             if(oldvalue.label) {
-                nb_candidates--;
+                nb_usefull_candidates--;
                 for(OutArcIt e(*G,v); e!=INVALID; ++e)
-                    updateUsefull(oldvalue, e);
+                    updateUsefull(oldvalue.value, e);
             } else {
                 Traits::addNode(*_labeledNodesList, v);
                 for(OutArcIt e(*G,v); e!=INVALID; ++e)
-                    updateUseless(oldvalue, e);                
+                    updateUseless(oldvalue.value, e);                
             }
         }
 
+        void processFirstNode(Arc &uv) {
+            Node u=_heap->top();
+            LabeledDist oldvalue=_heap->prio();
+            _heap->pop();
+            Traits::addNode(*_labeledNodesList, u);
+
+            updateUsefull(oldvalue.value, uv);
+            for(OutArcIt e(*G,u); e!=INVALID; ++e) {
+                if(e == uv) continue;
+                updateUseless(oldvalue.value, e);
+            }   
+        }
+        
         void run(Arc uv) {
             init(uv);
-            if(!_heap->empty()) processFirstNode(uv);
-            while(nb_candidates > 0) processNextNode();
+            processFirstNode(uv);
+            while(nb_usefull_candidates > 0) processNextNode();
             for(NodeIt w(*G); w!=INVALID; ++w) {
                 if(_heap->state(w) == Heap::State::POST_HEAP) continue;
                 Traits::addNode(*_labeledNodesList, w);
             }
-            // while(!_heap->empty()) processNextNode();
+            //while(!_heap->empty()) processNextNode();
         }
     };
 

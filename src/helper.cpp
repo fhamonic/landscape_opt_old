@@ -155,6 +155,7 @@ bool is_probability(const double p) {
 
 void Helper::assert_well_formed(const Landscape & landscape, const RestorationPlan & plan) {
     const Graph_t & graph = landscape.getNetwork();
+    (void)plan;
 
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v)
         assert(landscape.getQuality(v) >= 0);

@@ -144,7 +144,8 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
     Graph_t::ArcMap<double> p_min(graph);
     Graph_t::ArcMap<double> p_max(graph);
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
-        p_max[a] = p_min[a] = landscape.getProbability(a);
+        p_min[a] = landscape.getProbability(a);
+        p_max[a] = p_min[a];
         for(auto const& [i, restored_probability] : plan.getOptions(a))
             p_max[a] = std::max(p_max[a], restored_probability);
     }
@@ -164,15 +165,20 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
         p_min[b] = -std::log(p_min[b]);
     }//*/
     std::for_each(std::execution::par, arcs.begin(), arcs.end(), [&] (Graph_t::Arc a) {
-        /*
-        lemon::IdentifyStrong<Graph_t, Graph_t::ArcMap<double>> identifyStrong(graph, p_min, p_max);
-        lemon::IdentifyUseless<Graph_t, Graph_t::ArcMap<double>> identifyUseless(graph, p_min, p_max);
-        identifyStrong.labeledNodesList(strong_nodes[a]).run(a);
-        identifyUseless.labeledNodesList(non_weak_nodes[a]).run(a);
-        /*/
+        
+        // lemon::IdentifyStrong<Graph_t, Graph_t::ArcMap<double>> identifyStrong(graph, p_min, p_max);
+        // lemon::IdentifyUseless<Graph_t, Graph_t::ArcMap<double>> identifyUseless(graph, p_min, p_max);
+        // identifyStrong.labeledNodesList(strong_nodes[a]).run(a);
+        // identifyUseless.labeledNodesList(non_weak_nodes[a]).run(a);
+        
+        // lemon::MultiplicativeIdentifyStrong<Graph_t, Graph_t::ArcMap<double>> identifyStrong(graph, p_min, p_max);
+        // lemon::MultiplicativeIdentifyUseless<Graph_t, Graph_t::ArcMap<double>> identifyUseless(graph, p_min, p_max);
+        // identifyStrong.labeledNodesList(strong_nodes[a]).run(a);
+        // identifyUseless.labeledNodesList(non_weak_nodes[a]).run(a);
+        
         getStrongs(graph, p_max, p_min, a, strong_nodes[a]);
         getNonWeaks(graph, p_max, p_min, a, non_weak_nodes[a]);
-        //*/
+        
     });
 
     // transpose
