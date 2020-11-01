@@ -113,15 +113,16 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
         }
     }
 
-    // int sum_of_nb_nodes = 0;
-    // int sum_of_nb_arcs = 0;
-    // for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-    //     ContractionResult result = (*results)[t];
-    //     sum_of_nb_nodes += lemon::countNodes(result.landscape->getNetwork());   
-    //     sum_of_nb_arcs += lemon::countArcs(result.landscape->getNetwork());
-    // }
-    // std::cout << "Total nb of nodes : " << sum_of_nb_nodes << std::endl;
-    // std::cout << "Total nb of arcs : " << sum_of_nb_arcs << std::endl;
+    int sum_of_nb_nodes = 0;
+    int sum_of_nb_arcs = 0;
+    for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+        ContractionResult result = (*results)[t];
+        sum_of_nb_nodes += lemon::countNodes(result.landscape->getNetwork());   
+        sum_of_nb_arcs += lemon::countArcs(result.landscape->getNetwork());
+    }
+    std::cout << "Total nb of nodes : " << sum_of_nb_nodes << std::endl;
+    std::cout << "Total nb of arcs : " << sum_of_nb_arcs << std::endl;
+    std::cout << "time : " << precompute_time_ms << std::endl;
 
     // int normal_time_us = std::chrono::duration_cast<std::chrono::microseconds>(t1-t0).count();
     // std::cout << normal_time_us << std::endl;
@@ -136,13 +137,14 @@ int main() {
     // const int nb_options = 50;
     // const bool restore_nodes = true;
 
-    const int seed = 9473;
+    const int seed = 765;
     std::cout << std::setprecision(20);
 
     RandomInstanceGenerator instance_generator;
     const int nb_tests = 10000;
     for(int cpt_test=0; cpt_test<nb_tests; cpt_test++) {
-        Instance * instance = make_instance_quebec(1.0, 0.01, 700, true, true);
+        // Instance * instance = make_instance_quebec(1.0, 0.01, 700, true, true);
+        Instance * instance = make_instance_marseille(2.0, 0.01, 1400, true, true);
         
         // Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, nb_nodes, nb_arcs, false);
         // RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, nb_options, restore_nodes);
@@ -152,6 +154,8 @@ int main() {
         Helper::assert_well_formed(landscape, plan);
 
         do_test(instance->landscape, instance->plan, seed + cpt_test);
+
+        return EXIT_SUCCESS;
 
         // delete plan;
         // delete landscape;

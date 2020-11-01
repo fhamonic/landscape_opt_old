@@ -53,7 +53,7 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     solvers.push_back(naive_eca_dec);
     solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
-    solvers.push_back(pl_eca_2);
+    // solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
     solvers.push_back(randomized_rounding_1000);
 }
@@ -85,11 +85,11 @@ int main() {
 
     std::vector<double> pow_values{1, 2};
     std::vector<double> thresold_values{0.01};
-    std::vector<double> median_values{/*700, 1400,*/ 2800}; 
+    std::vector<double> median_values{700, 1400, 2800}; 
     std::vector<bool> length_gain_values{true}; 
     std::vector<bool> area_gain_values{/*false, */true};
     std::vector<double> budget_values;
-    for(int i=16; i<=20; i+=2) budget_values.push_back(i);
+    for(int i=0; i<=20; i+=2) budget_values.push_back(i);
 
     const ECA & eca = ECA::get();
 
@@ -98,8 +98,8 @@ int main() {
             for(double median : median_values) {
                 for(bool length_gain : length_gain_values) {
                     for(bool area_gain : area_gain_values) {
-                        Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
-                        // Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
+                        // Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
+                        Instance * instance = make_instance_marseille(pow, thresold, median, length_gain, area_gain);
                         
                         const Landscape & landscape = instance->landscape;
                         const RestorationPlan & plan = instance->plan;
