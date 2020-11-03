@@ -30,7 +30,7 @@ class RandomChooser {
 
 template <typename T>
 void RandomChooser<T>::add(T e, double distrib) {
-    elements.push_back(std::pair<T,double>(e, distrib));
+    elements.emplace_back(e, distrib);
     distrib_sum += distrib;
     reset();
 }

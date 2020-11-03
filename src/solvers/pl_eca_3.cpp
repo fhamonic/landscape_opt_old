@@ -1,31 +1,5 @@
 #include "solvers/pl_eca_3.hpp"
 
-#include "precomputation/my_contraction_algorithm.hpp"
-
-double max_flow_in(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node t) {
-    typedef lemon::ReverseDigraph<const Graph_t> Reversed;
-    const Graph_t & original_g = landscape.getNetwork();
-    Reversed reversed_g(original_g);
-    Graph_t::ArcMap<double> probabilities(original_g);
-    for(Graph_t::ArcIt b(original_g); b != lemon::INVALID; ++b)
-        probabilities[b] = landscape.getProbability(b);
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
-        for(auto const& [b, restored_probability] : plan.getArcs(i))
-            probabilities[b] = std::max(probabilities[b], restored_probability);
-    lemon::MultiplicativeSimplerDijkstra<Reversed, Graph_t::ArcMap<double>> dijkstra(reversed_g, probabilities);
-    double sum = 0;
-    dijkstra.init(t);
-    while (!dijkstra.emptyQueue()) {
-        std::pair<Graph_t::Node, double> pair = dijkstra.processNextNode();
-        Graph_t::Node v = pair.first;
-        const double p_tv = pair.second;
-        sum += landscape.getQuality(v) * p_tv;
-        for(auto const& [option, quality_gain] : plan.getOptions(v))
-            sum += quality_gain * p_tv;
-    }
-    return sum;
-}
-
 class PreprocessedDatas {
     public:
         std::vector<Graph_t::Node> target_nodes;

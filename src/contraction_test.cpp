@@ -76,7 +76,7 @@ void do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     gen.seed(seed+1);
     std::uniform_int_distribution<> dis(0, plan.getNbOptions());
 
-    const int nb_tests = 100;
+    const int nb_tests = 1000;
 
     for(int i=0; i<nb_tests; ++i) {
         std::vector<RestorationPlan::Option> picked_options;
@@ -141,24 +141,26 @@ int main() {
     std::cout << std::setprecision(20);
 
     RandomInstanceGenerator instance_generator;
-    const int nb_tests = 10000;
+    const int nb_tests = 1;
     for(int cpt_test=0; cpt_test<nb_tests; cpt_test++) {
-        // Instance * instance = make_instance_quebec(1.0, 0.01, 700, true, true);
-        Instance * instance = make_instance_marseille(2.0, 0.01, 1400, true, true);
+        Instance * instance = make_instance_quebec(1.0, 0.01, 2800, true, true);
+        //Instance * instance = make_instance_marseille(2.0, 0.01, 1400, true, true);
+        
+        do_test(instance->landscape, instance->plan, seed + cpt_test);
+        
+        // const Landscape & landscape = instance->landscape;
+        // const RestorationPlan & plan = instance->plan;
         
         // Landscape * landscape = instance_generator.generate_landscape(seed + cpt_test, nb_nodes, nb_arcs, false);
         // RestorationPlan * plan = instance_generator.generate_plan(seed + cpt_test, *landscape, nb_options, restore_nodes);
-        const Landscape & landscape = instance->landscape;
-        const RestorationPlan & plan = instance->plan;
         
-        Helper::assert_well_formed(landscape, plan);
+        // Helper::assert_well_formed(landscape, plan);
 
-        do_test(instance->landscape, instance->plan, seed + cpt_test);
-
-        return EXIT_SUCCESS;
-
+        // do_test(*landscape, *plan, seed + cpt_test);
         // delete plan;
         // delete landscape;
+
+        // return EXIT_SUCCESS;
     }
 
     return EXIT_SUCCESS;

@@ -52,7 +52,7 @@ Solution * Solvers::Randomized_Rounding_ECA::solve(const Landscape & landscape, 
     Chrono chrono;
     
     Solvers::PL_ECA_3 pl_eca_3;
-    pl_eca_3.setLogLevel(log_level).setNbThreads(1).setRelaxed(1);
+    pl_eca_3.setLogLevel(log_level).setRelaxed(1);
 
     Solution * relaxed_solution = pl_eca_3.solve(landscape, plan, B);
 

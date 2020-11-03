@@ -1,7 +1,5 @@
 #include "solvers/pl_eca_2.hpp"
 
-#include "coin/CglFlowCover.hpp"
-
 namespace Solvers::PL_ECA_2_Vars {
     class XVar : public OSI_Builder::VarType {
         private:
@@ -118,13 +116,17 @@ void insert_variables(OSI_Builder & solver_builder, Variables & vars) {
 void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan & plan, const double B, Variables & vars, bool relaxed) {
     const Graph_t & graph = landscape.getNetwork();
 
-    double sum = 0;
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) { 
-        sum += landscape.getQuality(v);
-        for(auto const& [option, quality_gain] : plan.getOptions(v)) 
-            sum += quality_gain;
+
+    std::vector<Graph_t::Node> nodes;
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) { 
+        nodes.push_back(u); 
     }
-    const double M = sum;
+    // M_Map
+    Graph_t::NodeMap<double> M(graph);
+    std::for_each(std::execution::par, nodes.begin(), nodes.end(), [&] (Graph_t::Node t) {
+        M[t] = max_flow_in(landscape, plan, t);
+    });
+
 
     ////////////////////////////////////////////////////////////////////////
     // Columns : Objective
@@ -180,7 +182,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             const int y_i = vars.y.id(i);
             for(auto const& [a, restored_probability] : plan.getArcs(i)) {
                 const int x_ta = vars.restored_x.id(t, a, i);
-                solver_builder.buffEntry(y_i, M);
+                solver_builder.buffEntry(y_i, M[graph.source(a)]);
                 solver_builder.buffEntry(x_ta, -1);
                 solver_builder.pushRow(0, OSI_Builder::INFTY);
             }
@@ -197,7 +199,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             solver_builder.buffEntry(restored_f_t, -1);
             solver_builder.pushRow(0, OSI_Builder::INFTY);
 
-            solver_builder.buffEntry(y_i, M);
+            solver_builder.buffEntry(y_i, M[t]);
             solver_builder.buffEntry(restored_f_t, -1);
             solver_builder.pushRow(0, OSI_Builder::INFTY);
         }

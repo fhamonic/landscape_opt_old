@@ -1,9 +1,7 @@
 #ifndef NAIVE_ECA_INC_SOLVER_HPP
 #define NAIVE_ECA_INC_SOLVER_HPP
 
-#include <vector>
 #include <utility>
-#include <execution>
 
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"

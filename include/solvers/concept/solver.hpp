@@ -4,6 +4,10 @@
 #include <string> // std::string
 #include <list> // std::list
 #include <map> // std::map
+#include <vector> // std::vector
+
+#include <algorithm> // std::sort , for_each ...
+#include <execution> // execution::par
 
 #include "landscape/landscape.hpp"
 
@@ -89,5 +93,7 @@ namespace concepts {
             } 
     };
 }
+
+#include "helper.hpp"
 
 #endif //SOLVER_HPP

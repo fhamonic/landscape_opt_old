@@ -162,41 +162,55 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a)
         assert(is_probability(landscape.getProbability(a)));
 
-    // for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-    //     for(RestorationPlan::Option * option : plan.getOptions(v)) {
-    //         const std::vector<RestorationPlan::Option*> & opt_list = plan.options();
-    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-    //     }
-    // }
-    // for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
-    //     for(RestorationPlan::Option * option : plan.getOptions(a)) {
-    //         const std::vector<RestorationPlan::Option*> & opt_list = plan.options();
-    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-    //     }
-    // }
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        for(auto const& [v, quality_gain] : plan.getNodes(i)) {
+            assert(graph.valid(v));
+            assert(quality_gain > 0.0);
+            assert(quality_gain == plan.getQualityGain(i, v));
+        }
+        for(auto const& [a, restored_probability] : plan.getArcs(i)) {
+            assert(graph.valid(a));
+            assert(is_probability(restored_probability));
+            assert(restored_probability > landscape.getProbability(a));
+            assert(restored_probability == plan.getRestoredProbability(i, a));
+        }
+    }
 
-    // //std::cout << plan.getNbOptions() << std::endl;
+    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+        for(auto const& [i, quality_gain] : plan.getOptions(v)) {
+            assert(quality_gain > 0.0);
+            assert(quality_gain == plan.getQualityGain(i, v));
+        }
+    }
+    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+        for(auto const& [i, restored_probability] : plan.getOptions(a)) {
+            assert(is_probability(restored_probability));
+            assert(restored_probability > landscape.getProbability(a));   
+            assert(restored_probability == plan.getRestoredProbability(i, a));         
+        }
+    }
+}
 
-    // for(RestorationPlan::Option * option : plan.options()) {
-    //     for(Graph_t::Node u : option->nodes()) {
-    //         assert(graph.valid(u));
-    //         assert(option->contains(u));
-    //         assert(option->getQualityGain(u) > 0);
-    //         assert(option->id(u) >= 0 && option->id(u) < option->getNbNodes());
-    //         assert(plan.contains(u));
-    //         const std::list<RestorationPlan::Option*> & opt_list = plan.getOptions(u);
-    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-    //     }
-    //     for(Graph_t::Arc a : option->arcs()) {
-    //         assert(graph.valid(a));
-    //         assert(option->contains(a));
-    //         //std::cout << graph.id(graph.source(a)) << " " << option->getRestoredProbability(a) << std::endl;
-    //         assert(is_probability(option->getRestoredProbability(a)));
-    //         assert(option->getRestoredProbability(a) > landscape.getProbability(a));
-    //         assert(option->id(a) >= 0 && option->id(a) < option->getNbArcs());
-    //         assert(plan.contains(a));
-    //         const std::list<RestorationPlan::Option*> & opt_list = plan.getOptions(a);
-    //         assert(std::find(opt_list.begin(),opt_list.end(),option) != opt_list.end());
-    //     }
-    // }
+double max_flow_in(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node t) {
+    typedef lemon::ReverseDigraph<const Graph_t> Reversed;
+    const Graph_t & original_g = landscape.getNetwork();
+    Reversed reversed_g(original_g);
+    Graph_t::ArcMap<double> probabilities(original_g);
+    for(Graph_t::ArcIt b(original_g); b != lemon::INVALID; ++b)
+        probabilities[b] = landscape.getProbability(b);
+    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+        for(auto const& [b, restored_probability] : plan.getArcs(i))
+            probabilities[b] = std::max(probabilities[b], restored_probability);
+    lemon::MultiplicativeSimplerDijkstra<Reversed, Graph_t::ArcMap<double>> dijkstra(reversed_g, probabilities);
+    double sum = 0;
+    dijkstra.init(t);
+    while (!dijkstra.emptyQueue()) {
+        std::pair<Graph_t::Node, double> pair = dijkstra.processNextNode();
+        Graph_t::Node v = pair.first;
+        const double p_tv = pair.second;
+        sum += landscape.getQuality(v) * p_tv;
+        for(auto const& [option, quality_gain] : plan.getOptions(v))
+            sum += quality_gain * p_tv;
+    }
+    return sum;
 }

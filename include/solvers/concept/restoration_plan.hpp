@@ -137,7 +137,7 @@ class RestorationPlan {
                 setQualityGain(i, v, getQualityGain(i,v) + quality_gain);
                 return;
             }
-            _options_nodes[i].push_back(std::pair<Graph_t::Node, double>(v, quality_gain));
+            _options_nodes[i].emplace_back(v, quality_gain);
             _options_nodes_idsMap[i][v] = _options_nodes[i].size()-1;
             _nodeMap[v][i] = quality_gain;
         }
@@ -156,7 +156,7 @@ class RestorationPlan {
                 setRestoredProbability(i, a, std::max(getRestoredProbability(i,a), restored_probability));
                 return;
             }
-            _options_arcs[i].push_back(std::pair<Graph_t::Arc, double>(a, restored_probability));
+            _options_arcs[i].emplace_back(a, restored_probability);
             _options_arcs_idsMap[i][a] = _options_arcs[i].size()-1;
             _arcMap[a][i] = restored_probability;
         }
@@ -369,10 +369,10 @@ class RestorationPlan {
          * @space \f$O(1)\f$ 
          */
         Option addOption(double c) {
-            _options_nodes_idsMap.push_back(std::map<Graph_t::Node, int>());
-            _options_arcs_idsMap.push_back(std::map<Graph_t::Arc, int>());
-            _options_nodes.push_back(std::vector<std::pair<Graph_t::Node, double>>());
-            _options_arcs.push_back(std::vector<std::pair<Graph_t::Arc, double>>());
+            _options_nodes_idsMap.emplace_back();
+            _options_arcs_idsMap.emplace_back();
+            _options_nodes.emplace_back();
+            _options_arcs.emplace_back();
             _costs.push_back(c);
             return _costs.size()-1;
         }

@@ -11,9 +11,7 @@ namespace Solvers {
         public:
             PL_ECA_2() {
                 params["log"] = new IntParam(0);
-                params["threads"] = new IntParam(1);
                 params["relaxed"] = new IntParam(0);
-                params["timeout"] = new IntParam(3600);
                 params["fortest"] = new IntParam(0);
             }
 
@@ -21,18 +19,10 @@ namespace Solvers {
                 params["log"]->set(log_level);
                 return *this;
             }
-            PL_ECA_2 & setNbThreads(int nb_threads) {
-                params["threads"]->set(nb_threads);
-                return *this;
-            }
             PL_ECA_2 & setRelaxed(bool relaxed) {
                 params["relaxed"]->set(relaxed);
                 return *this;
             }
-            PL_ECA_2 & setTimeout(int seconds) {
-                params["timeout"]->set(seconds);
-                return *this;
-            } 
             PL_ECA_2 & setFortest(int fortest) {
                 params["fortest"]->set(fortest);
                 return *this;

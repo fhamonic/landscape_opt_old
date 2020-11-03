@@ -157,6 +157,11 @@ namespace Helper {
 
 
     void assert_well_formed(const Landscape & landscape, const RestorationPlan & plan);
+
+    
 }
+
+
+double max_flow_in(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node t);
 
 #endif // HELPER

@@ -144,7 +144,6 @@ namespace lemon {
             nb_strong_candidates = 0;
         }
 
-
         void updateStrong(Value &u_oldvalue, Arc &uw) {
             Node w=G->target(uw);
             LabeledDist w_newvalue(OperationTraits::plus(u_oldvalue, (*_worst_length)[uw]), true);
@@ -221,7 +220,6 @@ namespace lemon {
             init(uv);
             processFirstNode(uv);
             while(nb_strong_candidates > 0) processNextNode();
-            // while(!_heap->empty()) processNextNode();
         }
     };
 
@@ -304,7 +302,6 @@ namespace lemon {
             nb_usefull_candidates = 0;  
         }
 
-
         void updateUsefull(Value &u_oldvalue, Arc &uw) {
             Node w=G->target(uw);
             LabeledDist w_newvalue(OperationTraits::plus(u_oldvalue, (*_best_length)[uw]), true);
@@ -385,7 +382,6 @@ namespace lemon {
                 if(_heap->state(w) == Heap::State::POST_HEAP) continue;
                 Traits::addNode(*_labeledNodesList, w);
             }
-            //while(!_heap->empty()) processNextNode();
         }
     };
 

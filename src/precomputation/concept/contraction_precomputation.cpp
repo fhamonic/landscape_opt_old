@@ -2,7 +2,6 @@
 
 #include <lemon/bfs.h>
 
-
 /**
  * Erase the nodes from wich there is not path to t
  * 
