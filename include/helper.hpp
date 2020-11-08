@@ -148,20 +148,20 @@ namespace Helper {
     }
 
 
-    void printSolution(const Landscape & landscape, const RestorationPlan & plan, std::string name, concepts::Solver & solver, double B, Solution * solution);
+    void printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, Solution * solution);
 
-    void copyPlan(RestorationPlan & contracted_plan, const RestorationPlan & plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef);
+    void copyPlan(RestorationPlan<Landscape>& contracted_plan, const RestorationPlan<Landscape>& plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef);
 
     // need to include the binary search tree for y-h , y+h search
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape) ;
 
 
-    void assert_well_formed(const Landscape & landscape, const RestorationPlan & plan);
+    void assert_well_formed(const Landscape & landscape, const RestorationPlan<Landscape>& plan);
 
     
 }
 
 
-double max_flow_in(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node t);
+double max_flow_in(const Landscape & landscape, const RestorationPlan<Landscape>& plan, Graph_t::Node t);
 
 #endif // HELPER

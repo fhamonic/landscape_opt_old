@@ -26,7 +26,7 @@ namespace Solvers {
                 return *this;
             }
 
-            Solution * solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const;
+            Solution * solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const;
 
             const std::string name() const { return "naive_eca_dec"; }
     };

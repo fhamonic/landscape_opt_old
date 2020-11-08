@@ -18,7 +18,7 @@ class RandomInstanceGenerator {
         ~RandomInstanceGenerator() {};
 
         Landscape * generate_landscape(int seed, int nb_nodes, int nb_arcs, bool symmetric=true);
-        RestorationPlan * generate_plan(int seed, const Landscape & landscape, int nb_options, bool restore_nodes=false);
+        RestorationPlan<Landscape>* generate_plan(int seed, const Landscape & landscape, int nb_options, bool restore_nodes=false);
 };
 
 Landscape * RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, int nb_links, bool symmetric) {
@@ -61,7 +61,7 @@ Landscape * RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, 
 }
 
 
-RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landscape & landscape, int nb_options, bool restore_nodes) {
+RestorationPlan<Landscape>* RandomInstanceGenerator::generate_plan(int seed, const Landscape & landscape, int nb_options, bool restore_nodes) {
     typedef Graph_t Graph;
     typedef Graph_t::Node Node;
     typedef Graph_t::NodeIt NodeIt;
@@ -73,7 +73,7 @@ RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landsca
     const int nb_arcs = restore_nodes ? nb_options/2 : nb_options;
     
     const Graph & graph = landscape.getNetwork();
-    RestorationPlan * plan = new RestorationPlan(landscape);
+    RestorationPlan<Landscape>* plan = new RestorationPlan(landscape);
 
     RandomChooser<Arc> arcs_chooser(seed+1);
     for(ArcIt a(graph); a!=lemon::INVALID; ++a) arcs_chooser.add(a, 1.0);
@@ -83,7 +83,7 @@ RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landsca
         Arc a = arcs_chooser.pick();
         std::uniform_real_distribution<> p_dis(landscape.getProbability(a), 1);
         
-        RestorationPlan::Option option = plan->addOption(1);
+        RestorationPlan<Landscape>::Option option = plan->addOption(1);
         plan->addArc(option, a, p_dis(gen));
     }
 
@@ -101,7 +101,7 @@ RestorationPlan * RandomInstanceGenerator::generate_plan(int seed, const Landsca
         nodes_chooser.reset();
         std::uniform_real_distribution<> q_dis(0, avg_quality);
         
-        RestorationPlan::Option option = plan->addOption(1);
+        RestorationPlan<Landscape>::Option option = plan->addOption(1);
         plan->addNode(option, u, q_dis(gen));
     }
         

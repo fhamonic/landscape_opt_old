@@ -21,7 +21,7 @@ int main (int argc, const char *argv[]) {
     Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);
     const Graph_t & graph = landscape->getNetwork();
 
-    RestorationPlan plan(*landscape);
+    RestorationPlan<Landscape>plan(*landscape);
 
 
     RandomChooser<Graph_t::Arc> arc_chooser;
@@ -29,7 +29,7 @@ int main (int argc, const char *argv[]) {
         arc_chooser.add(a, 1.0);
     for(int i=0; i<10; i++) {
         Graph_t::Arc a = arc_chooser.pick();
-        RestorationPlan::Option * option = plan.addOption();
+        RestorationPlan<Landscape>::Option* option = plan.addOption();
         option->setId(i);
         option->setCost(1);
         option->addLink(a, landscape->getProbability(a));

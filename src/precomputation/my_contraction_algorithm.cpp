@@ -5,41 +5,39 @@
 
 #include "algorithms/identify_strong_arcs.h"
 
-ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node orig_t, const std::vector<Graph_t::Arc> & orig_contractables_arcs, const std::vector<Graph_t::Arc> & orig_deletables_arcs) const {
-    Landscape * contracted_landscape = new Landscape();
-    std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> refs = contracted_landscape->copy(landscape);
-    RestorationPlan * contracted_plan = new RestorationPlan(*contracted_landscape);
-    Helper::copyPlan(*contracted_plan, plan, *refs.first, *refs.second);
+ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, const RestorationPlan<Landscape> & plan, Graph_t::Node orig_t, const std::vector<Graph_t::Arc> & orig_contractables_arcs, const std::vector<Graph_t::Arc> & orig_deletables_arcs) const {
+    Landscape contracted_landscape;
+    std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> refs = contracted_landscape.copy(landscape);
+    RestorationPlan<Landscape>contracted_plan(contracted_landscape);
+    Helper::copyPlan(contracted_plan, plan, *refs.first, *refs.second);
     Graph_t::Node contracted_t = (*refs.first)[orig_t];
 
-    const Graph_t & graph = contracted_landscape->getNetwork();
-    erase_non_connected(*contracted_landscape, contracted_t);
+    const Graph_t & contracted_graph = contracted_landscape.getNetwork();
+    erase_non_connected(contracted_landscape, contracted_t);
 
     for(Graph_t::Arc orig_a : orig_deletables_arcs) {   
         Graph_t::Arc a = (*refs.second)[orig_a];  
-        if(!graph.valid(a)) continue;
-        contracted_landscape->removeArc(a);
+        if(!contracted_graph.valid(a)) continue;
+        contracted_landscape.removeArc(a);
     }
 
     for(Graph_t::Arc orig_a : orig_contractables_arcs) {
         Graph_t::Arc a = (*refs.second)[orig_a];
-        if(!graph.valid(a)) continue;
-        if(contracted_plan->contains(a)) continue;
-        contract_arc(*contracted_landscape, *contracted_plan, a);
+        if(!contracted_graph.valid(a)) continue;
+        if(contracted_plan.contains(a)) continue;
+        contract_arc(contracted_landscape, contracted_plan, a);
     }
 
-    contracted_plan->eraseInvalidElements();
+    contracted_plan.eraseInvalidElements();
     
 
     // ///////// reduce memory usage -> TODO StaticLandscape class
     Landscape * final_landscape = new Landscape();
-    std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> final_refs = final_landscape->copy(*contracted_landscape);
-    RestorationPlan * final_plan = new RestorationPlan(*final_landscape);
-    Helper::copyPlan(*final_plan, *contracted_plan, *final_refs.first, *final_refs.second);
+    std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> final_refs = final_landscape->copy(contracted_landscape);
+    RestorationPlan<Landscape> * final_plan = new RestorationPlan(*final_landscape);
+    Helper::copyPlan(*final_plan, contracted_plan, *final_refs.first, *final_refs.second);
     Graph_t::Node final_t = (*final_refs.first)[contracted_t];
 
-    delete contracted_landscape;
-    delete contracted_plan;
     delete refs.first;
     delete refs.second;
     delete final_refs.first;
@@ -49,7 +47,7 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
 }
 
 
-Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const Landscape & landscape, const RestorationPlan & plan) const {
+Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const Landscape & landscape, const RestorationPlan<Landscape> & plan) const {
     const Graph_t & graph = landscape.getNetwork();
     Graph_t::NodeMap<ContractionResult> * results = new Graph_t::NodeMap<ContractionResult>(graph);
 

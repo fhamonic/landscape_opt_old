@@ -13,20 +13,20 @@
 class ContractionResult {
     public:
         std::shared_ptr<Landscape> landscape;
-        std::shared_ptr<RestorationPlan> plan;
+        std::shared_ptr<RestorationPlan<Landscape>> plan;
         Graph_t::Node t;
 
         ContractionResult() {}
-        ContractionResult(Landscape * l, RestorationPlan * p, Graph_t::Node t) : landscape(l), plan(p), t(t) {}
+        ContractionResult(Landscape * l, RestorationPlan<Landscape> * p, Graph_t::Node t) : landscape(l), plan(p), t(t) {}
         ~ContractionResult() {}
 };
 
 class ContractionPrecomputation {
     public:
         void erase_non_connected(Landscape & landscape, Graph_t::Node t) const;
-        void contract_arc(Landscape & contracted_landscape, RestorationPlan & plan, Graph_t::Arc a) const;
+        void contract_arc(Landscape & contracted_landscape, RestorationPlan<Landscape> & plan, Graph_t::Arc a) const;
         
-        virtual Graph_t::NodeMap<ContractionResult> * precompute(const Landscape & landscape, const RestorationPlan & plan) const=0;
+        virtual Graph_t::NodeMap<ContractionResult> * precompute(const Landscape & landscape, const RestorationPlan<Landscape> & plan) const=0;
 };
 
 #endif //CONTRACTION_PRECOMPUTATION_HPP

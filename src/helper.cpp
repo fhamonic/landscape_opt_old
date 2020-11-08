@@ -1,8 +1,11 @@
 #include "helper.hpp"
 
-void Helper::printSolution(const Landscape & landscape, const RestorationPlan & plan, std::string name, concepts::Solver & solver, double B, Solution * solution) {
+void Helper::printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, Solution * solution) {
     const Graph_t & graph = landscape.getNetwork();
     
+    // std::cout << lemon::countNodes(graph) << std::endl;
+    // std::cout << lemon::countArcs(graph) << std::endl;
+    // std::cout << plan.getNbOptions() << std::endl;
     
     //*
     auto radius = [&] (Graph_t::Node u) { return std::sqrt(landscape.getQuality(u) / (2*M_PI)); };
@@ -16,7 +19,7 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan & 
     Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
     Graph_t::ArcMap<double> arc_widths(graph, 5);
 
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const double coef = solution->getCoef(i);
         for(auto const& [u, quality_gain] : plan.getNodes(i)) {
             node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
@@ -95,9 +98,9 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan & 
             .run();
 }
 
-void Helper::copyPlan(RestorationPlan & contracted_plan, const RestorationPlan & plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef) {
+void Helper::copyPlan(RestorationPlan<Landscape>& contracted_plan, const RestorationPlan<Landscape>& plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef) {
     assert(contracted_plan.getNbOptions() == 0);
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         contracted_plan.addOption(plan.getCost(i));
         for(auto const& [u, quality_gain] : plan.getNodes(i))
             contracted_plan.addNode(i, nodesRef[u], quality_gain);
@@ -153,7 +156,7 @@ bool is_probability(const double p) {
     return (p >= 0) && (p <= 1);
 }
 
-void Helper::assert_well_formed(const Landscape & landscape, const RestorationPlan & plan) {
+void Helper::assert_well_formed(const Landscape & landscape, const RestorationPlan<Landscape>& plan) {
     const Graph_t & graph = landscape.getNetwork();
     (void)plan;
 
@@ -162,7 +165,7 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a)
         assert(is_probability(landscape.getProbability(a)));
 
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         for(auto const& [v, quality_gain] : plan.getNodes(i)) {
             assert(graph.valid(v));
             assert(quality_gain > 0.0);
@@ -191,14 +194,14 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
     }
 }
 
-double max_flow_in(const Landscape & landscape, const RestorationPlan & plan, Graph_t::Node t) {
+double max_flow_in(const Landscape & landscape, const RestorationPlan<Landscape>& plan, Graph_t::Node t) {
     typedef lemon::ReverseDigraph<const Graph_t> Reversed;
     const Graph_t & original_g = landscape.getNetwork();
     Reversed reversed_g(original_g);
     Graph_t::ArcMap<double> probabilities(original_g);
     for(Graph_t::ArcIt b(original_g); b != lemon::INVALID; ++b)
         probabilities[b] = landscape.getProbability(b);
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
         for(auto const& [b, restored_probability] : plan.getArcs(i))
             probabilities[b] = std::max(probabilities[b], restored_probability);
     lemon::MultiplicativeSimplerDijkstra<Reversed, Graph_t::ArcMap<double>> dijkstra(reversed_g, probabilities);

@@ -49,17 +49,17 @@ Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, in
     return new_landscape;
 }
 
-int countVariables(const RestorationPlan & plan) {
+int countVariables(const RestorationPlan<Landscape>& plan) {
     int sum = 0;
-    for(RestorationPlan::Option * option : plan.options()) {
+    for(RestorationPlan<Landscape>::Option* option : plan.options()) {
         sum += option->getNbNodes();
         sum += option->getNbArcs();
     }
     return sum;
 }
-int countConstraints(const RestorationPlan & plan) {
+int countConstraints(const RestorationPlan<Landscape>& plan) {
     int sum = 0;
-    for(RestorationPlan::Option * option : plan.options()) {
+    for(RestorationPlan<Landscape>::Option* option : plan.options()) {
         sum += option->getNbNodes();
         sum += option->getNbArcs();
     }
@@ -110,12 +110,12 @@ int main (int argc, const char *argv[]) {
                 arc_chooser.add(a, 1);
 
             for(int percent_arcs=0; percent_arcs<=100; percent_arcs+=5) {
-                RestorationPlan plan(*sub_landscape);
+                RestorationPlan<Landscape>plan(*sub_landscape);
                 const int nb_restored_arcs = percent_arcs * m / 100;
                 arc_chooser.reset();
                 for(int id_option=0; id_option<nb_restored_arcs; id_option++) {
                     Graph_t::Arc a = arc_chooser.pick();
-                    RestorationPlan::Option * option = plan.addOption();
+                    RestorationPlan<Landscape>::Option* option = plan.addOption();
                     option->setId(id_option);
                     option->setCost(1);
                     option->addLink(a, sub_landscape->getDifficulty(a) / 2);

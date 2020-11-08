@@ -30,7 +30,7 @@ void ContractionPrecomputation::erase_non_connected(Landscape & landscape, Graph
  * @time \f$O(deg(u))\f$
  * @space \f$O(deg(u))\f$
  */
-void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationPlan & plan, Graph_t::Arc a) const {    
+void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationPlan<Landscape>& plan, Graph_t::Arc a) const {    
     const Graph_t & graph = landscape.getNetwork();
 
     assert(graph.valid(a));

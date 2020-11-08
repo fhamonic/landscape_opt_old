@@ -44,3 +44,5 @@ for (label,ydatas) in ordinate:
 legend = plt.legend(loc='lower center', shadow=True, fontsize='medium')
     
 plt.show()
+
+plt.savefig()

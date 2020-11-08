@@ -44,7 +44,7 @@ double compute_value_reversed(const concepts::AbstractLandscape<GR, QM, PM, CM> 
     return sum;
 }
 
-bool do_test(const Landscape & landscape, const RestorationPlan & plan, int seed) {
+bool do_test(const Landscape & landscape, const RestorationPlan<Landscape>& plan, int seed) {
     Helper::assert_well_formed(landscape, plan);
 
     const double epsilon = 0.001;
@@ -54,7 +54,7 @@ bool do_test(const Landscape & landscape, const RestorationPlan & plan, int seed
     Solvers::PL_ECA_3 pl_eca_3;  pl_eca_3.setLogLevel(0).setNbThreads(1).setTimeout(36000);
 
     double max_budget = 0;
-    for(RestorationPlan::Option * option : plan.options())
+    for(RestorationPlan<Landscape>::Option* option : plan.options())
         max_budget += option->getCost();
     
     for(int percent_budget : {10, 20, 30}) {
@@ -95,7 +95,7 @@ int main() {
     for(int cpt_test=0; cpt_test<nb_tests; cpt_test++) {
         const int seed = base_seed + cpt_test;
         Landscape * landscape = instance_generator.generate_landscape(seed , 15, 30);
-        RestorationPlan * plan = instance_generator.generate_plan(seed, *landscape, 20);
+        RestorationPlan<Landscape>* plan = instance_generator.generate_plan(seed, *landscape, 20);
         
         if(!do_test(*landscape, *plan, seed)) {
             std::cerr << seed << std::endl;

@@ -29,11 +29,11 @@ namespace Solvers {
                 return *this;
             }            
 
-            Solution * solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const;
+            Solution * solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const;
 
             const std::string name() const { return "pl_eca_3"; } 
 
-            double eval(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution & solution) const;
+            double eval(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, const Solution & solution) const;
     };
 }
 

@@ -2,18 +2,18 @@
 
 #include "utils/random_chooser.hpp"
 
-Solution * Solvers::Bogo::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
+Solution * Solvers::Bogo::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int seed = params.at("seed")->getInt();
     Chrono chrono;
 
-    RandomChooser<RestorationPlan::Option> option_chooser(seed);
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i)
+    RandomChooser<RestorationPlan<Landscape>::Option> option_chooser(seed);
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
         option_chooser.add(i, 1);
 
     Solution * solution = new Solution(landscape, plan);
     double purschaised = 0.0;
     while(option_chooser.canPick()) {
-        RestorationPlan::Option i = option_chooser.pick();
+        RestorationPlan<Landscape>::Option i = option_chooser.pick();
         const double cost = plan.getCost(i);
         if(purschaised + cost > B)
             continue;

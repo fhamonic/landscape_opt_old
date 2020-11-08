@@ -39,8 +39,8 @@ double compute_value_reversed(const concepts::AbstractLandscape<GR, QM, PM, CM> 
     return sum;
 }
 
-RestorationPlan::Option * find_option(const RestorationPlan & plan, const int id) {
-    for(RestorationPlan::Option * option : plan.options())
+RestorationPlan<Landscape>::Option* find_option(const RestorationPlan<Landscape>& plan, const int id) {
+    for(RestorationPlan<Landscape>::Option* option : plan.options())
         if(option->getId() == id)
             return option;
     return nullptr;
@@ -63,7 +63,7 @@ int main (int argc, const char *argv[]) {
     Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);
     const Graph_t & graph = landscape->getNetwork();
     StdRestorationPlanParser parser(*landscape);
-    RestorationPlan * plan = parser.parse(plan_path);
+    RestorationPlan<Landscape>* plan = parser.parse(plan_path);
     
     Helper::assert_well_formed(*landscape, *plan);
 

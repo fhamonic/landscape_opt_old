@@ -10,13 +10,13 @@
 #include "parsers/std_landscape_parser.hpp"
 
 
-RestorationPlan * getPlan(const Landscape & landscape, double length_gain, double quality_gain) {
+RestorationPlan<Landscape>* getPlan(const Landscape & landscape, double length_gain, double quality_gain) {
     const Graph_t & graph = landscape.getNetwork();
-    RestorationPlan * plan = new RestorationPlan(landscape);
+    RestorationPlan<Landscape>* plan = new RestorationPlan(landscape);
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
         if(landscape.getQuality(v) > 0.1)
             continue;
-        RestorationPlan::Option * option = plan->addOption();
+        RestorationPlan<Landscape>::Option* option = plan->addOption();
         option->setCost(1);
         if(length_gain > 0)
             for(Graph_t::OutArcIt a(graph,v); a != lemon::INVALID; ++a) {
@@ -104,15 +104,15 @@ int main (int argc, const char *argv[]) {
 
     for(int thresold : thresold_values) {
         seuiller(*landscape, thresold);
-        RestorationPlan * plan = getPlan(*landscape, 0.0, 0.5);
+        RestorationPlan<Landscape>* plan = getPlan(*landscape, 0.0, 0.5);
 
         for(int length_gain : length_gain_values) {
             for(int area_gain : area_gain_values) {
 
-                RestorationPlan * plan = getPlan(*landscape, length_gain, area_gain);
+                RestorationPlan<Landscape>* plan = getPlan(*landscape, length_gain, area_gain);
 
                 DecoredLandscape decored_landscape(*landscape);
-                for(RestorationPlan::Option * option : plan->options())
+                for(RestorationPlan<Landscape>::Option* option : plan->options())
                     decored_landscape.apply(option);
 
                 delete plan;

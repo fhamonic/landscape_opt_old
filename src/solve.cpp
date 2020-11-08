@@ -121,7 +121,7 @@ int main (int argc, const char *argv[]) {
     Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);
 
     StdRestorationPlanParser parser(*landscape);
-    RestorationPlan * plan = parser.parse(problem_path);
+    RestorationPlan<Landscape>* plan = parser.parse(problem_path);
 
     //for debug purposes
     //Helper::assert_well_formed(*landscape, *plan);

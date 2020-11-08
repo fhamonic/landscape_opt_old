@@ -1,6 +1,6 @@
 #include "solvers/concept/restoration_plan.hpp"
 
-RestorationPlan::Option::Option(RestorationPlan & plan) : _plan(plan), _cost{0}, _id{-1} {}
+RestorationPlan::Option::Option(RestorationPlan<Landscape>& plan) : _plan(plan), _cost{0}, _id{-1} {}
 RestorationPlan::Option::~Option() {}
 
 void RestorationPlan::Option::setId(int id) { _id = id; }

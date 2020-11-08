@@ -30,7 +30,7 @@ class ECA : public concepts::ConnectivityIndex {
             return -alpha * std::log(p);
         }
 
-        double eval_solution(const Landscape & landscape, const RestorationPlan & plan, const Solution & solution) const;
+        double eval_solution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const Solution & solution) const;
 
 
         /**

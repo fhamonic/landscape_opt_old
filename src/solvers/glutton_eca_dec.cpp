@@ -1,6 +1,6 @@
 #include "solvers/glutton_eca_dec.hpp"
 
-Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
+Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool parallel = params.at("parallel")->getBool();
     Chrono chrono;
@@ -9,9 +9,9 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
 
     const Graph_t & graph = landscape.getNetwork();
 
-    std::vector<RestorationPlan::Option> options;
+    std::vector<RestorationPlan<Landscape>::Option> options;
     double purchaised = 0.0;
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         purchaised += plan.getCost(i);
         solution->add(i);
         options.push_back(i);
@@ -23,30 +23,30 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
 
-    auto min_option = [] (std::pair<double, RestorationPlan::Option> p1, std::pair<double, RestorationPlan::Option> p2) {
+    auto min_option = [] (std::pair<double, RestorationPlan<Landscape>::Option> p1, std::pair<double, RestorationPlan<Landscape>::Option> p2) {
         return (p1.first < p2.first) ? p1 : p2;
     };
-    auto compute_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan::Option option) {
+    auto compute_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
         DecoredLandscape decored_landscape(landscape);
         
-        for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             if(i == option) continue;
             decored_landscape.apply(plan, i, solution->getCoef(i));
         }
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (prec_eca - eca) / plan.getCost(option);
 
-        return std::pair<double, RestorationPlan::Option>(ratio, option);
+        return std::pair<double, RestorationPlan<Landscape>::Option>(ratio, option);
     };
     while(purchaised > B) {
-        std::pair<double, RestorationPlan::Option> worst = parallel ?
+        std::pair<double, RestorationPlan<Landscape>::Option> worst = parallel ?
                 std::transform_reduce(std::execution::par, options.begin(), options.end(),
                         std::make_pair(std::numeric_limits<double>::max(), -1), min_option, compute_option) :
                 std::transform_reduce(std::execution::seq, options.begin(), options.end(),
                         std::make_pair(std::numeric_limits<double>::max(), -1), min_option, compute_option);        
 
         const double worst_ratio = worst.first;
-        RestorationPlan::Option worst_option = worst.second;
+        RestorationPlan<Landscape>::Option worst_option = worst.second;
         const double worst_option_cost = plan.getCost(worst_option);
 
         options.erase(std::find(options.begin(), options.end(), worst_option));

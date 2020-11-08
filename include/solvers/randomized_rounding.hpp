@@ -31,7 +31,7 @@ namespace Solvers {
                 return *this;
             }
 
-            Solution * solve(const Landscape & landscape, const RestorationPlan & plans, const double B) const;
+            Solution * solve(const Landscape & landscape, const RestorationPlan<Landscape>& plans, const double B) const;
 
             const std::string name() const { return "randomized_rounding"; } 
     };

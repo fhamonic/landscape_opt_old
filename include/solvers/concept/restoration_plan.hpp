@@ -21,11 +21,12 @@
  * 
  * This class is essentially a sparse matrix implementation with both row major and column major structures to ensure linear time iteration. 
  */
-class RestorationPlan {
+template <typename LS=Landscape>
+class RestorationPlan{
     public:
         typedef int Option;
     private:
-        const Landscape & _landscape;
+        const LS & _landscape;
 
         Graph_t::NodeMap<std::map<Option, double>> _nodeMap;
         Graph_t::ArcMap<std::map<Option, double>> _arcMap;
@@ -38,7 +39,7 @@ class RestorationPlan {
 
         std::vector<double> _costs;
     public:
-        RestorationPlan(const Landscape & l) : _landscape(l), _nodeMap(l.getNetwork()), _arcMap(l.getNetwork()) {  }
+        RestorationPlan(const LS & l) : _landscape(l), _nodeMap(l.getNetwork()), _arcMap(l.getNetwork()) {  }
         ~RestorationPlan() {}
             
         const Landscape & getLandscape() const { return _landscape; }
@@ -531,6 +532,6 @@ class RestorationPlan {
         }
 };
 
-std::ostream & operator<<(std::ostream & in, const RestorationPlan & plan);
+std::ostream & operator<<(std::ostream & in, const RestorationPlan<Landscape> & plan);
 
 #endif //RESTORATION_PLAN_2_HPP

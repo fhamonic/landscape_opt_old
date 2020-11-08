@@ -11,13 +11,13 @@ RestorationPlan::~RestorationPlan() {
 
 const Landscape & RestorationPlan::getLandscape() const { return landscape; }
 
-RestorationPlan::Option * RestorationPlan::addOption() {
+RestorationPlan<Landscape>::Option* RestorationPlan::addOption() {
     Option * option = new Option(*this);
     _options.push_back(option);
     return option;
 }
 
-int RestorationPlan::indexOfOption(RestorationPlan::Option * option) {
+int RestorationPlan::indexOfOption(RestorationPlan<Landscape>::Option* option) {
     for(int i=0; (size_t)i<_options.size(); i++)
         if(_options[i] == option)
             return i;
@@ -42,7 +42,7 @@ void RestorationPlan::removeOption(int index) {
     delete option;
 }
 
-void RestorationPlan::removeOption(RestorationPlan::Option * option) {
+void RestorationPlan::removeOption(RestorationPlan<Landscape>::Option* option) {
     int index = indexOfOption(option);
     assert(index > 0);
     removeOption(index);            
@@ -79,12 +79,12 @@ void RestorationPlan::notifyRemoveArc(RestorationPlan::Option* option, Graph_t::
 }
 
 void RestorationPlan::remove(Graph_t::Node v) {
-    for(RestorationPlan::Option * option : _nodeMap[v])
+    for(RestorationPlan<Landscape>::Option* option : _nodeMap[v])
         option->removePatch(v);
     _nodeMap[v].clear();
 }
 void RestorationPlan::remove(Graph_t::Arc a) {
-    for(RestorationPlan::Option * option : _arcMap[a])
+    for(RestorationPlan<Landscape>::Option* option : _arcMap[a])
         option->removeLink(a);
     _arcMap[a].clear();
 }
@@ -98,7 +98,7 @@ bool RestorationPlan::contains(Graph_t::Arc a) const { return _arcMap[a].size() 
 void RestorationPlan::cleanInvalidElements() {
     std::vector<Graph_t::Node> deleted_nodes;
     std::vector<Graph_t::Arc> deleted_arcs;
-    for(RestorationPlan::Option * option : _options) {
+    for(RestorationPlan<Landscape>::Option* option : _options) {
         for(Graph_t::Node v : option->nodes())
             if(!landscape.getNetwork().valid(v)) 
                 deleted_nodes.push_back(v);
@@ -138,11 +138,11 @@ void RestorationPlan::print() const {
 }
 
 
-std::ostream & operator<<(std::ostream & in, const RestorationPlan & plan) {
+std::ostream & operator<<(std::ostream & in, const RestorationPlan<Landscape>& plan) {
     const Landscape & landscape = plan.getLandscape();
     const Graph_t & graph = landscape.getNetwork();
 
-    for(RestorationPlan::Option * option : plan.options()) {
+    for(RestorationPlan<Landscape>::Option* option : plan.options()) {
         in << option->getCost() << " " << option->getNbElems() << std::endl;
 
         for(Graph_t::Node u : option->nodes()) {

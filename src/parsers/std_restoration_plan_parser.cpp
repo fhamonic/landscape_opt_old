@@ -3,13 +3,13 @@
 StdRestorationPlanParser::StdRestorationPlanParser(const Landscape & l) : landscape(l) {}
 StdRestorationPlanParser::~StdRestorationPlanParser() {}
    
-RestorationPlan * StdRestorationPlanParser::parse(std::filesystem::path file_path) {
+RestorationPlan<Landscape> * StdRestorationPlanParser::parse(std::filesystem::path file_path) {
     if(!std::filesystem::exists(file_path)) {
         std::cerr << file_path << ":" << " File does not exists" << std::endl;
         return nullptr;
     }
 
-    RestorationPlan * plan = new RestorationPlan(landscape);
+    RestorationPlan<Landscape>* plan = new RestorationPlan(landscape);
     const Graph_t & graph = landscape.getNetwork();
 
     std::ifstream file(file_path);
@@ -41,7 +41,7 @@ RestorationPlan * StdRestorationPlanParser::parse(std::filesystem::path file_pat
 
         file >> nb_elems; if(unexpected_eof()) { delete plan; return nullptr; }
 
-        RestorationPlan::Option option = plan->addOption(cost);
+        RestorationPlan<Landscape>::Option option = plan->addOption(cost);
 
         for(int i=0; i<nb_elems; i++) {
             char type;
@@ -79,7 +79,7 @@ RestorationPlan * StdRestorationPlanParser::parse(std::filesystem::path file_pat
     return plan;
 }
 
-bool StdRestorationPlanParser::write(const RestorationPlan & plan, const std::filesystem::path output, const std::string name, bool use_range_ids) {
+bool StdRestorationPlanParser::write(const RestorationPlan<Landscape>& plan, const std::filesystem::path output, const std::string name, bool use_range_ids) {
     const Landscape & landscape = plan.getLandscape();
     const Graph_t & graph = landscape.getNetwork();
 
@@ -95,7 +95,7 @@ bool StdRestorationPlanParser::write(const RestorationPlan & plan, const std::fi
 
     problem_file << std::setprecision(16);
 
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         problem_file << plan.getCost(i) << " " << plan.getNbElements(i) << std::endl;
 
         for(auto const& [v, quality_gain] : plan.getNodes(i)) {

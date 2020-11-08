@@ -8,7 +8,9 @@
 #ifndef INSTANCES_HELPER_HPP
 #define INSTANCES_HELPER_HPP
 
+#include <algorithm>
 #include <math.h>
+#include <random>
 
 #include "landscape/landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
@@ -21,18 +23,32 @@ class Instance {
     public:
         Landscape landscape;
         const Graph_t & graph;
-        RestorationPlan plan;
+        RestorationPlan<Landscape> plan;
 
         Instance() : graph(landscape.getNetwork()), plan(landscape) {}
 };
 
 
+void addCostNoise(Instance & instance, double deviation_ratio=0.2, int seed=456) {
+    std::default_random_engine generator(seed);
+    std::normal_distribution<double> distribution(1.0, deviation_ratio);
+
+    auto noise = [&generator, &distribution] (double value) {
+        return std::max(std::numeric_limits<double>::epsilon(), value * distribution(generator));
+    };
+
+    for(RestorationPlan<Landscape>::Option i=0; i<instance.plan.getNbOptions(); ++i)
+        instance.plan.setCost(i, noise(instance.plan.getCost(i)));
+}
+
 Instance * make_instance_marseille(double pow, double thresold, double median, bool length_gain, bool quality_gain) {
     Instance * instance = new Instance;
+
+    const int nb_friches = 150;
     
     Landscape & landscape = instance->landscape;
     const Graph_t & graph = instance->graph;
-    RestorationPlan & plan = instance->plan;
+    RestorationPlan<Landscape> & plan = instance->plan;
 
     auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
@@ -51,7 +67,7 @@ Instance * make_instance_marseille(double pow, double thresold, double median, b
         if(category.compare("\"friche\"") == 0) { friches_chooser.add(Point(x,y), 1); continue; }
         assert(false);
     }
-    for(int i=0; i<100; i++) {
+    for(int i=0; i<nb_friches; i++) {
         if(!friches_chooser.canPick()) break;
         Graph_t::Node u = landscape.addNode(0, friches_chooser.pick());
         friches_list.push_back(u);
@@ -68,7 +84,7 @@ Instance * make_instance_marseille(double pow, double thresold, double median, b
     }
 
     for(Graph_t::Node v1 : friches_list) {
-        RestorationPlan::Option option = plan.addOption(1);
+        RestorationPlan<Landscape>::Option option = plan.addOption(1);
         if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;
@@ -93,7 +109,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
     
     Landscape & landscape = instance->landscape;
     const Graph_t & graph = instance->graph;
-    RestorationPlan & plan = instance->plan;
+    RestorationPlan<Landscape>& plan = instance->plan;
 
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
@@ -121,7 +137,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
             total_threaten.push_back(u);
             continue;
         }
-        RestorationPlan::Option option = plan.addOption(1);
+        RestorationPlan<Landscape>::Option option = plan.addOption(1);
         plan.addNode(option, u, area-count2050);
     }
 
@@ -139,7 +155,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
     }
 
     for(Graph_t::Node v1 : total_threaten) {
-        RestorationPlan::Option option = plan.addOption(1);
+        RestorationPlan<Landscape>::Option option = plan.addOption(1);
         if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;

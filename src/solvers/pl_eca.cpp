@@ -1,6 +1,6 @@
 #include "solvers/pl_eca.hpp"
 
-Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
+Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const int nb_threads = params.at("threads")->getInt();
     const int g = params.at("pieces")->getInt();
@@ -21,7 +21,7 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
 
         assert(plan.getOptions(a).size() <= 1);
 
-        for(RestorationPlan::Option * option : plan.getOptions(a)) {
+        for(RestorationPlan<Landscape>::Option* option : plan.getOptions(a)) {
             best_difficultyMap[a] = std::min(best_difficultyMap[a], worst_difficultyMap[a] - option->getLengthGain(a));
         }
     }
@@ -178,7 +178,7 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
                 continue;
 
             for(int i=0; i<nb_options; i++) {
-                RestorationPlan::Option * option = plan.options()[i];
+                RestorationPlan<Landscape>::Option* option = plan.options()[i];
                 const double x_i = x_var(i);
                 for(Graph_t::Arc a : option->arcs()) {
                     const int I_sta_r = I_var(s,t,a,RESTORED);
@@ -215,7 +215,7 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
     ////////////////////
     // sum x_e < B
     for(int i=0; i<nb_options; i++) {
-        RestorationPlan::Option * option = plan.options()[i];
+        RestorationPlan<Landscape>::Option* option = plan.options()[i];
         const double x_i = x_var(i);
         solver_builder.buffEntry(x_i, option->getCost());
     }
@@ -279,7 +279,7 @@ Solution * PL_ECA_Solver::solve(const Landscape & landscape, const RestorationPl
     Solution * solution = new Solution(landscape, plan);
 
     for(int i=0; i<nb_options; i++) {
-        RestorationPlan::Option * option = plan.options()[i];
+        RestorationPlan<Landscape>::Option* option = plan.options()[i];
         const int y_i = x_var(i);
         const double value = var_solution[y_i];
         

@@ -6,7 +6,7 @@ class PreprocessedDatas {
         Graph_t::NodeMap<ContractionResult> * contracted_instances;
         Graph_t::NodeMap<Graph_t::NodeMap<double>*> M_Maps_Map;
 
-        PreprocessedDatas(const Landscape & landscape, const RestorationPlan & plan) : M_Maps_Map(landscape.getNetwork()) {
+        PreprocessedDatas(const Landscape & landscape, const RestorationPlan<Landscape>& plan) : M_Maps_Map(landscape.getNetwork()) {
             const Graph_t & graph = landscape.getNetwork();
             // target_nodes
             for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) { 
@@ -21,7 +21,7 @@ class PreprocessedDatas {
                 const ContractionResult & cr = (*contracted_instances)[t];
                 const Landscape & contracted_landscape = *cr.landscape;
                 const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-                const RestorationPlan & contracted_plan = *cr.plan;
+                const RestorationPlan<Landscape>& contracted_plan = *cr.plan;
 
                 M_Maps_Map[t] = new Graph_t::NodeMap<double>(contracted_graph);
                 Graph_t::NodeMap<double> & M_Map = *M_Maps_Map[t];
@@ -55,11 +55,11 @@ namespace Solvers::PL_ECA_3_Vars {
             RestoredXVar(const ContractionResult & cr): _cr(cr) {
                 offsets.resize(cr.plan->getNbOptions(), -1);
                 int cpt = 0;
-                for(RestorationPlan::Option i=0; i<cr.plan->getNbOptions(); ++i)
+                for(RestorationPlan<Landscape>::Option i=0; i<cr.plan->getNbOptions(); ++i)
                 { offsets[i] = cpt; cpt += cr.plan->getNbArcs(i); }
                 _number = cpt;
             }
-            int id(Graph_t::Arc a, RestorationPlan::Option option) const {
+            int id(Graph_t::Arc a, RestorationPlan<Landscape>::Option option) const {
                 assert(_cr.landscape->getNetwork().valid(a) && offsets[option] >= 0); 
                 const int id = offsets.at(option) + _cr.plan->id(option, a);
                 assert(id >=0 && id < _number); return _offset + id; 
@@ -79,15 +79,15 @@ namespace Solvers::PL_ECA_3_Vars {
                 for(auto const& [option, quality_gain] : cr.plan->getOptions(cr.t))
                     offsets[option] = _number++;
             }
-            int id(RestorationPlan::Option option) const {
+            int id(RestorationPlan<Landscape>::Option option) const {
                 const int id = offsets.at(option);
                 assert(id >=0 && id < _number); return _offset + id;
             }
     };
     class YVar : public OSI_Builder::VarType {
         public:
-            YVar(const RestorationPlan & plan): VarType(plan.getNbOptions(), 0, 1, true) {}
-            int id(RestorationPlan::Option option) const { 
+            YVar(const RestorationPlan<Landscape>& plan): VarType(plan.getNbOptions(), 0, 1, true) {}
+            int id(RestorationPlan<Landscape>::Option option) const { 
                 const int id = option;
                 assert(id >=0 && id < _number); return _offset + id;
             }
@@ -107,7 +107,7 @@ namespace Solvers::PL_ECA_3_Vars {
             Graph_t::NodeMap<ContractedVars*> contracted;
             YVar y;
             const PreprocessedDatas & _pdatas;
-            Variables(const Landscape & landscape, const RestorationPlan & plan, PreprocessedDatas & pdatas) :
+            Variables(const Landscape & landscape, const RestorationPlan<Landscape>& plan, PreprocessedDatas & pdatas) :
                     contracted(landscape.getNetwork(), nullptr), y(plan), _pdatas(pdatas) {
                 for(Graph_t::Node v : pdatas.target_nodes)
                     contracted[v] = new ContractedVars((*pdatas.contracted_instances)[v]);
@@ -118,7 +118,7 @@ namespace Solvers::PL_ECA_3_Vars {
             ContractedVars & operator[](Graph_t::Node t) const { return *contracted[t]; }
     };
 
-    void name_variables(OSI_Builder & solver, const Landscape & landscape, const RestorationPlan & plan, PreprocessedDatas & pdatas, const Variables & vars) {
+    void name_variables(OSI_Builder & solver, const Landscape & landscape, const RestorationPlan<Landscape>& plan, PreprocessedDatas & pdatas, const Variables & vars) {
         const Graph_t & graph = landscape.getNetwork();
         auto node_str = [&graph] (Graph_t::Node v) { return std::to_string(graph.id(v)); };
         // XVar
@@ -127,7 +127,7 @@ namespace Solvers::PL_ECA_3_Vars {
             const ContractionResult & cr = (*pdatas.contracted_instances)[t];
             const Landscape & contracted_landscape = *cr.landscape;
             const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-            const RestorationPlan & contracted_plan = *cr.plan;
+            const RestorationPlan<Landscape>& contracted_plan = *cr.plan;
             for(Graph_t::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
                 // solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)));
                 solver.setColName(cvars.x.id(a), "x_t_" + node_str(t) + "(" + std::to_string(contracted_graph.id(cr.t)) + ")_a_" + std::to_string(contracted_graph.id(a)) + "(" + std::to_string(contracted_graph.id(contracted_graph.source(a))) + ","+ std::to_string(contracted_graph.id(contracted_graph.target(a))) + ")" );
@@ -143,7 +143,7 @@ namespace Solvers::PL_ECA_3_Vars {
             for(auto const& [option, quality_gain] : plan.getOptions(t))
                 solver.setColName(vars[t].restored_f.id(option), "restored_f_t_" + node_str(t) + "_" + std::to_string(option));
         // YVar
-        for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) solver.setColName(vars.y.id(i), "y_" + std::to_string(i));
+        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) solver.setColName(vars.y.id(i), "y_" + std::to_string(i));
     }
 }
 
@@ -160,7 +160,7 @@ void insert_variables(OSI_Builder & solver_builder, Variables & vars, Preprocess
     solver_builder.init();
 }
 
-void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan & plan, const double B, 
+void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, 
         Variables & vars, bool relaxed, PreprocessedDatas & pdatas) {
 
     auto M_x_const = [&] (Graph_t::Node t, Graph_t::Arc a) {
@@ -193,7 +193,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
         const ContractionResult & cr = (*pdatas.contracted_instances)[t];
         const Landscape & contracted_landscape = *cr.landscape;
         const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-        const RestorationPlan & contracted_plan = *cr.plan;
+        const RestorationPlan<Landscape>& contracted_plan = *cr.plan;
         // out_flow(u) - in_flow(u) <= w(u)
         for(Graph_t::NodeIt u(contracted_graph); u != lemon::INVALID; ++u) {
             // out flow
@@ -225,7 +225,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             solver_builder.pushRow(-OSI_Builder::INFTY, contracted_landscape.getQuality(u));
         }
         // restored_x_a < y_i * M
-        for(RestorationPlan::Option i=0; i<contracted_plan.getNbOptions(); ++i) {
+        for(RestorationPlan<Landscape>::Option i=0; i<contracted_plan.getNbOptions(); ++i) {
             const int y_i = vars.y.id(i);
             for(auto const& [a, restored_probability] : contracted_plan.getArcs(i)) {
                 const int x_ta = cvars.restored_x.id(a, i);
@@ -237,7 +237,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
     }
     // restored_f_t <= f_t
     // restored_f_t <= y_i * M
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         for(auto const& [t, quality_gain] : plan.getNodes(i)) {
             const ContractedVars & cvars = vars[t];
@@ -254,7 +254,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
     }
     ////////////////////
     // sum y_i < B
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         solver_builder.buffEntry(y_i, plan.getCost(i));
     }
@@ -262,14 +262,14 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
     ////////////////////
     // integer constraints
     if(!relaxed) {
-        for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             const int y_i = vars.y.id(i);
             solver_builder.setInteger(y_i);
         }
     }
 }
 
-Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan & plan, const double B) const {
+Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
@@ -306,7 +306,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         return nullptr;
     }
     Solution * solution = new Solution(landscape, plan);
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         double value = var_solution[y_i];
         solution->set(i, value);
@@ -323,7 +323,7 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     return solution;
 }
 
-double Solvers::PL_ECA_3::eval(const Landscape & landscape, const RestorationPlan & plan, const double B, const Solution & solution) const {
+double Solvers::PL_ECA_3::eval(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, const Solution & solution) const {
     const int log_level = params.at("log")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
@@ -332,7 +332,7 @@ double Solvers::PL_ECA_3::eval(const Landscape & landscape, const RestorationPla
     Variables vars(landscape, plan, preprocessed_datas);
     insert_variables(solver_builder, vars, preprocessed_datas);
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
-    for(RestorationPlan::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         double y_i_value = solution[i];
         solver_builder.setBounds(y_i, y_i_value, y_i_value);
