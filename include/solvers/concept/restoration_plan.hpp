@@ -10,39 +10,44 @@
 #ifndef RESTORATION_PLAN_HPP
 #define RESTORATION_PLAN_HPP
 
+#include<cassert>
 #include<map>
 #include<list>
 #include<memory>
 
-#include"landscape/landscape.hpp"
+#include"landscape/concept/abstract_landscape.hpp"
 
 /**
  * @brief A class for respresenting a restoration plan.
  * 
  * This class is essentially a sparse matrix implementation with both row major and column major structures to ensure linear time iteration. 
  */
-template <typename LS=Landscape>
+template <typename LS> requires concepts::IsLandscape<LS>
 class RestorationPlan{
     public:
+        typedef LS::Graph Graph;
+        typedef LS::Node Node;
+        typedef LS::Arc Arc;
+
         typedef int Option;
     private:
         const LS & _landscape;
 
-        Graph_t::NodeMap<std::map<Option, double>> _nodeMap;
-        Graph_t::ArcMap<std::map<Option, double>> _arcMap;
+        typename Graph::template NodeMap<std::map<Option, double>> _nodeMap;
+        typename Graph::template ArcMap<std::map<Option, double>> _arcMap;
 
-        std::vector<std::map<Graph_t::Node, int>> _options_nodes_idsMap;
-        std::vector<std::map<Graph_t::Arc, int>> _options_arcs_idsMap;
+        std::vector<std::map<Node, int>> _options_nodes_idsMap;
+        std::vector<std::map<Arc, int>> _options_arcs_idsMap;
 
-        std::vector<std::vector<std::pair<Graph_t::Node, double>>> _options_nodes;
-        std::vector<std::vector<std::pair<Graph_t::Arc, double>>> _options_arcs;
+        std::vector<std::vector<std::pair<Node, double>>> _options_nodes;
+        std::vector<std::vector<std::pair<Arc, double>>> _options_arcs;
 
         std::vector<double> _costs;
     public:
         RestorationPlan(const LS & l) : _landscape(l), _nodeMap(l.getNetwork()), _arcMap(l.getNetwork()) {  }
         ~RestorationPlan() {}
             
-        const Landscape & getLandscape() const { return _landscape; }
+        const LS & getLandscape() const { return _landscape; }
 
         /**
          * @brief Get the number of nodes concerned by option **i**
@@ -88,7 +93,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Option i, Graph_t::Node v) const {
+        bool contains(Option i, Node v) const {
             assert(contains(i));
             return _options_nodes_idsMap[i].contains(v);
         }
@@ -101,7 +106,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Option i, Graph_t::Arc a) const { 
+        bool contains(Option i, Arc a) const { 
             assert(contains(i)); 
             return _options_arcs_idsMap[i].contains(a);
         }
@@ -113,7 +118,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Graph_t::Node v) const { return _nodeMap[v].size() > 0; }
+        bool contains(Node v) const { return _nodeMap[v].size() > 0; }
 
         /**
          * @brief Test if there is an option concerning the arc **a**
@@ -122,7 +127,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Graph_t::Arc a) const { return _arcMap[a].size() > 0; }
+        bool contains(Arc a) const { return _arcMap[a].size() > 0; }
 
         /**
          * @brief Add the node **v** to the option **i**
@@ -132,7 +137,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        void addNode(Option i, Graph_t::Node v, double quality_gain) {
+        void addNode(Option i, Node v, double quality_gain) {
             assert(contains(i));
             if(contains(i, v)) {
                 setQualityGain(i, v, getQualityGain(i,v) + quality_gain);
@@ -151,7 +156,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i) + \log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        void addArc(Option i, Graph_t::Arc a, double restored_probability) {
+        void addArc(Option i, Arc a, double restored_probability) {
             assert(contains(i)); 
             if(contains(i, a)) {
                 setRestoredProbability(i, a, std::max(getRestoredProbability(i,a), restored_probability));
@@ -169,7 +174,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeNode(Option i, Graph_t::Node v) {
+        void removeNode(Option i, Node v) {
             assert(contains(i)); 
             if(!contains(i, v)) return;
             const int id = _options_nodes_idsMap[i][v];
@@ -190,7 +195,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i) + \log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeArc(Option i, Graph_t::Arc a) {
+        void removeArc(Option i, Arc a) {
             assert(contains(i));
             if(!contains(i, a)) return;
             const int id = _options_arcs_idsMap[i][a];
@@ -210,7 +215,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(v)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeNode(Graph_t::Node v) {
+        void removeNode(Node v) {
             if(!contains(v)) return;
             for(auto const& [i, val] : _nodeMap[v]) {
                 const int id = _options_nodes_idsMap[i][v];
@@ -231,7 +236,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(a)} \log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeArc(Graph_t::Arc a) {
+        void removeArc(Arc a) {
             if(!contains(a)) return;
             for(auto const& [i, val] : _arcMap[a]) {
                 const int id = _options_arcs_idsMap[i][a];
@@ -254,7 +259,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        double getQualityGain(Option i, Graph_t::Node v) const { 
+        double getQualityGain(Option i, Node v) const { 
             assert(contains(i, v)); 
             return _nodeMap[v].at(i);
         }
@@ -267,7 +272,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        double getRestoredProbability(Option i, Graph_t::Arc a) const {
+        double getRestoredProbability(Option i, Arc a) const {
             assert(contains(i, a)); 
             return _arcMap[a].at(i);
         }
@@ -280,7 +285,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        void setQualityGain(Option i, Graph_t::Node v, double quality_gain) {
+        void setQualityGain(Option i, Node v, double quality_gain) {
             if(!contains(i, v)) return;
             const int id = _options_nodes_idsMap[i][v];
             _options_nodes[i][id].second = quality_gain;
@@ -296,7 +301,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(a)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void moveQualityGains(Graph_t::Node from, Graph_t::Node to, double scale=1.0) {
+        void moveQualityGains(Node from, Node to, double scale=1.0) {
             if(!contains(from)) return;            
             std::map<Option, double> & from_m = _nodeMap[from];
             for(auto it = from_m.begin(); it != from_m.end(); ++it) {
@@ -315,7 +320,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        void setRestoredProbability(Option i, Graph_t::Arc a, double restored_probability) {
+        void setRestoredProbability(Option i, Arc a, double restored_probability) {
             if(!contains(i, a)) return;
             const int id = _options_arcs_idsMap[i][a];
             _options_arcs[i][id].second = restored_probability;
@@ -329,7 +334,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(a)} \log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void updateProbability(Graph_t::Arc a, double probability_scale) {
+        void updateProbability(Arc a, double probability_scale) {
             if(!contains(a)) return;
             std::map<Option, double> & m = _arcMap[a];
             for(auto it = m.begin(); it != m.end(); ++it) {
@@ -348,7 +353,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        double id(Option i, Graph_t::Node v) const { return _options_nodes_idsMap.at(i).at(v); }
+        double id(Option i, Node v) const { return _options_nodes_idsMap.at(i).at(v); }
 
         /**
          * @brief  Get the id of the arc **a** in the option **i**
@@ -358,7 +363,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
-        double id(Option i, Graph_t::Arc a) const { 
+        double id(Option i, Arc a) const { 
             return _options_arcs_idsMap.at(i).at(a);
         }
 
@@ -430,7 +435,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::map<Option, double> & getOptions(Graph_t::Node v) const { return _nodeMap[v]; }
+        const std::map<Option, double> & getOptions(Node v) const { return _nodeMap[v]; }
 
         /**
          * @brief Returns the map of options concerning the arc **a**
@@ -439,7 +444,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::map<Option, double> & getOptions(Graph_t::Arc a) const { return _arcMap[a]; }
+        const std::map<Option, double> & getOptions(Arc a) const { return _arcMap[a]; }
 
         /**
          * @brief Returns the map of options concerning the node **v**
@@ -448,7 +453,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::vector<std::pair<Graph_t::Node, double>> & getNodes(Option i) const { return _options_nodes[i]; }
+        const std::vector<std::pair<Node, double>> & getNodes(Option i) const { return _options_nodes[i]; }
 
         /**
          * @brief Returns the map of options concerning the arc **a**
@@ -457,7 +462,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::vector<std::pair<Graph_t::Arc, double>> & getArcs(Option i) const { return _options_arcs[i]; }
+        const std::vector<std::pair<Arc, double>> & getArcs(Option i) const { return _options_arcs[i]; }
 
         /**
          * @brief Erase invalid nodes from the restoration plan
@@ -471,7 +476,7 @@ class RestorationPlan{
                 std::map<lemon::ListDigraph::Node, int> & m = _options_nodes_idsMap[i];
                 for(auto it = m.cbegin(), next_it = it; it != m.cend(); it = next_it) {
                     ++next_it;
-                    Graph_t::Node v = it->first;
+                    Node v = it->first;
                     const int id = it->second;
                     if(graph.valid(v)) continue;
                     free_ids.push_back(id);             
@@ -502,7 +507,7 @@ class RestorationPlan{
                 std::map<lemon::ListDigraph::Arc, int> & m = _options_arcs_idsMap[i];
                 for(auto it = m.cbegin(), next_it = it; it != m.cend(); it = next_it) {
                     ++next_it;
-                    Graph_t::Arc a = it->first;
+                    Arc a = it->first;
                     const int id = it->second;
                     if(graph.valid(a)) continue;
                     free_ids.push_back(id);             
@@ -532,6 +537,7 @@ class RestorationPlan{
         }
 };
 
-std::ostream & operator<<(std::ostream & in, const RestorationPlan<Landscape> & plan);
+template <typename LS> requires concepts::IsLandscape<LS>
+std::ostream & operator<<(std::ostream & in, const RestorationPlan<LS> & plan);
 
 #endif //RESTORATION_PLAN_2_HPP

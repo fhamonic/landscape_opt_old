@@ -7,6 +7,8 @@
 #include "parsers/concept/parser.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
+#include"landscape/landscape.hpp"
+
 class StdRestorationPlanParser : public concepts::Parser<RestorationPlan<Landscape>> {
     private:
         const Landscape & landscape;
