@@ -39,8 +39,7 @@ Solution * Solvers::Naive_ECA_Inc::solve(const Landscape & landscape, const Rest
     double purchaised = 0.0;
     for(std::pair<double, RestorationPlan<Landscape>::Option> elem : ratio_options) {
         const double price = plan.getCost(elem.second);
-        if(purchaised + price > B)
-            continue;
+        if(purchaised + price > B) continue;
         if(log_level > 1)
             std::cout << elem.first << " " << elem.second << std::endl;
         purchaised += price;

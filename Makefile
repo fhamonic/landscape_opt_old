@@ -27,7 +27,7 @@ LSFLAGS=-static $(LIBS_FLAGS) -lmpi
 EXEC=solve solver_analysis
 EXTENSION=.out
 
-LANDSCAPE_SRC:=landscape/landscape.cpp landscape/decored_landscape.cpp
+LANDSCAPE_SRC:=landscape/landscape.cpp landscape/decored_landscape.cpp landscape/static_landscape.cpp
 INDICES_SRC:=indices/eca.cpp
 PLANS_SRC:=#solvers/concept/restoration_option.cpp solvers/concept/restoration_plan.cpp
 NAIVE_SOLVERS_SRC:=solvers/naive_eca_dec.cpp solvers/naive_eca_inc.cpp solvers/bogo.cpp

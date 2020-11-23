@@ -130,13 +130,9 @@ namespace Helper {
             
         for (typename Graph::NodeIt s(graph); s != lemon::INVALID; ++s) {
             dijkstra.run(s);
-
             const PredMap & predMap = dijkstra.predMap();
-
             for (typename Graph::NodeIt t(graph); t != lemon::INVALID; ++t) {
-                if(! dijkstra.reached(t))
-                    continue;
-
+                if(!dijkstra.reached(t)) continue;
                 typename GR::Node u = t;
                 while(u != s) {
                     (*centralityMap)[predMap[t]] += 1;
@@ -150,18 +146,58 @@ namespace Helper {
 
     void printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, Solution * solution);
 
-    void copyPlan(RestorationPlan<Landscape>& contracted_plan, const RestorationPlan<Landscape>& plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef);
+    
+    template <typename LS_From, typename LS_To>
+    void copyPlan(RestorationPlan<LS_To>& contracted_plan, const RestorationPlan<LS_From>& plan, 
+            const typename LS_From::Graph::template NodeMap<typename LS_To::Node> & nodesRef, 
+            const typename LS_From::Graph::template ArcMap<typename LS_To::Arc> & arcsRef) {
+        assert(contracted_plan.getNbOptions() == 0);
+        for(typename RestorationPlan<LS_From>::Option i=0; i<plan.getNbOptions(); ++i) {
+            contracted_plan.addOption(plan.getCost(i));
+            for(auto const& [u, quality_gain] : plan.getNodes(i))
+                contracted_plan.addNode(i, nodesRef[u], quality_gain);
+            for(auto const& [a, restored_probability] : plan.getArcs(i))
+                contracted_plan.addArc(i, arcsRef[a], restored_probability);
+        }  
+    }
+
 
     // need to include the binary search tree for y-h , y+h search
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape) ;
 
 
     void assert_well_formed(const Landscape & landscape, const RestorationPlan<Landscape>& plan);
-
-    
 }
 
 
-double max_flow_in(const Landscape & landscape, const RestorationPlan<Landscape>& plan, Graph_t::Node t);
+template <typename LS>
+double max_flow_in(const LS & landscape, const RestorationPlan<LS>& plan, typename LS::Node t) {
+    typedef typename LS::Graph Graph;
+    typedef typename LS::ProbabilityMap ProbabilityMap;
+    typedef lemon::ReverseDigraph<const Graph> Reversed;
+
+    const Graph & original_g = landscape.getNetwork();
+    Reversed reversed_g(original_g);
+    ProbabilityMap probabilities(original_g);
+
+    for(typename Graph::ArcIt b(original_g); b != lemon::INVALID; ++b)
+        probabilities[b] = landscape.getProbability(b);
+    for(typename RestorationPlan<LS>::Option i=0; i<plan.getNbOptions(); ++i)
+        for(auto const& [b, restored_probability] : plan.getArcs(i))
+            probabilities[b] = std::max(probabilities[b], restored_probability);
+
+    lemon::MultiplicativeSimplerDijkstra<Reversed, ProbabilityMap> dijkstra(reversed_g, probabilities);
+    double sum = 0;
+    dijkstra.init(t);
+    while(!dijkstra.emptyQueue()) {
+        std::pair<typename Graph::Node, double> pair = dijkstra.processNextNode();
+        typename Graph::Node v = pair.first;
+        const double p_tv = pair.second;
+        sum += landscape.getQuality(v) * p_tv;
+        for(auto const& [option, quality_gain] : plan.getOptions(v))
+            sum += quality_gain * p_tv;
+    }
+    return sum;
+}
 
 #endif // HELPER

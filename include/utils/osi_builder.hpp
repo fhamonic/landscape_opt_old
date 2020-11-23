@@ -72,6 +72,13 @@ class OSI_Builder {
         ~OSI_Builder();
 
         int getNbVars() const { return nb_vars; };
+        int getNbNonZeroVars() const {
+            std::vector<int> non_zero(nb_vars, 0);
+            const int * indices = matrix->getIndices();
+            for(int i=0; i<matrix->getNumElements(); ++i)
+                non_zero[indices[i]] = 1;      
+            return std::accumulate(non_zero.begin(), non_zero.end(), 0);
+        };
         int getNbConstraints() const { return matrix->getNumRows(); };
 
         OSI_Builder & addVarType(VarType * var_type);

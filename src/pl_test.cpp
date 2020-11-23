@@ -51,7 +51,7 @@ bool do_test(const Landscape & landscape, const RestorationPlan<Landscape>& plan
 
     Solvers::Glutton_ECA_Inc glutton_eca_inc;  glutton_eca_inc.setLogLevel(0).setParallel(true);
     Solvers::Glutton_ECA_Dec glutton_eca_dec;  glutton_eca_dec.setLogLevel(0).setParallel(true);
-    Solvers::PL_ECA_3 pl_eca_3;  pl_eca_3.setLogLevel(0).setNbThreads(1).setTimeout(36000);
+    Solvers::PL_ECA_3 pl_eca_3;  pl_eca_3.setLogLevel(0).setTimeout(36000);
 
     double max_budget = 0;
     for(RestorationPlan<Landscape>::Option* option : plan.options())

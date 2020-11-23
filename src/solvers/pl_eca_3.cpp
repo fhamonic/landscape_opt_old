@@ -1,48 +1,48 @@
 #include "solvers/pl_eca_3.hpp"
 
-class PreprocessedDatas {
-    public:
-        std::vector<Graph_t::Node> target_nodes;
-        Graph_t::NodeMap<ContractionResult> * contracted_instances;
-        Graph_t::NodeMap<Graph_t::NodeMap<double>*> M_Maps_Map;
-
-        PreprocessedDatas(const Landscape & landscape, const RestorationPlan<Landscape>& plan) : M_Maps_Map(landscape.getNetwork()) {
-            const Graph_t & graph = landscape.getNetwork();
-            // target_nodes
-            for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) { 
-                if(landscape.getQuality(u) == 0 && !plan.contains(u)) continue;
-                target_nodes.push_back(u); 
-            }
-            // contracted_instances
-            MyContractionAlgorithm alg2;
-            contracted_instances = alg2.precompute(landscape, plan);
-            // M_Maps_Map
-            std::for_each(std::execution::par, target_nodes.begin(), target_nodes.end(), [&] (Graph_t::Node t) {
-                const ContractionResult & cr = (*contracted_instances)[t];
-                const Landscape & contracted_landscape = *cr.landscape;
-                const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-                const RestorationPlan<Landscape>& contracted_plan = *cr.plan;
-
-                M_Maps_Map[t] = new Graph_t::NodeMap<double>(contracted_graph);
-                Graph_t::NodeMap<double> & M_Map = *M_Maps_Map[t];
-                for(Graph_t::NodeIt v(contracted_graph); v != lemon::INVALID; ++v)
-                    M_Map[v] = max_flow_in(contracted_landscape, contracted_plan, v);
-            });
-        }
-        ~PreprocessedDatas() {
-            for(Graph_t::Node v : target_nodes) delete  M_Maps_Map[v];
-            delete contracted_instances;
-        }
-};
-
 namespace Solvers::PL_ECA_3_Vars {
+    class PreprocessedDatas {
+        public:
+            std::vector<Graph_t::Node> target_nodes;
+            Graph_t::NodeMap<ContractionResult> * contracted_instances;
+            Graph_t::NodeMap<StaticGraph_t::NodeMap<double>*> M_Maps_Map;
+
+            PreprocessedDatas(const Landscape & landscape, const RestorationPlan<Landscape>& plan) : M_Maps_Map(landscape.getNetwork()) {
+                const Graph_t & graph = landscape.getNetwork();
+                // target_nodes
+                for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) { 
+                    if(landscape.getQuality(u) == 0 && !plan.contains(u)) continue;
+                    target_nodes.push_back(u); 
+                }
+                // contracted_instances
+                MyContractionAlgorithm alg2;
+                contracted_instances = alg2.precompute(landscape, plan);
+                // M_Maps_Map
+                std::for_each(std::execution::par, target_nodes.begin(), target_nodes.end(), [&] (Graph_t::Node t) {
+                    const ContractionResult & cr = (*contracted_instances)[t];
+                    const StaticLandscape & contracted_landscape = *cr.landscape;
+                    const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
+                    const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
+
+                    M_Maps_Map[t] = new StaticGraph_t::NodeMap<double>(contracted_graph);
+                    StaticGraph_t::NodeMap<double> & M_Map = *M_Maps_Map[t];
+                    for(StaticGraph_t::NodeIt v(contracted_graph); v != lemon::INVALID; ++v)
+                        M_Map[v] = max_flow_in(contracted_landscape, contracted_plan, v);
+                });
+            }
+            ~PreprocessedDatas() {
+                for(Graph_t::Node v : target_nodes) delete  M_Maps_Map[v];
+                delete contracted_instances;
+            }
+    };
+
+
     class XVar : public OSI_Builder::VarType {
         private:
             const ContractionResult & _cr;
         public:
             XVar(const ContractionResult & cr): VarType(lemon::countArcs(cr.landscape->getNetwork())), _cr(cr) {}
-            int id(Graph_t::Arc a) const { 
-                assert(_cr.landscape->getNetwork().valid(a)); 
+            int id(StaticGraph_t::Arc a) const { 
                 const int id = _cr.landscape->getNetwork().id(a);
                 assert(id >=0 && id < _number); return _offset + id; 
             }
@@ -59,8 +59,8 @@ namespace Solvers::PL_ECA_3_Vars {
                 { offsets[i] = cpt; cpt += cr.plan->getNbArcs(i); }
                 _number = cpt;
             }
-            int id(Graph_t::Arc a, RestorationPlan<Landscape>::Option option) const {
-                assert(_cr.landscape->getNetwork().valid(a) && offsets[option] >= 0); 
+            int id(StaticGraph_t::Arc a, RestorationPlan<Landscape>::Option option) const {
+                assert(offsets[option] >= 0); 
                 const int id = offsets.at(option) + _cr.plan->id(option, a);
                 assert(id >=0 && id < _number); return _offset + id; 
             }
@@ -125,10 +125,10 @@ namespace Solvers::PL_ECA_3_Vars {
         for(Graph_t::Node t : pdatas.target_nodes) {
             const ContractedVars & cvars = vars[t];
             const ContractionResult & cr = (*pdatas.contracted_instances)[t];
-            const Landscape & contracted_landscape = *cr.landscape;
-            const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-            const RestorationPlan<Landscape>& contracted_plan = *cr.plan;
-            for(Graph_t::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
+            const StaticLandscape & contracted_landscape = *cr.landscape;
+            const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
+            const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
+            for(StaticGraph_t::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
                 // solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)));
                 solver.setColName(cvars.x.id(a), "x_t_" + node_str(t) + "(" + std::to_string(contracted_graph.id(cr.t)) + ")_a_" + std::to_string(contracted_graph.id(a)) + "(" + std::to_string(contracted_graph.id(contracted_graph.source(a))) + ","+ std::to_string(contracted_graph.id(contracted_graph.target(a))) + ")" );
                 // RestoredXVar
@@ -163,9 +163,9 @@ void insert_variables(OSI_Builder & solver_builder, Variables & vars, Preprocess
 void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, 
         Variables & vars, bool relaxed, PreprocessedDatas & pdatas) {
 
-    auto M_x_const = [&] (Graph_t::Node t, Graph_t::Arc a) {
+    auto M_x_const = [&] (Graph_t::Node t, StaticGraph_t::Arc a) {
         const ContractionResult & cr = (*pdatas.contracted_instances)[t];
-        const Graph_t & contracted_graph = cr.landscape->getNetwork();
+        const StaticGraph_t & contracted_graph = cr.landscape->getNetwork();
         return (*pdatas.M_Maps_Map[t])[contracted_graph.source(a)];  
     };
     auto M_f_const = [&] (Graph_t::Node t) {
@@ -191,13 +191,13 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
         const ContractedVars & cvars = vars[t];
         const int f_t = cvars.f.id();
         const ContractionResult & cr = (*pdatas.contracted_instances)[t];
-        const Landscape & contracted_landscape = *cr.landscape;
-        const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-        const RestorationPlan<Landscape>& contracted_plan = *cr.plan;
+        const StaticLandscape & contracted_landscape = *cr.landscape;
+        const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
+        const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
         // out_flow(u) - in_flow(u) <= w(u)
-        for(Graph_t::NodeIt u(contracted_graph); u != lemon::INVALID; ++u) {
+        for(StaticGraph_t::NodeIt u(contracted_graph); u != lemon::INVALID; ++u) {
             // out flow
-            for(Graph_t::OutArcIt b(contracted_graph, u); b != lemon::INVALID; ++b) {
+            for(StaticGraph_t::OutArcIt b(contracted_graph, u); b != lemon::INVALID; ++b) {
                 const int x_tb = cvars.x.id(b);
                 solver_builder.buffEntry(x_tb, 1);
                 for(auto const& [option, restored_probability] : contracted_plan.getOptions(b)) {
@@ -206,7 +206,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
                 }
             }
             // in flow
-            for(Graph_t::InArcIt a(contracted_graph, u); a != lemon::INVALID; ++a) {
+            for(StaticGraph_t::InArcIt a(contracted_graph, u); a != lemon::INVALID; ++a) {
                 const int x_ta = cvars.x.id(a);
                 solver_builder.buffEntry(x_ta, -contracted_landscape.getProbability(a));
                 for(auto const& [option, restored_probability] : contracted_plan.getOptions(a)) {

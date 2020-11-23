@@ -63,8 +63,7 @@ std::ostream & operator<<(std::ostream & in, const concepts::AbstractLandscape<G
 
     for (typename Graph::NodeIt u(g); u != lemon::INVALID; ++u) {
         Point coords = output.getCoords(u);
-        double quality = output.getQuality(u);
-        
+        double quality = output.getQuality(u);        
         in << coords[0] << "\t" << coords[1] << "\t" << quality << std::endl;
     }
 
@@ -72,7 +71,6 @@ std::ostream & operator<<(std::ostream & in, const concepts::AbstractLandscape<G
         double probability = output.getProbability(a);
         int num_from = g.id(g.source(a));
         int num_to = g.id(g.target(a));
-
         in << num_from << "\t" << num_to << "\t" << probability << std::endl;
     }
 

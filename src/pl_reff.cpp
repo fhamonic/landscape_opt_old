@@ -166,7 +166,7 @@ int main() {
     }
     last_time = current_time;
 
-    OsiClpSolverInterface * solver = solver_builder.buildSolver(OSI_Builder::MIN);
+    OsiClpSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MIN);
 
     if(log_level >= 1) {
         name_variables(solver, graph, x_var, y_var);

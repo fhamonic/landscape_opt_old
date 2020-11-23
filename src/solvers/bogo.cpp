@@ -15,8 +15,7 @@ Solution * Solvers::Bogo::solve(const Landscape & landscape, const RestorationPl
     while(option_chooser.canPick()) {
         RestorationPlan<Landscape>::Option i = option_chooser.pick();
         const double cost = plan.getCost(i);
-        if(purschaised + cost > B)
-            continue;
+        if(purschaised + cost > B) continue;
         purschaised += cost;
         solution->add(i);
     }

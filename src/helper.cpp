@@ -98,18 +98,6 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan<La
             .run();
 }
 
-void Helper::copyPlan(RestorationPlan<Landscape>& contracted_plan, const RestorationPlan<Landscape>& plan, const Graph_t::NodeMap<Graph_t::Node> & nodesRef, const Graph_t::ArcMap<Graph_t::Arc> & arcsRef) {
-    assert(contracted_plan.getNbOptions() == 0);
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-        contracted_plan.addOption(plan.getCost(i));
-        for(auto const& [u, quality_gain] : plan.getNodes(i))
-            contracted_plan.addNode(i, nodesRef[u], quality_gain);
-        for(auto const& [a, restored_probability] : plan.getArcs(i))
-            contracted_plan.addArc(i, arcsRef[a], restored_probability);
-    }  
-}
-
-
 // need to include the binary search tree for y-h , y+h search
 std::pair<Graph_t::Node, Graph_t::Node> Helper::neerestNodes(const Landscape & landscape) {
     const Graph_t & graph = landscape.getNetwork();
@@ -192,28 +180,4 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
             assert(restored_probability == plan.getRestoredProbability(i, a));         
         }
     }
-}
-
-double max_flow_in(const Landscape & landscape, const RestorationPlan<Landscape>& plan, Graph_t::Node t) {
-    typedef lemon::ReverseDigraph<const Graph_t> Reversed;
-    const Graph_t & original_g = landscape.getNetwork();
-    Reversed reversed_g(original_g);
-    Graph_t::ArcMap<double> probabilities(original_g);
-    for(Graph_t::ArcIt b(original_g); b != lemon::INVALID; ++b)
-        probabilities[b] = landscape.getProbability(b);
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
-        for(auto const& [b, restored_probability] : plan.getArcs(i))
-            probabilities[b] = std::max(probabilities[b], restored_probability);
-    lemon::MultiplicativeSimplerDijkstra<Reversed, Graph_t::ArcMap<double>> dijkstra(reversed_g, probabilities);
-    double sum = 0;
-    dijkstra.init(t);
-    while (!dijkstra.emptyQueue()) {
-        std::pair<Graph_t::Node, double> pair = dijkstra.processNextNode();
-        Graph_t::Node v = pair.first;
-        const double p_tv = pair.second;
-        sum += landscape.getQuality(v) * p_tv;
-        for(auto const& [option, quality_gain] : plan.getOptions(v))
-            sum += quality_gain * p_tv;
-    }
-    return sum;
 }

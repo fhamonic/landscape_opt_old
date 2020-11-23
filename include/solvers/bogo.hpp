@@ -8,11 +8,6 @@ namespace Solvers {
         public:
             Bogo() {
                 params["seed"] = new IntParam(0);
-                params["draws"] = new IntParam(0);
-            }
-            Bogo & setNbDraws(int log_level) {
-                params["draws"]->set(log_level);
-                return *this;
             }
             Bogo & setSeed(int seed) {
                 params["seed"]->set(seed);

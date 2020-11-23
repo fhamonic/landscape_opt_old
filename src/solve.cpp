@@ -40,9 +40,9 @@ static void populate(std::list<concepts::Solver*> & solvers, std::map<std::strin
     Solvers::Glutton_ECA_Inc * glutton_eca_inc = new Solvers::Glutton_ECA_Inc();
     Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
     Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
-    (*pl_eca_2).setLogLevel(0).setNbThreads(4);
+    (*pl_eca_2).setLogLevel(0);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(0).setNbThreads(4);
+    (*pl_eca_3).setLogLevel(0);
     Solvers::Randomized_Rounding_ECA * randomized_rounding = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding->setLogLevel(0).setNbDraws(100);
 
@@ -129,7 +129,7 @@ int main (int argc, const char *argv[]) {
     Solution * solution = solver.solve(*landscape, *plan, B);
 
     if(solution != nullptr) {
-        Helper::printSolution(*landscape, name, solver, B, solution);
+        Helper::printSolution(*landscape, *plan, name, solver, B, solution);
         delete solution;
     } else {
         std::cerr << "Fail" << std::endl;

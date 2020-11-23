@@ -1,8 +1,8 @@
 /**
- * @file restoration_plan_2.hpp
+ * @file restoration_plan.hpp
  * @author François Hamonic (francois.hamonic@gmail.com)
- * @brief Restorationplan2 class declaration
- * @version 0.1
+ * @brief Restorationplan class declaration
+ * @version 0.2
  * @date 2020-10-26
  * 
  * @copyright Copyright (c) 2020
@@ -14,6 +14,7 @@
 #include<map>
 #include<list>
 #include<memory>
+#include <numeric>
 
 #include"landscape/concept/abstract_landscape.hpp"
 
@@ -470,10 +471,10 @@ class RestorationPlan{
          * @space \f$O(\#invalid\_nodes)\f$ 
          */
         void eraseInvalidNodes() {
-            const Graph_t & graph = _landscape.getNetwork();
+            const Graph & graph = _landscape.getNetwork();
             for(Option i=0; i<getNbOptions(); ++i) {
                 std::vector<int> free_ids;
-                std::map<lemon::ListDigraph::Node, int> & m = _options_nodes_idsMap[i];
+                std::map<Node, int> & m = _options_nodes_idsMap[i];
                 for(auto it = m.cbegin(), next_it = it; it != m.cend(); it = next_it) {
                     ++next_it;
                     Node v = it->first;
@@ -501,10 +502,10 @@ class RestorationPlan{
          * @space \f$O(\#invalid\_arcs)\f$ 
          */
         void eraseInvalidArcs() {
-            const Graph_t & graph = _landscape.getNetwork();
+            const Graph & graph = _landscape.getNetwork();
             for(Option i=0; i<getNbOptions(); ++i) {
                 std::vector<int> free_ids;
-                std::map<lemon::ListDigraph::Arc, int> & m = _options_arcs_idsMap[i];
+                std::map<Arc, int> & m = _options_arcs_idsMap[i];
                 for(auto it = m.cbegin(), next_it = it; it != m.cend(); it = next_it) {
                     ++next_it;
                     Arc a = it->first;
@@ -535,6 +536,12 @@ class RestorationPlan{
             eraseInvalidNodes();
             eraseInvalidArcs();
         }
+
+        /**
+         * @brief Comptes the total cost of the restoration plan, i.e. sum of options costs
+         * @return double 
+         */
+        double totalCost() const { return std::accumulate(_costs.begin(), _costs.end(), 0.0); }
 };
 
 template <typename LS> requires concepts::IsLandscape<LS>

@@ -41,10 +41,8 @@ void addCostNoise(Instance & instance, double deviation_ratio=0.2, int seed=456)
         instance.plan.setCost(i, noise(instance.plan.getCost(i)));
 }
 
-Instance * make_instance_marseille(double pow, double thresold, double median, bool length_gain, bool quality_gain) {
+Instance * make_instance_marseille(double pow, double thresold, double median, bool length_gain, bool quality_gain, int nb_friches=100) {
     Instance * instance = new Instance;
-
-    const int nb_friches = 150;
     
     Landscape & landscape = instance->landscape;
     const Graph_t & graph = instance->graph;
@@ -103,6 +101,66 @@ Instance * make_instance_marseille(double pow, double thresold, double median, b
     return instance;
 }
 
+Instance * make_instance_marseillec(double pow, double thresold, double median, bool length_gain, bool quality_gain, int nb_friches=100) {
+    Instance * instance = new Instance;
+    
+    Landscape & landscape = instance->landscape;
+    const Graph_t & graph = instance->graph;
+    RestorationPlan<Landscape> & plan = instance->plan;
+
+    auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
+    auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
+    
+    RandomChooser<Point> friches_chooser(9876);
+    std::vector<Graph_t::Node> friches_list;
+
+    io::CSVReader<3> patches("data/Marseille/vertices_marseillec.txt");
+    patches.read_header(io::ignore_extra_column, "category","x","y");
+    std::string category;
+    double x, y;
+    while(patches.read_row(category, x, y)) {
+        if(category.compare("\"massif\"") == 0) { landscape.addNode(20, Point(x,y)); continue; }
+        if(category.compare("\"Parc\"") == 0) { landscape.addNode(5, Point(x,y)); continue; }
+        if(category.compare("\"parc\"") == 0) { landscape.addNode(1, Point(x,y)); continue; }
+        if(category.compare("\"friche\"") == 0) { friches_chooser.add(Point(x,y), 1); continue; }
+        assert(false);
+    }
+    for(int i=0; i<nb_friches; i++) {
+        if(!friches_chooser.canPick()) break;
+        Graph_t::Node u = landscape.addNode(0, friches_chooser.pick());
+        friches_list.push_back(u);
+    }
+
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            if(u == v) continue;
+            double dist = d(u,v);
+            double probability = p(dist);
+            if(probability < thresold) continue;
+            landscape.addArc(u, v, probability);
+        }
+    }
+
+    for(Graph_t::Node v1 : friches_list) {
+        RestorationPlan<Landscape>::Option option = plan.addOption(1);
+        if(length_gain) {
+            Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
+            std::vector<Graph_t::Arc> to_move;
+            for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
+                to_move.push_back(a);
+            for(Graph_t::Arc a : to_move)
+                landscape.changeTarget(a, v2);
+
+            Graph_t::Arc v1v2 = landscape.addArc(v2, v1, 0);
+            plan.addArc(option, v1v2, 1.0);
+        }
+        if(quality_gain)
+            plan.addNode(option, v1, quality_gain);
+    }
+
+    return instance;
+}
+
 
 Instance * make_instance_quebec(double pow, double thresold, double median, bool length_gain, bool quality_gain) {
     Instance * instance = new Instance;
@@ -114,7 +172,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
     std::vector<Graph_t::Node> node_correspondance;
-    std::vector<Graph_t::Node> total_threaten;
+    std::vector<std::pair<Graph_t::Node, double>> total_threaten;
 
     io::CSVReader<5> patches("data/quebec_leam_v3/raw/sommets_leam_v3.txt");
     patches.read_header(io::ignore_extra_column, "count","area","xcoord","ycoord","count2050");
@@ -131,14 +189,16 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
         assert(static_cast<int>(node_correspondance.size()) == count);
         node_correspondance[count-1] = u;
 
-        if(area == count2050)
-            continue;
+        if(area == count2050) continue;
         if(area > 0 && count2050 == 0) {
-            total_threaten.push_back(u);
+            total_threaten.emplace_back(u, area);
             continue;
         }
-        RestorationPlan<Landscape>::Option option = plan.addOption(1);
-        plan.addNode(option, u, area-count2050);
+
+        if(!quality_gain) continue;
+        const double area_loss = area-count2050;
+        RestorationPlan<Landscape>::Option option = plan.addOption(area_loss);
+        plan.addNode(option, u, area_loss);
     }
 
     io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.txt");
@@ -154,8 +214,8 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
         landscape.addArc(u, v, probability);
     }
 
-    for(Graph_t::Node v1 : total_threaten) {
-        RestorationPlan<Landscape>::Option option = plan.addOption(1);
+    for(auto & [v1, area] : total_threaten) {
+        RestorationPlan<Landscape>::Option option = plan.addOption(area);
         if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;
@@ -168,7 +228,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
             plan.addArc(option, v2v1, 1.0);
         }
         if(quality_gain)
-            plan.addNode(option, v1, quality_gain);
+            plan.addNode(option, v1, area);
     }
 
     return instance;

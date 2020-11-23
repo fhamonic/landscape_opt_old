@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "landscape/landscape.hpp"
+#include "landscape/static_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
 #include "indices/eca.hpp"
@@ -12,12 +13,12 @@
 
 class ContractionResult {
     public:
-        std::shared_ptr<Landscape> landscape;
-        std::shared_ptr<RestorationPlan<Landscape>> plan;
-        Graph_t::Node t;
+        std::shared_ptr<StaticLandscape> landscape;
+        std::shared_ptr<RestorationPlan<StaticLandscape>> plan;
+        StaticGraph_t::Node t;
 
         ContractionResult() {}
-        ContractionResult(Landscape * l, RestorationPlan<Landscape> * p, Graph_t::Node t) : landscape(l), plan(p), t(t) {}
+        ContractionResult(StaticLandscape * l, RestorationPlan<StaticLandscape> * p, StaticGraph_t::Node t) : landscape(l), plan(p), t(t) {}
         ~ContractionResult() {}
 };
 

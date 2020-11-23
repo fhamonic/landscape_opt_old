@@ -47,8 +47,7 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
     });
 
     for(std::pair<double, RestorationPlan<Landscape>::Option> elem : ratio_options) {
-        if(purchaised <= B)
-            break;
+        if(purchaised <= B) break;
         purchaised -= plan.getCost(elem.second);
         solution->remove(elem.second);
         if(log_level > 1)

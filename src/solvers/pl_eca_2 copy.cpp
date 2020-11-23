@@ -132,7 +132,6 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
     // Columns : Objective
     ////////////////////
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-        if(landscape.getQuality(t) == 0 && !plan.contains(t)) continue;
         // sum w(t) * f_t
         const int f_t = vars.f.id(t);
         solver_builder.setObjective(f_t, landscape.getQuality(t));
@@ -145,7 +144,6 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
     // Rows : Constraints
     ////////////////////
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-        if(landscape.getQuality(t) == 0 && !plan.contains(t)) continue;
         const int f_t = vars.f.id(t);
         // out_flow(u) - in_flow(u) <= w(u)
         for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
@@ -262,7 +260,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     }
     solution->setComputeTimeMs(chrono.timeMs());
     solution->obj = solver->getObjValue();
-    solution->nb_vars = solver_builder.getNbNonZeroVars();
+    solution->nb_vars = solver_builder.getNbVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
