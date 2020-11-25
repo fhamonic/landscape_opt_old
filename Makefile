@@ -36,8 +36,6 @@ CPP_PATHS:=$(shell find $(SRC_DIR) -name '*.cpp')
 CPPSRC_PATHS:=$(filter-out $(SRC_DIR)/$(EXEC_SUBDIR)/%,$(CPP_PATHS))
 CPPEXEC_PATHS:=$(filter $(SRC_DIR)/$(EXEC_SUBDIR)/%,$(CPP_PATHS))
 
-$(info $(CPPSRC_PATHS))
-
 BUILD_SUBDIRS:=$(sort $(filter-out ./,$(dir $(CPP_PATHS:$(SRC_DIR)/%=$(BUILD_DIR)/%))))
 
 OBJ=$(CPPSRC_PATHS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
