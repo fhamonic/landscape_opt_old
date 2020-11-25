@@ -101,6 +101,7 @@ Instance * make_instance_marseille(double pow, double thresold, double median, b
     return instance;
 }
 
+
 Instance * make_instance_marseillec(double pow, double thresold, double median, bool length_gain, bool quality_gain, int nb_friches=100) {
     Instance * instance = new Instance;
     
@@ -110,25 +111,27 @@ Instance * make_instance_marseillec(double pow, double thresold, double median, 
 
     auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
-    
-    RandomChooser<Point> friches_chooser(9876);
-    std::vector<Graph_t::Node> friches_list;
 
-    io::CSVReader<3> patches("data/Marseille/vertices_marseillec.txt");
-    patches.read_header(io::ignore_extra_column, "category","x","y");
+    typedef struct { Point p; double area; double price; Graph_t::Node node; } FricheData;
+    RandomChooser<FricheData> friches_chooser(9876);
+    std::vector<FricheData> friches_list;
+
+    io::CSVReader<5> patches("data/Marseille/vertices_marseillec.csv");
+    patches.read_header(io::ignore_extra_column,"category","x","y","area2","price_rel");
     std::string category;
-    double x, y;
-    while(patches.read_row(category, x, y)) {
+    double x, y, area, price_rel;
+    while(patches.read_row(category, x, y, area, price_rel)) {
         if(category.compare("\"massif\"") == 0) { landscape.addNode(20, Point(x,y)); continue; }
-        if(category.compare("\"Parc\"") == 0) { landscape.addNode(5, Point(x,y)); continue; }
-        if(category.compare("\"parc\"") == 0) { landscape.addNode(1, Point(x,y)); continue; }
-        if(category.compare("\"friche\"") == 0) { friches_chooser.add(Point(x,y), 1); continue; }
+        if(category.compare("\"parc\"") == 0) { landscape.addNode(area, Point(x,y)); continue; }
+        if(category.compare("\"friche\"") == 0) { friches_chooser.add(FricheData{Point(x,y), area, price_rel * area, lemon::INVALID}, 1); continue; }
         assert(false);
     }
     for(int i=0; i<nb_friches; i++) {
         if(!friches_chooser.canPick()) break;
-        Graph_t::Node u = landscape.addNode(0, friches_chooser.pick());
-        friches_list.push_back(u);
+        FricheData data = friches_chooser.pick();
+        Graph_t::Node u = landscape.addNode(0, data.p);
+        data.node = u;
+        friches_list.push_back(data);
     }
 
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
@@ -141,8 +144,9 @@ Instance * make_instance_marseillec(double pow, double thresold, double median, 
         }
     }
 
-    for(Graph_t::Node v1 : friches_list) {
-        RestorationPlan<Landscape>::Option option = plan.addOption(1);
+    for(FricheData data : friches_list) {
+        Graph_t::Node v1 = data.node;
+        RestorationPlan<Landscape>::Option option = plan.addOption(data.price);
         if(length_gain) {
             Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
             std::vector<Graph_t::Arc> to_move;
@@ -155,7 +159,7 @@ Instance * make_instance_marseillec(double pow, double thresold, double median, 
             plan.addArc(option, v1v2, 1.0);
         }
         if(quality_gain)
-            plan.addNode(option, v1, quality_gain);
+            plan.addNode(option, v1, data.area);
     }
 
     return instance;

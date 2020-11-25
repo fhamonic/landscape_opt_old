@@ -8,17 +8,17 @@ def readCSV(file_name, delimiter=' '):
 
 # rows = readCSV('/home/plaiseek/Projects/landscape_opt_cpp/output/marseille_cecile.log')
 # rows = readCSV('/home/plaiseek/Projects/landscape_opt_cpp/output/quebec_weights.log')
-rows = readCSV('/home/plaiseek/Projects/landscape_opt_cpp/output/marseille_100_seed=456.log')
+rows = readCSV('/home/plaiseek/Projects/landscape_opt_cpp/output/data.log')
 
-pow = 2
-median = 700
-noise = 0.2
+pow = 3
+median = 900
+noise = 0
 
 
 def get_datas(name, value):
     return (name , (
-        np.array([float(row['total_eca']) for row in rows if float(row['pow']) == pow and float(row['median']) == median and float(row['noise']) == noise and  row['solver'] == value]),
-        np.array([float(row['cost']) for row in rows if float(row['pow']) == pow and float(row['median']) == median and float(row['noise']) == noise and row['solver'] == value])))
+        np.array([float(row['budget']) for row in rows if float(row['pow']) == pow and float(row['median']) == median and float(row['noise']) == noise and  row['solver'] == value]),
+        np.array([float(row['total_eca']) for row in rows if float(row['pow']) == pow and float(row['median']) == median and float(row['noise']) == noise and row['solver'] == value])))
 
 datas = [
     # get_datas("random_solution" , "bogo_draws=0_seed=0"),

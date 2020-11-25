@@ -1,4 +1,4 @@
-OBJECTID_1,Nom_du_sit,category,x y,area,price,dist_center,price_rel,prob_destr,area2
+OBJECTID_1,Nom_du_sit,category,x,y,area,price,dist_center,price_rel,prob_destr,area2
 1,"marseilleveyre","massif",891794.6546,6239665.5566,10,4121,6967.81884766,2.59182389937107,0,10
 2,"marseilleveyre","massif",892687.3492,6240187.6471,10,4121,6536.76513672,2.59182389937107,0,10
 3,"marseilleveyre","massif",893930.8551,6240331.6837,10,4121,6763.25341797,2.59182389937107,0,10

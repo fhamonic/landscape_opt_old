@@ -11,6 +11,7 @@
 #define OSI_BUILDER_HPP
 
 #include<functional>
+#include<numeric>
 #include<vector>
 
 #include "coin/OsiClpSolverInterface.hpp"
