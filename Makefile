@@ -30,7 +30,7 @@ LDFLAGS=$(LIBS_FLAGS)
 LSFLAGS=-static $(LIBS_FLAGS) -lmpi
 
 EXEC=solve solver_analysis
-EXEC_EXTENSION=.out
+EXEC_EXTENSION=out
 
 CPP_PATHS:=$(shell find $(SRC_DIR) -name '*.cpp')
 CPPSRC_PATHS:=$(filter-out $(SRC_DIR)/$(EXEC_SUBDIR)/%,$(CPP_PATHS))
@@ -39,7 +39,7 @@ CPPEXEC_PATHS:=$(filter $(SRC_DIR)/$(EXEC_SUBDIR)/%,$(CPP_PATHS))
 BUILD_SUBDIRS:=$(sort $(filter-out ./,$(dir $(CPP_PATHS:$(SRC_DIR)/%=$(BUILD_DIR)/%))))
 
 build_dir:
-	mkdir -p $(BUILD_DIR) $(BUILD_SUBDIRS)
+	mkdir -p output $(BUILD_DIR) $(BUILD_SUBDIRS)
 
 OBJ=$(CPPSRC_PATHS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 
@@ -52,20 +52,20 @@ all : objs $(EXEC)
 
 
 solve: objs $(BUILD_DIR)/$(EXEC_SUBDIR)/solve.o
-	$(CC) -o $@$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/solve.o $(LDFLAGS)
+	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/solve.o $(LDFLAGS)
 
 contraction_test: objs $(BUILD_DIR)/$(EXEC_SUBDIR)/contraction_test.o
-	$(CC) -o $@$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/contraction_test.o $(LDFLAGS)
+	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/contraction_test.o $(LDFLAGS)
 
 solver_analysis: objs $(BUILD_DIR)/$(EXEC_SUBDIR)/solver_analysis.o
-	$(CC) -o $@$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/solver_analysis.o $(LDFLAGS)
+	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/solver_analysis.o $(LDFLAGS)
 
 
 clean:
 	rm -rf $(BUILD_DIR)/*
 mrproper: clean
-	rm -f $(BUILD_DIR)
-	rm -f *$(EXEC_EXTENSION)
+	rm -df $(BUILD_DIR)
+	rm -f *.$(EXEC_EXTENSION)
 
 documentation:
 	doxywizard $$PWD/doc/Doxyfile

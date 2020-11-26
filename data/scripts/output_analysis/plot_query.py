@@ -23,8 +23,8 @@ def get_datas(name, value):
 datas = [
     # get_datas("random_solution" , "bogo_draws=0_seed=0"),
     get_datas("average_random_solution" , "bogo_seed=99"),
-    get_datas("naive_incremental", "naive_eca_inc_log=0_parallel=1"),
-    get_datas("naive_decremental", "naive_eca_dec_log=0_parallel=1"),
+    # get_datas("naive_incremental", "naive_eca_inc_log=0_parallel=1"),
+    # get_datas("naive_decremental", "naive_eca_dec_log=0_parallel=1"),
     get_datas("glutton_incremental", "glutton_eca_inc_log=0_parallel=1"),
     get_datas("glutton_decremental" , "glutton_eca_dec_log=0_parallel=1"),
     get_datas("preprocessed MIP" , "pl_eca_3_fortest=0_log=1_relaxed=0"),
