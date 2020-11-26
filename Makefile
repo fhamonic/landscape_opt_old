@@ -1,8 +1,8 @@
 CC=g++-9
 CC_NORM=c++2a
 
-CPUS ?= $(shell getconf _NPROCESSORS_ONLN || echo 1)
-MAKEFLAGS += --jobs=$(CPUS)
+CPUS?=$(shell getconf _NPROCESSORS_ONLN || echo 1)
+MAKEFLAGS+=--jobs=$(CPUS)
 
 INCLUDE_DIR=include
 THIRDPARTY_DIR=thirdparty
@@ -64,7 +64,7 @@ solver_analysis: objs $(BUILD_DIR)/$(EXEC_SUBDIR)/solver_analysis.o
 clean:
 	rm -rf $(BUILD_DIR)/*
 mrproper: clean
-	rmdir $(BUILD_DIR)
+	rm -f $(BUILD_DIR)
 	rm -f *$(EXEC_EXTENSION)
 
 documentation:
