@@ -39,10 +39,13 @@ namespace Helper {
      * @return double 
      */
     template <typename GR, typename QM, typename DM, typename CM>
-    double findNodeScale(const concepts::AbstractLandscape<GR, QM, DM, CM> & landscape) {
+    std::pair<double, double> findNodeScale(const concepts::AbstractLandscape<GR, QM, DM, CM> & landscape) {
         const GR & graph = landscape.getNetwork();
         const CM & coordsMap = landscape.getCoordsMap();
         const QM & qualityMap = landscape.getQualityMap();
+
+        if(lemon::countNodes(graph) < 2)
+            return std::make_pair(1, 0);
 
         auto dist = [&] (typename GR::Node u, typename GR::Node v) {
             const double dx = coordsMap[u].x - coordsMap[v].x; 
@@ -53,15 +56,18 @@ namespace Helper {
             return std::sqrt(qualityMap[u] / (2*M_PI));
         };
         double r_max = std::numeric_limits<double>::max();
+        double min_dist = 0.0;
         for(typename GR::NodeIt u(graph); u != lemon::INVALID; ++u) {
             for(typename GR::NodeIt v(graph); v != lemon::INVALID; ++v) {
-                if(u == v) 
-                    continue;
+                if(u == v) continue;
                 const double r = dist(u,v) / (radius(u) + radius(v));
-                r_max = std::min(r_max, r);
+                if(r < r_max) {
+                    r_max = r;
+                    min_dist = dist(u,v);
+                }
             }
         }
-        return r_max;
+        return std::make_pair(r_max, min_dist);
     }
 
     /**
@@ -108,6 +114,126 @@ namespace Helper {
         }
         return distances;
     }
+
+
+    template <typename LS>
+    double minNonZeroQuality(const LS & landscape) {
+        const Graph_t & graph = landscape.getNetwork();
+        double min = std::numeric_limits<double>::max();
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            if(landscape.getQuality(v) == 0) continue;
+            min = std::min(min, landscape.getQuality(v));
+        }
+        return min;
+    }
+
+
+    template <typename LS>
+    void printLandscape(const LS & landscape, std::string name) {
+        const Graph_t & graph = landscape.getNetwork();
+        
+        auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
+        Graph_t::NodeMap<int> node_idsMap(graph);
+        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
+        Graph_t::NodeMap<double> node_sizesMap(graph, 0);
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            node_idsMap[v] = graph.id(v);
+            node_sizesMap[v] = radius(landscape.getQuality(v));
+        }
+
+        double node_scale = 0.8;
+        double text_scale = 0.75;
+        double arrow_scale = (1-node_scale)*2/3;
+        
+        const auto & [r_max, min_dist] = findNodeScale(landscape);
+        const double a_max = r_max*2*radius(minNonZeroQuality(landscape));
+
+        Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
+        Graph_t::ArcMap<double> arc_widths(graph, 0.001);
+
+        return lemon::graphToEps(graph, "output/" + name)
+                .title(name)
+                .coords(landscape.getCoordsMap())
+                .autoNodeScale(false)
+                .absoluteNodeSizes(true)
+                .nodeSizes(node_sizesMap)
+                .nodeScale(node_scale * r_max)
+                .autoArcWidthScale(false)
+                .absoluteArcWidths(true)
+                .arcWidths(arc_widths)
+                .arcWidthScale(1)
+                .drawArrows(true)
+                .arrowLength(arrow_scale * min_dist)
+                .arrowWidth(arrow_scale * min_dist)
+                .nodeTexts(node_idsMap)
+                .nodeTextSize(text_scale * a_max)
+                .nodeColors(node_colorsMap)
+                .arcColors(arcs_colorsMap)
+                .enableParallel(false)
+                .parArcDist(2 * arrow_scale * min_dist)
+                .border(20)
+                .run();
+    }
+
+
+    template <typename LS>
+    void printInstance(const LS & landscape, const RestorationPlan<LS>& plan, std::string name) {
+        const Graph_t & graph = landscape.getNetwork();
+        
+        auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
+        Graph_t::NodeMap<int> node_idsMap(graph);
+        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
+        Graph_t::NodeMap<double> node_sizesMap(graph, 0);
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            node_idsMap[v] = graph.id(v);
+            node_sizesMap[v] = radius(landscape.getQuality(v));
+        }
+
+        double node_scale = 0.8;
+        double text_scale = 0.75;
+        double arrow_scale = (1-node_scale)*2/3;
+        
+        const auto & [r_max, min_dist] = findNodeScale(landscape);
+        const double a_max = r_max*2*radius(minNonZeroQuality(landscape));
+
+        Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
+        Graph_t::ArcMap<double> arc_widths(graph, 0.001);
+
+        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+            for(auto const& [u, quality_gain] : plan.getNodes(i))
+                node_colorsMap[u] = lemon::RED;
+            for(auto const& [a, restored_probability] : plan.getArcs(i))
+                arcs_colorsMap[a] = lemon::RED;
+        }
+
+        return lemon::graphToEps(graph, "output/" + name)
+                .title(name)
+                .coords(landscape.getCoordsMap())
+                .autoNodeScale(false)
+                .absoluteNodeSizes(true)
+                .nodeSizes(node_sizesMap)
+                .nodeScale(node_scale * r_max)
+                .autoArcWidthScale(false)
+                .absoluteArcWidths(true)
+                .arcWidths(arc_widths)
+                .arcWidthScale(1)
+                .drawArrows(true)
+                .arrowLength(arrow_scale * min_dist)
+                .arrowWidth(arrow_scale * min_dist)
+                .nodeTexts(node_idsMap)
+                .nodeTextSize(text_scale * a_max)
+                .nodeColors(node_colorsMap)
+                .arcColors(arcs_colorsMap)
+                .enableParallel(false)
+                .parArcDist(2 * arrow_scale * min_dist)
+                .border(20)
+                .run();
+    }
+
+
+
+
+
 
     /**
      * @brief Compute the centrality of each arc, i.e the number of shortest paths that contain it

@@ -29,12 +29,15 @@ CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcep
 LDFLAGS=$(LIBS_FLAGS)
 LSFLAGS=-static $(LIBS_FLAGS) -lmpi
 
-EXEC=solve solver_analysis
-EXEC_EXTENSION=out
 
 CPP_PATHS:=$(shell find $(SRC_DIR) -name '*.cpp')
 CPPSRC_PATHS:=$(filter-out $(SRC_DIR)/$(EXEC_SUBDIR)/%,$(CPP_PATHS))
 CPPEXEC_PATHS:=$(filter $(SRC_DIR)/$(EXEC_SUBDIR)/%,$(CPP_PATHS))
+
+EXEC_EXTENSION=out
+EXEC=$(CPPEXEC_PATHS:$(SRC_DIR)/$(EXEC_SUBDIR)/%.cpp=%)
+
+$(info $(EXEC))
 
 BUILD_SUBDIRS:=$(sort $(filter-out ./,$(dir $(CPP_PATHS:$(SRC_DIR)/%=$(BUILD_DIR)/%))))
 
@@ -51,18 +54,14 @@ objs: build_dir $(OBJ)
 all : objs $(EXEC)
 
 
-solve: objs $(BUILD_DIR)/$(EXEC_SUBDIR)/solve.o
-	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/solve.o $(LDFLAGS)
-
-contraction_test: objs $(BUILD_DIR)/$(EXEC_SUBDIR)/contraction_test.o
-	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/contraction_test.o $(LDFLAGS)
-
-solver_analysis: objs $(BUILD_DIR)/$(EXEC_SUBDIR)/solver_analysis.o
-	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/solver_analysis.o $(LDFLAGS)
+$(foreach _exec, $(EXEC), $(_exec)): objs
+	$(CC) -o $(BUILD_DIR)/$(EXEC_SUBDIR)/$@.o -c $(SRC_DIR)/$(EXEC_SUBDIR)/$@.cpp $(CFLAGS)
+	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/$@.o $(LDFLAGS)
 
 
 clean:
 	rm -rf $(BUILD_DIR)/*
+	
 mrproper: clean
 	rm -df $(BUILD_DIR)
 	rm -f *.$(EXEC_EXTENSION)

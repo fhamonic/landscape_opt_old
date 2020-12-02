@@ -1,5 +1,7 @@
 #include "solvers/pl_eca_3.hpp"
 
+#include "gurobi_c.h"
+
 namespace Solvers::PL_ECA_3_Vars {
     class PreprocessedDatas {
         public:
@@ -271,6 +273,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
 
 Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int log_level = params.at("log")->getInt();
+    const int timeout = params.at("timeout")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
     if(log_level > 0) std::cout << name() << ": Start preprocessing" << std::endl;
@@ -283,10 +286,10 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     }
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
     if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
-        if(log_level >= 2) {
+        if(log_level >= 3) {
             name_variables(solver_builder, landscape, plan, preprocessed_datas, vars);
             OsiClpSolverInterface * solver_clp = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
             solver_clp->writeLp("pl_eca_3");
@@ -297,6 +300,9 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start solving" << std::endl;
     }
     ////////////////////
+    GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
+    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
+    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
     solver->branchAndBound();
     ////////////////////
     const double * var_solution = solver->getColSolution();

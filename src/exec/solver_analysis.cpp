@@ -43,17 +43,17 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
     (*pl_eca_2).setLogLevel(log_pl);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(log_pl);
+    (*pl_eca_3).setLogLevel(log_pl).setTimeout(3600);
     Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding_1000->setLogLevel(0).setNbDraws(1000).setParallel(true);
 
-    solvers.push_back(naive_eca_inc);
-    solvers.push_back(naive_eca_dec);
-    solvers.push_back(glutton_eca_inc);
-    solvers.push_back(glutton_eca_dec);
+    // solvers.push_back(naive_eca_inc);
+    // solvers.push_back(naive_eca_dec);
+    // solvers.push_back(glutton_eca_inc);
+    // solvers.push_back(glutton_eca_dec);
     // solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
-    solvers.push_back(randomized_rounding_1000);
+    // solvers.push_back(randomized_rounding_1000);
 }
 static void clean(std::list<concepts::Solver*> & solvers) {
     for(concepts::Solver * solver : solvers)
@@ -69,10 +69,9 @@ int main() {
     data_log << std::fixed << std::setprecision(6);
     data_log << "pow "
             << "thresold "
-            << "length_gain "
-            << "area_gain "
             << "median "
             << "noise "
+            << "orig "
             << "budget_percent "
             << "budget "
             << "solver "
@@ -81,98 +80,102 @@ int main() {
             << "total_eca "
             << std::endl;
 
-    std::vector<double> pow_values{3/*, 2*/};
+    std::vector<double> pow_values{1};
     std::vector<double> thresold_values{0.01};
     std::vector<double> median_values{900}; 
-    std::vector<bool> length_gain_values{true}; 
-    std::vector<bool> area_gain_values{/*false, */true};
-    std::vector<double> cost_noise{0.0};
+    std::vector<double> cost_noise{0};
+    std::vector<Point> orig_values{Point(242513,4987733), Point(353271,5051478), Point(310354,5080810)};
+
+    // std::default_random_engine gen(988514);
+    // std::uniform_int_distribution<int> x_dis(240548, 387924);
+    // std::uniform_int_distribution<int> y_dis(4986893, 5101759);
+    // for(int i=0; i<20; ++i) orig_values.emplace_back(x_dis(gen), y_dis(gen));
+    
     std::vector<double> budget_percent_values;
-    for(double i=0; i<=100; i+=5) budget_percent_values.push_back(i);
+    for(double i=0; i<=100; i+=2) budget_percent_values.push_back(i);
 
     const ECA & eca = ECA::get();
 
     for(double pow : pow_values) {
         for(double thresold : thresold_values) {
             for(double median : median_values) {
-                for(bool length_gain : length_gain_values) {
-                    for(bool area_gain : area_gain_values) {
-                        for(double noise : cost_noise) {
-                            // Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
-                            Instance * instance = make_instance_marseillec(pow, thresold, median, length_gain, area_gain, 60);
-                            
-                            const Landscape & landscape = instance->landscape;
-                            const RestorationPlan<Landscape> & plan = instance->plan;
-                            
-                            addCostNoise(*instance, noise);
+                for(double noise : cost_noise) {
+                    for(Point orig : orig_values) {
+                        Instance * instance = make_instance_quebec(pow, thresold, median);
+                        
+                        const Landscape & landscape = instance->landscape;
+                        const RestorationPlan<Landscape> & plan = instance->plan;
 
-                            Helper::assert_well_formed(landscape, plan);
+                        if(lemon::countNodes(landscape.getNetwork()) < 200) continue;
+                        if(lemon::countNodes(landscape.getNetwork()) > 400) continue;
+                        
+                        // addCostNoise(*instance, noise);
 
-                            for(double budget_percent : budget_percent_values) {
-                                const double budget = (budget_percent * plan.totalCost())/100;
+                        Helper::assert_well_formed(landscape, plan);
 
-                                const int nb_bogo = 100;
-                                Solvers::Bogo bogo;
-                                double total_bogo_time = 0;
-                                double total_bogo_cost = 0;
-                                double total_bogo_eca = 0;
-                                for(int i=0; i<nb_bogo; ++i) {
-                                    bogo.setSeed(i);
-                                    Solution * solution = bogo.solve(landscape, plan, budget);
-                                    total_bogo_time += solution->getComputeTimeMs();
-                                    total_bogo_cost += solution->getCost();
-                                    total_bogo_eca += std::pow(eca.eval_solution(landscape, plan, *solution), 2);
-                                    delete solution;
-                                }
+                        for(double budget_percent : budget_percent_values) {
+                            const double budget = (budget_percent * plan.totalCost())/100;
+
+                            const int nb_bogo = 100;
+                            Solvers::Bogo bogo;
+                            double total_bogo_time = 0;
+                            double total_bogo_cost = 0;
+                            double total_bogo_eca = 0;
+                            for(int i=0; i<nb_bogo; ++i) {
+                                bogo.setSeed(i);
+                                Solution * solution = bogo.solve(landscape, plan, budget);
+                                total_bogo_time += solution->getComputeTimeMs();
+                                total_bogo_cost += solution->getCost();
+                                total_bogo_eca += std::pow(eca.eval_solution(landscape, plan, *solution), 2);
+
+
+                                //Helper::printSolution(landscape, plan, "quebec-(" + std::to_string(orig.x) + "," + std::to_string(orig.y) + ")", bogo, 0, solution);
+                                delete solution;
+                            }
+                            data_log << pow << " " 
+                                        << thresold << " "
+                                        << median << " "
+                                        << noise << " "
+                                        << orig << " "
+                                        << budget_percent << " "
+                                        << budget << " "
+                                        << bogo.toString() << " "
+                                        << total_bogo_time / nb_bogo << " "
+                                        << total_bogo_cost / nb_bogo << " "
+                                        << total_bogo_eca / nb_bogo << " "
+                                        << std::endl;
+
+                            for(concepts::Solver * solver : solvers) {
+                                Solution * solution = solver->solve(landscape, plan, budget);
+
+                                const double cost = solution->getCost();
+                                const double total_eca = std::pow(eca.eval_solution(landscape, plan, *solution), 2);
+
+                                // Solvers::PL_ECA_2 pl_eca_2;
+                                // double eval_pl_eca_2 = pl_eca_2.eval(landscape, plan, budget, *solution);
+                                // Solvers::PL_ECA_3 pl_eca_3;
+                                // double eval_pl_eca_3 = pl_eca_3.eval(landscape, plan, budget, *solution);
+                                // assert((std::abs(eval_pl_eca_2 - eval_pl_eca_3) < 1e-4));
+
                                 data_log << pow << " " 
-                                            << thresold << " " 
-                                            << length_gain << " " 
-                                            << area_gain << " " 
-                                            << median << " "
-                                            << noise << " "
-                                            << budget_percent << " "
-                                            << budget << " "
-                                            << bogo.toString() << " "
-                                            << total_bogo_time / nb_bogo << " "
-                                            << total_bogo_cost / nb_bogo << " "
-                                            << total_bogo_eca / nb_bogo << " "
-                                            << std::endl;
+                                        << thresold << " "
+                                        << median << " "
+                                        << noise << " "
+                                        << orig << " "
+                                        << budget_percent << " "
+                                        << budget << " "
+                                        << solver->toString() << " "
+                                        << solution->getComputeTimeMs() << " "
+                                        << cost << " "
+                                        << total_eca << " "
+                                        << std::endl;
 
-                                for(concepts::Solver * solver : solvers) {
-                                    Solution * solution = solver->solve(landscape, plan, budget);
+                                delete solution;
+                            }
 
-                                    const double cost = solution->getCost();
-                                    const double total_eca = std::pow(eca.eval_solution(landscape, plan, *solution), 2);
-
-                                    // Solvers::PL_ECA_2 pl_eca_2;
-                                    // double eval_pl_eca_2 = pl_eca_2.eval(landscape, plan, budget, *solution);
-                                    // Solvers::PL_ECA_3 pl_eca_3;
-                                    // double eval_pl_eca_3 = pl_eca_3.eval(landscape, plan, budget, *solution);
-                                    // assert((std::abs(eval_pl_eca_2 - eval_pl_eca_3) < 1e-4));
-
-                                    data_log << pow << " " 
-                                            << thresold << " " 
-                                            << length_gain << " " 
-                                            << area_gain << " " 
-                                            << median << " "
-                                            << noise << " "
-                                            << budget_percent << " "
-                                            << budget << " "
-                                            << solver->toString() << " "
-                                            << solution->getComputeTimeMs() << " "
-                                            << cost << " "
-                                            << total_eca << " "
-                                            << std::endl;
-
-                                    // Helper::printSolution(landscape, plan, "quebec", *solver, budget, solution);
-                                    delete solution;
-                                    // return 1;
-                                }
-
-                            } 
-                            delete instance;
-                        }  
-                    }             
+                        } 
+                        delete instance;
+                    }
                 }
             }
         }
@@ -205,8 +208,8 @@ int main() {
 //             << "nb_constraints "
 //             << std::endl;
 
-//     std::vector<double> pow_values{1/*, 2*/};
-//     std::vector<double> thresold_values{0.01};
+//     std::vector<double> pow_values{1};
+//     std::vector<double> thresold_values{0.04};
 //     std::vector<double> median_values{900/*, 1800*/}; 
 //     std::vector<bool> length_gain_values{true}; 
 //     std::vector<bool> area_gain_values{/*false, */true};
@@ -221,8 +224,8 @@ int main() {
 //                 for(bool length_gain : length_gain_values) {
 //                     for(bool area_gain : area_gain_values) {
 //                         for(double nb_friches : nb_friches_values) {
-//                             // Instance * instance = make_instance_quebec(pow, thresold, median, length_gain, area_gain);
-//                             Instance * instance = make_instance_marseillec(pow, thresold, median, length_gain, area_gain, nb_friches);
+//                             // Instance * instance = make_instance_quebec(pow, thresold, median);
+//                             Instance * instance = make_instance_marseillec(pow, thresold, median, nb_friches);
                             
 //                             const Landscape & landscape = instance->landscape;
 //                             const RestorationPlan<Landscape> & plan = instance->plan;

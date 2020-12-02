@@ -52,7 +52,7 @@ class RestorationPlan{
 
         /**
          * @brief Get the number of nodes concerned by option **i**
-         * @param i - Option
+         * @param i Option
          * @return int
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
@@ -64,7 +64,7 @@ class RestorationPlan{
 
         /**
          * @brief Get the number of arcs concerned by option **i**
-         * @param i - Option
+         * @param i Option
          * @return int 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
@@ -76,7 +76,7 @@ class RestorationPlan{
 
         /**
          * @brief Get the number of nodes and arcs concerned by option **i**
-         * @param i - Option
+         * @param i Option
          * @return int 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
@@ -88,8 +88,8 @@ class RestorationPlan{
 
         /**
          * @brief Return true if the option **i** concerns node **v**
-         * @param i - Option
-         * @param v - Node
+         * @param i Option
+         * @param v Node
          * @return bool true if the option **i** concerns node **v** false otherwise
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$
@@ -101,8 +101,8 @@ class RestorationPlan{
 
         /**
          * @brief Return true if the option **i** concerns arc **a**
-         * @param i - Option
-         * @param a - Arc
+         * @param i Option
+         * @param a Arc
          * @return bool true if the option **i** concerns arc **a** false otherwise
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$
@@ -114,7 +114,7 @@ class RestorationPlan{
 
         /**
          * @brief Test if there is an option concerning the node **v**
-         * @param v - Node
+         * @param v Node
          * @return bool true if the option **i** concerns node **v** false otherwise
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
@@ -123,7 +123,7 @@ class RestorationPlan{
 
         /**
          * @brief Test if there is an option concerning the arc **a**
-         * @param a - Arc
+         * @param a Arc
          * @return bool true if the option **i** concerns arc **a** false otherwise
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
@@ -132,8 +132,8 @@ class RestorationPlan{
 
         /**
          * @brief Add the node **v** to the option **i**
-         * @param i - Option
-         * @param v - Node
+         * @param i Option
+         * @param v Node
          * @param quality_gain - quality gain on **v**
          * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
          * @space \f$O(1)\f$ 
@@ -151,8 +151,8 @@ class RestorationPlan{
 
         /**
          * @brief Add the arc **a** to the option **i**
-         * @param i - Option
-         * @param a - Arc 
+         * @param i Option
+         * @param a Arc 
          * @param restored_probability - restored probability of **a**
          * @time \f$O(\log \#arcs(i) + \log \#options(a))\f$
          * @space \f$O(1)\f$ 
@@ -170,8 +170,8 @@ class RestorationPlan{
 
         /**
          * @brief Remove the node **v** from the option **i**
-         * @param i - Option
-         * @param v - Node
+         * @param i Option
+         * @param v Node
          * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
@@ -191,8 +191,8 @@ class RestorationPlan{
 
         /**
          * @brief Remove the arc **a** from the option **i**
-         * @param i - Option
-         * @param a - Arc
+         * @param i Option
+         * @param a Arc
          * @time \f$O(\log \#arcs(i) + \log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
@@ -212,7 +212,7 @@ class RestorationPlan{
 
         /**
          * @brief Remove the node **v** from every option
-         * @param v - Node
+         * @param v Node
          * @time \f$O(\sum_{i \in options(v)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
@@ -233,7 +233,7 @@ class RestorationPlan{
 
         /**
          * @brief Remove the arc **a** from every option
-         * @param a - Arc
+         * @param a Arc
          * @time \f$O(\sum_{i \in options(a)} \log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
@@ -254,8 +254,8 @@ class RestorationPlan{
 
         /**
          * @brief Get the QualityGain of node **v** in the option **i**
-         * @param i - Option
-         * @param v - Node
+         * @param i Option
+         * @param v Node
          * @return double 
          * @time \f$O(\log \#options(v))\f$
          * @space \f$O(1)\f$ 
@@ -267,8 +267,8 @@ class RestorationPlan{
 
         /**
          * @brief Get the RestoredProbability of arc **a** in the option **i**
-         * @param i - Option
-         * @param a - Arc
+         * @param i Option
+         * @param a Arc
          * @return double 
          * @time \f$O(\log \#options(a))\f$
          * @space \f$O(1)\f$ 
@@ -280,8 +280,8 @@ class RestorationPlan{
 
         /**
          * @brief Set the QualityGain of node **v** in the option **i**
-         * @param i - Option
-         * @param v - Node
+         * @param i Option
+         * @param v Node
          * @param quality_gain - quality gain on **v**
          * @time \f$O(\log \#options(v))\f$
          * @space \f$O(1)\f$ 
@@ -296,9 +296,9 @@ class RestorationPlan{
 
         /**
          * @brief Moves the quality gains of **from** to **to** in every options scaled by **scale**
-         * @param from - Node
-         * @param to - Node
-         * @param scale - double
+         * @param from Node
+         * @param to Node
+         * @param scale double
          * @time \f$O(\sum_{i \in options(a)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
@@ -315,8 +315,8 @@ class RestorationPlan{
 
         /**
          * @brief Set the RestoredProbability of arc **a** in the option **i**
-         * @param i - Option
-         * @param a - Arc
+         * @param i Option
+         * @param a Arc
          * @param restored_probability - restored probability of **a**
          * @time \f$O(\log \#options(a))\f$
          * @space \f$O(1)\f$ 
@@ -330,7 +330,7 @@ class RestorationPlan{
 
         /**
          * @brief Scale the restored probabilities of **a** in every options by **probability_scale**
-         * @param a - Arc
+         * @param a Arc
          * @param probability_scale - double
          * @time \f$O(\sum_{i \in options(a)} \log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
@@ -348,8 +348,8 @@ class RestorationPlan{
 
         /**
          * @brief  Get the id of the node **v** in the option **i**
-         * @param i - Option
-         * @param v - Node
+         * @param i Option
+         * @param v Node
          * @return double 
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
@@ -358,8 +358,8 @@ class RestorationPlan{
 
         /**
          * @brief  Get the id of the arc **a** in the option **i**
-         * @param i - Option
-         * @param a - Arc
+         * @param i Option
+         * @param a Arc
          * @return double 
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
@@ -370,7 +370,7 @@ class RestorationPlan{
 
         /**
          * @brief add an option of cost **c** and returns its id
-         * @param c - cost
+         * @param c cost
          * @return Option 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
@@ -403,8 +403,8 @@ class RestorationPlan{
 
         /**
          * @brief Set the cost of option **i**
-         * @param i - Option
-         * @param c -  cost
+         * @param i Option
+         * @param c cost
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
@@ -412,7 +412,7 @@ class RestorationPlan{
 
         /**
          * @brief Get the cost of option **i**
-         * @param i - Option
+         * @param i Option
          * @return double 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
@@ -421,7 +421,7 @@ class RestorationPlan{
 
         /**
          * @brief Test if option **i** is empty 
-         * @param i - Option
+         * @param i Option
          * @return true if option **i** is empty
          * @return false otherwise
          * @time \f$O(1)\f$
@@ -431,7 +431,7 @@ class RestorationPlan{
 
         /**
          * @brief Returns the map of options concerning the node **v**
-         * @param v - Node
+         * @param v Node
          * @return int 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
@@ -440,7 +440,7 @@ class RestorationPlan{
 
         /**
          * @brief Returns the map of options concerning the arc **a**
-         * @param a - Arc
+         * @param a Arc
          * @return int 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
@@ -449,7 +449,7 @@ class RestorationPlan{
 
         /**
          * @brief Returns the map of options concerning the node **v**
-         * @param v - Node
+         * @param v Node
          * @return int 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
@@ -458,7 +458,7 @@ class RestorationPlan{
 
         /**
          * @brief Returns the map of options concerning the arc **a**
-         * @param a - Arc
+         * @param a Arc
          * @return int 
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 

@@ -12,12 +12,17 @@ namespace Solvers {
         public:
             PL_ECA_3() {
                 params["log"] = new IntParam(0);
+                params["timeout"] = new IntParam(0);
                 params["relaxed"] = new IntParam(0);
                 params["fortest"] = new IntParam(0);
             }
 
             PL_ECA_3 & setLogLevel(int log_level) {
                 params["log"]->set(log_level);
+                return *this;
+            }
+            PL_ECA_3 & setTimeout(int seconds) {
+                params["timeout"]->set(seconds);
                 return *this;
             }
             PL_ECA_3 & setRelaxed(bool relaxed) {

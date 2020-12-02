@@ -19,15 +19,19 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
 
-    std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_options;
     
+
+    std::vector<RestorationPlan<Landscape>::Option> free_options;
+    std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_free_options;
+
     std::vector<RestorationPlan<Landscape>::Option> options;
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
         options.push_back(i);
+    std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_options;
     
     ratio_options.resize(options.size());
 
-    auto compute = [&landscape, &plan, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
+    auto compute_dec = [&landscape, &plan, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
         DecoredLandscape decored_landscape(landscape);
         for(RestorationPlan<Landscape>::Option it_option : options) {
             if(it_option == option)
@@ -38,9 +42,8 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         const double ratio = (prec_eca - eca) / plan.getCost(option);
         return std::make_pair(ratio, option);
     };
-
-    if(parallel) std::transform(std::execution::par, options.begin(), options.end(), ratio_options.begin(), compute);
-    else std::transform(std::execution::seq, options.begin(), options.end(), ratio_options.begin(), compute);
+    if(parallel) std::transform(std::execution::par, options.begin(), options.end(), ratio_options.begin(), compute_dec);
+    else std::transform(std::execution::seq, options.begin(), options.end(), ratio_options.begin(), compute_dec);
 
     std::sort(ratio_options.begin(), ratio_options.end(), [](std::pair<double, RestorationPlan<Landscape>::Option> & e1, std::pair<double, RestorationPlan<Landscape>::Option> & e2) {
         return e1.first < e2.first;
@@ -50,9 +53,41 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         if(purchaised <= B) break;
         purchaised -= plan.getCost(elem.second);
         solution->remove(elem.second);
+        free_options.push_back(elem.second);
         if(log_level > 1)
-            std::cout << elem.first << " " << elem.second << std::endl;
+            std::cout << "remove " << elem.first << " " << elem.second << std::endl;
     }
+
+
+    prec_eca = ECA::get().eval_solution(landscape, plan, *solution);
+
+    ratio_free_options.resize(options.size());
+
+    auto compute_inc = [&landscape, &plan, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
+        DecoredLandscape decored_landscape(landscape);
+        for(RestorationPlan<Landscape>::Option it_option : options)
+            decored_landscape.apply(plan, it_option);
+        decored_landscape.apply(plan, option);
+        const double eca = ECA::get().eval(decored_landscape);
+        const double ratio = (eca - prec_eca) / plan.getCost(option);
+        return std::make_pair(ratio, option);
+    };
+    if(parallel) std::transform(std::execution::par, free_options.begin(), free_options.end(), ratio_free_options.begin(), compute_inc);
+    else std::transform(std::execution::seq, free_options.begin(), free_options.end(), ratio_free_options.begin(), compute_inc);
+
+    std::sort(ratio_options.begin(), ratio_options.end(), [](std::pair<double, RestorationPlan<Landscape>::Option> & e1, std::pair<double, RestorationPlan<Landscape>::Option> & e2) {
+        return e1.first > e2.first;
+    });
+
+    for(std::pair<double, RestorationPlan<Landscape>::Option> elem : ratio_options) {
+        const double cost = plan.getCost(elem.second);
+        if(purchaised + cost > B) continue;
+        purchaised += cost;
+        solution->add(elem.second);
+        if(log_level > 1)
+            std::cout << "add " << elem.first << " " << elem.second << std::endl;
+    }
+
 
     solution->setComputeTimeMs(chrono.timeMs());
 

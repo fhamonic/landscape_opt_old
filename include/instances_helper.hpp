@@ -41,68 +41,8 @@ void addCostNoise(Instance & instance, double deviation_ratio=0.2, int seed=456)
         instance.plan.setCost(i, noise(instance.plan.getCost(i)));
 }
 
-Instance * make_instance_marseille(double pow, double thresold, double median, bool length_gain, bool quality_gain, int nb_friches=100) {
-    Instance * instance = new Instance;
-    
-    Landscape & landscape = instance->landscape;
-    const Graph_t & graph = instance->graph;
-    RestorationPlan<Landscape> & plan = instance->plan;
 
-    auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
-    auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
-    
-    RandomChooser<Point> friches_chooser(9876);
-    std::vector<Graph_t::Node> friches_list;
-
-    io::CSVReader<3> patches("data/Marseille/patchs_marseille.patches");
-    patches.read_header(io::ignore_extra_column, "category","x","y");
-    std::string category;
-    double x, y;
-    while(patches.read_row(category, x, y)) {
-        if(category.compare("\"massif\"") == 0) { landscape.addNode(20, Point(x,y)); continue; }
-        if(category.compare("\"Parc\"") == 0) { landscape.addNode(5, Point(x,y)); continue; }
-        if(category.compare("\"parc\"") == 0) { landscape.addNode(1, Point(x,y)); continue; }
-        if(category.compare("\"friche\"") == 0) { friches_chooser.add(Point(x,y), 1); continue; }
-        assert(false);
-    }
-    for(int i=0; i<nb_friches; i++) {
-        if(!friches_chooser.canPick()) break;
-        Graph_t::Node u = landscape.addNode(0, friches_chooser.pick());
-        friches_list.push_back(u);
-    }
-
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
-        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-            if(u == v) continue;
-            double dist = d(u,v);
-            double probability = p(dist);
-            if(probability < thresold) continue;
-            landscape.addArc(u, v, probability);
-        }
-    }
-
-    for(Graph_t::Node v1 : friches_list) {
-        RestorationPlan<Landscape>::Option option = plan.addOption(1);
-        if(length_gain) {
-            Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
-            std::vector<Graph_t::Arc> to_move;
-            for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
-                to_move.push_back(a);
-            for(Graph_t::Arc a : to_move)
-                landscape.changeTarget(a, v2);
-
-            Graph_t::Arc v1v2 = landscape.addArc(v2, v1, 0);
-            plan.addArc(option, v1v2, 1.0);
-        }
-        if(quality_gain)
-            plan.addNode(option, v1, quality_gain);
-    }
-
-    return instance;
-}
-
-
-Instance * make_instance_marseillec(double pow, double thresold, double median, bool length_gain, bool quality_gain, int nb_friches=100) {
+Instance * make_instance_marseillec(double pow, double thresold, double median, int nb_friches=100) {
     Instance * instance = new Instance;
     
     Landscape & landscape = instance->landscape;
@@ -136,37 +76,35 @@ Instance * make_instance_marseillec(double pow, double thresold, double median, 
 
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
         for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-            if(u == v) continue;
+            if(v < u || u == v) continue;
             double dist = d(u,v);
             double probability = p(dist);
             if(probability < thresold) continue;
             landscape.addArc(u, v, probability);
+            landscape.addArc(v, u, probability);
         }
     }
 
     for(FricheData data : friches_list) {
         Graph_t::Node v1 = data.node;
         RestorationPlan<Landscape>::Option option = plan.addOption(data.price);
-        if(length_gain) {
-            Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
-            std::vector<Graph_t::Arc> to_move;
-            for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
-                to_move.push_back(a);
-            for(Graph_t::Arc a : to_move)
-                landscape.changeTarget(a, v2);
-
-            Graph_t::Arc v1v2 = landscape.addArc(v2, v1, 0);
-            plan.addArc(option, v1v2, 1.0);
+        Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
+        
+        for(Graph_t::OutArcIt a(graph, v1), next_a = a; a != lemon::INVALID; a = next_a) {
+            ++next_a;
+            landscape.changeSource(a, v2);
         }
-        if(quality_gain)
-            plan.addNode(option, v1, data.area);
+        Graph_t::Arc v1v2 = landscape.addArc(v1, v2, 0);
+        plan.addArc(option, v1v2, 1);
+        plan.addNode(option, v2, data.area);
     }
 
     return instance;
 }
 
 
-Instance * make_instance_quebec(double pow, double thresold, double median, bool length_gain, bool quality_gain) {
+Instance * make_instance_quebec(double pow, double thresold, double median,
+        Point orig=Point(240548, 4986893), Point dim=Point(32360, 20000)) {
     Instance * instance = new Instance;
     
     Landscape & landscape = instance->landscape;
@@ -176,36 +114,34 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
     std::vector<Graph_t::Node> node_correspondance;
-    std::vector<std::pair<Graph_t::Node, double>> total_threaten;
+    typedef struct { Graph_t::Node node; double area; } ThreatData;
+    std::vector<ThreatData> threaten_list;
 
-    io::CSVReader<5> patches("data/quebec_leam_v3/raw/sommets_leam_v3.txt");
-    patches.read_header(io::ignore_extra_column, "count","area","xcoord","ycoord","count2050");
-    int count;
+    io::CSVReader<4> patches("data/quebec_leam_v3/raw/sommets_leam_v3.csv");
+    patches.read_header(io::ignore_extra_column, "area","xcoord","ycoord","count2050");
     double area, xcoord, ycoord, count2050;
-    while(patches.read_row(count, area, xcoord, ycoord, count2050)) {
+    while(patches.read_row(area, xcoord, ycoord, count2050)) {
         node_correspondance.push_back(lemon::INVALID);
-        if(xcoord < 240548.456514) continue;
-        if(xcoord >= 263015.4829015) continue;
-        if(ycoord < 4986893.0) continue;
-        if(ycoord >= 5003751.29081625) continue;
+        if(xcoord < orig.x) continue;
+        if(xcoord >= orig.x + dim.x) continue;
+        if(ycoord < orig.y) continue;
+        if(ycoord >= orig.y + dim.y) continue;
         
         Graph_t::Node u = landscape.addNode(count2050, Point(xcoord,ycoord));
-        assert(static_cast<int>(node_correspondance.size()) == count);
-        node_correspondance[count-1] = u;
+        node_correspondance[node_correspondance.size()-1] = u;
 
         if(area == count2050) continue;
         if(area > 0 && count2050 == 0) {
-            total_threaten.emplace_back(u, area);
+            threaten_list.push_back(ThreatData{u, area});
             continue;
         }
 
-        if(!quality_gain) continue;
         const double area_loss = area-count2050;
         RestorationPlan<Landscape>::Option option = plan.addOption(area_loss);
         plan.addNode(option, u, area_loss);
     }
 
-    io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.txt");
+    io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.csv");
     links.read_header(io::ignore_extra_column, "from","to","Dist");
     int from, to;
     double Dist;
@@ -216,25 +152,23 @@ Instance * make_instance_quebec(double pow, double thresold, double median, bool
         double probability = p(Dist);
         if(probability < thresold) continue;
         landscape.addArc(u, v, probability);
+        landscape.addArc(v, u, probability);
     }
 
-    for(auto & [v1, area] : total_threaten) {
-        RestorationPlan<Landscape>::Option option = plan.addOption(area);
-        if(length_gain) {
-            Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
-            std::vector<Graph_t::Arc> to_move;
-            for(Graph_t::InArcIt a(graph, v1); a != lemon::INVALID; ++a)
-                to_move.push_back(a);
-            for(Graph_t::Arc a : to_move)
-                landscape.changeTarget(a, v2);
-
-            Graph_t::Arc v2v1 = landscape.addArc(v2, v1, 0);
-            plan.addArc(option, v2v1, 1.0);
+    for(ThreatData data : threaten_list) {
+        Graph_t::Node v1 = data.node;
+        RestorationPlan<Landscape>::Option option = plan.addOption(data.area);
+        Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.001, 0.001));
+        
+        for(Graph_t::OutArcIt a(graph, v1), next_a = a; a != lemon::INVALID; a = next_a) {
+            ++next_a;
+            landscape.changeSource(a, v2);
         }
-        if(quality_gain)
-            plan.addNode(option, v1, area);
+        Graph_t::Arc v1v2 = landscape.addArc(v1, v2, 0);
+        plan.addArc(option, v1v2, 1);
+        plan.addNode(option, v2, data.area);
     }
-
+    
     return instance;
 }
 
