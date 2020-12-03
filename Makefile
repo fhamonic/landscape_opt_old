@@ -13,8 +13,9 @@ EXEC_SUBDIR=exec
 CATCH2_INCLUDE_DIR=~/Libs/Catch2/
 EIGEN_INCLUDE_DIR=~/Libs/eigen-eigen-323c052e1731/
 COINOR_INCLUDE_DIR=~/Libs/coinor/dist/include/
-COINOR_LIB_PATH=~/Libs/coinor/dist/lib/
 LEMON_INCLUDE_DIR=~/Libs/lemon-1.3.1/
+
+COINOR_LIB_PATH=~/Libs/coinor/dist/lib/
 GUROBI_INCLUDE_PATH="$(GUROBI_HOME)/include/"
 GUROBI_LIB_PATH="$(GUROBI_HOME)/lib/"
 
@@ -22,12 +23,12 @@ INCLUDE_PATHS=$(INCLUDE_DIR) $(THIRDPARTY_DIR) $(SRC_DIR) $(EIGEN_INCLUDE_DIR) $
 LIBS_PATHS=$(COINOR_LIB_PATH) $(GUROBI_LIB_PATH)
 
 INCLUDE_FLAGS=$(foreach d, $(INCLUDE_PATHS), -I $d)
-LIBS_FLAGS=$(foreach d, $(LIBS_PATHS), -L $d) -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
+LIBS_FLAGS=$(foreach d, $(LIBS_PATHS), -L $d)
 
 #-DNDEBUG -O2
 CFLAGS=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -O2 -flto -march=native -pipe $(INCLUDE_FLAGS)
-LDFLAGS=$(LIBS_FLAGS)
-LSFLAGS=-static $(LIBS_FLAGS) -lmpi
+LDFLAGS=$(LIBS_FLAGS) -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb
+LSFLAGS=-static $(LIBS_FLAGS) #-lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb -lpmi
 
 
 CPP_PATHS:=$(shell find $(SRC_DIR) -name '*.cpp')
@@ -36,8 +37,6 @@ CPPEXEC_PATHS:=$(filter $(SRC_DIR)/$(EXEC_SUBDIR)/%,$(CPP_PATHS))
 
 EXEC_EXTENSION=out
 EXEC=$(CPPEXEC_PATHS:$(SRC_DIR)/$(EXEC_SUBDIR)/%.cpp=%)
-
-$(info $(EXEC))
 
 BUILD_SUBDIRS:=$(sort $(filter-out ./,$(dir $(CPP_PATHS:$(SRC_DIR)/%=$(BUILD_DIR)/%))))
 
@@ -55,8 +54,14 @@ all : objs $(EXEC)
 
 
 $(foreach _exec, $(EXEC), $(_exec)): objs
-	$(CC) -o $(BUILD_DIR)/$(EXEC_SUBDIR)/$@.o -c $(SRC_DIR)/$(EXEC_SUBDIR)/$@.cpp $(CFLAGS)
-	$(CC) -o $@.$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/$@.o $(LDFLAGS)
+	$(eval _exec:=$@)
+	$(CC) -o $(BUILD_DIR)/$(EXEC_SUBDIR)/$(_exec).o -c $(SRC_DIR)/$(EXEC_SUBDIR)/$(_exec).cpp $(CFLAGS)
+	$(CC) -o $(_exec).$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/$(_exec).o $(LDFLAGS)
+
+$(foreach _exec, $(EXEC), $(_exec)-static): objs
+	$(eval _exec:=$(patsubst %-static,%,solve-static))
+	$(CC) -o $(BUILD_DIR)/$(EXEC_SUBDIR)/$(_exec).o -c $(SRC_DIR)/$(EXEC_SUBDIR)/$(_exec).cpp $(CFLAGS)
+	$(CC) -o $(_exec).$(EXEC_EXTENSION) $(OBJ) $(BUILD_DIR)/$(EXEC_SUBDIR)/$(_exec).o $(LSFLAGS)
 
 
 clean:

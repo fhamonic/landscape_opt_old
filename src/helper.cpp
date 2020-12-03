@@ -2,100 +2,64 @@
 
 void Helper::printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, Solution * solution) {
     const Graph_t & graph = landscape.getNetwork();
-    
-    // std::cout << lemon::countNodes(graph) << std::endl;
-    // std::cout << lemon::countArcs(graph) << std::endl;
-    // std::cout << plan.getNbOptions() << std::endl;
-    
-    //*
-    auto radius = [&] (Graph_t::Node u) { return std::sqrt(landscape.getQuality(u) / (2*M_PI)); };
-    Graph_t::NodeMap<int> node_idsMap(graph);
-    Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
-    Graph_t::NodeMap<double> node_sizesMap(graph);
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-        node_idsMap[v] = graph.id(v);
-        node_sizesMap[v] = radius(v);
-    }
-    Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
-    Graph_t::ArcMap<double> arc_widths(graph, 5);
-
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-        const double coef = solution->getCoef(i);
-        for(auto const& [u, quality_gain] : plan.getNodes(i)) {
-            node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
+        
+        auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
+        Graph_t::NodeMap<int> node_idsMap(graph);
+        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
+        Graph_t::NodeMap<double> node_sizesMap(graph, 0);
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            node_idsMap[v] = graph.id(v);
+            node_sizesMap[v] = radius(landscape.getQuality(v));
         }
-        for(auto const& [a, restored_probability] : plan.getArcs(i)) {
-            arcs_colorsMap[a] = lemon::Color(1-coef, coef, 0.0);
+
+        double node_scale = 0.8;
+        double text_scale = 0.75;
+        double arrow_scale = (1-node_scale)*2/3;
+        
+        const auto & [r_max, min_dist] = findNodeScale(landscape);
+        const double a_max = r_max*2*radius(minNonZeroQuality(landscape));
+
+        Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
+        Graph_t::ArcMap<double> arc_widths(graph, 0.001);
+
+
+        std::string str_B = std::to_string(B);
+        str_B.erase ( str_B.find_last_not_of('0') + 1, std::string::npos );
+        
+        std::string out_eps = name + "_B=" + str_B + "_" + solver.toString();
+        std::string title = (solution == nullptr ? "Fail" : std::to_string(solution->getComputeTimeMs())) + " ms, ECA = " +
+                std::to_string(ECA::get().eval_solution(landscape, plan, *solution)) + " cost = " + std::to_string(solution->getCost());
+
+        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+            const double coef = solution->getCoef(i);
+            for(auto const& [u, quality_gain] : plan.getNodes(i))
+                node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
+            for(auto const& [a, restored_probability] : plan.getArcs(i))
+                arcs_colorsMap[a] = lemon::Color(1-coef, coef, 0.0);
         }
-    }
-    double node_scale = 0.9;
-    /*/
-    Graph_t::NodeMap<int> node_idsMap(graph);
-    Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
-    Graph_t::NodeMap<double> node_sizesMap(graph, 1);
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v){
-        node_idsMap[v] = graph.id(v);
-        node_sizesMap[v] = std::log(landscape.getQuality(v)+2);
-    }
 
-    Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::WHITE);
-    Graph_t::ArcMap<double> arc_widths(graph, 0);
-
-    for(auto option_pair : solution->getOptionCoefs()) {
-        const double coef = option_pair.second;
-        for(Graph_t::Arc a : option_pair.first->arcs()) {
-            node_colorsMap[graph.source(a)] = lemon::Color(1-coef, coef, 0.0);
-            break;
-        }
-    }
-    double node_scale = 3;
-    //*/
-    
-    //TODO ECA::eval_solution(landscape, alpha, solution)
-    const double base_eca = ECA::get().eval(landscape);
-    const double restored_eca = ECA::get().eval_solution(landscape, plan, *solution);
-    
-    const double cost = solution->getCost();
-    const double time_ms = solution->getComputeTimeMs();
-
-    std::cout << "base ECA : " << base_eca << std::endl 
-            << "restored ECA : " << restored_eca << std::endl 
-            << "ECA gain : " << restored_eca - base_eca << std::endl 
-            << "cost : " << cost << std::endl 
-            << "obj : " << solution->obj << std::endl 
-            << "time_ms : " << time_ms << std::endl;
-
-    std::string str_B = std::to_string(B);
-    str_B.erase ( str_B.find_last_not_of('0') + 1, std::string::npos );
-    
-    std::string out_eps = name + "_B=" + str_B + "_" + solver.toString();
-    std::string title = (solution == nullptr ? "Fail" : std::to_string(time_ms)) + " ms, ECA = " + std::to_string(restored_eca) + " cost = " + std::to_string(cost);
-
-    const double r_max = findNodeScale(landscape);
-    const double a_max = 2*r_max*M_PI;
-
-    return lemon::graphToEps(graph, "output/" + name)
-            .title(title)
-            .coords(landscape.getCoordsMap())
-            .autoNodeScale(false)
-            .absoluteNodeSizes(true)
-            .nodeSizes(node_sizesMap)
-            //.nodeScale(0.9 * r_max)
-            .nodeScale(node_scale * r_max)
-            .autoArcWidthScale(false)
-            .absoluteArcWidths(true)
-            .arcWidths(arc_widths)
-            .drawArrows(true)
-            .arrowLength(50)
-            .arrowWidth(r_max / 6)
-            .nodeTexts(node_idsMap)
-            .nodeTextSize(a_max / 4)
-            .nodeColors(node_colorsMap)
-            .arcColors(arcs_colorsMap)
-            .enableParallel(true)
-            .parArcDist(r_max / 4)
-            .border(20)
-            .run();
+        return lemon::graphToEps(graph, "output/" + name)
+                .title(name)
+                .coords(landscape.getCoordsMap())
+                .autoNodeScale(false)
+                .absoluteNodeSizes(true)
+                .nodeSizes(node_sizesMap)
+                .nodeScale(node_scale * r_max)
+                .autoArcWidthScale(false)
+                .absoluteArcWidths(true)
+                .arcWidths(arc_widths)
+                .arcWidthScale(1)
+                .drawArrows(true)
+                .arrowLength(arrow_scale * min_dist)
+                .arrowWidth(arrow_scale * min_dist)
+                .nodeTexts(node_idsMap)
+                .nodeTextSize(text_scale * a_max)
+                .nodeColors(node_colorsMap)
+                .arcColors(arcs_colorsMap)
+                .enableParallel(false)
+                .parArcDist(2 * arrow_scale * min_dist)
+                .border(20)
+                .run();
 }
 
 // need to include the binary search tree for y-h , y+h search
