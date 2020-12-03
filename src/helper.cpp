@@ -112,18 +112,20 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
     const Graph_t & graph = landscape.getNetwork();
     (void)plan;
 
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v)
-        assert(landscape.getQuality(v) >= 0);
-    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a)
-        assert(is_probability(landscape.getProbability(a)));
+    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+        assert(landscape.getQuality(v) >= 0); }
+    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+        assert(is_probability(landscape.getProbability(a))); }
 
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         for(auto const& [v, quality_gain] : plan.getNodes(i)) {
+            (void)i; (void)quality_gain;
             assert(graph.valid(v));
             assert(quality_gain > 0.0);
             assert(quality_gain == plan.getQualityGain(i, v));
         }
         for(auto const& [a, restored_probability] : plan.getArcs(i)) {
+            (void)i; (void)restored_probability;
             assert(graph.valid(a));
             assert(is_probability(restored_probability));
             assert(restored_probability > landscape.getProbability(a));
@@ -133,12 +135,14 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
 
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
         for(auto const& [i, quality_gain] : plan.getOptions(v)) {
+            (void)i; (void)quality_gain;
             assert(quality_gain > 0.0);
             assert(quality_gain == plan.getQualityGain(i, v));
         }
     }
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
         for(auto const& [i, restored_probability] : plan.getOptions(a)) {
+            (void)i; (void)restored_probability;
             assert(is_probability(restored_probability));
             assert(restored_probability > landscape.getProbability(a));   
             assert(restored_probability == plan.getRestoredProbability(i, a));         
