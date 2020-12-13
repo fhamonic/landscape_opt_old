@@ -3,7 +3,7 @@
 /cache
 *.lp
 *.mps.gz
-*.log
+output/*.log
 
 *.out
 *.pdf

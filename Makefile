@@ -1,5 +1,5 @@
 CC=g++-9
-CC_NORM=c++2a
+CC_NORM=c++17
 
 CPUS?=$(shell getconf _NPROCESSORS_ONLN || echo 1)
 MAKEFLAGS+=--jobs=$(CPUS)
@@ -11,16 +11,21 @@ BUILD_DIR=build
 EXEC_SUBDIR=exec
 EXEC_EXTENSION=out
 
+##################################################
+################## Depedencies ###################
+##################################################
+
 CATCH2_INCLUDE_DIR=~/Libs/Catch2/
 EIGEN_INCLUDE_DIR=~/Libs/eigen-eigen-323c052e1731/
 COINOR_INCLUDE_DIR=~/Libs/coinor/dist/include/
 LEMON_INCLUDE_DIR=~/Libs/lemon-1.3.1/
 GUROBI_INCLUDE_PATH="$(GUROBI_HOME)/include/"
+CTRE_INCLUDE_PATH=~/Libs/compile-time-regular-expressions/single-header/
 
 COINOR_LIB_PATH=~/Libs/coinor/dist/lib/
 GUROBI_LIB_PATH="$(GUROBI_HOME)/lib/"
 
-INCLUDE_PATHS=$(INCLUDE_DIR) $(THIRDPARTY_DIR) $(SRC_DIR) $(EIGEN_INCLUDE_DIR) $(COINOR_INCLUDE_DIR) $(LEMON_INCLUDE_DIR) $(GUROBI_INCLUDE_PATH)
+INCLUDE_PATHS=$(INCLUDE_DIR) $(THIRDPARTY_DIR) $(SRC_DIR) $(EIGEN_INCLUDE_DIR) $(COINOR_INCLUDE_DIR) $(LEMON_INCLUDE_DIR) $(GUROBI_INCLUDE_PATH) $(CTRE_INCLUDE_PATH)
 LIBS_PATHS=$(COINOR_LIB_PATH) $(GUROBI_LIB_PATH)
 
 ##################################################
@@ -30,7 +35,8 @@ LIBS_PATHS=$(COINOR_LIB_PATH) $(GUROBI_LIB_PATH)
 INCLUDE_FLAGS=$(foreach d, $(INCLUDE_PATHS), -I $d)
 LIBS_FLAGS=$(foreach d, $(LIBS_PATHS), -L $d)
 
-CFLAGS=-W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -O2 -flto -march=native -pipe $(INCLUDE_FLAGS)
+#-fconcepts
+CFLAGS=-W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -O2 -flto -march=native -pipe $(INCLUDE_FLAGS)
 CFLAGS_DEBUG=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -flto -march=native -pipe $(INCLUDE_FLAGS)
 
 LDFLAGS=$(LIBS_FLAGS) -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb -Wl,--as-needed

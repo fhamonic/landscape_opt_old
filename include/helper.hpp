@@ -8,6 +8,7 @@
 #ifndef HELPER_HPP
 #define HELPER_HPP
 
+#include <filesystem>
 #include <math.h>
 
 #include "landscape/landscape.hpp"
@@ -129,27 +130,32 @@ namespace Helper {
 
 
     template <typename LS>
-    void printLandscape(const LS & landscape, std::string name) {
+    void printLandscape(const LS & landscape, std::filesystem::path path) {
         const Graph_t & graph = landscape.getNetwork();
+        std::string name = path.stem();
         
         auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
-        Graph_t::NodeMap<int> node_idsMap(graph);
-        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
-        Graph_t::NodeMap<double> node_sizesMap(graph, 0);
-        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-            node_idsMap[v] = graph.id(v);
-            node_sizesMap[v] = radius(landscape.getQuality(v));
-        }
-
-        double node_scale = 0.8;
-        double text_scale = 0.75;
-        double arrow_scale = (1-node_scale)*2/3;
-        
         const auto & [r_max, min_dist] = findNodeScale(landscape);
         const double a_max = r_max*2*radius(minNonZeroQuality(landscape));
 
+        const bool directed = false;
+
+        double node_scale = 0.7;
+        double text_scale = 0.75 / (1+static_cast<int>(std::log10(lemon::countNodes(graph))));
+        double arrow_scale = (1-node_scale)*2/3;
+        double arc_width = node_scale * a_max / 16;
+                
+        Graph_t::NodeMap<std::string> node_idsMap(graph, "\7");
+        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
+        Graph_t::NodeMap<double> node_sizesMap(graph, arc_width * 0.9);
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            if(landscape.getQuality(v) == 0) continue;
+            node_idsMap[v] = std::to_string(graph.id(v));
+            node_sizesMap[v] = radius(landscape.getQuality(v));
+        }
+
         Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
-        Graph_t::ArcMap<double> arc_widths(graph, 0.001);
+        Graph_t::ArcMap<double> arc_widths(graph, arc_width);
 
         return lemon::graphToEps(graph, "output/" + name)
                 .title(name)
@@ -162,14 +168,14 @@ namespace Helper {
                 .absoluteArcWidths(true)
                 .arcWidths(arc_widths)
                 .arcWidthScale(1)
-                .drawArrows(true)
+                .drawArrows(directed)
                 .arrowLength(arrow_scale * min_dist)
-                .arrowWidth(arrow_scale * min_dist)
+                .arrowWidth(arc_width * 2)
                 .nodeTexts(node_idsMap)
                 .nodeTextSize(text_scale * a_max)
                 .nodeColors(node_colorsMap)
                 .arcColors(arcs_colorsMap)
-                .enableParallel(false)
+                .enableParallel(directed)
                 .parArcDist(2 * arrow_scale * min_dist)
                 .border(20)
                 .run();
@@ -177,27 +183,33 @@ namespace Helper {
 
 
     template <typename LS>
-    void printInstance(const LS & landscape, const RestorationPlan<LS>& plan, std::string name) {
+    void printInstance(const LS & landscape, const RestorationPlan<LS>& plan, std::filesystem::path path) {
         const Graph_t & graph = landscape.getNetwork();
+        std::string name = path.stem();
         
         auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
-        Graph_t::NodeMap<int> node_idsMap(graph);
-        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
-        Graph_t::NodeMap<double> node_sizesMap(graph, 0);
-        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-            node_idsMap[v] = graph.id(v);
-            node_sizesMap[v] = radius(landscape.getQuality(v));
-        }
-
-        double node_scale = 0.8;
-        double text_scale = 0.75;
-        double arrow_scale = (1-node_scale)*2/3;
-        
         const auto & [r_max, min_dist] = findNodeScale(landscape);
         const double a_max = r_max*2*radius(minNonZeroQuality(landscape));
 
+        const bool directed = false;
+
+        double node_scale = 0.7;
+        double text_scale = 0.75 / (1+static_cast<int>(std::log10(lemon::countNodes(graph))));
+        double arrow_scale = (1-node_scale)*2/3;
+        double arc_width = node_scale * a_max / 16;
+                
+        Graph_t::NodeMap<std::string> node_idsMap(graph, "");
+        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::BLACK);
+        Graph_t::NodeMap<double> node_sizesMap(graph, arc_width * 0.9);
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            if(landscape.getQuality(v) == 0) continue;
+            node_idsMap[v] = std::to_string(graph.id(v));
+            node_colorsMap[v] = lemon::WHITE;
+            node_sizesMap[v] = radius(landscape.getQuality(v));
+        }
+
         Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
-        Graph_t::ArcMap<double> arc_widths(graph, 0.001);
+        Graph_t::ArcMap<double> arc_widths(graph, arc_width);
 
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             for(auto const& [u, quality_gain] : plan.getNodes(i))
@@ -206,7 +218,7 @@ namespace Helper {
                 arcs_colorsMap[a] = lemon::RED;
         }
 
-        return lemon::graphToEps(graph, "output/" + name)
+        return lemon::graphToEps(graph, path)
                 .title(name)
                 .coords(landscape.getCoordsMap())
                 .autoNodeScale(false)
@@ -217,16 +229,16 @@ namespace Helper {
                 .absoluteArcWidths(true)
                 .arcWidths(arc_widths)
                 .arcWidthScale(1)
-                .drawArrows(true)
+                .drawArrows(directed)
                 .arrowLength(arrow_scale * min_dist)
-                .arrowWidth(arrow_scale * min_dist)
+                .arrowWidth(arc_width * 2)
                 .nodeTexts(node_idsMap)
                 .nodeTextSize(text_scale * a_max)
                 .nodeColors(node_colorsMap)
                 .arcColors(arcs_colorsMap)
-                .enableParallel(false)
+                .enableParallel(directed)
                 .parArcDist(2 * arrow_scale * min_dist)
-                .border(20)
+                .border(2)
                 .run();
     }
 

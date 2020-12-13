@@ -19,7 +19,7 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
     patches.read_header(io::ignore_extra_column, "id", "weight", "x", "y");
     
     io::CSVReader<3> links(links_file);
-    links.read_header(io::ignore_extra_column, "source_id", "target_id", "probability");
+    links.read_header(io::ignore_extra_column, "from", "to", "probability");
 
     Landscape * landscape = new Landscape();
     const Graph_t & g = landscape->getNetwork();
@@ -89,7 +89,7 @@ void StdLandscapeParser::write(const Landscape & landscape, const std::filesyste
         patchs_file << i << "," << landscape.getQuality(u) << "," << landscape.getCoords(u).x << "," << landscape.getCoords(u).y << std::endl;
     }    
     
-    links_file << "source_id,target_id,length" << std::setprecision(16) << std::endl;
+    links_file << "from,to,probability" << std::setprecision(16) << std::endl;
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
         Graph_t::Node u = graph.source(a);
         Graph_t::Node v = graph.target(a);

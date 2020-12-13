@@ -69,7 +69,7 @@ static void clean(std::list<concepts::Solver*> & solvers) {
         delete solver;
 }
 
-int main (int argc, const char *argv[]) {
+int main(int argc, const char *argv[]) {
     std::cout.precision(10);
 
     std::list<concepts::Solver*> solvers;

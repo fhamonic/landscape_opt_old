@@ -49,6 +49,7 @@ OSI_Builder & OSI_Builder::setBounds(int var_id, double lb, double ub) {
 OSI_Builder & OSI_Builder::buffEntry(int var_id, double coef) {
     assert(0<= var_id && var_id <= nb_vars);
     assert(coef == coef);
+    if(std::abs(coef) <= std::numeric_limits<double>::epsilon()) return *this;
     row_indices_buffer.push_back(var_id);
     row_coeffs_buffer.push_back(coef);
     return *this;
@@ -66,6 +67,7 @@ OSI_Builder & OSI_Builder::clearEntryBuffer() {
 OSI_Builder & OSI_Builder::pushRowWithoutClearing(double lb, double ub) {
     assert(lb == lb);
     assert(ub == ub);
+    if(row_indices_buffer.empty()) return *this;
     matrix->appendRow(row_indices_buffer.size(), row_indices_buffer.data(), row_coeffs_buffer.data());
     row_lb.push_back(lb);
     row_ub.push_back(ub);
