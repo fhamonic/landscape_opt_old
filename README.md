@@ -2,7 +2,7 @@
 
 ### From package manager
 
-    sudo apt install build-essential git gcc-9 g++-9 litbb-dev cmake gfortran
+    sudo apt install build-essential git gcc-9 g++-9 litbb2 libtbb-dev cmake gfortran
 
 requires Eigen, Clp, Cbc, Lemon:
 
@@ -26,13 +26,14 @@ requires Eigen, Clp, Cbc, Lemon:
 
 #### Gurobi : https://www.gurobi.com/
 
+    linux64/bin/grbgetkey <licence_key>
     cd linux64/src/build
     make
     move libgurobi_c++.a to linux64/lib/
 
 add to .bashrc:
 
-    export GUROBI_HOME="/home/plaiseek/Libs/gurobi903/linux64"
+    export GUROBI_HOME="/home/plaiseek/Libs/gurobi910/linux64"
     export PATH="$PATH:$GUROBI_HOME/bin"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$GUROBI_HOME/lib"
 
@@ -43,11 +44,13 @@ add to .bashrc:
     git clone https://github.com/coin-or/coinbrew
 <!-- export OPT_CFLAGS="-pipe -flto -march=native"
     export OPT_CXXFLAGS="-pipe -flto -march=native"
-    export LDFLAGS="-L/home/plaiseek/Libs/gurobi903/linux64/lib/ -pipe -flto" -->
-    export LDFLAGS="-L/home/plaiseek/Libs/gurobi903/linux64/lib/"
+    export LDFLAGS="-L$GUROBI_HOME/lib/ -pipe -flto" -->
+    export LDFLAGS="-L$GUROBI_HOME/lib/"
      
     ./coinbrew/coinbrew fetch Cbc:releases/2.10.5
-    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --with-gurobi-incdir="/home/plaiseek/Libs/gurobi903/linux64/include/" --with-gurobi-lib="-L/home/plaiseek/Libs/gurobi903/linux64/lib/ -lm -lpthread -lgurobi_c++ -lgurobi90"
+    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --with-gurobi-incdir="$GUROBI_HOME/include/" --with-gurobi-lib="-L$GUROBI_HOME/lib/ -lm -lpthread -lgurobi_c++ -lgurobi91"
+<!-- 
+-->
 
 add to .bashrc :
 

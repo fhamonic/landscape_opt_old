@@ -50,7 +50,7 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     // solvers.push_back(naive_eca_inc);
     // solvers.push_back(naive_eca_dec);
     // solvers.push_back(glutton_eca_inc);
-    // solvers.push_back(glutton_eca_dec);
+    solvers.push_back(glutton_eca_dec);
     // solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
     // solvers.push_back(randomized_rounding_1000);
@@ -85,7 +85,7 @@ int main() {
     std::vector<bool> length_gain_values{true}; 
     std::vector<bool> area_gain_values{/*false, */true};
     std::vector<double> nb_friches_values;
-    for(double i=220; i<=220; i+=20) nb_friches_values.push_back(i);
+    for(double i=50; i<=220; i+=20) nb_friches_values.push_back(i);
     std::vector<double> budget_percent_values;
     for(double i=10; i<=90; i+=10) budget_percent_values.push_back(i);
 
