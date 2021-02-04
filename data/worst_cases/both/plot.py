@@ -19,16 +19,16 @@ ref_datas = np.array([bogo_datas[0] for row in rows if row['solver'] == "bogo_se
 mip_gain_datas = substract(np.array([float(row['total_eca']) for row in rows if row['solver'] == "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"]), ref_datas)
 
 def get_datas(name, linestyle, value):
-    return ((name, linestyle), (
+    return ((name, (linestyle, marker_size)), (
         np.array([float(row['budget']) for row in rows if row['solver'] == value]),
         divide(substract(np.array([float(row['total_eca']) for row in rows if row['solver'] == value]), ref_datas), mip_gain_datas)))
 
 datas = [
-    get_datas("incremental glutton", "^-", "glutton_eca_inc_log=0_parallel=1"),
-    get_datas("", " ", "bogo_seed=99"),
-    get_datas("decremental glutton", "v-", "glutton_eca_dec_log=0_parallel=1"),
-    get_datas("MIP", "s-", "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
-    get_datas("randomized rounding", "*-", "randomized_rounding_draws=1000_log=0_parallel=1")
+    get_datas("incremental glutton", ("^-",11), "glutton_eca_inc_log=0_parallel=1"),
+    get_datas("", (" ",8), "bogo_seed=99"),
+    get_datas("decremental glutton", ("v-",11), "glutton_eca_dec_log=0_parallel=1"),
+    get_datas("MIP", ("s-",8), "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
+    # get_datas("randomized rounding", "*-", "randomized_rounding_draws=1000_log=0_parallel=1")
 ]
 
 
@@ -64,8 +64,8 @@ plt.ylim(y_bottom, y_top)
 plt.ylabel('opt ratio', rotation=90, fontweight ='bold')
 plt.xlabel("budget", fontweight ='bold')
 
-for ((label,linestyle),(xdatas,ydatas)) in datas:
-    plt.plot(xdatas, ydatas, linestyle, label=label)
+for ((label,(linestyle,marker_size)),(xdatas,ydatas)) in datas:
+    plt.plot(xdatas, ydatas, linestyle, markersize=marker_size, label=label)
     
 legend = plt.legend(loc='lower right', shadow=True, fontsize='medium')
 
