@@ -11,23 +11,23 @@ def substract(a, b):
 def divide(a, b):
     return [x/y if y > 0 else 1 for x,y in zip(a,b)]
 
-rows = readCSV('/home/plaiseek/Projects/landscape_opt_cpp/data/worst_cases/both/data.log')
+rows = readCSV('data/worst_cases/both/data.log')
 
 
 bogo_datas = np.array([float(row['total_eca']) for row in rows if row['solver'] == "bogo_seed=99"])
 ref_datas = np.array([bogo_datas[0] for row in rows if row['solver'] == "bogo_seed=99"])
 mip_gain_datas = substract(np.array([float(row['total_eca']) for row in rows if row['solver'] == "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"]), ref_datas)
 
-def get_datas(name, linestyle, value):
+def get_datas(name, linestyle, marker_size, value):
     return ((name, (linestyle, marker_size)), (
         np.array([float(row['budget']) for row in rows if row['solver'] == value]),
         divide(substract(np.array([float(row['total_eca']) for row in rows if row['solver'] == value]), ref_datas), mip_gain_datas)))
 
 datas = [
-    get_datas("incremental glutton", ("^-",11), "glutton_eca_inc_log=0_parallel=1"),
-    get_datas("", (" ",8), "bogo_seed=99"),
-    get_datas("decremental glutton", ("v-",11), "glutton_eca_dec_log=0_parallel=1"),
-    get_datas("MIP", ("s-",8), "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
+    get_datas("incremental glutton", "^-", 11, "glutton_eca_inc_log=0_parallel=1"),
+    get_datas("", " ", 8, "bogo_seed=99"),
+    get_datas("decremental glutton", "v-", 11, "glutton_eca_dec_log=0_parallel=1"),
+    get_datas("MIP", "s-", 8, "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
     # get_datas("randomized rounding", "*-", "randomized_rounding_draws=1000_log=0_parallel=1")
 ]
 
