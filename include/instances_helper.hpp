@@ -164,7 +164,7 @@ Instance * make_instance_quebec(double pow, double thresold, double median,
             ++next_a;
             landscape.changeSource(a, v2);
         }
-        Graph_t::Arc v1v2 = landscape.addArc(v1, v2, 0);
+        Graph_t::Arc v1v2 = landscape.addArc(v1, v2, 0.5);
         plan.addArc(option, v1v2, 1);
         plan.addNode(option, v2, data.area);
     }

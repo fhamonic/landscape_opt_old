@@ -286,8 +286,9 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     }
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
-    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
-    if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
+    // OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    // if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 3) {
             name_variables(solver_builder, landscape, plan, preprocessed_datas, vars);
@@ -300,27 +301,28 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start solving" << std::endl;
     }
     ////////////////////
-    GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
-    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
-    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
-    solver->branchAndBound();
+    // GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
+    // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
+    // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
+    // solver->branchAndBound();
     ////////////////////
-    const double * var_solution = solver->getColSolution();
-    if(var_solution == nullptr) {
-        std::cerr << name() << ": Fail" << std::endl;
-        delete solver;
-        return nullptr;
-    }
+    // const double * var_solution = solver->getColSolution();
+    // if(var_solution == nullptr) {
+    //     std::cerr << name() << ": Fail" << std::endl;
+    //     delete solver;
+    //     return nullptr;
+    // }
     Solution * solution = new Solution(landscape, plan);
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-        const int y_i = vars.y.id(i);
-        double value = var_solution[y_i];
-        solution->set(i, value);
-    }
+    // for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+    //     const int y_i = vars.y.id(i);
+    //     double value = var_solution[y_i];
+    //     solution->set(i, value);
+    // }
     solution->setComputeTimeMs(chrono.timeMs());
     solution->obj = solver->getObjValue();
-    solution->nb_vars = solver_builder.getNbVars();
+    solution->nb_vars = solver_builder.getNbNonZeroVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
+    solution->nb_elems = solver_builder.getNbElems();
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
         std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;

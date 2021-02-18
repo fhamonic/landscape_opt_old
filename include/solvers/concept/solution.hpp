@@ -10,6 +10,7 @@ class Solution {
     public:
         int nb_vars;
         int nb_constraints;
+        int nb_elems;
         double obj;
 
     private:

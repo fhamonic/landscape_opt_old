@@ -68,6 +68,7 @@ OSI_Builder & OSI_Builder::pushRowWithoutClearing(double lb, double ub) {
     assert(lb == lb);
     assert(ub == ub);
     if(row_indices_buffer.empty()) return *this;
+    nb_entries += row_indices_buffer.size();
     matrix->appendRow(row_indices_buffer.size(), row_indices_buffer.data(), row_coeffs_buffer.data());
     row_lb.push_back(lb);
     row_ub.push_back(ub);

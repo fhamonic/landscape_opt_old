@@ -51,6 +51,7 @@ class OSI_Builder {
         };
     private:
         int nb_vars;
+        int nb_entries;
         
         std::vector<VarType*> varTypes;
 
@@ -81,6 +82,14 @@ class OSI_Builder {
             return std::accumulate(non_zero.begin(), non_zero.end(), 0);
         };
         int getNbConstraints() const { return matrix->getNumRows(); };
+        // int getNbElems() const { return nb_entries; };
+        int getNbElems() const { 
+            int cpt = 0;
+            const int * indices = matrix->getIndices();
+            for(int i=0; i<matrix->getNumElements(); ++i)
+                if(matrix->getElements()[i] > 0) cpt++;      
+            return cpt;
+        };
 
         OSI_Builder & addVarType(VarType * var_type);
         void init();

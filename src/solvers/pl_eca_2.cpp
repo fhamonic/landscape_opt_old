@@ -232,8 +232,8 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     insert_variables(solver_builder, vars);
     if(log_level > 0) std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed);
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
-       if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    // if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 2) {
             name_variables(solver_builder, landscape, plan, vars);
@@ -246,24 +246,25 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start solving" << std::endl;
     }
     ////////////////////
-    solver->branchAndBound();
+    // solver->branchAndBound();
     ////////////////////
-    const double * var_solution = solver->getColSolution();
-    if(var_solution == nullptr) {
-        std::cerr << name() << ": Fail" << std::endl;
-        delete solver;
-        return nullptr;
-    }
+    // const double * var_solution = solver->getColSolution();
+    // if(var_solution == nullptr) {
+    //     std::cerr << name() << ": Fail" << std::endl;
+    //     delete solver;
+    //     return nullptr;
+    // }
     Solution * solution = new Solution(landscape, plan);
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-        const int y_i = vars.y.id(i);
-        const double value = var_solution[y_i];
-        solution->set(i, value);
-    }
-    solution->setComputeTimeMs(chrono.timeMs());
-    solution->obj = solver->getObjValue();
+    // for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+    //     const int y_i = vars.y.id(i);
+    //     const double value = var_solution[y_i];
+    //     solution->set(i, value);
+    // }
+    // solution->setComputeTimeMs(chrono.timeMs());
+    // solution->obj = solver->getObjValue();
     solution->nb_vars = solver_builder.getNbNonZeroVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
+    solution->nb_elems = solver_builder.getNbElems();
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
         std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;

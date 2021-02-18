@@ -30,7 +30,7 @@
 #include "instances_helper.hpp"
 
 static void populate(std::list<concepts::Solver*> & solvers) {
-    int log_pl = 1;
+    int log_pl = 3;
 
     Solvers::Naive_ECA_Inc * naive_eca_inc = new Solvers::Naive_ECA_Inc();
     (*naive_eca_inc).setLogLevel(0).setParallel(true);
@@ -49,11 +49,11 @@ static void populate(std::list<concepts::Solver*> & solvers) {
 
     // solvers.push_back(naive_eca_inc);
     // solvers.push_back(naive_eca_dec);
-    solvers.push_back(glutton_eca_inc);
+    // solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
     // solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
-    solvers.push_back(randomized_rounding);
+    // solvers.push_back(randomized_rounding);
 }
 static void clean(std::list<concepts::Solver*> & solvers) {
     for(concepts::Solver * solver : solvers)
@@ -113,7 +113,7 @@ int main() {
                     min_arcs = std::min(min_arcs, arcs);
                     max_arcs = std::max(max_arcs, arcs);
 
-                    continue;
+                    // continue;
                     
                     Helper::assert_well_formed(landscape, plan);
                     Helper::printInstance(landscape, plan, "quebec-(" + std::to_string(orig.x) + "," + std::to_string(orig.y) + ").eps");
@@ -149,7 +149,6 @@ int main() {
                         for(concepts::Solver * solver : solvers) {
                             Solution * solution = solver->solve(landscape, plan, budget);
 
-                            const double cost = solution->getCost();
                             const double total_eca = std::pow(eca.eval_solution(landscape, plan, *solution), 2);
 
                             data_log << pow << " " 
@@ -160,7 +159,7 @@ int main() {
                                     << budget << " "
                                     << solver->toString() << " "
                                     << solution->getComputeTimeMs() << " "
-                                    << cost << " "
+                                    << solution->getCost() << " "
                                     << total_eca << " "
                                     << std::endl;
 
