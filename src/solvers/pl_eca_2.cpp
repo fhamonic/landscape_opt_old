@@ -264,7 +264,7 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     // solution->obj = solver->getObjValue();
     solution->nb_vars = solver_builder.getNbNonZeroVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
-    solution->nb_elems = solver_builder.getNbElems();
+    solution->nb_elems = solver->getNumElements();
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
         std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;

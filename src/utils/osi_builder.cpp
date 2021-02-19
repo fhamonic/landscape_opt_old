@@ -1,6 +1,6 @@
 #include "utils/osi_builder.hpp"
 
-OSI_Builder::OSI_Builder() : nb_vars{0}, matrix(nullptr) {}
+OSI_Builder::OSI_Builder() : nb_vars{0}, nb_entries{0}, matrix(nullptr) {}
 OSI_Builder::~OSI_Builder() {
     delete[] objective;
     delete[] col_lb;

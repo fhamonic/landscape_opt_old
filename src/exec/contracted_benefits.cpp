@@ -113,9 +113,9 @@ int main() {
 
 
     Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
-    (*pl_eca_2).setLogLevel(1);
+    (*pl_eca_2).setLogLevel(0);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(1).setTimeout(3600);
+    (*pl_eca_3).setLogLevel(0).setTimeout(3600);
 
 
 
@@ -128,38 +128,39 @@ int main() {
             const Graph_t & sub_graph = sub_landscape->getNetwork();
 
             const int m = lemon::countArcs(sub_graph);
+            std::cout << "nodes : 500" << std::endl << "arcs : " << m << std::endl;
 
             RandomChooser<Graph_t::Arc> arc_chooser;
             for(Graph_t::ArcIt a(sub_graph); a != lemon::INVALID; ++a)
                 arc_chooser.add(a, 1);
 
-            for(int percent_arcs=0; percent_arcs<=100; percent_arcs+=5) {
-                RestorationPlan<Landscape> plan(*sub_landscape);
-                const int nb_restored_arcs = percent_arcs * m / 100;
-                arc_chooser.reset();
-                for(int id_option=0; id_option<nb_restored_arcs; id_option++) {
-                    Graph_t::Arc a = arc_chooser.pick();
-                    RestorationPlan<Landscape>::Option option = plan.addOption(1);
-                    plan.addArc(option, a, std::sqrt(sub_landscape->getProbability(a)));
-                }
 
+            RestorationPlan<Landscape> plan(*sub_landscape);
+            for(int percent_arcs=0; percent_arcs<=100; percent_arcs+=5) {
                 Solution * solution2 = pl_eca_2->solve(*sub_landscape, plan, 0);
                 Solution * solution3 = pl_eca_3->solve(*sub_landscape, plan, 0);
-               
-                data_log << graph.id(center) << " "
+                
+                data_log 
+                    << graph.id(center) << " "
                     << percent_arcs << " "
                     << solution2->nb_vars << " "
                     << solution2->nb_constraints << " "
                     << solution2->nb_elems << " "
                     << solution3->nb_vars << " "
                     << solution3->nb_constraints << " "
-                    << solution3->nb_elems
-                    << percent_arcs
-                    << std::endl;
+                    << solution3->nb_elems << std::endl;
 
                 delete solution2;
                 delete solution3;
+
+                if(percent_arcs == 100) break;
+                for(int i=0; i<(m/20); ++i) {
+                    Graph_t::Arc a = arc_chooser.pick();
+                    RestorationPlan<Landscape>::Option option = plan.addOption(1);
+                    plan.addArc(option, a, std::sqrt(sub_landscape->getProbability(a)));
+                }
             }
+            arc_chooser.reset();
 
             delete sub_landscape;
         }

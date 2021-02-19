@@ -35,10 +35,10 @@ LIBS_PATHS=$(COINOR_LIB_PATH) $(GUROBI_LIB_PATH)
 INCLUDE_FLAGS=$(foreach d, $(INCLUDE_PATHS), -I $d)
 LIBS_FLAGS=$(foreach d, $(LIBS_PATHS), -L $d)
 
-CFLAGS=-W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -O2 -flto -march=native -pipe $(INCLUDE_FLAGS)
+CFLAGS=-W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -flto -march=native -pipe $(INCLUDE_FLAGS)
 CFLAGS_DEBUG=-g -W -Wall -Wno-deprecated-copy -ansi -pedantic -std=$(CC_NORM) -fconcepts -flto -march=native -pipe $(INCLUDE_FLAGS)
 
-LDFLAGS=$(LIBS_FLAGS) -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -lgurobi_c++ -lgurobi90 -lOsiGrb -pthread -ltbb -Wl,--as-needed
+LDFLAGS=$(LIBS_FLAGS) -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lCoinUtils -lCgl -lemon -lgurobi_c++ -lgurobi91 -lOsiGrb -pthread -ltbb -Wl,--as-needed
 
 LSFLAGS=$(LIBS_FLAGS) -Wl,-Bstatic -pthread -lgurobi_c++ -lemon
 LSFLAGS:=$(LSFLAGS) -Wl,-Bdynamic -ltbb -lmpi -lgurobi91 -lCbc -lCbcSolver -lClp -lOsiClp -lOsiCbc -lOsiGrb -lCoinUtils -lCgl -Wl,--as-needed
