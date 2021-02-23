@@ -12,7 +12,7 @@ namespace Solvers {
             PL_ECA_2() {
                 params["log"] = new IntParam(0);
                 params["relaxed"] = new IntParam(0);
-                params["fortest"] = new IntParam(0);
+                params["timeout"] = new IntParam(0);
             }
 
             PL_ECA_2 & setLogLevel(int log_level) {
@@ -23,8 +23,8 @@ namespace Solvers {
                 params["relaxed"]->set(relaxed);
                 return *this;
             }
-            PL_ECA_2 & setFortest(int fortest) {
-                params["fortest"]->set(fortest);
+            PL_ECA_2 & setTimeout(int fortest) {
+                params["timeout"]->set(fortest);
                 return *this;
             }
             

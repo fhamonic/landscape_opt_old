@@ -1,5 +1,7 @@
 #include "solvers/pl_eca_2.hpp"
 
+#include "gurobi_c.h"
+
 namespace Solvers::PL_ECA_2_Vars {
     class XVar : public OSI_Builder::VarType {
         private:
@@ -225,6 +227,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
 
 Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int log_level = params.at("log")->getInt();
+    const int timeout = params.at("timeout")->getInt();
     const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
     OSI_Builder solver_builder = OSI_Builder();
@@ -232,8 +235,9 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     insert_variables(solver_builder, vars);
     if(log_level > 0) std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed);
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
-    // if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
+    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    // OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 2) {
             name_variables(solver_builder, landscape, plan, vars);
@@ -246,22 +250,25 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start solving" << std::endl;
     }
     ////////////////////
-    // solver->branchAndBound();
+    GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
+    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
+    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
+    solver->branchAndBound();
     ////////////////////
-    // const double * var_solution = solver->getColSolution();
-    // if(var_solution == nullptr) {
-    //     std::cerr << name() << ": Fail" << std::endl;
-    //     delete solver;
-    //     return nullptr;
-    // }
+    const double * var_solution = solver->getColSolution();
+    if(var_solution == nullptr) {
+        std::cerr << name() << ": Fail" << std::endl;
+        delete solver;
+        return nullptr;
+    }
     Solution * solution = new Solution(landscape, plan);
-    // for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-    //     const int y_i = vars.y.id(i);
-    //     const double value = var_solution[y_i];
-    //     solution->set(i, value);
-    // }
-    // solution->setComputeTimeMs(chrono.timeMs());
-    // solution->obj = solver->getObjValue();
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+        const int y_i = vars.y.id(i);
+        const double value = var_solution[y_i];
+        solution->set(i, value);
+    }
+    solution->setComputeTimeMs(chrono.timeMs());
+    solution->obj = solver->getObjValue();
     solution->nb_vars = solver_builder.getNbNonZeroVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
     solution->nb_elems = solver->getNumElements();
