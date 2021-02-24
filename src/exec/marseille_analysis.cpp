@@ -38,21 +38,21 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     // (*naive_eca_dec).setLogLevel(0).setParallel(true);
     // Solvers::Glutton_ECA_Inc * glutton_eca_inc = new Solvers::Glutton_ECA_Inc();
     // (*glutton_eca_inc).setLogLevel(0).setParallel(true);
-    // Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
-    // (*glutton_eca_dec).setLogLevel(0).setParallel(true);
+    Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
+    (*glutton_eca_dec).setLogLevel(0).setParallel(true);
     // Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
     // (*pl_eca_2).setLogLevel(log_pl).setTimeout(3600);
-    Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(log_pl).setTimeout(3600);
+    // Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
+    // (*pl_eca_3).setLogLevel(log_pl).setTimeout(3600);
     // Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
     // randomized_rounding_1000->setLogLevel(0).setNbDraws(1000).setParallel(true);
 
     // solvers.push_back(naive_eca_inc);
     // solvers.push_back(naive_eca_dec);
     // solvers.push_back(glutton_eca_inc);
-    // solvers.push_back(glutton_eca_dec);
+    solvers.push_back(glutton_eca_dec);
     // solvers.push_back(pl_eca_2);
-    solvers.push_back(pl_eca_3);
+    // solvers.push_back(pl_eca_3);
     // solvers.push_back(randomized_rounding_1000);
 }
 static void clean(std::list<concepts::Solver*> & solvers) {
@@ -75,7 +75,7 @@ int main() {
             << std::endl;
 
     std::vector<double> nb_friches_values;
-    for(double i=90; i<=300; i+=10) nb_friches_values.push_back(i);
+    for(double i=20; i<=170; i+=30) nb_friches_values.push_back(i);
     std::vector<double> budget_percent_values;
     for(double i=10; i<=90; i+=10) budget_percent_values.push_back(i);
 
