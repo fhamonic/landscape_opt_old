@@ -1,13 +1,12 @@
+.vscode
 /build
-/output
 /cache
+*.out
 *.lp
 *.mps.gz
-output/*.log
 
-*.out
-*.pdf
-.vscode
+*.eps
+output/*.eps
 
 /doc/html
 /doc/latex

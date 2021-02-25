@@ -28,7 +28,7 @@ datas = [
     get_datas("incremental greedy", "^-", 11, "glutton_eca_inc_log=0_parallel=1"),
     get_datas("", " ", 8, "bogo_seed=99"),
     get_datas("decremental greedy", "v-", 11, "glutton_eca_dec_log=0_parallel=1"),
-    get_datas("optimum (MIP)", "s-", 8, "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
+    get_datas("optimum (MIP)", "o-", 10, "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
     # get_datas("randomized rounding", "*-", "randomized_rounding_draws=1000_log=0_parallel=1")
 ]
 
@@ -71,4 +71,4 @@ for ((label,(linestyle,marker_size)),(xdatas,ydatas)) in datas:
 legend = plt.legend(loc='lower right', shadow=True, fontsize='medium')
 
 
-plt.savefig("data/worst_cases/decremental/dec worst case-opt ratio vs budget.pdf", dpi=500)
+plt.savefig("data/worst_cases/dec worst case-opt ratio vs budget.pdf", dpi=500)

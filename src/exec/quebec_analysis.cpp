@@ -49,7 +49,7 @@ static void populate(std::list<concepts::Solver*> & solvers) {
 
     // solvers.push_back(naive_eca_inc);
     // solvers.push_back(naive_eca_dec);
-    // solvers.push_back(glutton_eca_inc);
+    solvers.push_back(glutton_eca_inc);
     solvers.push_back(glutton_eca_dec);
     // solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
@@ -87,7 +87,7 @@ int main() {
     std::default_random_engine gen(9346);
     std::uniform_int_distribution<int> x_dis(240548, 387924);
     std::uniform_int_distribution<int> y_dis(4986893, 5101759);
-    for(int i=0; i<100; ++i) orig_values.emplace_back(x_dis(gen), y_dis(gen));
+    for(int i=0; i<200; ++i) orig_values.emplace_back(x_dis(gen), y_dis(gen));
     
     std::vector<double> budget_percent_values;
     for(double i=0; i<=20; i+=1) budget_percent_values.push_back(i);
