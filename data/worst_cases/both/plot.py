@@ -18,16 +18,18 @@ bogo_datas = np.array([float(row['total_eca']) for row in rows if row['solver'] 
 ref_datas = np.array([bogo_datas[0] for row in rows if row['solver'] == "bogo_seed=99"])
 mip_gain_datas = substract(np.array([float(row['total_eca']) for row in rows if row['solver'] == "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"]), ref_datas)
 
-def get_datas(name, linestyle, marker_size, value):
-    return ((name, (linestyle, marker_size)), (
+
+def get_datas(name, marker, line, marker_size, value):
+    return ((name, ((marker, line), marker_size)), (
         np.array([float(row['budget']) for row in rows if row['solver'] == value]),
         divide(substract(np.array([float(row['total_eca']) for row in rows if row['solver'] == value]), ref_datas), mip_gain_datas)))
 
 datas = [
-    get_datas("incremental greedy", "^-", 11, "glutton_eca_inc_log=0_parallel=1"),
-    get_datas("", " ", 8, "bogo_seed=99"),
-    get_datas("decremental greedy", "v-", 11, "glutton_eca_dec_log=0_parallel=1"),
-    get_datas("optimum (MIP)", "o-", 10, "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
+    get_datas("incremental naive", 5, "-", 11, "naive_eca_inc_log=0_parallel=1"),
+    get_datas("incremental greedy", 6, "-", 11, "glutton_eca_inc_log=0_parallel=1"),
+    get_datas("decremental naive", 4, "-", 11, "naive_eca_dec_log=0_parallel=1"),
+    get_datas("decremental greedy", 7, "-", 11, "glutton_eca_dec_log=0_parallel=1"),
+    get_datas("optimum (MIP)", "o", "-", 9, "pl_eca_3_fortest=0_log=1_relaxed=0_timeout=3600"),
     # get_datas("randomized rounding", "*-", "randomized_rounding_draws=1000_log=0_parallel=1")
 ]
 
@@ -37,7 +39,7 @@ fig_size[0] = 10
 fig_size[1] = 5
 plt.rcParams["figure.figsize"] = fig_size
 
-plt.subplots_adjust(left=0.085, right=0.95, top=0.92, bottom=0.13)
+plt.subplots_adjust(left=0.085, right=0.65, top=0.92, bottom=0.13)
 
 plt.rcParams.update({'font.size': 16})
 
@@ -64,10 +66,10 @@ plt.ylim(y_bottom, y_top)
 plt.ylabel('opt ratio', rotation=90, fontweight ='bold')
 plt.xlabel("budget", fontweight ='bold')
 
-for ((label,(linestyle,marker_size)),(xdatas,ydatas)) in datas:
-    plt.plot(xdatas, ydatas, linestyle, markersize=marker_size, label=label)
+for ((label,((marker, line),marker_size)),(xdatas,ydatas)) in datas:
+    plt.plot(xdatas, ydatas, marker=marker, linestyle=line, markersize=marker_size, label=label)
     
-legend = plt.legend(loc='lower right', shadow=True, fontsize='medium')
+legend = plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., shadow=True, fontsize='medium')
 
 
 plt.savefig("data/worst_cases/both worst case-opt ratio vs budget.pdf", dpi=500)

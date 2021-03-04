@@ -7,10 +7,17 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
     
     Solution * solution = new Solution(landscape, plan);
 
+    std::vector<RestorationPlan<Landscape>::Option> free_options;
+    std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_free_options;
+
+    std::vector<RestorationPlan<Landscape>::Option> options;
+    std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_options;
+
     double purchaised = 0.0;
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         purchaised += plan.getCost(i);
         solution->add(i);
+        options.push_back(i);
     }
 
     double prec_eca = ECA::get().eval_solution(landscape, plan, *solution);
@@ -19,16 +26,6 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
 
-    
-
-    std::vector<RestorationPlan<Landscape>::Option> free_options;
-    std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_free_options;
-
-    std::vector<RestorationPlan<Landscape>::Option> options;
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
-        options.push_back(i);
-    std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_options;
-    
     ratio_options.resize(options.size());
 
     auto compute_dec = [&landscape, &plan, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
@@ -61,7 +58,7 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
 
     prec_eca = ECA::get().eval_solution(landscape, plan, *solution);
 
-    ratio_free_options.resize(options.size());
+    ratio_free_options.resize(free_options.size());
 
     auto compute_inc = [&landscape, &plan, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
         DecoredLandscape decored_landscape(landscape);
@@ -75,11 +72,13 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
     if(parallel) std::transform(std::execution::par, free_options.begin(), free_options.end(), ratio_free_options.begin(), compute_inc);
     else std::transform(std::execution::seq, free_options.begin(), free_options.end(), ratio_free_options.begin(), compute_inc);
 
-    std::sort(ratio_options.begin(), ratio_options.end(), [](std::pair<double, RestorationPlan<Landscape>::Option> & e1, std::pair<double, RestorationPlan<Landscape>::Option> & e2) {
+    std::sort(ratio_free_options.begin(), ratio_free_options.end(), [](std::pair<double, RestorationPlan<Landscape>::Option> & e1, std::pair<double, RestorationPlan<Landscape>::Option> & e2) {
         return e1.first > e2.first;
     });
 
-    for(std::pair<double, RestorationPlan<Landscape>::Option> elem : ratio_options) {
+    std::cout << ratio_free_options.size() << std::endl;
+
+    for(std::pair<double, RestorationPlan<Landscape>::Option> elem : ratio_free_options) {
         const double cost = plan.getCost(elem.second);
         if(purchaised + cost > B) continue;
         purchaised += cost;

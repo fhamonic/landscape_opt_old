@@ -47,12 +47,12 @@ static void populate(std::list<concepts::Solver*> & solvers) {
     Solvers::Randomized_Rounding_ECA * randomized_rounding = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding->setLogLevel(0).setNbDraws(1000).setParallel(true);
 
-    // solvers.push_back(naive_eca_inc);
-    // solvers.push_back(naive_eca_dec);
-    solvers.push_back(glutton_eca_inc);
-    solvers.push_back(glutton_eca_dec);
+    solvers.push_back(naive_eca_inc);
+    solvers.push_back(naive_eca_dec);
+    // solvers.push_back(glutton_eca_inc);
+    // solvers.push_back(glutton_eca_dec);
     // solvers.push_back(pl_eca_2);
-    solvers.push_back(pl_eca_3);
+    // solvers.push_back(pl_eca_3);
     // solvers.push_back(randomized_rounding);
 }
 static void clean(std::list<concepts::Solver*> & solvers) {
@@ -121,30 +121,30 @@ int main() {
                     for(double budget_percent : budget_percent_values) {
                         const double budget = (budget_percent * plan.totalCost())/100;
 
-                        const int nb_bogo = 100;
-                        Solvers::Bogo bogo;
-                        double total_bogo_time = 0;
-                        double total_bogo_cost = 0;
-                        double total_bogo_eca = 0;
-                        for(int i=0; i<nb_bogo; ++i) {
-                            bogo.setSeed(i);
-                            Solution * solution = bogo.solve(landscape, plan, budget);
-                            total_bogo_time += solution->getComputeTimeMs();
-                            total_bogo_cost += solution->getCost();
-                            total_bogo_eca += std::pow(eca.eval_solution(landscape, plan, *solution), 2);
-                            delete solution;
-                        }
-                        data_log << pow << " " 
-                                    << thresold << " "
-                                    << median << " "
-                                    << orig << " "
-                                    << budget_percent << " "
-                                    << budget << " "
-                                    << bogo.toString() << " "
-                                    << total_bogo_time / nb_bogo << " "
-                                    << total_bogo_cost / nb_bogo << " "
-                                    << total_bogo_eca / nb_bogo << " "
-                                    << std::endl;
+                        // const int nb_bogo = 100;
+                        // Solvers::Bogo bogo;
+                        // double total_bogo_time = 0;
+                        // double total_bogo_cost = 0;
+                        // double total_bogo_eca = 0;
+                        // for(int i=0; i<nb_bogo; ++i) {
+                        //     bogo.setSeed(i);
+                        //     Solution * solution = bogo.solve(landscape, plan, budget);
+                        //     total_bogo_time += solution->getComputeTimeMs();
+                        //     total_bogo_cost += solution->getCost();
+                        //     total_bogo_eca += std::pow(eca.eval_solution(landscape, plan, *solution), 2);
+                        //     delete solution;
+                        // }
+                        // data_log << pow << " " 
+                        //             << thresold << " "
+                        //             << median << " "
+                        //             << orig << " "
+                        //             << budget_percent << " "
+                        //             << budget << " "
+                        //             << bogo.toString() << " "
+                        //             << total_bogo_time / nb_bogo << " "
+                        //             << total_bogo_cost / nb_bogo << " "
+                        //             << total_bogo_eca / nb_bogo << " "
+                        //             << std::endl;
 
                         for(concepts::Solver * solver : solvers) {
                             Solution * solution = solver->solve(landscape, plan, budget);

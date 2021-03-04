@@ -46,8 +46,9 @@ def get_datas(name, linestyle, marker_size, value):
 
 
 datas = [
+    get_datas("incremental naive", "^-", 11, "naive_eca_inc_log=0_parallel=1"),
+    # get_datas("decremental naive", "v-", 11, "naive_eca_dec_log=0_parallel=1"),
     get_datas("incremental greedy", "^-", 11, "glutton_eca_inc_log=0_parallel=1"),
-    get_datas("", " ", 8, "glutton_eca_inc_log=0_parallel=1"),
     get_datas("decremental greedy", "v-", 11, "glutton_eca_dec_log=0_parallel=1"),
     get_datas("optimum (MIP)", "o-", 10, "pl_eca_3_fortest=0_log=3_relaxed=0_timeout=3600"),
     # get_datas("randomized rounding", "*-", "randomized_rounding_draws=1000_log=0_parallel=1")
