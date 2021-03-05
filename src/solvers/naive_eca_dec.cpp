@@ -52,7 +52,7 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         solution->remove(elem.second);
         free_options.push_back(elem.second);
         if(log_level > 1)
-            std::cout << "remove " << elem.first << " " << elem.second << std::endl;
+            std::cout << "remove ratio: " << elem.first << "\t option: " << elem.second << "\t purchaised: " << purchaised << std::endl;
     }
 
 
@@ -60,10 +60,10 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
 
     ratio_free_options.resize(free_options.size());
 
-    auto compute_inc = [&landscape, &plan, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
+    auto compute_inc = [&landscape, &plan, &solution, prec_eca] (RestorationPlan<Landscape>::Option option) {
         DecoredLandscape decored_landscape(landscape);
-        for(RestorationPlan<Landscape>::Option it_option : options)
-            decored_landscape.apply(plan, it_option);
+        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
+            decored_landscape.apply(plan, i, solution->getCoef(i));
         decored_landscape.apply(plan, option);
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
@@ -76,15 +76,18 @@ Solution * Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Rest
         return e1.first > e2.first;
     });
 
-    std::cout << ratio_free_options.size() << std::endl;
+    if(log_level > 1)
+        std::cout << ratio_free_options.size() << std::endl;
 
     for(std::pair<double, RestorationPlan<Landscape>::Option> elem : ratio_free_options) {
         const double cost = plan.getCost(elem.second);
+        if(log_level > 1)
+            std::cout << "evaluate inc ratio: " << elem.first << "\t option: " << elem.second << "\t cost: " << cost << std::endl;
         if(purchaised + cost > B) continue;
         purchaised += cost;
         solution->add(elem.second);
         if(log_level > 1)
-            std::cout << "add " << elem.first << " " << elem.second << std::endl;
+            std::cout << "add ratio: " << elem.first << "\t option: " << elem.second << "\t purchaised: " << purchaised << std::endl;
     }
 
 

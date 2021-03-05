@@ -44,6 +44,8 @@ Solution * Solvers::Naive_ECA_Inc::solve(const Landscape & landscape, const Rest
             std::cout << elem.first << " " << elem.second << std::endl;
         purchaised += price;
         solution->set(elem.second, 1.0);
+        if(log_level > 1)
+            std::cout << "add ratio: " << elem.first << "\t option: " << elem.second << "\t purchaised: " << purchaised << std::endl;
     }
 
     solution->setComputeTimeMs(chrono.timeMs());
