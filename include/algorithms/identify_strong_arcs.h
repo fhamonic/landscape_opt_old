@@ -13,7 +13,7 @@ namespace lemon {
     template <typename TR>
     class LabeledValue {
         typedef TR OperationTraits;
-        typedef OperationTraits::Value Value;
+        typedef typename OperationTraits::Value Value;
 
         public:
             Value value;

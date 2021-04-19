@@ -47,9 +47,9 @@ namespace concepts {
             virtual const double & getProbability(Arc a) const = 0;
     };
 
-    template <class LS, class GR=typename LS::Graph, typename QM=typename LS::QualityMap,
+    /*template <class LS, class GR=typename LS::Graph, typename QM=typename LS::QualityMap,
             typename PM=typename LS::ProbabilityMap, typename CM=typename LS::CoordsMap>
-    concept IsLandscape = std::is_base_of<AbstractLandscape<GR, QM, PM, CM>, LS>::value;
+    concept IsLandscape = std::is_base_of<AbstractLandscape<GR, QM, PM, CM>, LS>::value;*/ //c++20
 }
 
 

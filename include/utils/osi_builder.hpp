@@ -16,7 +16,7 @@
 
 #include "coin/OsiClpSolverInterface.hpp"
 #include "coin/OsiCbcSolverInterface.hpp" // deprecated
-#include "coin/OsiGrbSolverInterface.hpp"
+// #include "coin/OsiGrbSolverInterface.hpp"
 
 #include "coin/CbcModel.hpp" // deprecated
 #include "coin/CbcSolver.hpp"

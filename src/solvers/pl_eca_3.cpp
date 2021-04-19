@@ -1,6 +1,6 @@
 #include "solvers/pl_eca_3.hpp"
 
-#include "gurobi_c.h"
+// #include "gurobi_c.h"
 
 namespace Solvers::PL_ECA_3_Vars {
     class PreprocessedDatas {
@@ -273,7 +273,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
 
 Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int log_level = params.at("log")->getInt();
-    const int timeout = params.at("timeout")->getInt();
+    const int timeout = params.at("timeout")->getInt(); (void)timeout; // pas bien
     const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
     if(log_level > 0) std::cout << name() << ": Start preprocessing" << std::endl;
@@ -286,8 +286,8 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     }
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
-    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
-    // OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    // OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
     if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 3) {
@@ -301,9 +301,9 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start solving" << std::endl;
     }
     ////////////////////
-    GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
-    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
-    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
+    // GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
+    // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
+    // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
     solver->branchAndBound();
     ////////////////////
     const double * var_solution = solver->getColSolution();
@@ -345,7 +345,7 @@ double Solvers::PL_ECA_3::eval(const Landscape & landscape, const RestorationPla
         double y_i_value = solution[i];
         solver_builder.setBounds(y_i, y_i_value, y_i_value);
     }
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
     ////////////////////
     solver->initialSolve();  
     //////////////////// 

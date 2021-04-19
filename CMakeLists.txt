@@ -17,7 +17,7 @@ find_package(COIN REQUIRED)
 
 
 #################### Options ####################
-SET(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeBuildTypeUtils.cmake)
@@ -29,7 +29,7 @@ option(COMPILE_WITH_LTO "" OFF)
 
 
 ##################### Sources ######################
-file(GLOB SRC "src/*/*.cpp") 
+file(GLOB SRC "src/*/*.cpp" "src/*/*/*.cpp" "src/*/*/*/*.cpp" "src/helper.cpp") 
 
 #################### LIB target ####################
 add_library(landscape_opt ${SRC})
@@ -41,8 +41,8 @@ target_link_libraries(landscape_opt CONAN_PKG::tbb)
 target_link_libraries(landscape_opt CONAN_PKG::boost)
 target_link_libraries(landscape_opt CONAN_PKG::eigen)
 
-target_link_libraries(landscape_opt COIN)
-target_link_libraries(landscape_opt LEMON)
+target_link_libraries(landscape_opt ${LEMON_LIBRARIES})
+target_link_libraries(landscape_opt ${COIN_LIBRARIES})
 
 target_compile_options_if_exists(landscape_opt PRIVATE ${WARNINGS} -Wall)
 target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_FOR_NATIVE} -march=native)

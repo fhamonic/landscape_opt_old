@@ -85,7 +85,7 @@ int main(int argc, const char *argv[]) {
     double B = std::atof(argv[3]);
     std::string solver_name = argv[4];
 
-    if(!solversMap.contains(solver_name)) {
+    if(solversMap.find(solver_name) == solversMap.end()) {
         std::cerr << "Availables solvers :" << std::endl;
         for(concepts::Solver * solver : solvers)
             std::cerr << "\t" << solver->name() << std::endl;

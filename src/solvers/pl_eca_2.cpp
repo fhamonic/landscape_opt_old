@@ -1,6 +1,6 @@
 #include "solvers/pl_eca_2.hpp"
 
-#include "gurobi_c.h"
+// #include "gurobi_c.h"
 
 namespace Solvers::PL_ECA_2_Vars {
     class XVar : public OSI_Builder::VarType {
@@ -227,7 +227,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
 
 Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
     const int log_level = params.at("log")->getInt();
-    const int timeout = params.at("timeout")->getInt();
+    const int timeout = params.at("timeout")->getInt(); (void)timeout; // pas bien
     const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
     OSI_Builder solver_builder = OSI_Builder();
@@ -235,8 +235,8 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     insert_variables(solver_builder, vars);
     if(log_level > 0) std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed);
-    OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
-    // OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    // OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
     if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 2) {
@@ -250,9 +250,9 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start solving" << std::endl;
     }
     ////////////////////
-    GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
-    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
-    GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
+    // GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
+    // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
+    // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
     solver->branchAndBound();
     ////////////////////
     const double * var_solution = solver->getColSolution();

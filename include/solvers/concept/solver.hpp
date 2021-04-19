@@ -68,7 +68,7 @@ namespace concepts {
             };
 
             bool setParam(std::string name, const char * arg) {
-                if(!params.contains(name))
+                if(params.find(name) == params.end())
                     return false;
                 params[name]->parse(arg);
                 return true;

@@ -23,14 +23,14 @@
  * 
  * This class is essentially a sparse matrix implementation with both row major and column major structures to ensure linear time iteration. 
  */
-template <typename LS> requires concepts::IsLandscape<LS>
+template <typename LS> //requires concepts::IsLandscape<LS> //c++20
 class RestorationPlan{
     public:
-        typedef LS::Graph Graph;
-        typedef LS::Node Node;
-        typedef LS::Arc Arc;
+        using Graph = typename LS::Graph;
+        using Node = typename LS::Node;
+        using Arc = typename LS::Arc;
 
-        typedef int Option;
+        using Option = int;
     private:
         const LS & _landscape;
 
@@ -96,7 +96,7 @@ class RestorationPlan{
          */
         bool contains(Option i, Node v) const {
             assert(contains(i));
-            return _options_nodes_idsMap[i].contains(v);
+            return _options_nodes_idsMap[i].find(v) != _options_nodes_idsMap[i].end();
         }
 
         /**
@@ -109,7 +109,7 @@ class RestorationPlan{
          */
         bool contains(Option i, Arc a) const { 
             assert(contains(i)); 
-            return _options_arcs_idsMap[i].contains(a);
+            return _options_arcs_idsMap[i].find(a) != _options_arcs_idsMap[i].end();
         }
 
         /**
@@ -544,7 +544,7 @@ class RestorationPlan{
         double totalCost() const { return std::accumulate(_costs.begin(), _costs.end(), 0.0); }
 };
 
-template <typename LS> requires concepts::IsLandscape<LS>
+template <typename LS> //requires concepts::IsLandscape<LS> //c++20
 std::ostream & operator<<(std::ostream & in, const RestorationPlan<LS> & plan);
 
 #endif //RESTORATION_PLAN_2_HPP
