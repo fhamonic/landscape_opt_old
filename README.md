@@ -36,7 +36,7 @@ The project uses COINOR libraries Clp Cbc and LEMON that are not currently avail
     cd linux64/src/build
     make
     mv libgurobi_c++.a ../../lib
-    
+
 add to .bashrc:
 
     export GUROBI_HOME="/home/plaiseek/Libs/gurobi911/linux64"
@@ -64,3 +64,7 @@ add to .bashrc:
 add to .bashrc :
 
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/coinor/dist/lib/"
+
+## How to Compile
+Just type :
+    make
