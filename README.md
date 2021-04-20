@@ -2,10 +2,10 @@
 
 ### Build process
 The build process requires CMake 3.12 (https://cmake.org/) or more and the Conan C++ package manager (https://conan.io/).
-##### Ubuntu
+#### Ubuntu
     sudo apt install cmake
     pip install conan
-##### Manjaro
+#### Manjaro
     sudo pamac install cmake
     pip install conan
 
