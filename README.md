@@ -1,15 +1,12 @@
 ## Dependencies
 
 ### Build process
-The build process requires CMake 3.12 or more and the Conan C++ package manager.
-    
-#### CMake https://cmake.org/
+The build process requires CMake 3.12 (https://cmake.org/) or more and the Conan C++ package manager (https://conan.io/).
 ##### Ubuntu
     sudo apt install cmake
+    pip install conan
 ##### Manjaro
     sudo pamac install cmake
-
-#### Conan https://conan.io/
     pip install conan
 
 ### Libraries
