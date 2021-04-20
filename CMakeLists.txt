@@ -8,14 +8,6 @@ project(Landscape_Opt VERSION 1.0
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 
-#################### Packages ####################
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
-
-find_package(LEMON REQUIRED)
-find_package(COIN REQUIRED)
-
-
 #################### Options ####################
 SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -25,8 +17,17 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMakeBuildTypeUtils.cmake)
 option(WARNINGS "" OFF)
 option(COMPILE_FOR_NATIVE "" OFF)
 option(COMPILE_WITH_LTO "" OFF)
+option(WITH_GUROBI "" OFF)
 
+#################### Packages ####################
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
 
+find_package(LEMON REQUIRED)
+find_package(COIN REQUIRED)
+if(${WITH_GUROBI} STREQUAL "ON")
+    find_package(GUROBI REQUIRED)
+endif()
 
 ##################### Sources ######################
 file(GLOB SRC "src/*/*.cpp" "src/*/*/*.cpp" "src/*/*/*/*.cpp" "src/helper.cpp") 
@@ -43,6 +44,11 @@ target_link_libraries(landscape_opt CONAN_PKG::eigen)
 
 target_link_libraries(landscape_opt ${LEMON_LIBRARIES})
 target_link_libraries(landscape_opt ${COIN_LIBRARIES})
+
+if(${WITH_GUROBI} STREQUAL "ON")
+    target_include_directories(landscape_opt PUBLIC ${GUROBI_INCLUDE_DIR})
+    target_link_libraries(landscape_opt ${GUROBI_LIBRARIES})
+endif()
 
 target_compile_options_if_exists(landscape_opt PRIVATE ${WARNINGS} -Wall)
 target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_FOR_NATIVE} -march=native)

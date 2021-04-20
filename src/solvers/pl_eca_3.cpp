@@ -1,6 +1,7 @@
 #include "solvers/pl_eca_3.hpp"
 
-// #include "gurobi_c.h"
+#include "gurobi_c.h"
+#include <coin/CglFlowCover.hpp>
 
 namespace Solvers::PL_ECA_3_Vars {
     class PreprocessedDatas {
@@ -286,9 +287,6 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     }
     fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
-    // OsiGrbSolverInterface * solver = solver_builder.buildSolver<OsiGrbSolverInterface>(OSI_Builder::MAX);
-    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
-    if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     if(log_level >= 1) {
         if(log_level >= 3) {
             name_variables(solver_builder, landscape, plan, preprocessed_datas, vars);
@@ -300,13 +298,25 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints and "<< solver_builder.getNbElems() << " entries in " << chrono.lapTimeMs() << " ms" << std::endl;
         std::cout << name() << ": Start solving" << std::endl;
     }
+#define WITH_GUROBI
+#ifndef WITH_GUROBI
+    OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
+    if(log_level <= 1) solver->setHintParam(OsiDoReducePrint);
     ////////////////////
     // GRBsetdblparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_MIPGAP, 1e-8);
     // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
     // GRBsetintparam(GRBgetenv(solver->getLpPtr()), GRB_DBL_PAR_TIMELIMIT, timeout);
-    solver->branchAndBound();
+        
+    solver->initialSolve();
+    CbcModel model(*solver);
+    model.setLogLevel(log_level-1);
+    model.setNumberThreads(8);
+    CglFlowCover cut_flow;
+    model.addCutGenerator(&cut_flow, 1, "FlowCover");
+    model.setAllowableGap(1e-8);
+    model.branchAndBound(1);
     ////////////////////
-    const double * var_solution = solver->getColSolution();
+    const double * var_solution = model.bestSolution();
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
         delete solver;
@@ -319,16 +329,115 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         solution->set(i, value);
     }
     solution->setComputeTimeMs(chrono.timeMs());
-    solution->obj = solver->getObjValue();
+    solution->obj = model.getObjValue();
     solution->nb_vars = solver_builder.getNbNonZeroVars();
     solution->nb_constraints = solver_builder.getNbConstraints();
-    solution->nb_elems = solver->getNumElements();
+    solution->nb_elems = model.getNumElements();
     if(log_level >= 1) {
         std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
         std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
     }    
     delete solver;
     return solution;
+#else
+    const int nb_vars = solver_builder.getNbVars();
+    double * objective = solver_builder.getObjective();
+    double * col_lb = solver_builder.getColLB();
+    double * col_ub = solver_builder.getColUB();
+    char * vtype = new char[nb_vars];
+    for(OSI_Builder::VarType * varType : solver_builder.getVarTypes()) {
+        const int offset = varType->getOffset();
+        const int last_id = varType->getOffset() + varType->getNumber() - 1; 
+        for(int i=offset; i<=last_id; i++) {
+            vtype[i] = (varType->isInteger() ? GRB_BINARY : GRB_CONTINUOUS);
+        }
+    }
+
+    CoinPackedMatrix * matrix = solver_builder.getMatrix();
+    const int nb_rows = matrix->getNumRows();
+    const int nb_elems = matrix->getNumElements();
+    int * begins = new int[nb_elems]; std::copy(matrix->getVectorStarts(), matrix->getVectorStarts()+nb_elems, begins);
+    int * indices = new int[nb_elems]; std::copy(matrix->getIndices(), matrix->getIndices()+nb_elems, indices);
+    double * elements = new double[nb_elems]; std::copy(matrix->getElements(), matrix->getElements()+nb_elems, elements);
+    double * row_lb = solver_builder.getRowLB();
+    double * row_ub = solver_builder.getRowUB();
+    // char * sense = new char[nb_rows];
+    // double * rhs = new double[nb_rows];
+    // for(int i=0; i<nb_rows; ++i) {
+    //     const double lb = row_lb[i];
+    //     const double ub = row_ub[i];
+    //     if(lb == OSI_Builder::INFTY) {
+    //         sense[i] = GRB_LESS_EQUAL; rhs[i] = ub;
+    //         continue;
+    //     }
+    //     if(ub == OSI_Builder::INFTY) {
+    //         sense[i] = GRB_GREATER_EQUAL; rhs[i] = lb;
+    //         continue;
+    //     }
+    //     sense[i] = GRB_EQUAL; rhs[i] = ub;
+    // }
+
+    GRBenv   *env   = NULL;
+    GRBmodel *model = NULL;
+    std::cout << GRBemptyenv(&env);
+    std::cout << GRBstartenv(env);
+    ////////////////////
+    std::cout << GRBsetdblparam(env, GRB_DBL_PAR_MIPGAP, 1e-8);
+    std::cout << GRBsetintparam(env, GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
+    std::cout << GRBsetintparam(env, GRB_DBL_PAR_TIMELIMIT, timeout);
+    ////////////////////
+    std::cout << GRBnewmodel(env, &model, "pl_eca_3", 0, NULL, NULL, NULL, NULL, NULL);
+    std::cout << GRBaddvars(model, nb_vars, 0, NULL, NULL, NULL, objective, col_lb, col_ub, vtype, NULL);
+    // std::cout << GRBaddconstrs(model, nb_rows, nb_elems, begins, indices, elements, sense, rhs, NULL);
+    std::cout << GRBaddrangeconstrs(model, nb_rows, nb_elems, begins, indices, elements, row_lb, row_ub, NULL);
+    ////////////////////
+    std::cout << GRBsetintattr(model, GRB_INT_ATTR_MODELSENSE, GRB_MAXIMIZE);
+    std::cout << GRBoptimize(model);
+    ////////////////////
+    int status;
+    GRBgetintattr(model, GRB_INT_ATTR_STATUS, &status);
+    if(status == GRB_INF_OR_UNBD) {
+        std::cout << "Model is infeasible or unbounded" << std::endl;
+    } else if(status != GRB_OPTIMAL) {
+        std::cout << "Optimization was stopped early" << std::endl;
+    }
+    double obj;
+    GRBgetdblattr(model, GRB_DBL_ATTR_OBJVAL, &obj);
+    double * var_solution = new double[nb_vars];
+    GRBgetdblattrarray(model, GRB_DBL_ATTR_X, 0, nb_vars, var_solution);
+    if(var_solution == nullptr) {
+        std::cerr << name() << ": Fail" << std::endl;
+        return nullptr;
+    }
+    Solution * solution = new Solution(landscape, plan);
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+        const int y_i = vars.y.id(i);
+        double value = var_solution[y_i];
+        solution->set(i, value);
+    }
+    solution->setComputeTimeMs(chrono.timeMs());
+    solution->obj = obj;
+    solution->nb_vars = solver_builder.getNbNonZeroVars();
+    solution->nb_constraints = solver_builder.getNbConstraints();
+    solution->nb_elems = nb_elems;
+    if(log_level >= 1) {
+        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
+    }    
+    
+    GRBfreemodel(model);
+    GRBfreeenv(env);
+
+    delete[] vtype;
+    delete[] begins;
+    delete[] indices;
+    delete[] elements;
+    // delete[] sense;
+    // delete[] rhs;
+    delete[] var_solution;
+
+    return solution;
+#endif
 }
 
 double Solvers::PL_ECA_3::eval(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, const Solution & solution) const {

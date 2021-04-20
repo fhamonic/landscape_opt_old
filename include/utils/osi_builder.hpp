@@ -72,17 +72,6 @@ class OSI_Builder {
     public:
         OSI_Builder();
         ~OSI_Builder();
-
-        int getNbVars() const { return nb_vars; };
-        int getNbNonZeroVars() const {
-            std::vector<int> non_zero(nb_vars, 0);
-            const int * indices = matrix->getIndices();
-            for(int i=0; i<matrix->getNumElements(); ++i)
-                non_zero[indices[i]] = 1;      
-            return std::accumulate(non_zero.begin(), non_zero.end(), 0);
-        };
-        int getNbConstraints() const { return matrix->getNumRows(); };
-        int getNbElems() const { return nb_entries; };
         
         OSI_Builder & addVarType(VarType * var_type);
         void init();
@@ -137,7 +126,31 @@ class OSI_Builder {
             return p;
         };
 
+        
 
+        const std::vector<VarType*> & getVarTypes() { return varTypes; }
+
+        int getNbVars() const { return nb_vars; };
+
+        int getNbNonZeroVars() const {
+            std::vector<int> non_zero(nb_vars, 0);
+            const int * indices = matrix->getIndices();
+            for(int i=0; i<matrix->getNumElements(); ++i)
+                non_zero[indices[i]] = 1;      
+            return std::accumulate(non_zero.begin(), non_zero.end(), 0);
+        };
+        int getNbConstraints() const { return matrix->getNumRows(); };
+
+        int getNbElems() const { return nb_entries; };
+
+        double * getObjective() { return objective; }
+        CoinPackedMatrix * getMatrix() { return matrix; }
+
+        double * getColLB() { return col_lb; }
+        double * getColUB() { return col_ub; }
+
+        double * getRowLB() { return row_lb.data(); }
+        double * getRowUB() { return row_ub.data(); }
 };
 
 #endif //OSICLPSOLVER_BUILDER_HPP

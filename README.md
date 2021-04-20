@@ -63,6 +63,6 @@ add to .bashrc :
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:<path_to>/coinor/dist/lib/"
 
 ## How to Compile
-Just type :
+Just
 
     make
