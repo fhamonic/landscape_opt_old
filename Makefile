@@ -4,7 +4,7 @@ CPUS?=$(shell getconf _NPROCESSORS_ONLN || echo 1)
 
 BUILD_DIR = build
 
-.PHONY: all clean
+.PHONY: all clean doc
 
 all: $(BUILD_DIR)
 	@cd $(BUILD_DIR) && \
@@ -18,3 +18,7 @@ $(BUILD_DIR):
 
 clean:
 	@rm -rf $(BUILD_DIR)
+
+doc:
+	doxywizard $$PWD/doc/Doxyfile
+	xdg-open doc/html/index.html 

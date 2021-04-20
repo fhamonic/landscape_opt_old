@@ -36,7 +36,7 @@ The project uses COINOR libraries Clp Cbc and LEMON that are not currently avail
 
 add to .bashrc:
 
-    export GUROBI_HOME="/home/plaiseek/Libs/gurobi911/linux64"
+    export GUROBI_HOME="<path_to>/linux64"
     export PATH="$PATH:$GUROBI_HOME/bin"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$GUROBI_HOME/lib"
 
@@ -60,7 +60,7 @@ add to .bashrc:
 
 add to .bashrc :
 
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/home/plaiseek/Libs/coinor/dist/lib/"
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:<path_to>/coinor/dist/lib/"
 
 ## How to Compile
 Just type :
