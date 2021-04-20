@@ -135,6 +135,10 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
 
     solution->setComputeTimeMs(chrono.timeMs());
     solution->obj = prec_eca;
+    if(log_level >= 1) {
+        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << solution->obj << std::endl;
+    }    
 
     return solution;
 }
