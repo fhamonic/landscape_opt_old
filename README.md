@@ -53,10 +53,9 @@ add to .bashrc:
     git clone https://github.com/coin-or/coinbrew
 <!-- export OPT_CFLAGS="-pipe -flto -march=native"
     export OPT_CXXFLAGS="-pipe -flto -march=native"
-    export LDFLAGS="-L$GUROBI_HOME/lib/ -pipe -flto" -->
-    export LDFLAGS="-L$GUROBI_HOME/lib/"
+    export LDFLAGS="-pipe -flto" -->
     ./coinbrew/coinbrew fetch Cbc:releases/2.10.5
-    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel --with-gurobi-incdir="$GUROBI_HOME/include/" --with-gurobi-lib="-L$GUROBI_HOME/lib/ -lm -lpthread -lgurobi_c++ -lgurobi91" ADD_FFLAGS=-fallow-argument-mismatch
+    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel
 
 add to .bashrc :
 

@@ -18,7 +18,7 @@
 #include "lemon/dijkstra.h"
 
 #include "solvers/concept/solver.hpp"
-#include "csv.hpp"
+#include "fast-cpp-csv-parser/csv.h"
 
 #include "lemon/graph_to_eps.h"
 #include "lemon/dim2.h"
