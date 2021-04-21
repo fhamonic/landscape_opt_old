@@ -76,7 +76,7 @@ int main(int argc, const char *argv[]) {
     std::map<std::string, concepts::Solver*> solversMap;
     populate(solvers, solversMap);
     if(argc < 5) {
-        std::cerr << "input requiered : <landscape_file> <problem_file> <B> <solver_name> [<option>=<value>]" << std::endl;
+        std::cerr << "input requiered : <landscape_file> <problem_file> <budget_value> <solver_name> [<option>=<value>]" << std::endl;
         clean(solvers);
         return EXIT_FAILURE;
     }
