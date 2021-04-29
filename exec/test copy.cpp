@@ -94,7 +94,7 @@ int main() {
 
     const int n_to_test[] = {50, 250, 500, 1000};
     const int nb_de_chaque = 5;
-    const int percent_arcs_to_test[] = {50};
+    const int percent_arcs_to_test[] = {20};
 
     for(int n : n_to_test) {
         for(int percent_arcs : percent_arcs_to_test) {
@@ -103,20 +103,17 @@ int main() {
                 Landscape * sub_landscape = make_landscape(landscape, center, n);
                 const Graph_t & sub_graph = sub_landscape->getNetwork();
 
-                Graph_t::ArcMap<bool> deja_select(sub_graph, false);
+                const int m = lemon::countArcs(sub_graph);
+
+                RandomChooser<Graph_t::Arc> arc_chooser;
+                for(Graph_t::ArcIt a(sub_graph); a != lemon::INVALID; ++a)
+                    arc_chooser.add(a, 1);
+
                 RestorationPlan<Landscape> plan(*sub_landscape);
-
-                for(Graph_t::ArcIt a(sub_graph); a != lemon::INVALID; ++a) {
-                    if(deja_select[a]) continue;
-
-                    Graph_t::Arc reverse_a = lemon::findArc(sub_graph, sub_graph.target(a), sub_graph.source(a));
-
-                    deja_select[a] = true;
-                    deja_select[reverse_a] = true;
-
-                    RestorationPlan<Landscape>::Option option = plan.addOption(15 * -std::log(sub_landscape->getProbability(a)));
+                for(int j=0; j<(percent_arcs*m)/100; ++j) {
+                    Graph_t::Arc a = arc_chooser.pick();
+                    RestorationPlan<Landscape>::Option option = plan.addOption(100 * -std::log(sub_landscape->getProbability(a)));
                     plan.addArc(option, a, std::sqrt(sub_landscape->getProbability(a)));
-                    plan.addArc(option, reverse_a, std::sqrt(sub_landscape->getProbability(a)));
                 }
 
                 StdLandscapeParser::get().write(*sub_landscape, "instances", "quebec-" + std::to_string(n) + "-" + std::to_string(i));

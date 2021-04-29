@@ -9,14 +9,14 @@
 
 int main(int argc, const char *argv[]) {
     if(argc < 2) {
-        std::cerr << "input requiered : <landscape_file>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <landscape_file>" << std::endl;
         return EXIT_FAILURE;
     }
     std::filesystem::path landscape_path = argv[1];
 
     const Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);   
 
-    Helper::printLandscape(*landscape, "test.eps");
+    // Helper::printLandscape(*landscape, "test.eps");
 
     const double eca = ECA::get().eval(*landscape);
 
