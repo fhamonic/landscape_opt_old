@@ -106,8 +106,8 @@ int main() {
                     const Landscape & landscape = instance->landscape;
                     const RestorationPlan<Landscape> & plan = instance->plan;
 
-                    if(lemon::countNodes(landscape.getNetwork()) < 150) continue;
-                    if(lemon::countNodes(landscape.getNetwork()) > 400) continue;
+                    if(lemon::countNodes(landscape.getNetwork()) < 50) continue;
+                    if(lemon::countNodes(landscape.getNetwork()) > 100) continue;
 
                     const int arcs = lemon::countArcs(landscape.getNetwork());
                     min_arcs = std::min(min_arcs, arcs);

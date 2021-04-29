@@ -1,37 +1,131 @@
-/**
- * @file solve.cpp
- * @author François Hamonic (francois.hamonic@gmail.com)
- * @brief Entry program
- * @version 0.1
- * @date 2020-05-07
- *  
- * Entry programm that takes inputs and calls solvers.
- */
-
 #include <iostream>
 #include <filesystem>
+#include <fstream>
 
-#include "parsers/std_landscape_parser.hpp"
+#include "lemon/dijkstra.h"
+#include "lemon/connectivity.h"
+
+#include "lemon/graph_to_eps.h"
+
+#include "solvers/pl_eca_2.hpp"
+#include "solvers/pl_eca_3.hpp"
+
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "instances_helper.hpp"
+#include "parsers/std_landscape_parser.hpp"
+
+#include "utils/random_chooser.hpp"
+#include "algorithms/multiplicative_dijkstra.h"
 
 #include "helper.hpp"
 
-int main() {
-    Instance * instance = make_instance_quebec(1, 0.001, 900, Point(0,0), Point(320000000, 320000000));
-    // Instance * instance = make_instance_marseillec(1, 0.05, 900, 60);          
-    const Landscape & landscape = instance->landscape;      
-    const RestorationPlan<Landscape> & plan = instance->plan;
+#include "precomputation/my_contraction_algorithm.hpp"
 
-    // Landscape * landscape = StdLandscapeParser::get().parse("/home/plaiseek/Projects/landscape_opt_cpp/data/worst_cases/glutton_eca_dec/dec_worst_case.index");
+void parse_quebec(Landscape & landscape, double pow, double median) {
+    auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
-    // StdRestorationPlanParser parser(*landscape);
-    // RestorationPlan<Landscape> * plan = parser.parse("/home/plaiseek/Projects/landscape_opt_cpp/data/worst_cases/glutton_eca_dec/dec_worst_case.problem");
+    std::vector<Graph_t::Node> node_correspondance;
+    
+    io::CSVReader<3> patches("data/quebec_leam_v3/raw/sommets_leam_v3.csv");
+    patches.read_header(io::ignore_extra_column, "area","xcoord","ycoord");
+    double area, xcoord, ycoord;
+    while(patches.read_row(area, xcoord, ycoord)) {
+        Graph_t::Node u = landscape.addNode(area, Point(xcoord,ycoord));
+        node_correspondance.push_back(u);
+    }
 
-    Helper::printInstance(landscape, plan, "test.eps");
+    io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.csv");
+    links.read_header(io::ignore_extra_column, "from","to","Dist");
+    int from, to;
+    double Dist;
+    while(links.read_row(from, to, Dist)) {
+        Graph_t::Node u = node_correspondance[from-1];
+        Graph_t::Node v = node_correspondance[to-1];
+        if(u == lemon::INVALID || v == lemon::INVALID) continue;
+        double probability = p(Dist);
+        landscape.addArc(u, v, probability);
+        landscape.addArc(v, u, probability);
+    }
+}
 
+
+
+Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, int nb_nodes) {
     const Graph_t & graph = landscape.getNetwork();
-    std::cout << "#nodes " << lemon::countNodes(graph) << std::endl << "#arcs " << lemon::countArcs(graph) << std::endl;
+
+    Graph_t::NodeMap<Graph_t::Node> nodes(graph, lemon::INVALID);
+
+    Landscape * new_landscape = new Landscape();
+    const Graph_t & new_graph = new_landscape->getNetwork();
+        
+    const Graph_t::ArcMap<double> & probabilityMap = landscape.getProbabilityMap();
+    lemon::MultiplicativeDijkstra<Graph_t, Graph_t::ArcMap<double>> dijkstra(graph, probabilityMap);
+    dijkstra.init();
+    dijkstra.addSource(center);
+
+    int cpt = 0;
+    while (!dijkstra.emptyQueue()) {
+        Graph_t::Node x = dijkstra.processNextNode();
+        if(cpt >= nb_nodes)
+            continue;
+        nodes[x] = new_landscape->addNode(landscape.getQuality(x), landscape.getCoords(x));
+        cpt++;
+    }
+    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+        Graph_t::Node u = nodes[graph.source(a)];
+        Graph_t::Node v = nodes[graph.target(a)];
+        if(! (new_graph.valid(u) && new_graph.valid(v)))
+            continue;
+        new_landscape->addArc(u, v, landscape.getProbability(a));
+    }
+
+    return new_landscape;
+}
+
+int main() {
+    Landscape landscape;
+    parse_quebec(landscape, 1, 2300);
+    const Graph_t & graph = landscape.getNetwork();
+
+    MyContractionAlgorithm alg2;
+
+    RandomChooser<Graph_t::Node> node_chooser;
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u)
+        node_chooser.add(u, 1);
+
+    const int n_to_test[] = {50, 250, 500, 1000};
+    const int nb_de_chaque = 5;
+    const int percent_arcs_to_test[] = {20};
+
+    for(int n : n_to_test) {
+        for(int percent_arcs : percent_arcs_to_test) {
+            for(int i=0; i<nb_de_chaque; i++) {
+                Graph_t::Node center = node_chooser.pick();
+                Landscape * sub_landscape = make_landscape(landscape, center, n);
+                const Graph_t & sub_graph = sub_landscape->getNetwork();
+
+                const int m = lemon::countArcs(sub_graph);
+
+                RandomChooser<Graph_t::Arc> arc_chooser;
+                for(Graph_t::ArcIt a(sub_graph); a != lemon::INVALID; ++a)
+                    arc_chooser.add(a, 1);
+
+                RestorationPlan<Landscape> plan(*sub_landscape);
+                for(int j=0; j<(percent_arcs*m)/100; ++j) {
+                    Graph_t::Arc a = arc_chooser.pick();
+                    RestorationPlan<Landscape>::Option option = plan.addOption(100 * -std::log(sub_landscape->getProbability(a)));
+                    plan.addArc(option, a, std::sqrt(sub_landscape->getProbability(a)));
+                }
+
+                StdLandscapeParser::get().write(*sub_landscape, "instances", "quebec-" + std::to_string(n) + "-" + std::to_string(i));
+                StdRestorationPlanParser plan_parser(*sub_landscape);
+                plan_parser.write(plan, "instances", "quebec-" + std::to_string(n) + "-" + std::to_string(i));
+
+                Helper::printInstance(*sub_landscape, plan, "instances/quebec-" + std::to_string(n) + "-" + std::to_string(i) + ".eps");
+
+                delete sub_landscape;
+            }
+        }
+    }
 
     return EXIT_SUCCESS;
 }
