@@ -7,7 +7,7 @@
 #include "parsers/concept/parser.hpp"
 #include "landscape/landscape.hpp"
 
-#include "csv.hpp"
+#include "fast-cpp-csv-parser/csv.h"
 
 class StdLandscapeParser : public concepts::Parser<Landscape> {
     private:

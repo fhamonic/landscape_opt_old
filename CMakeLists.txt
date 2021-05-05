@@ -5,7 +5,6 @@ project(Landscape_Opt VERSION 1.0
     LANGUAGES CXX)
 
 # set(CMAKE_VERBOSE_MAKEFILE ON)
-
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 
 #################### Options ####################
@@ -38,6 +37,7 @@ add_library(landscape_opt ${SRC})
 target_include_directories(landscape_opt PUBLIC include)
 target_include_directories(landscape_opt PUBLIC thirdparty)
 
+target_link_libraries(landscape_opt CONAN_PKG::fast-cpp-csv-parser)
 target_link_libraries(landscape_opt CONAN_PKG::tbb)
 target_link_libraries(landscape_opt CONAN_PKG::boost)
 target_link_libraries(landscape_opt CONAN_PKG::eigen)
@@ -54,11 +54,21 @@ target_compile_options_if_exists(landscape_opt PRIVATE ${WARNINGS} -Wall)
 target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_FOR_NATIVE} -march=native)
 target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_WITH_LTO} -flto)
 
-
 ################### EXEC target ####################
 add_executable(solve exec/solve.cpp)
-
 target_include_directories(solve PUBLIC include)
 target_include_directories(solve PUBLIC thirdparty)
-
 target_link_libraries(solve PUBLIC landscape_opt)
+
+
+
+
+add_executable(eval_eca exec/eval_eca.cpp)
+target_include_directories(eval_eca PUBLIC include)
+target_include_directories(eval_eca PUBLIC thirdparty)
+target_link_libraries(eval_eca PUBLIC landscape_opt)
+
+add_executable(test exec/test.cpp)
+target_include_directories(test PUBLIC include)
+target_include_directories(test PUBLIC thirdparty)
+target_link_libraries(test PUBLIC landscape_opt)

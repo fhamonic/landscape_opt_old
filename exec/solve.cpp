@@ -69,6 +69,10 @@ static void clean(std::list<concepts::Solver*> & solvers) {
         delete solver;
 }
 
+void print_usage(const char * prg_name) {
+    std::cerr << "Usage: " << prg_name << " <landscape_file> <problem_file> <budget_value> <solver_name> [<option>=<value>]" << std::endl;
+}
+
 int main(int argc, const char *argv[]) {
     std::cout.precision(10);
 
@@ -76,9 +80,9 @@ int main(int argc, const char *argv[]) {
     std::map<std::string, concepts::Solver*> solversMap;
     populate(solvers, solversMap);
     if(argc < 5) {
-        std::cerr << "input requiered : <landscape_file> <problem_file> <B> <solver_name> [<option>=<value>]" << std::endl;
+        print_usage(argv[0]);
         clean(solvers);
-        return EXIT_FAILURE;
+        return EXIT_SUCCESS;
     }
     std::filesystem::path landscape_path = argv[1];
     std::filesystem::path problem_path = argv[2];

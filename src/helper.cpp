@@ -30,6 +30,8 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan<La
         std::string title = std::to_string(solution.getComputeTimeMs()) + " ms, ECA = " +
                 std::to_string(ECA::get().eval_solution(landscape, plan, solution)) + " cost = " + std::to_string(solution.getCost());
 
+        std::cout << title << std::endl;
+
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             const double coef = solution.getCoef(i);
             for(auto const& [u, quality_gain] : plan.getNodes(i))
