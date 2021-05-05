@@ -14,15 +14,13 @@ int main(int argc, const char *argv[]) {
     }
     std::filesystem::path landscape_path = argv[1];
 
-    const Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);   
+    const Landscape landscape = StdLandscapeParser::get().parse(landscape_path);   
 
-    // Helper::printLandscape(*landscape, "test.eps");
+    // Helper::printLandscape(landscape, "test.eps");
 
-    const double eca = ECA::get().eval(*landscape);
+    const double eca = ECA::get().eval(landscape);
 
     std::cout << eca << std::endl;
-
-    delete landscape;
 
     return EXIT_SUCCESS;
 }

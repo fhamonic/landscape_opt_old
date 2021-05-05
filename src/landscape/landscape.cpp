@@ -8,11 +8,11 @@ Landscape::Landscape() :
 Landscape::Landscape(const Landscape&) : 
         qualityMap(network),
         coordsMap(network),
-        probabilityMap(network) { assert(false && "No fucking copy constructor and no RVO, fat chance!"); };
+        probabilityMap(network) { assert(false && "No fucking copy constructor and no RVO, fat chance!, use G++ or wait the upgrade from LEMON to BGL"); };
 Landscape::Landscape(Landscape&&) : 
         qualityMap(network),
         coordsMap(network),
-        probabilityMap(network) { assert(false && "No fucking move constructor and no RVO, fat chance!"); };
+        probabilityMap(network) { assert(false && "No fucking move constructor and no RVO, fat chance!, use G++ or wait the upgrade from LEMON to BGL"); };
 
 std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> Landscape::copy(const Landscape & landscape) {
     const Graph_t & orig_network = landscape.getNetwork();
