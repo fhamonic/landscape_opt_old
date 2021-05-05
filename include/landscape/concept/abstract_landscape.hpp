@@ -34,9 +34,6 @@ namespace concepts {
             typedef PM ProbabilityMap;
             typedef CM CoordsMap;
 
-            AbstractLandscape() {};
-            virtual ~AbstractLandscape() {};
-
             virtual const Graph & getNetwork() const = 0;
             virtual const QualityMap & getQualityMap() const = 0;
             virtual const CoordsMap & getCoordsMap() const = 0;

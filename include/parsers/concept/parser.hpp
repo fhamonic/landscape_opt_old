@@ -11,7 +11,7 @@ namespace concepts {
             Parser() {};
         public:
             ~Parser() {};
-            virtual T * parse(std::filesystem::path file_path)=0;
+            virtual T parse(std::filesystem::path file_path)=0;
     };
 }
 

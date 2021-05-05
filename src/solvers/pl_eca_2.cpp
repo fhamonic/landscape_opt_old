@@ -225,7 +225,8 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
     }
 }
 
-Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+Solution Solvers::PL_ECA_2::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+    Solution solution(landscape, plan);
     const int log_level = params.at("log")->getInt();
     const int timeout = params.at("timeout")->getInt(); (void)timeout; // pas bien
     const bool relaxed = params.at("relaxed")->getBool();
@@ -259,22 +260,21 @@ Solution * Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restorati
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
         delete solver;
-        return nullptr;
+        assert(false);
     }
-    Solution * solution = new Solution(landscape, plan);
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         const double value = var_solution[y_i];
-        solution->set(i, value);
+        solution.set(i, value);
     }
-    solution->setComputeTimeMs(chrono.timeMs());
-    solution->obj = solver->getObjValue();
-    solution->nb_vars = solver_builder.getNbNonZeroVars();
-    solution->nb_constraints = solver_builder.getNbConstraints();
-    solution->nb_elems = solver->getNumElements();
+    solution.setComputeTimeMs(chrono.timeMs());
+    solution.obj = solver->getObjValue();
+    solution.nb_vars = solver_builder.getNbNonZeroVars();
+    solution.nb_constraints = solver_builder.getNbConstraints();
+    solution.nb_elems = solver->getNumElements();
     if(log_level >= 1) {
-        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
+        std::cout << name() << ": Complete solving : " << solution.getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solution.obj) << std::endl;
     }
     delete solver;
 

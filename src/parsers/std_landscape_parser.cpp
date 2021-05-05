@@ -5,14 +5,17 @@ StdLandscapeParser StdLandscapeParser::singleton;
 StdLandscapeParser::StdLandscapeParser() {}
 StdLandscapeParser::~StdLandscapeParser() {}
    
-Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
+Landscape StdLandscapeParser::parse(const std::filesystem::path file_name) {
+    Landscape landscape;
+    const Graph_t & g = landscape.getNetwork();
+
     io::CSVReader<2> landscape_files(file_name);
     landscape_files.read_header(io::ignore_extra_column, "patches_file", "links_file");
     
     std::string patches_file, links_file;
     if(! landscape_files.read_row(patches_file, links_file)){
         std::cerr << "StdLandscapeParser : failed reading " << file_name << std::endl;
-        return nullptr;
+        assert(false);
     }
 
     io::CSVReader<4> patches(patches_file);
@@ -21,17 +24,13 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
     io::CSVReader<3> links(links_file);
     links.read_header(io::ignore_extra_column, "from", "to", "probability");
 
-    Landscape * landscape = new Landscape();
-    const Graph_t & g = landscape->getNetwork();
-
     int patch_id;
     double patch_weight, patch_x, patch_y;
     while(patches.read_row(patch_id, patch_weight, patch_x, patch_y)) {
-        const Graph_t::Node & new_node = landscape->addNode(patch_weight, Point(patch_x, patch_y));
+        const Graph_t::Node & new_node = landscape.addNode(patch_weight, Point(patch_x, patch_y));
         if(g.id(new_node) != patch_id) {
             std::cerr << "StdLandscapeParser : Warning in file " << patches_file << " line " << patches.get_file_line() << " : expexted id " << g.id(new_node) << " but was " << patch_id << "." << std::endl;
-            delete landscape;
-            return nullptr;
+            assert(false);
         }
     }
 
@@ -40,18 +39,16 @@ Landscape * StdLandscapeParser::parse(const std::filesystem::path file_name) {
     while(links.read_row(link_source_id, link_target_id, link_probability)) {
         if(link_source_id < 0 || link_source_id > patch_id) {
             std::cerr << "StdLandscapeParser : Warning in file " << links_file << " line " << links.get_file_line() << " : invalid patch id : " << link_source_id << "." << std::endl;
-            delete landscape;
-            return nullptr;
+            assert(false);
         }
         if(link_target_id < 0 || link_target_id > patch_id) {
             std::cerr << "StdLandscapeParser : Warning in file " << links_file << " line " << links.get_file_line() << " : invalid patch id : " << link_target_id << "." << std::endl;
-            delete landscape;
-            return nullptr;
+            assert(false);
         }
 
         const Graph_t::Node & u = g.nodeFromId(link_source_id);
         const Graph_t::Node & v = g.nodeFromId(link_target_id);
-        landscape->addArc(u, v, link_probability);
+        landscape.addArc(u, v, link_probability);
     }
 
     return landscape;

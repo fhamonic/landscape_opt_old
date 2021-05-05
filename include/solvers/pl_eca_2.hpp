@@ -28,7 +28,7 @@ namespace Solvers {
                 return *this;
             }
             
-            Solution * solve(const Landscape & landscape, const RestorationPlan<Landscape>& options, const double B) const;
+            Solution solve(const Landscape & landscape, const RestorationPlan<Landscape>& options, const double B) const;
 
             const std::string name() const { return "pl_eca_2"; } 
 

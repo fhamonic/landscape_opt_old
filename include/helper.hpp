@@ -282,7 +282,7 @@ namespace Helper {
     }
 
 
-    void printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, Solution * solution);
+    void printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, const Solution & solution);
 
     
     template <typename LS_From, typename LS_To>
@@ -299,10 +299,8 @@ namespace Helper {
         }  
     }
 
-
     // need to include the binary search tree for y-h , y+h search
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape) ;
-
 
     void assert_well_formed(const Landscape & landscape, const RestorationPlan<Landscape>& plan);
 }

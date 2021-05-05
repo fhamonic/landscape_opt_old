@@ -273,7 +273,8 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
     }
 }
 
-Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+Solution Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+    Solution solution(landscape, plan);
     const int log_level = params.at("log")->getInt();
     const int timeout = params.at("timeout")->getInt(); (void)timeout; // pas bien
     const bool relaxed = params.at("relaxed")->getBool();
@@ -321,20 +322,19 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         delete solver;
         return nullptr;
     }
-    Solution * solution = new Solution(landscape, plan);
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         double value = var_solution[y_i];
-        solution->set(i, value);
+        solution.set(i, value);
     }
-    solution->setComputeTimeMs(chrono.timeMs());
-    solution->obj = model.getObjValue();
-    solution->nb_vars = solver_builder.getNbNonZeroVars();
-    solution->nb_constraints = solver_builder.getNbConstraints();
-    solution->nb_elems = model.getNumElements();
+    solution.setComputeTimeMs(chrono.timeMs());
+    solution.obj = model.getObjValue();
+    solution.nb_vars = solver_builder.getNbNonZeroVars();
+    solution.nb_constraints = solver_builder.getNbConstraints();
+    solution.nb_elems = model.getNumElements();
     if(log_level >= 1) {
-        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
+        std::cout << name() << ": Complete solving : " << solution.getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solution.obj) << std::endl;
     }    
     delete solver;
     return solution;
@@ -377,7 +377,6 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     GRBsetintattr(model, GRB_INT_ATTR_MODELSENSE, GRB_MAXIMIZE);
 
 
-
     if(log_level >= 1) {
         if(log_level >= 3) {
             name_variables(solver_builder, landscape, plan, preprocessed_datas, vars);
@@ -389,8 +388,6 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
         std::cout << name() << ": Complete filling solver : " << solver_builder.getNbConstraints() << " constraints and "<< solver_builder.getNbElems() << " entries in " << chrono.lapTimeMs() << " ms" << std::endl;
         std::cout << name() << ": Start solving" << std::endl;
     }
-
-
 
 
     std::cout << GRBoptimize(model);
@@ -408,22 +405,21 @@ Solution * Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restorati
     GRBgetdblattrarray(model, GRB_DBL_ATTR_X, 0, nb_vars, var_solution);
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
-        return nullptr;
+        assert(false);
     }
-    Solution * solution = new Solution(landscape, plan);
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         double value = var_solution[y_i];
-        solution->set(i, value);
+        solution.set(i, value);
     }
-    solution->setComputeTimeMs(chrono.timeMs());
-    solution->obj = obj;
-    solution->nb_vars = solver_builder.getNbNonZeroVars();
-    solution->nb_constraints = solver_builder.getNbConstraints();
-    solution->nb_elems = nb_elems;
+    solution.setComputeTimeMs(chrono.timeMs());
+    solution.obj = obj;
+    solution.nb_vars = solver_builder.getNbNonZeroVars();
+    solution.nb_constraints = solver_builder.getNbConstraints();
+    solution.nb_elems = nb_elems;
     if(log_level >= 1) {
-        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << std::sqrt(solution->obj) << std::endl;
+        std::cout << name() << ": Complete solving : " << solution.getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << std::sqrt(solution.obj) << std::endl;
     }    
     
     GRBfreemodel(model);

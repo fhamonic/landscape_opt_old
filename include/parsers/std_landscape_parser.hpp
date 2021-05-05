@@ -19,7 +19,7 @@ class StdLandscapeParser : public concepts::Parser<Landscape> {
         }
         ~StdLandscapeParser();
    
-        Landscape * parse(const std::filesystem::path file_name);
+        Landscape parse(const std::filesystem::path file_name);
         void write(const Landscape & landscape, const std::filesystem::path output, const std::string name, bool use_range_ids=true);
 };
 

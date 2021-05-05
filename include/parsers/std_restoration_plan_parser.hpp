@@ -16,7 +16,7 @@ class StdRestorationPlanParser : public concepts::Parser<RestorationPlan<Landsca
         StdRestorationPlanParser(const Landscape & l);
         ~StdRestorationPlanParser();
    
-        RestorationPlan<Landscape> * parse(std::filesystem::path file_path);
+        RestorationPlan<Landscape> parse(std::filesystem::path file_path);
         bool write(const RestorationPlan<Landscape> & plan, const std::filesystem::path output, const std::string name, bool use_range_ids=true);
 };
 

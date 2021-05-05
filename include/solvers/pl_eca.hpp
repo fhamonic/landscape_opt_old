@@ -52,7 +52,7 @@ class PL_ECA_Solver : public concepts::Solver {
             return *this;
         }     
 
-        Solution * solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const;
+        Solution solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const;
 
         const std::string name() const { return "pl_eca"; }
 };

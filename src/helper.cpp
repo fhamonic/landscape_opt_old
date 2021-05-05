@@ -1,6 +1,6 @@
 #include "helper.hpp"
 
-void Helper::printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, Solution * solution) {
+void Helper::printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, const Solution & solution) {
     const Graph_t & graph = landscape.getNetwork();
         
         auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
@@ -27,11 +27,11 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan<La
         str_B.erase ( str_B.find_last_not_of('0') + 1, std::string::npos );
         
         std::string out_eps = name + "_B=" + str_B + "_" + solver.toString();
-        std::string title = (solution == nullptr ? "Fail" : std::to_string(solution->getComputeTimeMs())) + " ms, ECA = " +
-                std::to_string(ECA::get().eval_solution(landscape, plan, *solution)) + " cost = " + std::to_string(solution->getCost());
+        std::string title = std::to_string(solution.getComputeTimeMs()) + " ms, ECA = " +
+                std::to_string(ECA::get().eval_solution(landscape, plan, solution)) + " cost = " + std::to_string(solution.getCost());
 
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            const double coef = solution->getCoef(i);
+            const double coef = solution.getCoef(i);
             for(auto const& [u, quality_gain] : plan.getNodes(i))
                 node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
             for(auto const& [a, restored_probability] : plan.getArcs(i))

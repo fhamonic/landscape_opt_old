@@ -118,25 +118,18 @@ int main(int argc, const char *argv[]) {
 
     std::string name = std::filesystem::path(problem_path).stem();
 
-    Landscape * landscape = StdLandscapeParser::get().parse(landscape_path);
+    Landscape landscape = StdLandscapeParser::get().parse(landscape_path);
 
-    StdRestorationPlanParser parser(*landscape);
-    RestorationPlan<Landscape>* plan = parser.parse(problem_path);
+    StdRestorationPlanParser parser(landscape);
+    RestorationPlan<Landscape> plan = parser.parse(problem_path);
 
     //for debug purposes
-    //Helper::assert_well_formed(*landscape, *plan);
+    //Helper::assert_well_formed(landscape, plan);
 
-    Solution * solution = solver.solve(*landscape, *plan, B);
+    Solution solution = solver.solve(landscape, plan, B);
 
-    if(solution != nullptr) {
-        Helper::printSolution(*landscape, *plan, name, solver, B, solution);
-        delete solution;
-    } else {
-        std::cerr << "Fail" << std::endl;
-    }
+    Helper::printSolution(landscape, plan, name, solver, B, solution);
 
-    delete plan;
-    delete landscape;
     clean(solvers);
 
     return EXIT_SUCCESS;

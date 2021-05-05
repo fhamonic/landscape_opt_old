@@ -46,6 +46,8 @@ class RestorationPlan{
         std::vector<double> _costs;
     public:
         RestorationPlan(const LS & l) : _landscape(l), _nodeMap(l.getNetwork()), _arcMap(l.getNetwork()) {  }
+        RestorationPlan(const RestorationPlan<LS> & rp) : _landscape(rp.getLandscape()), _nodeMap(_landscape.getNetwork()), _arcMap(_landscape.getNetwork()) { assert(false && "No fucking copy constructor"); }
+        RestorationPlan(RestorationPlan<LS>&& rp) : _landscape(rp.getLandscape()), _nodeMap(_landscape.getNetwork()), _arcMap(_landscape.getNetwork()) { assert(false && "No fucking move constructor"); }
         ~RestorationPlan() {}
             
         const LS & getLandscape() const { return _landscape; }

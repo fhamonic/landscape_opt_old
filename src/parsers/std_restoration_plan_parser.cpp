@@ -3,14 +3,14 @@
 StdRestorationPlanParser::StdRestorationPlanParser(const Landscape & l) : landscape(l) {}
 StdRestorationPlanParser::~StdRestorationPlanParser() {}
    
-RestorationPlan<Landscape> * StdRestorationPlanParser::parse(std::filesystem::path file_path) {
+RestorationPlan<Landscape> StdRestorationPlanParser::parse(std::filesystem::path file_path) {
+    RestorationPlan<Landscape> plan(landscape);
+    const Graph_t & graph = landscape.getNetwork();
+
     if(!std::filesystem::exists(file_path)) {
         std::cerr << file_path << ":" << " File does not exists" << std::endl;
-        return nullptr;
+        assert(false);
     }
-
-    RestorationPlan<Landscape>* plan = new RestorationPlan(landscape);
-    const Graph_t & graph = landscape.getNetwork();
 
     std::ifstream file(file_path);
 
@@ -39,37 +39,37 @@ RestorationPlan<Landscape> * StdRestorationPlanParser::parse(std::filesystem::pa
     while(file >> cost) {
         int nb_elems;
 
-        file >> nb_elems; if(unexpected_eof()) { delete plan; return nullptr; }
+        file >> nb_elems; if(unexpected_eof()) { assert(false); }
 
-        RestorationPlan<Landscape>::Option option = plan->addOption(cost);
+        RestorationPlan<Landscape>::Option option = plan.addOption(cost);
 
         for(int i=0; i<nb_elems; i++) {
             char type;
 
-            if(unexpected_eof()) { delete plan; return nullptr; }
+            if(unexpected_eof()) { assert(false); }
             file >> type;
-            if(unexpected_eof()) { delete plan; return nullptr; }
+            if(unexpected_eof()) { assert(false); }
 
             if(type == 'n') {
                 int id;
                 double quality;
-                file >> id; if(unexpected_eof()) { delete plan; return nullptr; }
+                file >> id; if(unexpected_eof()) { assert(false); }
                 file >> quality;
                 Graph_t::Node u = graph.nodeFromId(id);
-                if(!assert_node(id, u)) { delete plan; return nullptr; }
-                plan->addNode(option, u, quality);
+                if(!assert_node(id, u)) { assert(false); }
+                plan.addNode(option, u, quality);
                 continue;
             }
             if(type == 'a') {
                 int id_source, id_target;
                 double length;
-                file >> id_source; if(unexpected_eof()) { delete plan; return nullptr; }
-                file >> id_target; if(unexpected_eof()) { delete plan; return nullptr; }
+                file >> id_source; if(unexpected_eof()) { assert(false); }
+                file >> id_target; if(unexpected_eof()) { assert(false); }
                 file >> length;
-                Graph_t::Node source = graph.nodeFromId(id_source); if(!assert_node(id_source, source)) { delete plan; return nullptr; }
-                Graph_t::Node target = graph.nodeFromId(id_target); if(!assert_node(id_target, target)) { delete plan; return nullptr; }
-                Graph_t::Arc a = lemon::findArc(graph, source, target); if(!assert_arc(id_source, id_target, a)) { delete plan; return nullptr; }
-                plan->addArc(option, a, length);
+                Graph_t::Node source = graph.nodeFromId(id_source); if(!assert_node(id_source, source)) { assert(false); }
+                Graph_t::Node target = graph.nodeFromId(id_target); if(!assert_node(id_target, target)) { assert(false); }
+                Graph_t::Arc a = lemon::findArc(graph, source, target); if(!assert_arc(id_source, id_target, a)) { assert(false); }
+                plan.addArc(option, a, length);
                 continue;
             }
         }

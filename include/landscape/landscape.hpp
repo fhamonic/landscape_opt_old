@@ -33,7 +33,11 @@ class Landscape : public concepts::AbstractLandscape<Graph_t> {
 
     public:
         Landscape();
+        Landscape(const Landscape&);
+        Landscape(Landscape&&);
         ~Landscape();
+        Landscape & operator=(const Landscape&) { assert(false && "Fuck"); return *this; };
+        Landscape & operator=(Landscape&&) { assert(false && "Fuck"); return *this; };
 
         /**
          * @brief Makes the current landscape a copy of the one passed in parameter.

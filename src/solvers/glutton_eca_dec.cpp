@@ -1,11 +1,10 @@
 #include "solvers/glutton_eca_dec.hpp"
 
-Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+Solution Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+    Solution solution(landscape, plan);
     const int log_level = params.at("log")->getInt();
     const bool parallel = params.at("parallel")->getBool();
     Chrono chrono;
- 
-    Solution * solution = new Solution(landscape, plan);
 
     const Graph_t & graph = landscape.getNetwork();
 
@@ -14,11 +13,11 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
     double purchaised = 0.0;
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         purchaised += plan.getCost(i);
-        solution->add(i);
+        solution.add(i);
         options.push_back(i);
     }
 
-    double prec_eca = ECA::get().eval_solution(landscape, plan, *solution);
+    double prec_eca = ECA::get().eval_solution(landscape, plan, solution);
     if(log_level > 1) {
         std::cout << "base purchaised: " << purchaised << std::endl;
         std::cout << "base ECA: " << prec_eca << std::endl;
@@ -32,7 +31,7 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             if(i == option) continue;
-            decored_landscape.apply(plan, i, solution->getCoef(i));
+            decored_landscape.apply(plan, i, solution.getCoef(i));
         }
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (prec_eca - eca) / plan.getCost(option);
@@ -55,7 +54,7 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         free_options.push_back(worst_option);
 
         const double worst_option_cost = plan.getCost(worst_option);
-        solution->remove(worst_option);
+        solution.remove(worst_option);
         purchaised -= worst_option_cost;
         prec_eca -= worst_ratio * worst_option_cost;
 
@@ -83,7 +82,7 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
     auto compute_max_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
         DecoredLandscape decored_landscape(landscape);
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            decored_landscape.apply(plan, i, solution->getCoef(i));
+            decored_landscape.apply(plan, i, solution.getCoef(i));
         }
         decored_landscape.apply(plan, option);
         const double eca = ECA::get().eval(decored_landscape);
@@ -112,7 +111,7 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
 
         const double best_option_cost = plan.getCost(best_option);
         assert(purchaised + best_option_cost <= B);
-        solution->add(best_option);
+        solution.add(best_option);
         purchaised += best_option_cost;
         prec_eca += best_ratio * best_option_cost;
 
@@ -133,11 +132,11 @@ Solution * Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Re
         }
     }
 
-    solution->setComputeTimeMs(chrono.timeMs());
-    solution->obj = prec_eca;
+    solution.setComputeTimeMs(chrono.timeMs());
+    solution.obj = prec_eca;
     if(log_level >= 1) {
-        std::cout << name() << ": Complete solving : " << solution->getComputeTimeMs() << " ms" << std::endl;
-        std::cout << name() << ": ECA from obj : " << solution->obj << std::endl;
+        std::cout << name() << ": Complete solving : " << solution.getComputeTimeMs() << " ms" << std::endl;
+        std::cout << name() << ": ECA from obj : " << solution.obj << std::endl;
     }    
 
     return solution;
