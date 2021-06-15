@@ -1,6 +1,7 @@
 #ifndef SOLVER_HPP
 #define SOLVER_HPP
 
+#include <cassert> // assert
 #include <string> // std::string
 #include <list> // std::list
 #include <map> // std::map

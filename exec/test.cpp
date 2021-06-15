@@ -115,8 +115,8 @@ int main() {
                     deja_select[reverse_a] = true;
 
                     RestorationPlan<Landscape>::Option option = plan.addOption(15 * -std::log(sub_landscape->getProbability(a)));
-                    plan.addArc(option, a, std::sqrt(sub_landscape->getProbability(a)));
-                    plan.addArc(option, reverse_a, std::sqrt(sub_landscape->getProbability(a)));
+                    plan.addArc(option, a, (1 + sub_landscape->getProbability(a)) / 2 );
+                    plan.addArc(option, reverse_a, (1 + sub_landscape->getProbability(a)) / 2);
                 }
 
                 StdLandscapeParser::get().write(*sub_landscape, "instances", "quebec-" + std::to_string(n) + "-" + std::to_string(i));

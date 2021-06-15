@@ -1,6 +1,6 @@
 #include "solvers/glutton_eca_inc.hpp"
 
-Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const RestorationPlan<Landscape> & plan, const double B) const {
     Solution solution(landscape, plan);
     const int log_level = params.at("log")->getInt();
     const bool parallel = params.at("parallel")->getBool();
@@ -22,7 +22,7 @@ Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Rest
     auto max_option = [](std::pair<double, RestorationPlan<Landscape>::Option> p1, std::pair<double, RestorationPlan<Landscape>::Option> p2) {
         return (p1.first > p2.first) ? p1 : p2;
     };
-    auto compute_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
+    auto compute_option = [&landscape, &plan, &prec_eca, &solution] (RestorationPlan<Landscape>::Option option) {
         DecoredLandscape decored_landscape(landscape);
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             decored_landscape.apply(plan, i, solution.getCoef(i));
@@ -34,8 +34,8 @@ Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Rest
         return std::pair<double, RestorationPlan<Landscape>::Option>(ratio, option);
     };
     for(;;) {
-        options.erase(std::remove_if(options.begin(), options.end(), 
-                [&] (RestorationPlan<Landscape>::Option i) { return plan.getCost(i) > B-purchaised; }), options.end());
+        auto new_end_it = std::remove_if(options.begin(), options.end(), [&] (RestorationPlan<Landscape>::Option i) { return plan.getCost(i) > B-purchaised; });
+        options.erase(new_end_it, options.end());
 
         if(options.empty()) break;
 
