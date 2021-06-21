@@ -49,8 +49,10 @@ class RestorationPlan{
         RestorationPlan(const RestorationPlan<LS> & rp) : _landscape(rp.getLandscape()), _nodeMap(_landscape.getNetwork()), _arcMap(_landscape.getNetwork()) { assert(false && "No fucking copy constructor"); }
         RestorationPlan(RestorationPlan<LS>&& rp) : _landscape(rp.getLandscape()), _nodeMap(_landscape.getNetwork()), _arcMap(_landscape.getNetwork()) { assert(false && "No fucking move constructor"); }
         ~RestorationPlan() {}
+        RestorationPlan<LS> & operator=(const RestorationPlan<LS>&) { assert(false && "Fuck"); return *this; };
+        RestorationPlan<LS> & operator=(RestorationPlan<LS>&&) { assert(false && "Fuck"); return *this; };
             
-        const LS & getLandscape() const { return _landscape; }
+        const LS & getLandscape() const noexcept { return _landscape; }
 
         /**
          * @brief Get the number of nodes concerned by option **i**
@@ -59,9 +61,19 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        int getNbNodes(Option i) const {
+        int getNbNodes(Option i) const noexcept {
             assert(contains(i));
             return _options_nodes[i].size();
+        }
+
+        /**
+         * @brief Get the number of nodes concerned by at least one option
+         * @return int
+         * @time \f$O(1)\f$
+         * @space \f$O(1)\f$
+         */
+        int getNbNodes() const noexcept {
+            return _nodeMap.size();
         }
 
         /**
@@ -71,9 +83,19 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        int getNbArcs(Option i) const {
+        int getNbArcs(Option i) const noexcept {
             assert(contains(i));
             return _options_arcs[i].size();
+        }
+
+        /**
+         * @brief Get the number of arcs concerned by at least one option
+         * @return int
+         * @time \f$O(1)\f$
+         * @space \f$O(1)\f$
+         */
+        int getNbArcs() const noexcept {
+            return _arcMap.size();
         }
 
         /**
@@ -83,9 +105,19 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        int getNbElements(Option i) const {
+        int getNbElements(Option i) const noexcept {
             assert(contains(i));
             return getNbNodes(i) + getNbArcs(i);
+        }
+
+        /**
+         * @brief Get the number of nodes and arcs concerned by at least one option
+         * @return int 
+         * @time \f$O(1)\f$
+         * @space \f$O(1)\f$
+         */
+        int getNbElements() const noexcept {
+            return getNbNodes() + getNbArcs();
         }
 
         /**
@@ -96,7 +128,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Option i, Node v) const {
+        bool contains(Option i, Node v) const noexcept {
             assert(contains(i));
             return _options_nodes_idsMap[i].find(v) != _options_nodes_idsMap[i].end();
         }
@@ -109,7 +141,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Option i, Arc a) const { 
+        bool contains(Option i, Arc a) const noexcept { 
             assert(contains(i)); 
             return _options_arcs_idsMap[i].find(a) != _options_arcs_idsMap[i].end();
         }
@@ -121,7 +153,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Node v) const { return _nodeMap[v].size() > 0; }
+        bool contains(Node v) const noexcept { return _nodeMap[v].size() > 0; }
 
         /**
          * @brief Test if there is an option concerning the arc **a**
@@ -130,7 +162,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$
          */
-        bool contains(Arc a) const { return _arcMap[a].size() > 0; }
+        bool contains(Arc a) const noexcept { return _arcMap[a].size() > 0; }
 
         /**
          * @brief Add the node **v** to the option **i**
@@ -140,7 +172,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        void addNode(Option i, Node v, double quality_gain) {
+        void addNode(Option i, Node v, double quality_gain) noexcept {
             assert(contains(i));
             if(contains(i, v)) {
                 setQualityGain(i, v, getQualityGain(i,v) + quality_gain);
@@ -159,7 +191,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i) + \log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        void addArc(Option i, Arc a, double restored_probability) {
+        void addArc(Option i, Arc a, double restored_probability) noexcept {
             assert(contains(i)); 
             if(contains(i, a)) {
                 setRestoredProbability(i, a, std::max(getRestoredProbability(i,a), restored_probability));
@@ -177,7 +209,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeNode(Option i, Node v) {
+        void removeNode(Option i, Node v) noexcept {
             assert(contains(i)); 
             if(!contains(i, v)) return;
             const int id = _options_nodes_idsMap[i][v];
@@ -198,7 +230,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i) + \log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeArc(Option i, Arc a) {
+        void removeArc(Option i, Arc a) noexcept {
             assert(contains(i));
             if(!contains(i, a)) return;
             const int id = _options_arcs_idsMap[i][a];
@@ -218,7 +250,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(v)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeNode(Node v) {
+        void removeNode(Node v) noexcept {
             if(!contains(v)) return;
             for(auto const& [i, val] : _nodeMap[v]) {
                 const int id = _options_nodes_idsMap[i][v];
@@ -239,7 +271,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(a)} \log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void removeArc(Arc a) {
+        void removeArc(Arc a) noexcept {
             if(!contains(a)) return;
             for(auto const& [i, val] : _arcMap[a]) {
                 const int id = _options_arcs_idsMap[i][a];
@@ -262,7 +294,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        double getQualityGain(Option i, Node v) const { 
+        double getQualityGain(Option i, Node v) const noexcept { 
             assert(contains(i, v)); 
             return _nodeMap[v].at(i);
         }
@@ -275,7 +307,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        double getRestoredProbability(Option i, Arc a) const {
+        double getRestoredProbability(Option i, Arc a) const noexcept {
             assert(contains(i, a)); 
             return _arcMap[a].at(i);
         }
@@ -288,7 +320,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(v))\f$
          * @space \f$O(1)\f$ 
          */
-        void setQualityGain(Option i, Node v, double quality_gain) {
+        void setQualityGain(Option i, Node v, double quality_gain) noexcept {
             if(!contains(i, v)) return;
             const int id = _options_nodes_idsMap[i][v];
             _options_nodes[i][id].second = quality_gain;
@@ -304,7 +336,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(a)} \log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void moveQualityGains(Node from, Node to, double scale=1.0) {
+        void moveQualityGains(Node from, Node to, double scale=1.0) noexcept {
             if(!contains(from)) return;            
             std::map<Option, double> & from_m = _nodeMap[from];
             for(auto it = from_m.begin(); it != from_m.end(); ++it) {
@@ -323,7 +355,7 @@ class RestorationPlan{
          * @time \f$O(\log \#options(a))\f$
          * @space \f$O(1)\f$ 
          */
-        void setRestoredProbability(Option i, Arc a, double restored_probability) {
+        void setRestoredProbability(Option i, Arc a, double restored_probability) noexcept {
             if(!contains(i, a)) return;
             const int id = _options_arcs_idsMap[i][a];
             _options_arcs[i][id].second = restored_probability;
@@ -337,7 +369,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options(a)} \log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
-        void updateProbability(Arc a, double probability_scale) {
+        void updateProbability(Arc a, double probability_scale) noexcept {
             if(!contains(a)) return;
             std::map<Option, double> & m = _arcMap[a];
             for(auto it = m.begin(); it != m.end(); ++it) {
@@ -356,7 +388,7 @@ class RestorationPlan{
          * @time \f$O(\log \#nodes(i))\f$
          * @space \f$O(1)\f$ 
          */
-        double id(Option i, Node v) const { return _options_nodes_idsMap.at(i).at(v); }
+        double id(Option i, Node v) const noexcept { return _options_nodes_idsMap.at(i).at(v); }
 
         /**
          * @brief  Get the id of the arc **a** in the option **i**
@@ -366,7 +398,7 @@ class RestorationPlan{
          * @time \f$O(\log \#arcs(i))\f$
          * @space \f$O(1)\f$ 
          */
-        double id(Option i, Arc a) const { 
+        double id(Option i, Arc a) const noexcept { 
             return _options_arcs_idsMap.at(i).at(a);
         }
 
@@ -377,7 +409,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        Option addOption(double c) {
+        Option addOption(double c) noexcept {
             _options_nodes_idsMap.emplace_back();
             _options_arcs_idsMap.emplace_back();
             _options_nodes.emplace_back();
@@ -392,7 +424,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        int getNbOptions() const { return _costs.size(); }
+        int getNbOptions() const noexcept { return _costs.size(); }
 
         /**
          * @brief Return true if the restoration plan contains an option of id **i**
@@ -401,7 +433,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        bool contains(Option i) const { return i>=0 && i<getNbOptions(); }
+        bool contains(Option i) const noexcept { return i>=0 && i<getNbOptions(); }
 
         /**
          * @brief Set the cost of option **i**
@@ -410,7 +442,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        void setCost(Option i, double cost) { _costs[i] = cost; }
+        void setCost(Option i, double cost) noexcept { _costs[i] = cost; }
 
         /**
          * @brief Get the cost of option **i**
@@ -419,7 +451,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        double getCost(Option i) const { return _costs[i]; }
+        double getCost(Option i) const noexcept { return _costs[i]; }
 
         /**
          * @brief Test if option **i** is empty 
@@ -429,7 +461,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        bool isEmpty(Option i) const { return _options_nodes[i].size()>0 || _options_arcs[i].size()>0; }
+        bool isEmpty(Option i) const noexcept { return _options_nodes[i].size()>0 || _options_arcs[i].size()>0; }
 
         /**
          * @brief Returns the map of options concerning the node **v**
@@ -438,7 +470,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::map<Option, double> & getOptions(Node v) const { return _nodeMap[v]; }
+        const std::map<Option, double> & getOptions(Node v) const noexcept { return _nodeMap[v]; }
 
         /**
          * @brief Returns the map of options concerning the arc **a**
@@ -447,7 +479,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::map<Option, double> & getOptions(Arc a) const { return _arcMap[a]; }
+        const std::map<Option, double> & getOptions(Arc a) const noexcept { return _arcMap[a]; }
 
         /**
          * @brief Returns the map of options concerning the node **v**
@@ -456,7 +488,7 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::vector<std::pair<Node, double>> & getNodes(Option i) const { return _options_nodes[i]; }
+        const std::vector<std::pair<Node, double>> & getNodes(Option i) const noexcept { return _options_nodes[i]; }
 
         /**
          * @brief Returns the map of options concerning the arc **a**
@@ -465,14 +497,14 @@ class RestorationPlan{
          * @time \f$O(1)\f$
          * @space \f$O(1)\f$ 
          */
-        const std::vector<std::pair<Arc, double>> & getArcs(Option i) const { return _options_arcs[i]; }
+        const std::vector<std::pair<Arc, double>> & getArcs(Option i) const noexcept { return _options_arcs[i]; }
 
         /**
          * @brief Erase invalid nodes from the restoration plan
          * @time \f$O(\sum_{i \in options} \#nodes(i))\f$
          * @space \f$O(\#invalid\_nodes)\f$ 
          */
-        void eraseInvalidNodes() {
+        void eraseInvalidNodes() noexcept {
             const Graph & graph = _landscape.getNetwork();
             for(Option i=0; i<getNbOptions(); ++i) {
                 std::vector<int> free_ids;
@@ -503,7 +535,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options} \#arcs(i))\f$
          * @space \f$O(\#invalid\_arcs)\f$ 
          */
-        void eraseInvalidArcs() {
+        void eraseInvalidArcs() noexcept {
             const Graph & graph = _landscape.getNetwork();
             for(Option i=0; i<getNbOptions(); ++i) {
                 std::vector<int> free_ids;
@@ -534,7 +566,7 @@ class RestorationPlan{
          * @time \f$O(\sum_{i \in options} \#nodes(i) + \#arcs(i))\f$
          * @space \f$O(\#invalid\_nodes + \#invalid\_arcs)\f$ 
          */
-        void eraseInvalidElements() {
+        void eraseInvalidElements() noexcept {
             eraseInvalidNodes();
             eraseInvalidArcs();
         }
@@ -543,7 +575,7 @@ class RestorationPlan{
          * @brief Comptes the total cost of the restoration plan, i.e. sum of options costs
          * @return double 
          */
-        double totalCost() const { return std::accumulate(_costs.begin(), _costs.end(), 0.0); }
+        double totalCost() const noexcept { return std::accumulate(_costs.begin(), _costs.end(), 0.0); }
 };
 
 template <typename LS> //requires concepts::IsLandscape<LS> //c++20

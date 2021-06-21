@@ -16,6 +16,7 @@
 
 #include "Eigen/Dense"
 #include "lemon/dijkstra.h"
+#include "algorithms/multiplicative_dijkstra.h"
 
 #include "solvers/concept/solver.hpp"
 #include "fast-cpp-csv-parser/csv.h"
@@ -102,12 +103,49 @@ namespace Helper {
             for (typename GR::NodeIt t(g); t != lemon::INVALID; ++t) {
                 const int id_t = g.id(t);
                 Value & d_st = (*distances)(id_s, id_t);
-                if(s == t) { 
-                    d_st = 0; 
-                    continue;
-                }
                 if(! dijkstra.reached(t)) { 
                     d_st = std::numeric_limits<Value>::max(); 
+                    continue;
+                } 
+                d_st = dijkstra.dist(t);
+            }
+        }
+        return distances;
+    }
+
+    /**
+     * @brief Compute the distance matrix of a graph.
+     * 
+     * Generic implementation of computing the distance matrix of a graph by running dijkstra for each node.
+     * The probability map values must support numeric operations.
+     * Complexities are $O((m+n) \cdot \log n)$ time and $O(n^2)$ space, where $n$ is the number of nodes and $m$ the number of arcs.
+     * Diagonal entries are $1$ and unreachable nodes entries are $0$.
+     * 
+     * @tparam GR : type of graph
+     * @tparam DM : type of length map
+     * @param g : graph
+     * @param p : probability map
+     * @return Eigen::Matrix<typename DM::Value, Eigen::Dynamic, Eigen::Dynamic>* 
+     */
+    template <typename GR, typename DM>
+    static Eigen::Matrix<typename DM::Value, Eigen::Dynamic, Eigen::Dynamic> * multDistanceMatrix(const GR & g, DM & p) {
+        typedef typename DM::Value Value;
+
+        const int n = lemon::countNodes(g);
+        Eigen::Matrix<Value,Eigen::Dynamic, Eigen::Dynamic> * distances = new Eigen::Matrix<Value, Eigen::Dynamic, Eigen::Dynamic>(n, n);
+        distances->fill(0);
+        
+        lemon::MultiplicativeSimplerDijkstra<GR, DM> dijkstra(g, p);  
+        
+        for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
+            const int id_s = g.id(s);
+            dijkstra.run(s);
+
+            for (typename GR::NodeIt t(g); t != lemon::INVALID; ++t) {
+                const int id_t = g.id(t);
+                Value & d_st = (*distances)(id_s, id_t);
+                if(! dijkstra.reached(t)) { 
+                    d_st = 0; 
                     continue;
                 } 
                 d_st = dijkstra.dist(t);

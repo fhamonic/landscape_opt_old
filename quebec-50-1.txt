@@ -59,6 +59,6 @@ add option: 0.2701555346
 current purchaised: 9.892190241
 current ECA: 6980.870661
 remaining : 0
-glutton_eca_inc: Complete solving : 104 ms
+glutton_eca_inc: Complete solving : 71 ms
 glutton_eca_inc: ECA from obj : 6980.870661
-104 ms, ECA = 6980.870661 cost = 9.892190
+71 ms, ECA = 6980.870661 cost = 9.892190

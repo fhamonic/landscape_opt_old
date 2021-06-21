@@ -1,7 +1,10 @@
 #include "solvers/glutton_eca_inc.hpp"
 
-Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
+Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const RestorationPlan<Landscape> & plan, const double B) const {
     Solution solution(landscape, plan);
+
+    assert(plan.getNbNodes() == 0);
+
     const int log_level = params.at("log")->getInt();
     const bool parallel = params.at("parallel")->getBool();
     Chrono chrono;
@@ -18,24 +21,28 @@ Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Rest
     if(log_level > 1) {
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
+    auto p_matrix = Helper::multDistanceMatrix(graph, landscape.getProbabilityMap());
 
     auto max_option = [](std::pair<double, RestorationPlan<Landscape>::Option> p1, std::pair<double, RestorationPlan<Landscape>::Option> p2) {
         return (p1.first > p2.first) ? p1 : p2;
     };
-    auto compute_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
-        DecoredLandscape decored_landscape(landscape);
-        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            decored_landscape.apply(plan, i, solution.getCoef(i));
+    auto compute_option = [&landscape, &plan, &prec_eca, &p_matrix, &solution] (RestorationPlan<Landscape>::Option option) {
+        const Graph_t & graph = landscape.getNetwork();
+        for (Graph_t::NodeIt k(graph); k != lemon::INVALID; ++k) {
+
         }
-        decored_landscape.apply(plan, option);
-        const double eca = ECA::get().eval(decored_landscape);
+
+        
+
+       
+        const double eca = 0;
         const double ratio = (eca - prec_eca) / plan.getCost(option);
 
         return std::pair<double, RestorationPlan<Landscape>::Option>(ratio, option);
     };
     for(;;) {
-        options.erase(std::remove_if(options.begin(), options.end(), 
-                [&] (RestorationPlan<Landscape>::Option i) { return plan.getCost(i) > B-purchaised; }), options.end());
+        auto new_end_it = std::remove_if(options.begin(), options.end(), [&] (RestorationPlan<Landscape>::Option i) { return plan.getCost(i) > B-purchaised; });
+        options.erase(new_end_it, options.end());
 
         if(options.empty()) break;
 
