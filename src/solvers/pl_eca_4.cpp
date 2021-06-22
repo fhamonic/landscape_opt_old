@@ -41,33 +41,31 @@ namespace Solvers::PL_ECA_4_Vars {
     };
 
 
-    class XVar : public OSI_Builder::VarType {
-        private:
-            const ContractionResult & _cr;
-        public:
-            XVar(const ContractionResult & cr): VarType(lemon::countArcs(cr.landscape->getNetwork())), _cr(cr) {}
-            int id(StaticGraph_t::Arc a) const { 
-                const int id = _cr.landscape->getNetwork().id(a);
-                assert(id >=0 && id < _number); return _offset + id; 
-            }
+    struct XVar : public OSI_Builder::VarType {
+        const ContractionResult & _cr;
+
+        XVar(const ContractionResult & cr): VarType(lemon::countArcs(cr.landscape->getNetwork())), _cr(cr) {}
+        int id(StaticGraph_t::Arc a) const { 
+            const int id = _cr.landscape->getNetwork().id(a);
+            assert(id >=0 && id < _number); return _offset + id; 
+        }
     };
-    class RestoredXVar : public OSI_Builder::VarType {
-        private:
-            const ContractionResult & _cr;
-            std::vector<int> offsets;
-        public:
-            RestoredXVar(const ContractionResult & cr): _cr(cr) {
-                offsets.resize(cr.plan->getNbOptions(), -1);
-                int cpt = 0;
-                for(RestorationPlan<Landscape>::Option i=0; i<cr.plan->getNbOptions(); ++i)
-                { offsets[i] = cpt; cpt += cr.plan->getNbArcs(i); }
-                _number = cpt;
-            }
-            int id(StaticGraph_t::Arc a, RestorationPlan<Landscape>::Option option) const {
-                assert(offsets[option] >= 0); 
-                const int id = offsets.at(option) + _cr.plan->id(option, a);
-                assert(id >=0 && id < _number); return _offset + id; 
-            }
+    struct RestoredXVar : public OSI_Builder::VarType {
+        const ContractionResult & _cr;
+        std::vector<int> offsets;
+            
+        RestoredXVar(const ContractionResult & cr): _cr(cr) {
+            offsets.resize(cr.plan->getNbOptions(), -1);
+            int cpt = 0;
+            for(RestorationPlan<Landscape>::Option i=0; i<cr.plan->getNbOptions(); ++i)
+            { offsets[i] = cpt; cpt += cr.plan->getNbArcs(i); }
+            _number = cpt;
+        }
+        int id(StaticGraph_t::Arc a, RestorationPlan<Landscape>::Option option) const {
+            assert(offsets[option] >= 0); 
+            const int id = offsets.at(option) + _cr.plan->id(option, a);
+            assert(id >=0 && id < _number); return _offset + id; 
+        }
     };
     class FVar : public OSI_Builder::VarType {
         public:
