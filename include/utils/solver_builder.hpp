@@ -55,13 +55,21 @@ namespace SolverBuilder_Utils {
             );
             boost::sort(refs, [](auto & p1, auto & p2){ return p1.first < p2.first; });
     
-            auto first = refs.begin();
-            auto next = ++first;
-            auto end = refs.end();
-            for(; next != end; first=next, ++next) {
-                if(first->first != next->first) continue;
-                
+
+            const auto begin = refs.begin();
+            auto first = begin;
+            const auto end = refs.end();
+            for(auto next = ++first; next != end; ++next) {
+                if(first->first != next->first) {
+                    ++first;
+                    *first = *next;
+                    continue;
+                }
+                first->second += next->second;               
             }
+            const size_t new_length = std::distance(begin, first+1);
+            _indices.resize(new_length);
+            _coefficients.resize(new_length);
 
         }
     };
@@ -154,12 +162,12 @@ namespace SolverBuilder_Utils {
 
 
     struct quadratic_ineq_constraint {
-        double lower_bound, upper_bound;
-        std::vector<int> indices;
-        std::vector<double> coefficients;
-        quadratic_ineq_constraint()
-                : lower_bound{std::numeric_limits<double>::min()}
-                , upper_bound{std::numeric_limits<double>::max()} {}
+        InequalitySense sense;
+        LinearExpression linear_expression;
+        std::vector<int> _quad_indices_1;
+        std::vector<int> _quad_indices_2;
+        std::vector<double> _indices;
+        quadratic_ineq_constraint() = default;
     };
 
     class quadratic_ineq_constraint_lhs_easy_init {
