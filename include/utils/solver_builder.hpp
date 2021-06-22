@@ -10,7 +10,9 @@
 #ifndef SOLVER_BUILDER_HPP
 #define SOLVER_BUILDER_HPP
 
+#include <cmath>
 #include <functional>
+#include <memory>
 #include <numeric>
 #include <string>
 #include <vector>
@@ -53,9 +55,10 @@ namespace SolverBuilder_Utils {
                 std::back_inserter(refs),
                 [](auto & p) { std::make_pair(*p.first, *p.second); }
             );
-            boost::sort(refs, [](auto & p1, auto & p2){ return p1.first < p2.first; });
+            boost::sort(refs, 
+                [](auto & p1, auto & p2){ return p1.first < p2.first; }
+            );
     
-
             const auto begin = refs.begin();
             auto first = begin;
             const auto end = refs.end();
@@ -70,7 +73,6 @@ namespace SolverBuilder_Utils {
             const size_t new_length = std::distance(begin, first+1);
             _indices.resize(new_length);
             _coefficients.resize(new_length);
-
         }
     };
 
@@ -93,7 +95,8 @@ namespace SolverBuilder_Utils {
             constraint_data.linear_expression.add(-c);
             return *this;
         }
-        linear_ineq_constraint_lhs_easy_init& operator()(int id, double coef=1) { 
+        linear_ineq_constraint_lhs_easy_init& operator()(int id
+                , double coef=1) { 
             constraint_data.linear_expression.add(id, coef);
             return *this;
         }
@@ -123,7 +126,8 @@ namespace SolverBuilder_Utils {
             constraint_data.linear_expression.add(c);
             return *this;
         }
-        linear_ineq_constraint_rhs_easy_init& operator()(int id, double coef=1) { 
+        linear_ineq_constraint_rhs_easy_init& operator()(int id
+                , double coef=1) {
             constraint_data.linear_expression.add(id, -coef);
             return *this;
         }    
@@ -143,7 +147,7 @@ namespace SolverBuilder_Utils {
     private:
         linear_range_constraint & constraint_data;
     public:
-        linear_range_constraint_lhs_easy_init(linear_range_constraint & data) 
+        linear_range_constraint_lhs_easy_init(linear_range_constraint & data)
                 : constraint_data(data) {}
         linear_range_constraint_lhs_easy_init& lower(double c) { 
             constraint_data.lower_bound = c;
@@ -153,7 +157,8 @@ namespace SolverBuilder_Utils {
             constraint_data.upper_bound = c;
             return *this;
         }
-        linear_range_constraint_lhs_easy_init& operator()(int id, double coef=1) { 
+        linear_range_constraint_lhs_easy_init& operator()(int id,
+                double coef=1) { 
             constraint_data.linear_expression.add(id, coef);
             return *this;
         }
@@ -161,14 +166,31 @@ namespace SolverBuilder_Utils {
 
 
 
+    class QuadraticExpression {
+    private:
+        LinearExpression linear_expression;
+        std::vector<int> quad_indices_1;
+        std::vector<int> quad_indices_2;
+        std::vector<double> quad_coefficients;
+    public:
+        void add(double c) { linear_expression.add(c); }
+        void add(int id, double coef=1) {
+            linear_expression.add(id, coef);
+        }
+        void add(int id_1, int id_2, double coef=1) {
+            quad_indices_1.push_back(id_1);
+            quad_indices_2.push_back(id_2);
+            quad_coefficients.push_back(coef);
+        }
+    };
+
     struct quadratic_ineq_constraint {
         InequalitySense sense;
-        LinearExpression linear_expression;
-        std::vector<int> _quad_indices_1;
-        std::vector<int> _quad_indices_2;
-        std::vector<double> _indices;
+        QuadraticExpression quadratic_expression;
         quadratic_ineq_constraint() = default;
     };
+
+    class quadratic_ineq_constraint_rhs_easy_init;
 
     class quadratic_ineq_constraint_lhs_easy_init {
     private:
@@ -176,17 +198,50 @@ namespace SolverBuilder_Utils {
     public:
         quadratic_ineq_constraint_lhs_easy_init(quadratic_ineq_constraint & data) 
                 : constraint_data(data) {}
-        quadratic_ineq_constraint_lhs_easy_init& lower(double c) { 
-            constraint_data.lower_bound = c;
-            return *this;
-        }
-        quadratic_ineq_constraint_lhs_easy_init& upper(double c) { 
-            constraint_data.upper_bound = c;
+        quadratic_ineq_constraint_lhs_easy_init& operator()(double c) {
+            constraint_data.quadratic_expression.add(-c);
             return *this;
         }
         quadratic_ineq_constraint_lhs_easy_init& operator()(int id, double coef=1) { 
-            constraint_data.indices.push_back(id);
-            constraint_data.coefficients.push_back(coef);
+            constraint_data.quadratic_expression.add(id, coef);
+            return *this;
+        }
+        quadratic_ineq_constraint_lhs_easy_init& operator()(int id_1, int id_2, double coef=1) { 
+            constraint_data.quadratic_expression.add(id_1, id_2, coef);
+            return *this;
+        }
+
+
+        quadratic_ineq_constraint_rhs_easy_init&& lower() { 
+            constraint_data.sense = LESS;
+            return quadratic_ineq_constraint_rhs_easy_init(std::move(constraint_data));
+        }
+        quadratic_ineq_constraint_rhs_easy_init&& equal() {
+            constraint_data.sense = EQUAL;
+            return quadratic_ineq_constraint_rhs_easy_init(std::move(constraint_data));
+        }
+        quadratic_ineq_constraint_rhs_easy_init&& greater() { 
+            constraint_data.sense = GREATER;
+            return quadratic_ineq_constraint_rhs_easy_init(std::move(constraint_data));
+        }
+    };
+
+    class quadratic_ineq_constraint_rhs_easy_init {
+    private:
+        quadratic_ineq_constraint & constraint_data;
+    public:
+        quadratic_ineq_constraint_rhs_easy_init(quadratic_ineq_constraint&& data) 
+                : constraint_data(data) {}
+        quadratic_ineq_constraint_rhs_easy_init& operator()(double c) {
+            constraint_data.quadratic_expression.add(c);
+            return *this;
+        }
+        quadratic_ineq_constraint_rhs_easy_init& operator()(int id, double coef=1) { 
+            constraint_data.quadratic_expression.add(id, -coef);
+            return *this;
+        }
+        quadratic_ineq_constraint_rhs_easy_init& operator()(int id_1, int id_2, double coef=1) { 
+            constraint_data.quadratic_expression.add(id_1, id_2, -coef);
             return *this;
         }
     };
@@ -219,42 +274,39 @@ class SolverBuilder {
                 bool isInteger() { return _integer; }
         };
     private:
-        int nb_vars;
-        int nb_entries;
-        
+        int nb_vars;        
         std::vector<VarType*> varTypes;
 
-        double * objective;
-        double * col_lb;
-        double * col_ub;
+        std::unique_ptr<double[]> objective;
+        std::unique_ptr<double[]> col_lb;
+        std::unique_ptr<double[]> col_ub;
+        std::unique_ptr<std::string[]> col_names;
 
-        std::vector<int> row_indices_buffer;
-        std::vector<double> row_coeffs_buffer;
+        std::vector<int> starts;
+        std::vector<int> indices;
+        std::vector<double> coefficients;
+
         std::vector<double> row_lb;
         std::vector<double> row_ub;
 
         std::vector<int> integers_variables;
-
-        std::vector<std::string> colNames;
-
-        CoinPackedMatrix * matrix;
     public:
-        OSI_Builder();
-        ~OSI_Builder();
+        // OSI_Builder();
+        // ~OSI_Builder();
         
-        OSI_Builder & addVarType(VarType * var_type);
-        void init();
-        OSI_Builder & setObjective(int  var_id, double coef);
-        OSI_Builder & setBounds(int  var_id, double lb, double ub);
-        OSI_Builder & buffEntry(int  var_id, double coef);
-        OSI_Builder & popEntryBuffer();
-        OSI_Builder & clearEntryBuffer();
-        OSI_Builder & pushRowWithoutClearing(double lb, double ub);
-        OSI_Builder & pushRow(double lb, double ub);
-        OSI_Builder & setColName(int var_id, std::string name);
+        // OSI_Builder & addVarType(VarType * var_type);
+        // void init();
+        // OSI_Builder & setObjective(int  var_id, double coef);
+        // OSI_Builder & setBounds(int  var_id, double lb, double ub);
+        // OSI_Builder & buffEntry(int  var_id, double coef);
+        // OSI_Builder & popEntryBuffer();
+        // OSI_Builder & clearEntryBuffer();
+        // OSI_Builder & pushRowWithoutClearing(double lb, double ub);
+        // OSI_Builder & pushRow(double lb, double ub);
+        // OSI_Builder & setColName(int var_id, std::string name);
 
-        OSI_Builder & setContinuous(int var_id);
-        OSI_Builder & setInteger(int var_id);
+        // OSI_Builder & setContinuous(int var_id);
+        // OSI_Builder & setInteger(int var_id);
         
         template <class OsiSolver>
         OsiSolver * buildSolver(int sense, bool relaxed=false) {
