@@ -1,5 +1,5 @@
-#ifndef PL_ECA_3_SOLVER_HPP
-#define PL_ECA_3_SOLVER_HPP
+#ifndef PL_ECA_4_SOLVER_HPP
+#define PL_ECA_4_SOLVER_HPP
 
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
@@ -8,38 +8,38 @@
 #include "precomputation/my_contraction_algorithm.hpp"
 
 namespace Solvers {
-    class PL_ECA_3 : public concepts::Solver {
+    class PL_ECA_4 : public concepts::Solver {
         public:
-            PL_ECA_3() {
+            PL_ECA_4() {
                 params["log"] = new IntParam(0);
                 params["timeout"] = new IntParam(3600);
                 params["relaxed"] = new IntParam(0);
                 params["fortest"] = new IntParam(0);
             }
 
-            PL_ECA_3 & setLogLevel(int log_level) {
+            PL_ECA_4 & setLogLevel(int log_level) {
                 params["log"]->set(log_level);
                 return *this;
             }
-            PL_ECA_3 & setTimeout(int seconds) {
+            PL_ECA_4 & setTimeout(int seconds) {
                 params["timeout"]->set(seconds);
                 return *this;
             }
-            PL_ECA_3 & setRelaxed(bool relaxed) {
+            PL_ECA_4 & setRelaxed(bool relaxed) {
                 params["relaxed"]->set(relaxed);
                 return *this;
             }
-            PL_ECA_3 & setFortest(int fortest) {
+            PL_ECA_4 & setFortest(int fortest) {
                 params["fortest"]->set(fortest);
                 return *this;
             }            
 
             Solution solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const;
 
-            const std::string name() const { return "pl_eca_3"; } 
+            const std::string name() const { return "pl_eca_4"; } 
 
             double eval(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, const Solution & solution) const;
     };
 }
 
-#endif //PL_ECA_3_SOLVER_HPP
+#endif //PL_ECA_4_SOLVER_HPP

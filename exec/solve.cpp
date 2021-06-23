@@ -21,6 +21,7 @@
 #include "solvers/glutton_eca_dec.hpp"
 #include "solvers/pl_eca_2.hpp"
 #include "solvers/pl_eca_3.hpp"
+#include "solvers/pl_eca_4.hpp"
 #include "solvers/randomized_rounding.hpp"
 
 #include "helper.hpp"
@@ -43,6 +44,8 @@ static void populate(std::list<concepts::Solver*> & solvers, std::map<std::strin
     (*pl_eca_2).setLogLevel(0);
     Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
     (*pl_eca_3).setLogLevel(0);
+    Solvers::PL_ECA_4 * pl_eca_4 = new Solvers::PL_ECA_4();
+    (*pl_eca_4).setLogLevel(0);
     Solvers::Randomized_Rounding_ECA * randomized_rounding = new Solvers::Randomized_Rounding_ECA();
     randomized_rounding->setLogLevel(0).setNbDraws(100);
 
@@ -53,6 +56,7 @@ static void populate(std::list<concepts::Solver*> & solvers, std::map<std::strin
     solvers.push_back(glutton_eca_dec);
     solvers.push_back(pl_eca_2);
     solvers.push_back(pl_eca_3);
+    solvers.push_back(pl_eca_4);
     solvers.push_back(randomized_rounding);
 
     for(concepts::Solver * solver : solvers) {

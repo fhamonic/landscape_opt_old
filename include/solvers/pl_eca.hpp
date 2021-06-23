@@ -57,4 +57,4 @@ class PL_ECA_Solver : public concepts::Solver {
         const std::string name() const { return "pl_eca"; }
 };
 
-#endif // PL_ECA_SOLVER_HPP
+#endif //PL_ECA_SOLVER_HPP

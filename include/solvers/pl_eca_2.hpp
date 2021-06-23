@@ -1,5 +1,5 @@
-#ifndef PL_ECA_2_Solver_HPP
-#define PL_ECA_2_Solver_HPP
+#ifndef PL_ECA_2_SOLVER_HPP
+#define PL_ECA_2_SOLVER_HPP
 
 #include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
@@ -37,4 +37,4 @@ namespace Solvers {
 }
 
 
-#endif // PL_ECA_SOLVER_HPP
+#endif //PL_ECA_2_SOLVER_HPP

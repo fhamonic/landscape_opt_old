@@ -165,7 +165,7 @@ void insert_variables(OSI_Builder & solver_builder, Variables & vars, Preprocess
 }
 
 void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, 
-        Variables & vars, bool relaxed, PreprocessedDatas & pdatas) {
+        Variables & vars, PreprocessedDatas & pdatas) {
 
     auto M_x_const = [&] (Graph_t::Node t, StaticGraph_t::Arc a) {
         const ContractionResult & cr = (*pdatas.contracted_instances)[t];
@@ -263,14 +263,6 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
         solver_builder.buffEntry(y_i, plan.getCost(i));
     }
     solver_builder.pushRow(0, B);
-    ////////////////////
-    // integer constraints
-    if(!relaxed) {
-        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            const int y_i = vars.y.id(i);
-            solver_builder.setInteger(y_i);
-        }
-    }
 }
 
 Solution Solvers::PL_ECA_3::solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const {
@@ -288,7 +280,7 @@ Solution Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restoration
         std::cout << name() << ": Complete preprocessing : " << chrono.lapTimeMs() << " ms" << std::endl;
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     }
-    fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
+    fill_solver(solver_builder, landscape, plan, B, vars, preprocessed_datas);
 #define WITH_GUROBI
 #ifndef WITH_GUROBI
     OsiSolverInterface * solver = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
@@ -348,7 +340,7 @@ Solution Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restoration
         const int offset = varType->getOffset();
         const int last_id = varType->getOffset() + varType->getNumber() - 1; 
         for(int i=offset; i<=last_id; i++) {
-            vtype[i] = (varType->isInteger() ? GRB_BINARY : GRB_CONTINUOUS);
+            vtype[i] = (!relaxed && varType->isInteger() ? GRB_BINARY : GRB_CONTINUOUS);
         }
     }
 
@@ -437,13 +429,12 @@ Solution Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restoration
 
 double Solvers::PL_ECA_3::eval(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, const Solution & solution) const {
     const int log_level = params.at("log")->getInt();
-    const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
     PreprocessedDatas preprocessed_datas(landscape, plan);
     OSI_Builder solver_builder = OSI_Builder();
     Variables vars(landscape, plan, preprocessed_datas);
     insert_variables(solver_builder, vars, preprocessed_datas);
-    fill_solver(solver_builder, landscape, plan, B, vars, relaxed, preprocessed_datas);
+    fill_solver(solver_builder, landscape, plan, B, vars, preprocessed_datas);
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         double y_i_value = solution[i];
