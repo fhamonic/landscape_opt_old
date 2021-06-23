@@ -175,7 +175,7 @@ void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::
                 constraint_lhs(cvars.x.id(a), -contracted_landscape.getProbability(a));
                 for(auto const& [option, restored_probability] : contracted_plan.getOptions(a)) {
                     constraint_lhs(vars.y.id(option), cvars.x.id(a), 
-                            restored_probability - contracted_landscape.getProbability(a));
+                            -(restored_probability - contracted_landscape.getProbability(a)));
                 }
             }
 
