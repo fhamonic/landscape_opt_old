@@ -110,7 +110,7 @@ namespace Solvers::PL_ECA_4_Vars {
             const ContractionResult & cr = (*pdatas.contracted_instances)[t];
             const StaticLandscape & contracted_landscape = *cr.landscape;
             const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
-            const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
+            // const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
             for(StaticGraph_t::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
                 // solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)));
                 solver.setColName(cvars.x.id(a), "x_t_" + node_str(t) + "(" + std::to_string(contracted_graph.id(cr.t)) + ")_a_" + std::to_string(contracted_graph.id(a)) + "(" + std::to_string(contracted_graph.id(contracted_graph.source(a))) + ","+ std::to_string(contracted_graph.id(contracted_graph.target(a))) + ")" );
@@ -139,7 +139,7 @@ void insert_variables(OSI_Builder & solver_builder, Variables & vars, Preprocess
     solver_builder.init();
 }
 
-void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::quadratic_ineq_constraint> & quad_exprs, const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, 
+void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::quadratic_ineq_constraint> & quad_constrs, const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, 
         Variables & vars, PreprocessedDatas & pdatas) {
     ////////////////////////////////////////////////////////////////////////
     // Columns : Objective
@@ -188,11 +188,10 @@ void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::
             // optimisation variable
             if(u == cr.t) constraint_rhs(f_t, -1);
             // injected flow
-            quad_exprs.push_back(constraint_rhs(contracted_landscape.getQuality(u)).take_data());
+            quad_constrs.push_back(constraint_rhs(contracted_landscape.getQuality(u)).take_data());
         }
     }
-    // restored_f_t <= f_t
-    // restored_f_t <= y_i * M
+    // restored_f_t <= y_i * f_t
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         for(auto const& [t, quality_gain] : plan.getNodes(i)) {
@@ -201,7 +200,7 @@ void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::
             const int restored_f_t = cvars.restored_f.id(i);
 
             SolverBuilder_Utils::quadratic_ineq_constraint_lhs_easy_init constraint;
-            quad_exprs.push_back(constraint(restored_f_t).less()(y_i, f_t).take_data());
+            quad_constrs.push_back(constraint(restored_f_t).less()(y_i, f_t).take_data());
         }
     }
     ////////////////////
@@ -228,8 +227,8 @@ Solution Solvers::PL_ECA_4::solve(const Landscape & landscape, const Restoration
         std::cout << name() << ": Complete preprocessing : " << chrono.lapTimeMs() << " ms" << std::endl;
         std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
     }
-    std::vector<SolverBuilder_Utils::quadratic_ineq_constraint> quad_exprs;
-    fill_solver(solver_builder, quad_exprs, landscape, plan, B, vars, preprocessed_datas);
+    std::vector<SolverBuilder_Utils::quadratic_ineq_constraint> quad_constrs;
+    fill_solver(solver_builder, quad_constrs, landscape, plan, B, vars, preprocessed_datas);
 
     const int nb_vars = solver_builder.getNbVars();
     double * objective = solver_builder.getObjective();
@@ -268,18 +267,20 @@ Solution Solvers::PL_ECA_4::solve(const Landscape & landscape, const Restoration
     ////////////////////
     GRBsetintattr(model, GRB_INT_ATTR_MODELSENSE, GRB_MAXIMIZE);
 
-    for(auto & expr : quad_exprs) {
+    std::cout << "quad constraints: " << quad_constrs.size() << std::endl;
+
+    for(auto & expr : quad_constrs) {
         auto & quad = expr.quadratic_expression;
         GRBaddqconstr(model,
                 quad.getNbLinearTerms(),
-                quad.getLinearIndices(),
-                quad.getLinearCoefficients(), 
+                quad.getLinearIndicesData(),
+                quad.getLinearCoefficientsData(), 
                 quad.getNbQuadTerms(), 
-                quad.getQuadIndices1(), 
-                quad.getQuadIndices2(),
-                quad.getQuadCoefficients(),
+                quad.getQuadIndices1Data(), 
+                quad.getQuadIndices2Data(),
+                quad.getQuadCoefficientsData(),
                 (expr.sense == SolverBuilder_Utils::LESS ? GRB_LESS_EQUAL : GRB_GREATER_EQUAL),
-                0, NULL);
+                -quad.getConstant(), NULL);
     }
 
 
@@ -348,8 +349,8 @@ double Solvers::PL_ECA_4::eval(const Landscape & landscape, const RestorationPla
     OSI_Builder solver_builder = OSI_Builder();
     Variables vars(landscape, plan, preprocessed_datas);
     insert_variables(solver_builder, vars, preprocessed_datas);
-    std::vector<SolverBuilder_Utils::quadratic_ineq_constraint> quad_exprs;
-    fill_solver(solver_builder, quad_exprs, landscape, plan, B, vars, preprocessed_datas);
+    std::vector<SolverBuilder_Utils::quadratic_ineq_constraint> quad_constrs;
+    fill_solver(solver_builder, quad_constrs, landscape, plan, B, vars, preprocessed_datas);
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);
         double y_i_value = solution[i];

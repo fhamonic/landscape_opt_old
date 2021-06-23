@@ -44,12 +44,14 @@ namespace SolverBuilder_Utils {
 
         double getConstant() const { return _constant; }
         int getNbTerms() const { return _indices.size(); }
-        int * getIndices() { return _indices.data(); }
-        double * getCoefficients() { 
+        int * getIndicesData() { return _indices.data(); }
+        double * getCoefficientsData() { 
             return _coefficients.data();
         }
-
-        
+        const std::vector<int> & getIndices() const { return _indices; }
+        const std::vector<double> & getCoefficients() const { 
+            return _coefficients;
+        }
 
         void simplify() {
             std::vector<boost::tuple<std::reference_wrapper<int>,
@@ -105,7 +107,7 @@ namespace SolverBuilder_Utils {
         linear_ineq_constraint_rhs_easy_init(linear_ineq_constraint&& data) 
                 : constraint_data(std::move(data)) {}
         linear_ineq_constraint_rhs_easy_init& operator()(double c) { 
-            constraint_data.linear_expression.add(c);
+            constraint_data.linear_expression.add(-c);
             return *this;
         }
         linear_ineq_constraint_rhs_easy_init& operator()(int id
@@ -121,7 +123,7 @@ namespace SolverBuilder_Utils {
     public:
         linear_ineq_constraint_lhs_easy_init() {}
         linear_ineq_constraint_lhs_easy_init& operator()(double c) { 
-            constraint_data.linear_expression.add(-c);
+            constraint_data.linear_expression.add(c);
             return *this;
         }
         linear_ineq_constraint_lhs_easy_init& operator()(int id
@@ -132,15 +134,18 @@ namespace SolverBuilder_Utils {
 
         linear_ineq_constraint_rhs_easy_init less() { 
             constraint_data.sense = LESS;
-            return linear_ineq_constraint_rhs_easy_init(std::move(constraint_data));
+            return linear_ineq_constraint_rhs_easy_init(
+                    std::move(constraint_data));
         }
         linear_ineq_constraint_rhs_easy_init equal() {
             constraint_data.sense = EQUAL;
-            return linear_ineq_constraint_rhs_easy_init(std::move(constraint_data));
+            return linear_ineq_constraint_rhs_easy_init(
+                    std::move(constraint_data));
         }
         linear_ineq_constraint_rhs_easy_init greater() { 
             constraint_data.sense = GREATER;
-            return linear_ineq_constraint_rhs_easy_init(std::move(constraint_data));
+            return linear_ineq_constraint_rhs_easy_init(
+                    std::move(constraint_data));
         }
     };
 
@@ -181,31 +186,40 @@ namespace SolverBuilder_Utils {
 
     class QuadraticExpression {
     private:
-        LinearExpression linear_expression;
-        std::vector<int> quad_indices_1;
-        std::vector<int> quad_indices_2;
+        LinearExpression _linear_expression;
+        std::vector<int> _quad_indices_1;
+        std::vector<int> _quad_indices_2;
         std::vector<double> quad_coefficients;
     public:
-        void add(double c) { linear_expression.add(c); }
+        void add(double c) { _linear_expression.add(c); }
         void add(int id, double coef=1) {
-            linear_expression.add(id, coef);
+            _linear_expression.add(id, coef);
         }
         void add(int id_1, int id_2, double coef=1) {
-            quad_indices_1.push_back(id_1);
-            quad_indices_2.push_back(id_2);
+            _quad_indices_1.push_back(id_1);
+            _quad_indices_2.push_back(id_2);
             quad_coefficients.push_back(coef);
         }
 
-        int getNbLinearTerms() { return linear_expression.getNbTerms(); }
-        int * getLinearIndices() { return linear_expression.getIndices(); }
-        double * getLinearCoefficients() { return linear_expression.getCoefficients(); }
+        const LinearExpression & getLineraExpression() const { return _linear_expression; }
 
-        int getNbQuadTerms() { return quad_indices_1.size(); }
-        int * getQuadIndices1() { return quad_indices_1.data(); }
-        int * getQuadIndices2() { return quad_indices_2.data(); }
-        double * getQuadCoefficients() { return quad_coefficients.data(); }
+        double getConstant() const { return _linear_expression.getConstant(); }
 
-        bool isLinear() { return quad_indices_1.empty(); }
+        int getNbLinearTerms() { return _linear_expression.getNbTerms(); }
+        int * getLinearIndicesData() { return _linear_expression.getIndicesData(); }
+        double * getLinearCoefficientsData() { return _linear_expression.getCoefficientsData(); }
+        const std::vector<int> & getLinearIndices() const { return _linear_expression.getIndices(); }
+        const std::vector<double> & getLinearCoefficients() const { return _linear_expression.getCoefficients(); }
+
+        int getNbQuadTerms() { return _quad_indices_1.size(); }
+        int * getQuadIndices1Data() { return _quad_indices_1.data(); }
+        int * getQuadIndices2Data() { return _quad_indices_2.data(); }
+        double * getQuadCoefficientsData() { return quad_coefficients.data(); }
+        const std::vector<int> & getQuadIndices1() const { return _quad_indices_1; }
+        const std::vector<int> & getQuadIndices2() const { return _quad_indices_2; }
+        const std::vector<double> & getQuadCoefficients() const { return quad_coefficients; }
+
+        bool isLinear() { return _quad_indices_1.empty(); }
     };
 
     struct quadratic_ineq_constraint {
@@ -223,7 +237,7 @@ namespace SolverBuilder_Utils {
                 quadratic_ineq_constraint&& data) 
                 : constraint_data(std::move(data)) {}
         quadratic_ineq_constraint_rhs_easy_init& operator()(double c) {
-            constraint_data.quadratic_expression.add(c);
+            constraint_data.quadratic_expression.add(-c);
             return *this;
         }
         quadratic_ineq_constraint_rhs_easy_init& operator()(int id,
@@ -247,7 +261,7 @@ namespace SolverBuilder_Utils {
     public:
         quadratic_ineq_constraint_lhs_easy_init() {}
         quadratic_ineq_constraint_lhs_easy_init& operator()(double c) {
-            constraint_data.quadratic_expression.add(-c);
+            constraint_data.quadratic_expression.add(c);
             return *this;
         }
         quadratic_ineq_constraint_lhs_easy_init& operator()(int id, double coef=1) { 
