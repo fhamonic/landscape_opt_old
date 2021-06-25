@@ -42,6 +42,7 @@ target_link_libraries(landscape_opt CONAN_PKG::fast-cpp-csv-parser)
 target_link_libraries(landscape_opt CONAN_PKG::tbb)
 target_link_libraries(landscape_opt CONAN_PKG::boost)
 target_link_libraries(landscape_opt CONAN_PKG::eigen)
+target_link_libraries(landscape_opt CONAN_PKG::range-v3)
 
 target_link_libraries(landscape_opt ${LEMON_LIBRARIES})
 target_link_libraries(landscape_opt ${COIN_LIBRARIES})

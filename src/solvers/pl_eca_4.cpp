@@ -1,6 +1,7 @@
 #include "solvers/pl_eca_4.hpp"
 
 #include "gurobi_c++.h"
+#include "utils/print_solver_builder.hpp"
 #include "utils/solver_builder.hpp"
 
 namespace Solvers::PL_ECA_4_Vars {
@@ -163,32 +164,32 @@ void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::
         const StaticLandscape & contracted_landscape = *cr.landscape;
         const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
         const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
-        // out_flow(u) - in_flow(u) <= w(u)
+        // out_flow(u) <= in_flow(u) + w(u)
         for(StaticGraph_t::NodeIt u(contracted_graph); u != lemon::INVALID; ++u) {
             SolverBuilder_Utils::quadratic_ineq_constraint_lhs_easy_init constraint_lhs;
             // out flow
-            for(StaticGraph_t::OutArcIt b(contracted_graph, u); b != lemon::INVALID; ++b) {
-                constraint_lhs(cvars.x.id(b), 1.0);
-            }
-            // in flow
-            for(StaticGraph_t::InArcIt a(contracted_graph, u); a != lemon::INVALID; ++a) {
-                constraint_lhs(cvars.x.id(a), -contracted_landscape.getProbability(a));
-                for(auto const& [option, restored_probability] : contracted_plan.getOptions(a)) {
-                    constraint_lhs(vars.y.id(option), cvars.x.id(a), 
-                            -(restored_probability - contracted_landscape.getProbability(a)));
-                }
-            }
+            for(StaticGraph_t::OutArcIt b(contracted_graph, u); b != lemon::INVALID; ++b)
+                constraint_lhs(cvars.x.id(b));
+            // optimisation variable
+            if(u == cr.t) constraint_lhs(f_t);
 
             auto constraint_rhs = constraint_lhs.less();
 
-            // optional injected flow
-            for(auto const& [option, quality_gain] : contracted_plan.getOptions(u)) {
-                constraint_rhs(vars.y.id(option), quality_gain);
+            // in flow
+            for(StaticGraph_t::InArcIt a(contracted_graph, u); a != lemon::INVALID; ++a) {
+                constraint_rhs(cvars.x.id(a), contracted_landscape.getProbability(a));
+                for(auto const& [option, restored_probability] : contracted_plan.getOptions(a)) {
+                    constraint_rhs(vars.y.id(option), cvars.x.id(a), 
+                            restored_probability - contracted_landscape.getProbability(a));
+                    break;
+                }
             }
-            // optimisation variable
-            if(u == cr.t) constraint_rhs(f_t, -1);
             // injected flow
-            quad_constrs.push_back(constraint_rhs(contracted_landscape.getQuality(u)).take_data());
+            constraint_rhs(contracted_landscape.getQuality(u));
+            for(auto const& [option, quality_gain] : contracted_plan.getOptions(u))
+                constraint_rhs(vars.y.id(option), quality_gain);
+                
+            quad_constrs.push_back(constraint_rhs.take_data());
         }
     }
     // restored_f_t <= y_i * f_t
@@ -261,6 +262,8 @@ Solution Solvers::PL_ECA_4::solve(const Landscape & landscape, const Restoration
     GRBsetintparam(env, GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
     GRBsetdblparam(env, GRB_DBL_PAR_TIMELIMIT, timeout);
     ////////////////////
+    GRBsetintparam(env, GRB_INT_PAR_NONCONVEX, 1);
+    ////////////////////
     GRBnewmodel(env, &model, "pl_eca_4", 0, NULL, NULL, NULL, NULL, NULL);
     GRBaddvars(model, nb_vars, 0, NULL, NULL, NULL, objective, col_lb, col_ub, vtype, NULL);
     GRBaddrangeconstrs(model, nb_rows, nb_elems, begins, indices, elements, row_lb, row_ub, NULL);
@@ -271,17 +274,30 @@ Solution Solvers::PL_ECA_4::solve(const Landscape & landscape, const Restoration
 
     for(auto & expr : quad_constrs) {
         auto & quad = expr.quadratic_expression;
-        GRBaddqconstr(model,
-                quad.getNbLinearTerms(),
-                quad.getLinearIndicesData(),
-                quad.getLinearCoefficientsData(), 
-                quad.getNbQuadTerms(), 
-                quad.getQuadIndices1Data(), 
-                quad.getQuadIndices2Data(),
-                quad.getQuadCoefficientsData(),
-                (expr.sense == SolverBuilder_Utils::LESS ? GRB_LESS_EQUAL : GRB_GREATER_EQUAL),
-                -quad.getConstant(), NULL);
+
+        if(!quad.isLinear()) {
+            SolverBuilder_Utils::operator<<(std::cout, expr) << std::endl;
+
+            GRBaddqconstr(model,
+                    quad.getNbLinearTerms(),
+                    quad.getLinearIndicesData(),
+                    quad.getLinearCoefficientsData(), 
+                    quad.getNbQuadTerms(), 
+                    quad.getQuadIndices1Data(), 
+                    quad.getQuadIndices2Data(),
+                    quad.getQuadCoefficientsData(),
+                    (expr.sense == SolverBuilder_Utils::LESS ? GRB_LESS_EQUAL : GRB_GREATER_EQUAL),
+                    -quad.getConstant(), NULL);
+        } else {
+            GRBaddconstr(model,
+                    quad.getNbLinearTerms(),
+                    quad.getLinearIndicesData(),
+                    quad.getLinearCoefficientsData(),
+                    (expr.sense == SolverBuilder_Utils::LESS ? GRB_LESS_EQUAL : GRB_GREATER_EQUAL),
+                    -quad.getConstant(), NULL);
+        }
     }
+
 
 
     if(log_level >= 1) {
