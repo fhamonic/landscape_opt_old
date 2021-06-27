@@ -191,13 +191,13 @@ namespace SolverBuilder_Utils {
 
         double getConstant() const { return _linear_expression.getConstant(); }
 
-        int getNbLinearTerms() { return _linear_expression.getNbTerms(); }
+        int getNbLinearTerms() const { return _linear_expression.getNbTerms(); }
         int * getLinearIndicesData() { return _linear_expression.getIndicesData(); }
         double * getLinearCoefficientsData() { return _linear_expression.getCoefficientsData(); }
         const std::vector<int> & getLinearIndices() const { return _linear_expression.getIndices(); }
         const std::vector<double> & getLinearCoefficients() const { return _linear_expression.getCoefficients(); }
 
-        int getNbQuadTerms() { return _quad_indices_1.size(); }
+        int getNbQuadTerms() const { return _quad_indices_1.size(); }
         int * getQuadIndices1Data() { return _quad_indices_1.data(); }
         int * getQuadIndices2Data() { return _quad_indices_2.data(); }
         double * getQuadCoefficientsData() { return quad_coefficients.data(); }
@@ -205,7 +205,7 @@ namespace SolverBuilder_Utils {
         const std::vector<int> & getQuadIndices2() const { return _quad_indices_2; }
         const std::vector<double> & getQuadCoefficients() const { return quad_coefficients; }
 
-        bool isLinear() { return _quad_indices_1.empty(); }
+        bool isLinear() const { return _quad_indices_1.empty(); }
 
         QuadraticExpression & simplify() {
             _linear_expression.simplify();
