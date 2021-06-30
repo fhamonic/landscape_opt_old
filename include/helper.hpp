@@ -157,9 +157,10 @@ namespace Helper {
 
     template <typename LS>
     double minNonZeroQuality(const LS & landscape) {
-        const Graph_t & graph = landscape.getNetwork();
+        using Graph = typename LS::Graph;
+        const Graph & graph = landscape.getNetwork();
         double min = std::numeric_limits<double>::max();
-        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+        for(typename Graph::NodeIt v(graph); v != lemon::INVALID; ++v) {
             if(landscape.getQuality(v) == 0) continue;
             min = std::min(min, landscape.getQuality(v));
         }
@@ -222,7 +223,9 @@ namespace Helper {
 
     template <typename LS>
     void printInstance(const LS & landscape, const RestorationPlan<LS>& plan, std::filesystem::path path) {
-        const Graph_t & graph = landscape.getNetwork();
+        using Graph = typename LS::Graph;
+        
+        const Graph & graph = landscape.getNetwork();
         std::string name = path.stem();
         
         auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
@@ -236,18 +239,18 @@ namespace Helper {
         double arrow_scale = (1-node_scale)*2/3;
         double arc_width = node_scale * a_max / 16;
                 
-        Graph_t::NodeMap<std::string> node_idsMap(graph, "");
-        Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::BLACK);
-        Graph_t::NodeMap<double> node_sizesMap(graph, arc_width * 0.9);
-        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+        typename Graph::NodeMap<std::string> node_idsMap(graph, "");
+        typename Graph::NodeMap<lemon::Color> node_colorsMap(graph, lemon::BLACK);
+        typename Graph::NodeMap<double> node_sizesMap(graph, arc_width * 0.9);
+        for(typename Graph::NodeIt v(graph); v != lemon::INVALID; ++v) {
             if(landscape.getQuality(v) == 0) continue;
             node_idsMap[v] = std::to_string(graph.id(v));
             node_colorsMap[v] = lemon::WHITE;
             node_sizesMap[v] = radius(landscape.getQuality(v));
         }
 
-        Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
-        Graph_t::ArcMap<double> arc_widths(graph, arc_width);
+        typename Graph::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
+        typename Graph::ArcMap<double> arc_widths(graph, arc_width);
 
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             for(auto const& [u, quality_gain] : plan.getNodes(i))
