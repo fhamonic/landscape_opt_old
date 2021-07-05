@@ -29,41 +29,44 @@
 #include "helper.hpp"
 #include "instances_helper.hpp"
 
-static void populate(std::list<concepts::Solver*> & solvers) {
+static std::vector<std::unique_ptr<concepts::Solver>> construct_solvers() {
+    std::vector<std::unique_ptr<concepts::Solver>> solvers;
     int log_pl = 3;
 
-    Solvers::Naive_ECA_Inc * naive_eca_inc = new Solvers::Naive_ECA_Inc();
-    (*naive_eca_inc).setLogLevel(0).setParallel(true);
-    Solvers::Naive_ECA_Dec * naive_eca_dec = new Solvers::Naive_ECA_Dec();
-    (*naive_eca_dec).setLogLevel(0).setParallel(true);
-    Solvers::Glutton_ECA_Inc * glutton_eca_inc = new Solvers::Glutton_ECA_Inc();
-    (*glutton_eca_inc).setLogLevel(0).setParallel(true);
-    Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
-    (*glutton_eca_dec).setLogLevel(0).setParallel(true);
-    Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
-    (*pl_eca_2).setLogLevel(log_pl);
-    Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(log_pl).setTimeout(3600);
-    Solvers::Randomized_Rounding_ECA * randomized_rounding = new Solvers::Randomized_Rounding_ECA();
-    randomized_rounding->setLogLevel(0).setNbDraws(1000).setParallel(true);
+    auto naive_eca_inc = std::make_unique<Solvers::Naive_ECA_Inc>();
+    naive_eca_inc.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(naive_eca_inc));
 
-    solvers.push_back(naive_eca_inc);
-    solvers.push_back(naive_eca_dec);
-    // solvers.push_back(glutton_eca_inc);
-    // solvers.push_back(glutton_eca_dec);
-    // solvers.push_back(pl_eca_2);
-    // solvers.push_back(pl_eca_3);
-    // solvers.push_back(randomized_rounding);
-}
-static void clean(std::list<concepts::Solver*> & solvers) {
-    for(concepts::Solver * solver : solvers)
-        delete solver;
+    auto naive_eca_dec = std::make_unique<Solvers::Naive_ECA_Dec>();
+    naive_eca_dec.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(naive_eca_dec));
+
+    auto glutton_eca_inc = std::make_unique<Solvers::Glutton_ECA_Inc>();
+    glutton_eca_inc.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(glutton_eca_inc));
+
+    auto glutton_eca_dec = std::make_unique<Solvers::Glutton_ECA_Dec>();
+    glutton_eca_dec.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(glutton_eca_dec));
+
+    auto pl_eca_2 = std::make_unique<Solvers::PL_ECA_2>();
+    pl_eca_2.get()->setLogLevel(log_pl);
+    solvers.emplace_back(std::move(pl_eca_2));
+
+    auto pl_eca_3 = std::make_unique<Solvers::PL_ECA_3>();
+    pl_eca_3.get()->setLogLevel(log_pl).setTimeout(3600);
+    solvers.emplace_back(std::move(pl_eca_3));
+
+    auto randomized_rounding = std::make_unique<Solvers::Randomized_Rounding_ECA>();
+    randomized_rounding->setLogLevel(0).setNbDraws(1000).setParallel(true);
+    solvers.emplace_back(std::move(randomized_rounding));
+
+    return solvers;
 }
 
 
 int main() {
-    std::list<concepts::Solver*> solvers;
-    populate(solvers);
+    std::vector<std::unique_ptr<concepts::Solver>> solvers = construct_solvers();
     
     std::ofstream data_log("output/data.log");
     data_log << std::fixed << std::setprecision(6);
@@ -101,10 +104,9 @@ int main() {
         for(double thresold : thresold_values) {
             for(double median : median_values) {
                 for(Point orig : orig_values) {
-                    Instance * instance = make_instance_quebec(pow, thresold, median, orig, Point(32360, 20000));
-                    
-                    const Landscape & landscape = instance->landscape;
-                    const RestorationPlan<Landscape> & plan = instance->plan;
+                    Instance instance = make_instance_quebec(pow, thresold, median, orig, Point(32360, 20000));
+                    const Landscape & landscape = instance.landscape;
+                    const RestorationPlan<Landscape> & plan = instance.plan;
 
                     if(lemon::countNodes(landscape.getNetwork()) < 50) continue;
                     if(lemon::countNodes(landscape.getNetwork()) > 100) continue;
@@ -128,11 +130,10 @@ int main() {
                         // double total_bogo_eca = 0;
                         // for(int i=0; i<nb_bogo; ++i) {
                         //     bogo.setSeed(i);
-                        //     Solution * solution = bogo.solve(landscape, plan, budget);
+                        //     Solution solution = bogo.solve(landscape, plan, budget);
                         //     total_bogo_time += solution->getComputeTimeMs();
                         //     total_bogo_cost += solution->getCost();
-                        //     total_bogo_eca += std::pow(eca.eval_solution(landscape, plan, *solution), 2);
-                        //     delete solution;
+                        //     total_bogo_eca += std::pow(eca.eval_solution(landscape, plan, solution), 2);
                         // }
                         // data_log << pow << " " 
                         //             << thresold << " "
@@ -146,10 +147,10 @@ int main() {
                         //             << total_bogo_eca / nb_bogo << " "
                         //             << std::endl;
 
-                        for(concepts::Solver * solver : solvers) {
-                            Solution * solution = solver->solve(landscape, plan, budget);
+                        for(const std::unique_ptr<concepts::Solver> & solver : solvers) {
+                            Solution solution = solver.get()->solve(landscape, plan, budget);
 
-                            const double total_eca = std::pow(eca.eval_solution(landscape, plan, *solution), 2);
+                            const double total_eca = std::pow(eca.eval_solution(landscape, plan, solution), 2);
 
                             data_log << pow << " " 
                                     << thresold << " "
@@ -158,24 +159,18 @@ int main() {
                                     << budget_percent << " "
                                     << budget << " "
                                     << solver->toString() << " "
-                                    << solution->getComputeTimeMs() << " "
-                                    << solution->getCost() << " "
+                                    << solution.getComputeTimeMs() << " "
+                                    << solution.getCost() << " "
                                     << total_eca << " "
                                     << std::endl;
-
-                            delete solution;
                         }
-
-                    } 
-                    delete instance;
+                    }
                 }
             }
         }
     }
 
     std::cout << "min_arcs " << min_arcs << std::endl << "max_arcs " << max_arcs << std::endl;
-
-    clean(solvers);
 
     return EXIT_SUCCESS;
 }

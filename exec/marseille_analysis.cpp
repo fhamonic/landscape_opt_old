@@ -29,41 +29,44 @@
 #include "helper.hpp"
 #include "instances_helper.hpp"
 
-static void populate(std::list<concepts::Solver*> & solvers) {
-    int log_pl = 1;
+static std::vector<std::unique_ptr<concepts::Solver>> construct_solvers() {
+    std::vector<std::unique_ptr<concepts::Solver>> solvers;
+    int log_pl = 3;
 
-    // Solvers::Naive_ECA_Inc * naive_eca_inc = new Solvers::Naive_ECA_Inc();
-    // (*naive_eca_inc).setLogLevel(0).setParallel(true);
-    // Solvers::Naive_ECA_Dec * naive_eca_dec = new Solvers::Naive_ECA_Dec();
-    // (*naive_eca_dec).setLogLevel(0).setParallel(true);
-    // Solvers::Glutton_ECA_Inc * glutton_eca_inc = new Solvers::Glutton_ECA_Inc();
-    // (*glutton_eca_inc).setLogLevel(0).setParallel(true);
-    Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
-    (*glutton_eca_dec).setLogLevel(0).setParallel(true);
-    // Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
-    // (*pl_eca_2).setLogLevel(log_pl).setTimeout(3600);
-    // Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    // (*pl_eca_3).setLogLevel(log_pl).setTimeout(3600);
-    // Solvers::Randomized_Rounding_ECA * randomized_rounding_1000 = new Solvers::Randomized_Rounding_ECA();
-    // randomized_rounding_1000->setLogLevel(0).setNbDraws(1000).setParallel(true);
+    auto naive_eca_inc = std::make_unique<Solvers::Naive_ECA_Inc>();
+    naive_eca_inc.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(naive_eca_inc));
 
-    // solvers.push_back(naive_eca_inc);
-    // solvers.push_back(naive_eca_dec);
-    // solvers.push_back(glutton_eca_inc);
-    solvers.push_back(glutton_eca_dec);
-    // solvers.push_back(pl_eca_2);
-    // solvers.push_back(pl_eca_3);
-    // solvers.push_back(randomized_rounding_1000);
-}
-static void clean(std::list<concepts::Solver*> & solvers) {
-    for(concepts::Solver * solver : solvers)
-        delete solver;
+    auto naive_eca_dec = std::make_unique<Solvers::Naive_ECA_Dec>();
+    naive_eca_dec.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(naive_eca_dec));
+
+    auto glutton_eca_inc = std::make_unique<Solvers::Glutton_ECA_Inc>();
+    glutton_eca_inc.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(glutton_eca_inc));
+
+    auto glutton_eca_dec = std::make_unique<Solvers::Glutton_ECA_Dec>();
+    glutton_eca_dec.get()->setLogLevel(0).setParallel(true);
+    solvers.emplace_back(std::move(glutton_eca_dec));
+
+    auto pl_eca_2 = std::make_unique<Solvers::PL_ECA_2>();
+    pl_eca_2.get()->setLogLevel(log_pl);
+    solvers.emplace_back(std::move(pl_eca_2));
+
+    auto pl_eca_3 = std::make_unique<Solvers::PL_ECA_3>();
+    pl_eca_3.get()->setLogLevel(log_pl).setTimeout(3600);
+    solvers.emplace_back(std::move(pl_eca_3));
+
+    auto randomized_rounding = std::make_unique<Solvers::Randomized_Rounding_ECA>();
+    randomized_rounding->setLogLevel(0).setNbDraws(1000).setParallel(true);
+    solvers.emplace_back(std::move(randomized_rounding));
+
+    return solvers;
 }
 
 
 int main() {
-    std::list<concepts::Solver*> solvers;
-    populate(solvers);
+    std::vector<std::unique_ptr<concepts::Solver>> solvers = construct_solvers();
     
     std::ofstream data_log("output/data.log");
     data_log << std::fixed << std::setprecision(6);
@@ -80,14 +83,14 @@ int main() {
     for(double i=10; i<=90; i+=10) budget_percent_values.push_back(i);
 
     for(double nb_friches : nb_friches_values) {
-        Instance * instance = make_instance_marseillec(1, 0.04, 900, nb_friches);
+        Instance instance = make_instance_marseillec(1, 0.04, 900, nb_friches);
         
-        const Landscape & landscape = instance->landscape;
-        const RestorationPlan<Landscape> & plan = instance->plan;
+        const Landscape & landscape = instance.landscape;
+        const RestorationPlan<Landscape> & plan = instance.plan;
         
         Helper::assert_well_formed(landscape, plan);
 
-        for(concepts::Solver * solver : solvers) {
+        for(const std::unique_ptr<concepts::Solver> & solver : solvers) {
             const int n = budget_percent_values.size();
             double sum_time = 0;
             int nb_vars, nb_constraints;
@@ -95,13 +98,11 @@ int main() {
             
             for(double budget_percent : budget_percent_values) {
                 const double budget = (budget_percent * plan.totalCost())/100;
-                Solution * solution = solver->solve(landscape, plan, budget);
+                Solution solution = solver->solve(landscape, plan, budget);
 
-                sum_time += solution->getComputeTimeMs();
-                nb_vars = solution->nb_vars;
-                nb_constraints = solution->nb_constraints;
-
-                delete solution;
+                sum_time += solution.getComputeTimeMs();
+                nb_vars = solution.nb_vars;
+                nb_constraints = solution.nb_constraints;
             }
 
             data_log << nb_friches << " "
@@ -111,10 +112,7 @@ int main() {
                     << nb_constraints << " "
                     << std::endl;
         } 
-        delete instance;
     }
-
-    clean(solvers);
 
     return EXIT_SUCCESS;
 }

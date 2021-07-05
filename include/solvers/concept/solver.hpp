@@ -74,11 +74,8 @@ namespace concepts {
                 params[name]->parse(arg);
                 return true;
             };
-            std::list<std::string> * getParamList() const {
-                std::list<std::string> * paramList = new std::list<std::string>();
-                for(std::pair<std::string, Param*> element : params)
-                    paramList->push_back(element.first);
-                return paramList;
+            const std::map<std::string, Param*> & getParams() const {
+                return params;
             };
 
             virtual Solution solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const=0;

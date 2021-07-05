@@ -64,6 +64,17 @@ target_link_libraries(solve PUBLIC landscape_opt)
 
 
 
+add_executable(quebec_analysis exec/quebec_analysis.cpp)
+target_include_directories(quebec_analysis PUBLIC include)
+target_include_directories(quebec_analysis PUBLIC thirdparty)
+target_link_libraries(quebec_analysis PUBLIC landscape_opt)
+
+add_executable(marseille_analysis exec/marseille_analysis.cpp)
+target_include_directories(marseille_analysis PUBLIC include)
+target_include_directories(marseille_analysis PUBLIC thirdparty)
+target_link_libraries(marseille_analysis PUBLIC landscape_opt)
+
+
 add_executable(eval_eca exec/eval_eca.cpp)
 target_include_directories(eval_eca PUBLIC include)
 target_include_directories(eval_eca PUBLIC thirdparty)

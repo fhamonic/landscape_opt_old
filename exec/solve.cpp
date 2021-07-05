@@ -11,6 +11,8 @@
 #include <iostream>
 #include <filesystem>
 
+#include <boost/range/algorithm/find_if.hpp>
+
 #include "parsers/std_restoration_plan_parser.hpp"
 #include "parsers/std_landscape_parser.hpp"
 
@@ -34,43 +36,20 @@
  * @param solvers reference to the list of instanciated solvers
  * @param solversMap reference to the map associating a solvers name to its instance
  */
-static void populate(std::list<concepts::Solver*> & solvers, std::map<std::string, concepts::Solver*> & solversMap) {
-    Solvers::Bogo * bogo = new Solvers::Bogo();
-    Solvers::Naive_ECA_Inc * naive_eca_inc = new Solvers::Naive_ECA_Inc();
-    Solvers::Naive_ECA_Dec * naive_eca_dec = new Solvers::Naive_ECA_Dec();
-    Solvers::Glutton_ECA_Inc * glutton_eca_inc = new Solvers::Glutton_ECA_Inc();
-    Solvers::Glutton_ECA_Dec * glutton_eca_dec = new Solvers::Glutton_ECA_Dec();
-    Solvers::PL_ECA_2 * pl_eca_2 = new Solvers::PL_ECA_2();
-    (*pl_eca_2).setLogLevel(0);
-    Solvers::PL_ECA_3 * pl_eca_3 = new Solvers::PL_ECA_3();
-    (*pl_eca_3).setLogLevel(0);
-    Solvers::PL_ECA_4 * pl_eca_4 = new Solvers::PL_ECA_4();
-    (*pl_eca_4).setLogLevel(0);
-    Solvers::Randomized_Rounding_ECA * randomized_rounding = new Solvers::Randomized_Rounding_ECA();
-    randomized_rounding->setLogLevel(0).setNbDraws(100);
+static std::vector<std::unique_ptr<concepts::Solver>> construct_solvers() {
+    std::vector<std::unique_ptr<concepts::Solver>> solvers;
 
-    solvers.push_back(bogo);
-    solvers.push_back(naive_eca_inc);
-    solvers.push_back(naive_eca_dec);
-    solvers.push_back(glutton_eca_inc);
-    solvers.push_back(glutton_eca_dec);
-    solvers.push_back(pl_eca_2);
-    solvers.push_back(pl_eca_3);
-    solvers.push_back(pl_eca_4);
-    solvers.push_back(randomized_rounding);
+    solvers.emplace_back(std::make_unique<Solvers::Bogo>());
+    solvers.emplace_back(std::make_unique<Solvers::Naive_ECA_Inc>());
+    solvers.emplace_back(std::make_unique<Solvers::Naive_ECA_Dec>());
+    solvers.emplace_back(std::make_unique<Solvers::Glutton_ECA_Inc>());
+    solvers.emplace_back(std::make_unique<Solvers::Glutton_ECA_Dec>());
+    solvers.emplace_back(std::make_unique<Solvers::PL_ECA_2>());
+    solvers.emplace_back(std::make_unique<Solvers::PL_ECA_3>());
+    solvers.emplace_back(std::make_unique<Solvers::PL_ECA_4>());
+    solvers.emplace_back(std::make_unique<Solvers::Randomized_Rounding_ECA>());
 
-    for(concepts::Solver * solver : solvers) {
-        solversMap[solver->name()] = solver;
-    }
-}
-/**
- * @brief Deletes the instanciated solvers
- * 
- * @param solvers reference to the list of instanciated solvers
- */
-static void clean(std::list<concepts::Solver*> & solvers) {
-    for(concepts::Solver * solver : solvers)
-        delete solver;
+    return solvers;
 }
 
 void print_usage(const char * prg_name) {
@@ -80,12 +59,9 @@ void print_usage(const char * prg_name) {
 int main(int argc, const char *argv[]) {
     std::cout.precision(10);
 
-    std::list<concepts::Solver*> solvers;
-    std::map<std::string, concepts::Solver*> solversMap;
-    populate(solvers, solversMap);
+    std::vector<std::unique_ptr<concepts::Solver>> solvers = construct_solvers();
     if(argc < 5) {
         print_usage(argv[0]);
-        clean(solvers);
         return EXIT_SUCCESS;
     }
     std::filesystem::path landscape_path = argv[1];
@@ -93,15 +69,16 @@ int main(int argc, const char *argv[]) {
     double B = std::atof(argv[3]);
     std::string solver_name = argv[4];
 
-    if(solversMap.find(solver_name) == solversMap.end()) {
+    auto it = boost::find_if(solvers, [&solver_name](const auto & solver){ return solver->name() == solver_name; });
+
+    if(it == solvers.end()) {
         std::cerr << "Availables solvers :" << std::endl;
-        for(concepts::Solver * solver : solvers)
+        for(const auto & solver : solvers)
             std::cerr << "\t" << solver->name() << std::endl;
-        clean(solvers);
         return EXIT_FAILURE;
     }
 
-    concepts::Solver & solver = *solversMap[solver_name];
+    concepts::Solver & solver = std::ref(*it->get());
 
     for(int i=5; i<argc; i++) {
         std::string arg = argv[i];
@@ -110,16 +87,14 @@ int main(int argc, const char *argv[]) {
         std::string value = arg.substr(split_index+1, -1);
 
         if(!solver.setParam(option, value.data())) {
-            std::list<std::string> * paramList = solver.getParamList();
-            if(paramList->size() == 0) {
+            auto params = solver.getParams();
+            if(params.empty()) {
                 std::cerr << "No options available for \"" << solver.name() << "\"" << std::endl;
             } else {
                 std::cerr << "Available options for \"" << solver.name() << "\" :" << std::endl;
-                for(std::string option_name : *paramList)
-                    std::cerr << "\t" << option_name << std::endl;
+                for(const auto & [param_name, param_value] : params)
+                    std::cerr << "\t" << param_name << std::endl;
             }            
-            delete paramList;
-            clean(solvers);
             return EXIT_FAILURE;
         }       
     }
@@ -143,8 +118,6 @@ int main(int argc, const char *argv[]) {
     Solution solution = solver.solve(landscape, plan, B);
 
     Helper::printSolution(landscape, plan, name, solver, B, solution);
-
-    clean(solvers);
 
     return EXIT_SUCCESS;
 }

@@ -42,12 +42,12 @@ void addCostNoise(Instance & instance, double deviation_ratio=0.2, int seed=456)
 }
 
 
-Instance * make_instance_marseillec(double pow, double thresold, double median, int nb_friches=100) {
-    Instance * instance = new Instance;
+Instance make_instance_marseillec(double pow, double thresold, double median, int nb_friches=100) {
+    Instance instance;
     
-    Landscape & landscape = instance->landscape;
-    const Graph_t & graph = instance->graph;
-    RestorationPlan<Landscape> & plan = instance->plan;
+    Landscape & landscape = instance.landscape;
+    const Graph_t & graph = instance.graph;
+    RestorationPlan<Landscape> & plan = instance.plan;
 
     auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
@@ -103,13 +103,13 @@ Instance * make_instance_marseillec(double pow, double thresold, double median, 
 }
 
 
-Instance * make_instance_quebec(double pow, double thresold, double median,
+Instance make_instance_quebec(double pow, double thresold, double median,
         Point orig=Point(240548, 4986893), Point dim=Point(32360, 20000)) {
-    Instance * instance = new Instance;
+    Instance instance;
     
-    Landscape & landscape = instance->landscape;
-    const Graph_t & graph = instance->graph;
-    RestorationPlan<Landscape>& plan = instance->plan;
+    Landscape & landscape = instance.landscape;
+    const Graph_t & graph = instance.graph;
+    RestorationPlan<Landscape>& plan = instance.plan;
 
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
@@ -171,5 +171,8 @@ Instance * make_instance_quebec(double pow, double thresold, double median,
     
     return instance;
 }
+
+
+
 
 #endif // INSTANCES_HELPER_HPP
