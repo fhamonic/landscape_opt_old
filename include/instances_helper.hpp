@@ -12,6 +12,8 @@
 #include <math.h>
 #include <random>
 
+#include <boost/range/algorithm/sort.hpp>
+
 #include "landscape/landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
@@ -57,7 +59,7 @@ Instance make_instance_marseillec(double pow, double thresold, double median, in
     std::vector<FricheData> friches_list;
 
     io::CSVReader<5> patches("data/Marseille/vertices_marseillec.csv");
-    patches.read_header(io::ignore_extra_column,"category","x","y","area2","price_rel");
+    patches.read_header(io::ignore_extra_column,"category", "x", "y", "area2", "price_rel");
     std::string category;
     double x, y, area, price_rel;
     while(patches.read_row(category, x, y, area, price_rel)) {
@@ -118,7 +120,7 @@ Instance make_instance_quebec(double pow, double thresold, double median,
     std::vector<ThreatData> threaten_list;
 
     io::CSVReader<4> patches("data/quebec_leam_v3/raw/sommets_leam_v3.csv");
-    patches.read_header(io::ignore_extra_column, "area","xcoord","ycoord","count2050");
+    patches.read_header(io::ignore_extra_column, "area", "xcoord", "ycoord", "count2050");
     double area, xcoord, ycoord, count2050;
     while(patches.read_row(area, xcoord, ycoord, count2050)) {
         node_correspondance.push_back(lemon::INVALID);
@@ -142,7 +144,7 @@ Instance make_instance_quebec(double pow, double thresold, double median,
     }
 
     io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.csv");
-    links.read_header(io::ignore_extra_column, "from","to","Dist");
+    links.read_header(io::ignore_extra_column, "from", "to", "Dist");
     int from, to;
     double Dist;
     while(links.read_row(from, to, Dist)) {
@@ -172,6 +174,82 @@ Instance make_instance_quebec(double pow, double thresold, double median,
     return instance;
 }
 
+// TODO
+Instance make_instance_biorevaix(int level, double pow, double median) {
+    Instance instance;
+    Landscape & landscape = instance.landscape;
+    const Graph_t & graph = instance.graph;
+    RestorationPlan<Landscape>& plan = instance.plan;
+
+    auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) {
+        Point a = landscape.getCoords(u);
+        Point b = landscape.getCoords(v);
+        return std::sqrt(std::pow(a.x-b.x, 2) + std::pow(a.y-b.y, 2)); 
+    };
+    auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
+    
+    struct NodeData { int N_id; Graph_t::Node node; NodeData(int id, Graph_t::Node n) : N_id(id), node(n) {}};
+    std::vector<NodeData> nodes;
+
+    io::CSVReader<4> patches("data/BiorevAix/raw/vertex centers.csv");
+    patches.read_header(io::ignore_extra_column, "N"+std::to_string(level)+"_id", "X", "Y", "area"+std::to_string(level));
+    int N_id;
+    double X, Y, area;
+    while(patches.read_row(N_id, X, Y, area)) {
+        if(N_id == 0) continue;
+        nodes.emplace_back(N_id,
+            landscape.addNode(area, Point(X, Y)));        
+        // RestorationPlan<Landscape>::Option option = plan.addOption(area_loss);
+        // plan.addNode(option, u, area_loss);
+    }
+
+    boost::sort(nodes, [](const auto & e1, const auto & e2){
+        return e1.N_id < e2.N_id;
+    });
+
+    io::CSVReader<2> links("data/BiorevAix/raw/AL_N"+std::to_string(level)+".csv");
+    links.read_header(io::ignore_extra_column, "from", "to");
+    int from, to;
+    while(links.read_row(from, to)) {
+        Graph_t::Node u = nodes[from-1].node;
+        Graph_t::Node v = nodes[to-1].node;
+        double probability = p(d(u,v));
+        landscape.addArc(u, v, probability);
+        landscape.addArc(v, u, probability);
+    }
+    return instance;
+}
+
+// Temporary
+double compute_eca_biorevaix_complete(int level, double pow, double median) {
+    Landscape landscape;
+    const Graph_t & graph = landscape.getNetwork(); 
+
+    auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) {
+        Point a = landscape.getCoords(u);
+        Point b = landscape.getCoords(v);
+        return std::sqrt(std::pow(a.x-b.x, 2) + std::pow(a.y-b.y, 2)); 
+    };
+    auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
+    
+    io::CSVReader<4> patches("data/BiorevAix/raw/vertex centers.csv");
+    patches.read_header(io::ignore_extra_column, "N"+std::to_string(level)+"_id", "X", "Y", "area"+std::to_string(level));
+    int N_id;
+    double X, Y, area;
+    while(patches.read_row(N_id, X, Y, area)) {
+        if(N_id == 0) continue;
+        landscape.addNode(area, Point(X, Y));
+    }
+
+    double eca = 0;
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+        for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            double probability = p(d(u,v));
+            eca += landscape.getQuality(u) * landscape.getQuality(v) * probability;
+        }
+    }
+    return std::sqrt(eca);
+}
 
 
 
