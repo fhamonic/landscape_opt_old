@@ -11,6 +11,8 @@
 #include "parsers/std_landscape_parser.hpp"
 
 #include "indices/eca.hpp"
+#include "indices/parallel_eca.hpp"
+
 #include "landscape/decored_landscape.hpp"
 
 #include "utils/random_chooser.hpp"
@@ -37,7 +39,7 @@ int main() {
 
     std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork()) << std::endl;
                     
-    std::cout << "ECA level " << level << ": " << ECA::get().eval(landscape) << std::endl;
+    std::cout << "ECA level " << level << ": " << Parallel_ECA::get().eval(landscape) << std::endl;
     std::cout << "ECA complete level " << level << ": " << compute_eca_biorevaix_complete(level, 1, 2000) << std::endl;
 
     return EXIT_SUCCESS;

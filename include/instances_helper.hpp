@@ -192,7 +192,7 @@ Instance make_instance_biorevaix(int level, double pow, double median) {
     std::vector<NodeData> nodes;
 
     io::CSVReader<4> patches("data/BiorevAix/raw/vertex centers.csv");
-    patches.read_header(io::ignore_extra_column, "N"+std::to_string(level)+"_id", "X", "Y", "area"+std::to_string(level));
+    patches.read_header(io::ignore_extra_column, "N"+std::to_string(level)+"_id", "X", "Y", "kermap");
     int N_id;
     double X, Y, area;
     while(patches.read_row(N_id, X, Y, area)) {
@@ -233,7 +233,7 @@ double compute_eca_biorevaix_complete(int level, double pow, double median) {
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
     io::CSVReader<4> patches("data/BiorevAix/raw/vertex centers.csv");
-    patches.read_header(io::ignore_extra_column, "N"+std::to_string(level)+"_id", "X", "Y", "area"+std::to_string(level));
+    patches.read_header(io::ignore_extra_column, "N"+std::to_string(level)+"_id", "X", "Y", "kermap");
     int N_id;
     double X, Y, area;
     while(patches.read_row(N_id, X, Y, area)) {
