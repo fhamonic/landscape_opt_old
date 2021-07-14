@@ -31,8 +31,12 @@
 #include "helper.hpp"
 #include "instances_helper.hpp"
 
-int main() {
-    int level = 3;
+int main(int argc, char * argv[]) {
+    if(argc < 2) {
+        std::cout << "Usage: " << argv[0] << " <level>" << std::endl;
+        return EXIT_FAILURE;
+    }
+    int level = std::atoi(argv[1]);
 
     Instance instance = make_instance_biorevaix(level, 1, 2000);
     const Landscape & landscape = instance.landscape;
