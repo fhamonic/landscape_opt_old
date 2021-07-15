@@ -9,8 +9,12 @@
 #define INSTANCES_HELPER_HPP
 
 #include <algorithm>
+#include <execution>
 #include <math.h>
+#include <numeric>
 #include <random>
+
+#include <lemon/adaptors.h>
 
 #include <boost/range/algorithm/sort.hpp>
 
@@ -231,9 +235,10 @@ Instance make_instance_biorevaix(void) {
 template <int Level>
 Instance make_instance_biorevaix_upscale(void) {
     Instance instance;
-    Landscape & landscape = instance.landscape;
-    const Graph_t & graph = instance.graph;
+    Landscape & target_landscape = instance.landscape;
+    const Graph_t & target_graph = instance.graph;
     RestorationPlan<Landscape>& plan = instance.plan;
+
 
     auto p = [] (const double cost) {
         return cost == 1 ? 0.999
@@ -244,9 +249,18 @@ Instance make_instance_biorevaix_upscale(void) {
             : 0;
     };
     
-    std::array<Graph_t::Node, 688401> nodes;
+    Landscape detailed_landscape;
+    const Graph_t & detailed_graph = detailed_landscape.getNetwork();
+
+    std::array<Graph_t::Node, 688401> detailed_nodes;
     struct NodeData { int id[4]; int center[4]; double prob; };
-    Graph_t::NodeMap<NodeData> node_datas(graph, 0.0);
+    Graph_t::NodeMap<NodeData> detailed_node_datas(detailed_graph, 0.0);
+
+    std::array<Graph_t::Node, 2007 * static_cast<int>(std::pow(7, 4-Level))> level_id_to_detailed_nodes;
+    std::array<Graph_t::Node, 2007 * static_cast<int>(std::pow(7, 4-Level))> target_nodes;
+    Graph_t::NodeMap<int> target_node_id(target_graph, 0.0);
+
+    std::vector<Graph_t::Arc> target_arcs;
 
     io::CSVReader<11> patches("data/BiorevAix/raw/vertex.csv");
     patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "N2_id", "N2_pts", "N3_id", "N3_pts", "N4_id", "N4_pts", "area1", "cost");
@@ -254,21 +268,62 @@ Instance make_instance_biorevaix_upscale(void) {
     int N_center[4]; N_center[0] = true;
     double X, Y, area, cost;
     while(patches.read_row(N_id[0], X, Y, N_id[1], N_center[1], N_id[2], N_center[2], N_id[3], N_center[3], area, cost)) {
-        Graph_t::Node u = landscape.addNode((cost == 1 ? area : 0), Point(X, Y));
-        nodes[N_id[0]-1] = u;
-        node_datas[u] = NodeData { N_id, N_center, p(cost) };
+        Graph_t::Node u = detailed_landscape.addNode((cost == 1 ? area : 0), Point(X, Y));
+        detailed_nodes[N_id[0]-1] = u;
+        detailed_node_datas[u] = NodeData { N_id, N_center, p(cost) };
+        const int level_id = N_id[Level-1]-1;
+        if(N_center[level_id]) {
+            level_id_to_detailed_nodes[level_id] = u;
+            Graph_t::Node target_u = target_landscape.addNode(0, Point(X,Y));
+            target_nodes[level_id] = target_u;
+            target_node_id[target_u] = level_id;
+        }
+    }
+    int from, to;
+    io::CSVReader<2> detailed_links("data/BiorevAix/raw/AL_N1.csv");
+    detailed_links.read_header(io::ignore_extra_column, "from", "to");
+    while(detailed_links.read_row(from, to)) {
+        Graph_t::Node u = detailed_nodes[from-1];
+        Graph_t::Node v = detailed_nodes[to-1];
+        const double probability = std::sqrt(detailed_node_datas[u].prob * detailed_node_datas[v].prob);
+        detailed_landscape.addArc(u, v, probability);
+        detailed_landscape.addArc(v, u, probability);
+    }
+    io::CSVReader<2> target_links("data/BiorevAix/raw/AL_N"+std::to_string(Level)+".csv");
+    target_links.read_header(io::ignore_extra_column, "from", "to");
+    while(target_links.read_row(from, to)) {
+        Graph_t::Node u = target_nodes[from-1];
+        Graph_t::Node v = target_nodes[to-1];
+        target_arcs.push_back(target_landscape.addArc(u, v, 0));
+        target_arcs.push_back(target_landscape.addArc(v, u, 0));
     }
 
-    io::CSVReader<2> links("data/BiorevAix/raw/AL_N1.csv");
-    links.read_header(io::ignore_extra_column, "from", "to");
-    int from, to;
-    while(links.read_row(from, to)) {
-        Graph_t::Node u = nodes[from-1];
-        Graph_t::Node v = nodes[to-1];
-        const double probability = std::sqrt(node_datas[u].prob * node_datas[v].prob);
-        landscape.addArc(u, v, probability);
-        landscape.addArc(v, u, probability);
-    }
+    struct WithinHexagonFilter {
+        const Graph_t::NodeMap<NodeData> & detailed_node_datas;
+        int id;
+        bool operator[](Graph_t::Node u) {
+            return detailed_node_datas[u].id[Level-1] == id;
+        }
+    };
+    struct TouchingHexagonsFilter {
+        const Graph_t::NodeMap<NodeData> & detailed_node_datas;
+        int id1, id2;
+        bool operator[](Graph_t::Node u) {
+            return detailed_node_datas[u].id[Level-1] == id1
+                    || detailed_node_datas[u].id[Level-1] == id2;
+        }
+    };
+
+    std::for_each(std::execution::par_unseq, target_nodes.begin(), target_nodes.end(), [&] (const Graph_t::Node & u) {
+        auto subgraph = lemon::filterNodes(detailed_graph, WithinHexagonFilter{ detailed_node_datas, target_node_id[u] });
+    });
+    std::for_each(std::execution::par_unseq, target_arcs.begin(), target_arcs.end(), [&] (const Graph_t::Arc & a) {
+        Graph_t::Node u = target_graph.source(a);
+        Graph_t::Node v = target_graph.target(a);
+        auto subgraph = lemon::filterNodes(detailed_graph, WithinHexagonFilter{ detailed_node_datas, target_node_id[u] });
+
+    });
+
     return instance;
 }
 

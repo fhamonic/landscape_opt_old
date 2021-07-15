@@ -32,30 +32,21 @@ class ECA : public concepts::ConnectivityIndex {
 
         double eval_solution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const Solution & solution) const;
 
-
         /**
-         * @brief Computes the value of the ECA index of the specified landscape.
+         * @brief Computes the value of the ECA index of the specified landscape graph.
          * 
          * @time \f$O(n \cdot (m + n) \log n)\f$ where \f$n\f$ is the number of nodes and \f$m\f$ the number of arcs
          * @space \f$O(m)\f$ where \f$m\f$ is the number of arcs
          */
-        template <typename GR, typename QM, typename PM, typename CM>
-        double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape, const typename GR::template NodeMap<bool> & nodeFilter) {
-            const GR & g = landscape.getNetwork();
-            const QM & qualityMap = landscape.getQualityMap();
-            const PM & probabilityMap = landscape.getProbabilityMap();
-            
-            lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(g, probabilityMap);
+        template <typename GR, typename QM, typename PM>
+        double eval(const GR & graph, const QM & qualityMap, const PM & probabilityMap) {
+            lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(graph, probabilityMap);
             double sum = 0;
-            for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
-                if(!nodeFilter[s])
-                    continue;
+            for (typename GR::NodeIt s(graph); s != lemon::INVALID; ++s) {
                 dijkstra.init(s);
                 while (!dijkstra.emptyQueue()) {
                     std::pair<typename GR::Node, double> pair = dijkstra.processNextNode();
                     typename GR::Node t = pair.first;
-                    if(!nodeFilter[t])
-                        continue;
                     const double p_st = pair.second;
                     sum += qualityMap[s] * qualityMap[t] * p_st;
                 }
@@ -71,22 +62,7 @@ class ECA : public concepts::ConnectivityIndex {
          */
         template <typename GR, typename QM, typename PM, typename CM>
         double eval(const concepts::AbstractLandscape<GR, QM, PM, CM> & landscape) {
-            const GR & g = landscape.getNetwork();
-            const QM & qualityMap = landscape.getQualityMap();
-            const PM & probabilityMap = landscape.getProbabilityMap();
-            
-            lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(g, probabilityMap);
-            double sum = 0;
-            for (typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
-                dijkstra.init(s);
-                while (!dijkstra.emptyQueue()) {
-                    std::pair<typename GR::Node, double> pair = dijkstra.processNextNode();
-                    typename GR::Node t = pair.first;
-                    const double p_st = pair.second;
-                    sum += qualityMap[s] * qualityMap[t] * p_st;
-                }
-            }
-            return std::sqrt(sum);
+            return eval(landscape.getNetwork(), landscape.getQualityMap(), landscape.getProbabilityMap());                        
         }
 };
 
