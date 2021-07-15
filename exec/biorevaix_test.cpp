@@ -31,20 +31,17 @@
 #include "helper.hpp"
 #include "instances_helper.hpp"
 
-int main(int argc, char * argv[]) {
-    if(argc < 2) {
-        std::cout << "Usage: " << argv[0] << " <level>" << std::endl;
-        return EXIT_FAILURE;
-    }
-    int level = std::atoi(argv[1]);
+int main() {
+    constexpr int level = 3;
 
-    Instance instance = make_instance_biorevaix(level, 1, 2000);
+    Instance instance = make_instance_biorevaix<level>();
     const Landscape & landscape = instance.landscape;
+
+    Helper::assert_well_formed(landscape, instance.plan);
 
     std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork()) << std::endl;
                     
     std::cout << "ECA level " << level << ": " << Parallel_ECA::get().eval(landscape) << std::endl;
-    std::cout << "ECA complete level " << level << ": " << compute_eca_biorevaix_complete(level, 1, 2000) << std::endl;
 
     return EXIT_SUCCESS;
 }

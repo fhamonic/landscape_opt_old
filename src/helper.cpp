@@ -107,15 +107,14 @@ std::pair<Graph_t::Node, Graph_t::Node> Helper::neerestNodes(const Landscape & l
 }
 
 bool is_probability(const double p) {
-    return (p >= 0) && (p <= 1);
+    return (p == p) && (p >= 0) && (p <= 1);
 }
 
 void Helper::assert_well_formed(const Landscape & landscape, const RestorationPlan<Landscape>& plan) {
     const Graph_t & graph = landscape.getNetwork();
-    (void)plan;
 
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-        assert(landscape.getQuality(v) >= 0); }
+        assert(landscape.getQuality(v)==landscape.getQuality(v) && landscape.getQuality(v) >= 0); }
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
         assert(is_probability(landscape.getProbability(a))); }
 
