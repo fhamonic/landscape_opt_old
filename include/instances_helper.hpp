@@ -179,54 +179,73 @@ Instance make_instance_quebec(double pow, double thresold, double median,
 }
 
 
-#include <iostream>
-
-template <int Level>
-Instance make_instance_biorevaix(void) {
+Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const Point center=Point(897286.5,6272835.5), const double radius=200) {
     Instance instance;
     Landscape & landscape = instance.landscape;
     const Graph_t & graph = instance.graph;
     RestorationPlan<Landscape>& plan = instance.plan;
 
-    auto p = [] (const double cost) {
-        return cost == 1 ? std::pow(0.999, std::pow(std::sqrt(7), Level-1)) / std::pow(7, Level-1)
-            : cost == 10 ? std::pow(0.98, std::pow(std::sqrt(7), Level-1)) / std::pow(7, Level-1)
-            : cost == 150 ? std::pow(0.8, std::pow(std::sqrt(7), Level-1)) / std::pow(7, Level-1)
-            : cost == 300 ? std::pow(0.6, std::pow(std::sqrt(7), Level-1)) / std::pow(7, Level-1)
-            : cost == 800 ? std::pow(0.4, std::pow(std::sqrt(7), Level-1)) / std::pow(7, Level-1)
+    auto prob = [] (const double cost) {
+        return cost == 1 ? 0.999
+            : cost == 10 ? 0.98
+            : cost == 150 ? 0.8
+            : cost == 300 ? 0.6
+            : cost == 800 ? 0.4
             : 0;
     };
 
-    std::array<Graph_t::Node, 2007 * static_cast<int>(std::pow(7, 4-Level))> nodes;
+    std::array<Graph_t::Node, 688402> nodes;
     nodes.fill(lemon::INVALID);
     Graph_t::NodeMap<double> node_prob(graph, 0.0);
+    Graph_t::NodeMap<RestorationPlan<Landscape>::Option> troncon_option(graph);
+    std::array<RestorationPlan<Landscape>::Option, 5195> id_tronc_option;
+    id_tronc_option.fill(-1);
 
-    io::CSVReader<11> patches("data/BiorevAix/raw/vertex.csv");
-    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "N2_id", "N2_pts", "N3_id", "N3_pts", "N4_id", "N4_pts", "area1", "cost");
-    int N_id[4];
-    int N_center[4]; N_center[0] = 1;
+    const double radius_squared = radius*radius;
+    io::CSVReader<6> patches("data/BiorevAix/raw/vertexN1_v2.csv");
+    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "area1", "cost", "id_tronc2");
+    int N_id, id_tronc;
     double X, Y, area, cost;
-    while(patches.read_row(N_id[0], X, Y, N_id[1], N_center[1], N_id[2], N_center[2], N_id[3], N_center[3], area, cost)) {
-        const int id = N_id[Level-1]-1;
-        if(nodes[id] == lemon::INVALID) {
-            nodes[id] = landscape.addNode(0, Point(X, Y));
-        }
-        Graph_t::Node u = nodes[id];
-        landscape.getQualityRef(u) += (cost == 1 ? area : 0);
-        node_prob[u] += p(cost);
+    while(patches.read_row(N_id, X, Y, area, cost, id_tronc)) {
+        Point p(X, Y);
+        if((p - center).normSquare() > radius_squared) continue;
+        Graph_t::Node u = landscape.addNode((cost == 1 ? area : 0), p);
+        nodes[N_id] = u;
+        node_prob[u] = prob(cost);
+        troncon_option[u] = -1;
+        if(id_tronc == 0) continue;
+        RestorationPlan<Landscape>::Option & option = id_tronc_option[id_tronc];
+        if(option == -1) option = plan.addOption(0);
+        troncon_option[u] = option;
+        plan.setCost(option, plan.getCost(option) + 1);
     }
 
-    io::CSVReader<2> links("data/BiorevAix/raw/AL_N"+std::to_string(Level)+".csv");
+    io::CSVReader<2> links("data/BiorevAix/raw/AL_N1.csv");
     links.read_header(io::ignore_extra_column, "from", "to");
     int from, to;
     while(links.read_row(from, to)) {
-        Graph_t::Node u = nodes[from-1];
-        Graph_t::Node v = nodes[to-1];
-        double probability = node_prob[u]*node_prob[v]==0 ? 0 : std::sqrt(node_prob[u]*node_prob[v]);
-        // if(probability > 1) std::cout << probability << std::endl;
+        Graph_t::Node u = nodes[from];
+        Graph_t::Node v = nodes[to];
+        if(u == lemon::INVALID || v == lemon::INVALID) continue;
+        double probability = std::sqrt(node_prob[u]*node_prob[v]);
         probability = std::max(std::min(probability, 1.0), 0.0);
-        landscape.addArc(u, v, probability);
-        landscape.addArc(v, u, probability);
+
+        if(probability == 0) continue;
+
+        Graph_t::Arc uv = landscape.addArc(u, v, probability);
+        Graph_t::Arc vu = landscape.addArc(v, u, probability);
+
+        RestorationPlan<Landscape>::Option option_u = troncon_option[u];
+        RestorationPlan<Landscape>::Option option_v = troncon_option[v];
+        if(option_u < 0 && option_v < 0) continue;
+        assert(option_u < 0 || option_v < 0 || option_u == option_v);
+        RestorationPlan<Landscape>::Option option = std::max(option_u, option_v);
+
+        double restored_prob = std::pow(node_prob[u], 1/(2 * (option_u >= 0 ? restoration_coef : 1)))
+            * std::pow(node_prob[v], 1/(2 * (option_v >= 0 ? restoration_coef : 1)));
+
+        plan.addArc(option, uv, restored_prob);
+        plan.addArc(option, vu, restored_prob);
     }
     return instance;
 }

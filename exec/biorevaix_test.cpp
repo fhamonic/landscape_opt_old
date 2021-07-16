@@ -32,16 +32,18 @@
 #include "instances_helper.hpp"
 
 int main() {
-    constexpr int level = 3;
-
-    Instance instance = make_instance_biorevaix<level>();
+    Instance instance = make_instance_biorevaix_level_1();
     const Landscape & landscape = instance.landscape;
+    const RestorationPlan<Landscape> & plan = instance.plan;
 
-    Helper::assert_well_formed(landscape, instance.plan);
+    Helper::assert_well_formed(landscape, plan);
 
     std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork()) << std::endl;
-                    
-    std::cout << "ECA level " << level << ": " << Parallel_ECA::get().eval(landscape) << std::endl;
+    std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork()) << std::endl;
+    std::cout << "nb options:" << plan.getNbOptions() << std::endl;
+    std::cout << "nb restorable arcs:" << plan.getNbArcs() << std::endl;
+    
+    Helper::printInstance(instance.landscape, instance.plan, "test.eps");
 
     return EXIT_SUCCESS;
 }
