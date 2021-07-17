@@ -89,3 +89,8 @@ add_executable(biorevaix_test exec/biorevaix_test.cpp)
 target_include_directories(biorevaix_test PUBLIC include)
 target_include_directories(biorevaix_test PUBLIC thirdparty)
 target_link_libraries(biorevaix_test PUBLIC landscape_opt)
+
+add_executable(boost_graph_test exec/boost_graph_test.cpp)
+target_include_directories(boost_graph_test PUBLIC include)
+target_include_directories(boost_graph_test PUBLIC thirdparty)
+target_link_libraries(boost_graph_test PUBLIC landscape_opt)

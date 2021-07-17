@@ -32,7 +32,7 @@
 #include "instances_helper.hpp"
 
 int main() {
-    Instance instance = make_instance_biorevaix_level_1();
+    Instance instance = make_instance_biorevaix_level_1(2, Point(897286.5,6272835.5), 150);
     const Landscape & landscape = instance.landscape;
     const RestorationPlan<Landscape> & plan = instance.plan;
 
@@ -44,6 +44,10 @@ int main() {
     std::cout << "nb restorable arcs:" << plan.getNbArcs() << std::endl;
     
     Helper::printInstance(instance.landscape, instance.plan, "test.eps");
+
+    Solvers::PL_ECA_3 pl_eca_3;
+
+    pl_eca_3.solve(landscape, plan, 2);
 
     return EXIT_SUCCESS;
 }

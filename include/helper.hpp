@@ -239,9 +239,9 @@ namespace Helper {
         double arrow_scale = (1-node_scale)*2/3;
         double arc_width = node_scale * a_max / 16;
                 
-        typename Graph::NodeMap<std::string> node_idsMap(graph, "");
-        typename Graph::NodeMap<lemon::Color> node_colorsMap(graph, lemon::BLACK);
-        typename Graph::NodeMap<double> node_sizesMap(graph, arc_width * 0.9);
+        typename Graph::template NodeMap<std::string> node_idsMap(graph, "");
+        typename Graph::template NodeMap<lemon::Color> node_colorsMap(graph, lemon::BLACK);
+        typename Graph::template NodeMap<double> node_sizesMap(graph, arc_width * 0.9);
         for(typename Graph::NodeIt v(graph); v != lemon::INVALID; ++v) {
             if(landscape.getQuality(v) == 0) continue;
             node_idsMap[v] = std::to_string(graph.id(v));
@@ -249,8 +249,8 @@ namespace Helper {
             node_sizesMap[v] = radius(landscape.getQuality(v));
         }
 
-        typename Graph::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
-        typename Graph::ArcMap<double> arc_widths(graph, arc_width);
+        typename Graph::template ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
+        typename Graph::template ArcMap<double> arc_widths(graph, arc_width);
 
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             for(auto const& [u, quality_gain] : plan.getNodes(i))

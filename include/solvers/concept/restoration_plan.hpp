@@ -95,7 +95,16 @@ class RestorationPlan{
          * @space \f$O(1)\f$
          */
         int getNbArcs() const noexcept {
-            return _arcMap.size();
+            typename Graph::template ArcMap<bool> seen_arcs(_landscape.getNetwork(), false);
+            int count = 0;
+            for(const auto & arc_option : _options_arcs) {
+                for(const auto & [a, v] : arc_option) {
+                    if(seen_arcs[a]) continue;
+                    ++count;
+                    seen_arcs[a] = true;
+                }
+            }
+            return count;
         }
 
         /**
