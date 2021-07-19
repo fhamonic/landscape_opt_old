@@ -22,7 +22,7 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
         options.push_back(i);
     }
 
-    double prec_eca = ECA::get().eval_solution(landscape, plan, solution);
+    double prec_eca = ECA().eval_solution(landscape, plan, solution);
     if(log_level > 1) {
         std::cout << "base purchased: " << purchaised << std::endl;
         std::cout << "base ECA: " << prec_eca << std::endl;
@@ -37,7 +37,7 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
                 continue;
             decored_landscape.apply(nodeOptions[it_option], arcOptions[it_option]);
         }
-        const double eca = ECA::get().eval(decored_landscape);
+        const double eca = ECA().eval(decored_landscape);
         const double ratio = (prec_eca - eca) / plan.getCost(option);
         return std::make_pair(ratio, option);
     };
@@ -58,7 +58,7 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
     }
 
 
-    prec_eca = ECA::get().eval_solution(landscape, plan, solution);
+    prec_eca = ECA().eval_solution(landscape, plan, solution);
 
     ratio_free_options.resize(free_options.size());
 
@@ -67,7 +67,7 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
             decored_landscape.apply(nodeOptions[i], arcOptions[i], solution.getCoef(i));
         decored_landscape.apply(nodeOptions[option], arcOptions[option]);
-        const double eca = ECA::get().eval(decored_landscape);
+        const double eca = ECA().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
         return std::make_pair(ratio, option);
     };

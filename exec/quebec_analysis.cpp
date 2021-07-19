@@ -95,7 +95,7 @@ int main() {
     std::vector<double> budget_percent_values;
     for(double i=0; i<=20; i+=1) budget_percent_values.push_back(i);
 
-    const ECA & eca = ECA::get();
+    const ECA & eca = ECA();
 
     int min_arcs = std::numeric_limits<int>::max();
     int max_arcs = 0;

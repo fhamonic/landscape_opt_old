@@ -5,13 +5,8 @@
 
 namespace concepts {
     class ConnectivityIndex {
-        protected:
-            static ConnectivityIndex singleton;
-            ConnectivityIndex() {};
         public:
-            static ConnectivityIndex & get() noexcept {
-                return singleton;
-            }
+            ConnectivityIndex() {};
             ~ConnectivityIndex() {};
     
             template <typename GR, typename QM, typename DM>

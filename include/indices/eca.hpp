@@ -11,14 +11,9 @@
 #include "landscape/decored_landscape.hpp"
 
 class ECA : public concepts::ConnectivityIndex {
-private:
-    static ECA singleton;
-    ECA();
 public:
-    static ECA & get() noexcept {
-        return singleton;
-    }
-    ~ECA();
+    ECA() = default;
+    ~ECA() = default;
 
     static double P_func(const double d, const double alpha) {
         assert(d >= 0);
@@ -46,7 +41,7 @@ public:
                     landscape.getProbability(a) + solution[e.option] *
                     (e.restored_probability - landscape.getProbability(a)));
         
-        return ECA::get().eval(decored_landscape);
+        return ECA().eval(decored_landscape);
     }
 
     /**

@@ -28,7 +28,7 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan<La
         
         std::string out_eps = name + "_B=" + str_B + "_" + solver.toString();
         std::string title = std::to_string(solution.getComputeTimeMs()) + " ms, ECA = " +
-                std::to_string(ECA::get().eval_solution(landscape, plan, solution)) + " cost = " + std::to_string(solution.getCost());
+                std::to_string(ECA().eval_solution(landscape, plan, solution)) + " cost = " + std::to_string(solution.getCost());
 
         std::cout << title << std::endl;
 

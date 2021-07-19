@@ -81,7 +81,7 @@ int main(int argc, const char *argv[]) {
             << "total_eca "
             << std::endl;
 
-    const ECA & eca = ECA::get();
+    const ECA & eca = ECA();
 
     Landscape * landscape = StdLandscapeParser::get().parse(path / (name + ".index"));
     StdRestorationPlanParser parser(*landscape);

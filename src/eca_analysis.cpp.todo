@@ -86,7 +86,7 @@ int main (int argc, const char *argv[]) {
     std::ofstream data_log("output/data.log");
     data_log << std::fixed << std::setprecision(3);
 
-    ECA & eca = ECA::get();
+    ECA & eca = ECA();
 
     data_log << "thresold " <<
             "length_gain " <<

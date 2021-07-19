@@ -18,7 +18,7 @@ int main(int argc, const char *argv[]) {
 
     // Helper::printLandscape(landscape, "test.eps");
 
-    const double eca = ECA::get().eval(landscape);
+    const double eca = ECA().eval(landscape);
 
     std::cout << eca << std::endl;
 

@@ -17,7 +17,7 @@ Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Rest
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
         options.push_back(i);
     
-    double prec_eca = ECA::get().eval(landscape);
+    double prec_eca = ECA().eval(landscape);
     if(log_level > 1) {
         std::cout << "base ECA: " << prec_eca << std::endl;
     }

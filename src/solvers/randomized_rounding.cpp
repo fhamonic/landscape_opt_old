@@ -30,7 +30,7 @@ static Solution job(const Landscape & landscape, const RestorationPlan<Landscape
 
             decored_landscape.apply(nodeOptions[option], arcOptions[option]);
         }
-        double eca = ECA::get().eval(decored_landscape);
+        double eca = ECA().eval(decored_landscape);
 
         if(eca > best_eca) {
             for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)

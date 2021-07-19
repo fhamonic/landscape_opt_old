@@ -16,7 +16,7 @@ Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Rest
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
         options.push_back(i);
     
-    double prec_eca = ECA::get().eval(landscape);
+    double prec_eca = ECA().eval(landscape);
     if(log_level > 1) {
         std::cout << "base ECA: " << prec_eca << std::endl;
     }
@@ -30,7 +30,7 @@ Solution Solvers::Glutton_ECA_Inc::solve(const Landscape & landscape, const Rest
             decored_landscape.apply(nodeOptions[i], arcOptions[i], solution.getCoef(i));
         }
         decored_landscape.apply(nodeOptions[option], arcOptions[option]);
-        const double eca = ECA::get().eval(decored_landscape);
+        const double eca = ECA().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
 
         return std::pair<double, RestorationPlan<Landscape>::Option>(ratio, option);

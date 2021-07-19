@@ -41,7 +41,7 @@ int main() {
     std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork()) << std::endl;
     std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork()) << std::endl;
     std::cout << "nb options:" << plan.getNbOptions() << std::endl;
-    std::cout << "nb restorable arcs:" << plan.getNbArcs() << std::endl;
+    std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements() << std::endl;
     
     Helper::printInstance(instance.landscape, instance.plan, "test.eps");
 

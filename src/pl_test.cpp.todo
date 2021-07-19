@@ -68,9 +68,9 @@ bool do_test(const Landscape & landscape, const RestorationPlan<Landscape>& plan
             Helper::printSolution(landscape, std::to_string(seed), glutton_eca_dec, budget, glutton_dec_solution);
         }
 
-        const double glutton_inc_value = ECA::get().eval_solution(landscape, *glutton_inc_solution);
-        const double glutton_dec_value = ECA::get().eval_solution(landscape, *glutton_dec_solution);
-        const double pl_3_value = ECA::get().eval_solution(landscape, *pl_3_solution);
+        const double glutton_inc_value = ECA().eval_solution(landscape, *glutton_inc_solution);
+        const double glutton_dec_value = ECA().eval_solution(landscape, *glutton_dec_solution);
+        const double pl_3_value = ECA().eval_solution(landscape, *pl_3_solution);
 
         if(glutton_inc_value - pl_3_value > epsilon || glutton_dec_value - pl_3_value  > epsilon) {
             std::cerr << glutton_inc_value << " " << glutton_dec_value << " " <<  pl_3_value << " " << std::endl;
