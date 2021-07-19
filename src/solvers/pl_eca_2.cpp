@@ -109,7 +109,6 @@ void insert_variables(OSI_Builder & solver_builder, Variables & vars) {
 void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, Variables & vars, bool relaxed) {
     const Graph_t & graph = landscape.getNetwork();
 
-
     std::vector<Graph_t::Node> nodes;
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) { 
         nodes.push_back(u); 

@@ -55,7 +55,7 @@ public:
         , coordsMap(coordsMap)
         , qualityMap(network)
         , probabilityMap(network) { reset(); }
-    DecoredLandscape(const Landscape & landscape)
+    DecoredLandscape(const LS & landscape)
         : network(landscape.getNetwork())
         , original_qualityMap(landscape.getQualityMap())
         , original_probabilityMap(landscape.getProbabilityMap())

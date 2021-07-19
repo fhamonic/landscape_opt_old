@@ -9,15 +9,10 @@
 
 class ECAReff : public concepts::ConnectivityIndex {
     private:
-        static ECAReff singleton;
-        double p0;
-        double alpha;
-        ECAReff();
+        double exponent;
     public:
-        static ECAReff & get() noexcept {
-            return singleton;
-        }
-        ~ECAReff();
+        ECAReff(double exponent=2) : exponent(exponent) {};
+        ~ECAReff() {};
 
         template <typename GR, typename DM>
         typename GR::template NodeMap<typename GR::template NodeMap<double> *> * getReff(const GR & g, const DM & resistance);

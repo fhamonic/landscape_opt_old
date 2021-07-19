@@ -125,13 +125,13 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
 
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
         for(auto const & e : plan[v]) {
-            assert(plan.contains(e.id));
+            assert(plan.contains(e.option));
             assert(e.quality_gain > 0.0);
         }
     }
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
         for(auto const & e : plan[a]) {
-            assert(plan.contains(e.id));
+            assert(plan.contains(e.option));
             assert(is_probability(e.restored_probability));
             assert(e.restored_probability > landscape.getProbability(a));
         }

@@ -89,3 +89,11 @@ add_executable(biorevaix_test exec/biorevaix_test.cpp)
 target_include_directories(biorevaix_test PUBLIC include)
 target_include_directories(biorevaix_test PUBLIC thirdparty)
 target_link_libraries(biorevaix_test PUBLIC landscape_opt)
+
+
+
+
+add_executable(contraction_test test/contraction_test.cpp)
+target_include_directories(contraction_test PUBLIC include)
+target_include_directories(contraction_test PUBLIC thirdparty)
+target_link_libraries(contraction_test PUBLIC landscape_opt)

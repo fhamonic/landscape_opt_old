@@ -152,6 +152,11 @@ void insert_variables(OSI_Builder & solver_builder, Variables & vars, Preprocess
 void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, 
         Variables & vars, PreprocessedDatas & pdatas) {
 
+    for(Graph_t::Node t : pdatas.target_nodes) {
+        const ContractionResult & cr = (*pdatas.contracted_instances)[t];
+        cr.plan->initElementIDs();
+    }
+
     auto M_x_const = [&] (Graph_t::Node t, StaticGraph_t::Arc a) {
         const ContractionResult & cr = (*pdatas.contracted_instances)[t];
         const StaticGraph_t & contracted_graph = cr.landscape->getNetwork();

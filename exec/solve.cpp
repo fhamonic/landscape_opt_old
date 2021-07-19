@@ -115,6 +115,7 @@ int main(int argc, const char *argv[]) {
     //for debug purposes
     //Helper::assert_well_formed(landscape, plan);
 
+    plan.initElementIDs();
     Solution solution = solver.solve(landscape, plan, B);
 
     Helper::printSolution(landscape, plan, name, solver, B, solution);

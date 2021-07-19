@@ -3,7 +3,7 @@
  * @author francois.hamonic@gmail.com
  * @brief 
  * @version 0.1
- * @date 2020-05-08 
+ * @date 2021-07-19 
  */
 #ifndef HELPER_HPP
 #define HELPER_HPP
@@ -331,11 +331,15 @@ namespace Helper {
 
     
     template <typename LS_From, typename LS_To>
-    void copyPlan(RestorationPlan<LS_To>& contracted_plan, const RestorationPlan<LS_From>& plan, 
+    void copyPlan(RestorationPlan<LS_To>& contracted_plan, const RestorationPlan<LS_From> & plan, 
             const typename LS_From::Graph::template NodeMap<typename LS_To::Node> & nodesRef, 
             const typename LS_From::Graph::template ArcMap<typename LS_To::Arc> & arcsRef) {
         assert(contracted_plan.getNbOptions() == 0);
+        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
+            contracted_plan.addOption(plan.getCost(i));
+
         const typename LS_From::Graph & from_graph = plan.getLandscape().getNetwork();
+
         for(typename LS_From::Graph::NodeIt u(from_graph); u != lemon::INVALID; ++u)
             for(const auto & e : plan[u])
                 contracted_plan.addNode(e.option, nodesRef[u], e.quality_gain);

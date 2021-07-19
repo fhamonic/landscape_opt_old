@@ -89,7 +89,7 @@ public:
     void changeSource(Arc a, Node u);
 
     /**
-     * @brief Changes the source of the arc a to be v
+     * @brief Changes the target of the arc a to be v
      * 
      * @param a 
      * @param v 
