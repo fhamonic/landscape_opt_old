@@ -79,7 +79,7 @@ Just
     make
 
 ## Usage
-making the project will product a static library "llandscape_opt.a" and an executable "solve"
+making the project will produce a static library "llandscape_opt.a" and an executable "solve"
 
     solve <landscape_file> <problem_file> <budget_value> <solver_name> [<option>=<value>]
 
@@ -92,4 +92,4 @@ A wrong call of "solve" will output propositions for available solvers or option
 See the data repertory for examples.
 
 ## Acknowledgments
-This work is a part of the phd thesis of François Hamonic which is funded by region SUD (https://www.maregionsud.fr/) and Natural Solutions (https://www.natural-solutions.eu/)
+This work is part of the PhD thesis of François Hamonic which is funded by Region Sud (https://www.maregionsud.fr/) and Natural Solutions (https://www.natural-solutions.eu/)
