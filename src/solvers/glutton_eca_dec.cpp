@@ -7,6 +7,8 @@ Solution Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Rest
     Chrono chrono;
 
     const Graph_t & graph = landscape.getNetwork();
+    const auto nodeOptions = plan.computeNodeOptionsMap();
+    const auto arcOptions = plan.computeArcOptionsMap();
 
     std::vector<RestorationPlan<Landscape>::Option> options;
     std::vector<RestorationPlan<Landscape>::Option> free_options;
@@ -26,12 +28,12 @@ Solution Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Rest
     auto min_option = [] (std::pair<double, RestorationPlan<Landscape>::Option> p1, std::pair<double, RestorationPlan<Landscape>::Option> p2) {
         return (p1.first < p2.first) ? p1 : p2;
     };
-    auto compute_min_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
-        DecoredLandscape decored_landscape(landscape);
+    auto compute_min_option = [&landscape, &plan, &nodeOptions, &arcOptions, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
+        DecoredLandscape<Landscape> decored_landscape(landscape);
         
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
             if(i == option) continue;
-            decored_landscape.apply(plan, i, solution.getCoef(i));
+            decored_landscape.apply(nodeOptions[i], arcOptions[i], solution[i]);
         }
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (prec_eca - eca) / plan.getCost(option);
@@ -61,9 +63,9 @@ Solution Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Rest
         if(log_level > 1) {
             std::cout << "remove option: " << worst_option_cost << std::endl;
             if(log_level > 2) {
-                for(auto const& [u, quality_gain] : plan.getNodes(worst_option))
+                for(auto const& [u, quality_gain] : nodeOptions[worst_option])
                     std::cout << "\tn " << graph.id(u) << std::endl;
-                for(auto const& [a, restored_probability] : plan.getArcs(worst_option)) {
+                for(auto const& [a, restored_probability] : arcOptions[worst_option]) {
                     Graph_t::Node source = graph.source(a);
                     Graph_t::Node target = graph.target(a);
                     std::cout << "\ta " << " " << graph.id(source) << " " << graph.id(target) << std::endl;
@@ -79,12 +81,12 @@ Solution Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Rest
     auto max_option = [](std::pair<double, RestorationPlan<Landscape>::Option> p1, std::pair<double, RestorationPlan<Landscape>::Option> p2) {
         return (p1.first > p2.first) ? p1 : p2;
     };
-    auto compute_max_option = [&landscape, &plan, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
-        DecoredLandscape decored_landscape(landscape);
+    auto compute_max_option = [&landscape, &plan, &nodeOptions, &arcOptions, &prec_eca, solution] (RestorationPlan<Landscape>::Option option) {
+        DecoredLandscape<Landscape> decored_landscape(landscape);
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            decored_landscape.apply(plan, i, solution.getCoef(i));
+            decored_landscape.apply(nodeOptions[i], arcOptions[i], solution[i]);
         }
-        decored_landscape.apply(plan, option);
+        decored_landscape.apply(nodeOptions[option], arcOptions[option]);
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
 
@@ -118,9 +120,9 @@ Solution Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Rest
         if(log_level > 1) {
             std::cout << "add option: " << best_option_cost << std::endl;
             if(log_level > 2) {
-                for(auto const& [u, quality_gain] : plan.getNodes(best_option))
+                for(auto const& [u, quality_gain] : nodeOptions[best_option])
                     std::cout << "\tn " << graph.id(u) << std::endl;
-                for(auto const& [a, restored_probability] : plan.getArcs(best_option)) {
+                for(auto const& [a, restored_probability] : arcOptions[best_option]) {
                     Graph_t::Node source = graph.source(a);
                     Graph_t::Node target = graph.target(a);
                     std::cout << "\ta " << " " << graph.id(source) << " " << graph.id(target) << std::endl;

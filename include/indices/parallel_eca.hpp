@@ -33,8 +33,14 @@ class Parallel_ECA : public concepts::ConnectivityIndex {
             return -alpha * std::log(p);
         }
 
-        double eval_solution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const Solution & solution) const;
-
+        template <typename LS>
+        double eval_solution(const LS & landscape, const RestorationPlan<LS>& plan, const Solution & solution) const {
+            DecoredLandscape<LS> decored_landscape(landscape);
+            for(typename RestorationPlan<LS>::Option i=0; i<plan.getNbOptions(); ++i)
+                decored_landscape.apply(plan, i, solution.getCoef(i));
+            double value = eval(decored_landscape);
+            return value;
+        }
 
         /**
          * @brief Computes the value of the Parallel_ECA index of the specified landscape.

@@ -26,22 +26,22 @@ namespace concepts {
             typename PM=typename GR::template ArcMap<double>, 
             typename CM=typename GR::template NodeMap<Point>>
     class AbstractLandscape {
-        public:
-            typedef GR Graph;
-            typedef typename GR::Node Node;
-            typedef typename GR::Arc Arc;
-            typedef QM QualityMap;
-            typedef PM ProbabilityMap;
-            typedef CM CoordsMap;
+    public:
+        using Graph = GR;
+        using Node = typename GR::Node;
+        using Arc = typename GR::Arc;
+        using QualityMap = QM;
+        using ProbabilityMap = PM;
+        using CoordsMap = CM;
 
-            virtual const Graph & getNetwork() const = 0;
-            virtual const QualityMap & getQualityMap() const = 0;
-            virtual const CoordsMap & getCoordsMap() const = 0;
-            virtual const ProbabilityMap & getProbabilityMap() const = 0;
+        virtual const Graph & getNetwork() const = 0;
+        virtual const QualityMap & getQualityMap() const = 0;
+        virtual const CoordsMap & getCoordsMap() const = 0;
+        virtual const ProbabilityMap & getProbabilityMap() const = 0;
 
-            virtual const double & getQuality(Node u) const = 0;
-            virtual const Point & getCoords(Node u) const = 0;
-            virtual const double & getProbability(Arc a) const = 0;
+        virtual const double & getQuality(Node u) const = 0;
+        virtual const Point & getCoords(Node u) const = 0;
+        virtual const double & getProbability(Arc a) const = 0;
     };
 
     /*template <class LS, class GR=typename LS::Graph, typename QM=typename LS::QualityMap,

@@ -95,16 +95,21 @@ bool StdRestorationPlanParser::write(const RestorationPlan<Landscape>& plan, con
 
     problem_file << std::setprecision(16);
 
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-        problem_file << plan.getCost(i) << " " << plan.getNbElements(i) << std::endl;
+    const auto nodeOptions = plan.computeNodeOptionsMap();
+    const auto arcOptions = plan.computeArcOptionsMap();
 
-        for(auto const& [v, quality_gain] : plan.getNodes(i)) {
-            problem_file << "\tn " << id(v) << " " << quality_gain << std::endl;
-        }
-        for(auto const& [a, restored_probability] : plan.getArcs(i)) {
+    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+        problem_file << plan.getCost(i) << " " 
+            << (nodeOptions[i].size() + arcOptions[i].size()) << std::endl;
+
+        for(auto const & [v, quality_gain] : nodeOptions[i])
+            problem_file << "\tn " << id(v) 
+                << " " << quality_gain << std::endl;
+        for(auto const & [a, restored_probability] : arcOptions[i]) {
             Graph_t::Node source = graph.source(a);
             Graph_t::Node target = graph.target(a);
-            problem_file << "\ta " << id(source) << " " << id(target) << " " << restored_probability << std::endl;
+            problem_file << "\ta " << id(source) << " " << id(target) 
+                << " " << restored_probability << std::endl;
         }
     }
 

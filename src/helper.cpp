@@ -32,12 +32,17 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan<La
 
         std::cout << title << std::endl;
 
-        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            const double coef = solution.getCoef(i);
-            for(auto const& [u, quality_gain] : plan.getNodes(i))
-                node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
-            for(auto const& [a, restored_probability] : plan.getArcs(i))
-                arcs_colorsMap[a] = lemon::Color(1-coef, coef, 0.0);
+        for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+            double coef = 0;
+            for(const auto & e : plan[u])
+                coef = std::max(coef, solution[e.option]);
+            node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
+        }
+        for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+            double coef = 0;
+            for(const auto & e : plan[a])
+                coef = std::max(coef, solution[e.option]);
+            arcs_colorsMap[a] = lemon::Color(1-coef, coef, 0.0);
         }
 
         return lemon::graphToEps(graph, "output/" + name)
@@ -118,35 +123,17 @@ void Helper::assert_well_formed(const Landscape & landscape, const RestorationPl
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
         assert(is_probability(landscape.getProbability(a))); }
 
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-        for(auto const& [v, quality_gain] : plan.getNodes(i)) {
-            (void)i; (void)quality_gain;
-            assert(graph.valid(v));
-            assert(quality_gain > 0.0);
-            assert(quality_gain == plan.getQualityGain(i, v));
-        }
-        for(auto const& [a, restored_probability] : plan.getArcs(i)) {
-            (void)i; (void)restored_probability;
-            assert(graph.valid(a));
-            assert(is_probability(restored_probability));
-            assert(restored_probability > landscape.getProbability(a));
-            assert(restored_probability == plan.getRestoredProbability(i, a));
-        }
-    }
-
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-        for(auto const& [i, quality_gain] : plan.getOptions(v)) {
-            (void)i; (void)quality_gain;
-            assert(quality_gain > 0.0);
-            assert(quality_gain == plan.getQualityGain(i, v));
+        for(auto const & e : plan[v]) {
+            assert(plan.contains(e.id));
+            assert(e.quality_gain > 0.0);
         }
     }
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
-        for(auto const& [i, restored_probability] : plan.getOptions(a)) {
-            (void)i; (void)restored_probability;
-            assert(is_probability(restored_probability));
-            assert(restored_probability > landscape.getProbability(a));   
-            assert(restored_probability == plan.getRestoredProbability(i, a));         
+        for(auto const & e : plan[a]) {
+            assert(plan.contains(e.id));
+            assert(is_probability(e.restored_probability));
+            assert(e.restored_probability > landscape.getProbability(a));
         }
     }
 }

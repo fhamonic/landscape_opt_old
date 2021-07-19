@@ -15,20 +15,16 @@ namespace Solvers::PL_ECA_2_Vars {
     class RestoredXVar : public OSI_Builder::VarType {
         private:
             const Graph_t & _graph;
-            const RestorationPlan<Landscape>& _plan;
             int _nb_vars_by_node;
-            std::vector<int> offsets;
         public:
-            RestoredXVar(const RestorationPlan<Landscape>& plan, int n): VarType(0, 0, OSI_Builder::INFTY, false), 
-                    _graph(plan.getLandscape().getNetwork()), _plan(plan) {
-                int cpt = 0;
-                for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
-                { offsets.push_back(cpt); cpt += plan.getNbArcs(i); }
-                _nb_vars_by_node = cpt;
+            RestoredXVar(const RestorationPlan<Landscape>& plan, int n)
+                : VarType(0, 0, OSI_Builder::INFTY, false)
+                , _graph(plan.getLandscape().getNetwork()) {
+                _nb_vars_by_node = plan.getNbArcRestorationElements();
                 _number = n * _nb_vars_by_node;
             }
-            int id(Graph_t::Node t, Graph_t::Arc a, RestorationPlan<Landscape>::Option option) { 
-                const int id = _graph.id(t) * _nb_vars_by_node + offsets.at(option) + _plan.id(option, a);
+            int id(Graph_t::Node t, RestorationPlan<Landscape>::ArcRestorationElement e) {
+                const int id = _graph.id(t) * _nb_vars_by_node + e.id;
                 assert(id >=0 && id < _number); return _offset + id;}
     };
     class FVar : public OSI_Builder::VarType {
@@ -40,25 +36,20 @@ namespace Solvers::PL_ECA_2_Vars {
                 assert(id >=0 && id < _number); return _offset + id;}
     };
     class RestoredFVar : public OSI_Builder::VarType {
-        private:
-            const RestorationPlan<Landscape>& _plan;
-            std::vector<int> offsets;
         public:
-            RestoredFVar(const RestorationPlan<Landscape>& plan): VarType(0, 0, OSI_Builder::INFTY, false), _plan(plan) {
-                int cpt = 0;
-                for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
-                { offsets.push_back(cpt); cpt += plan.getNbNodes(i); }
-                _number = cpt;
-            }
-            int id(Graph_t::Node t, RestorationPlan<Landscape>::Option i) { 
-                const int id = offsets.at(i) + _plan.id(i, t);
-                assert(id >=0 && id < _number); return _offset + id;}
+            RestoredFVar(const RestorationPlan<Landscape> & plan)
+                : VarType(plan.getNbNodeRestorationElements(), 
+                        0, OSI_Builder::INFTY, false) {}
+            int id(RestorationPlan<Landscape>::NodeRestorationElement e) {
+                assert(e.id >=0 && e.id < _number); return _offset + e.id; }
     };
     class YVar : public OSI_Builder::VarType {
         public:
-            YVar(const RestorationPlan<Landscape>& plan): VarType(plan.getNbOptions(), 0, 1, true) {}
-            int id(RestorationPlan<Landscape>::Option option) { const int id = option;
-                assert(id >=0 && id < _number); return _offset + id;}
+            YVar(const RestorationPlan<Landscape>& plan)
+                : VarType(plan.getNbOptions(), 0, 1, true) {}
+            int id(RestorationPlan<Landscape>::Option option) { 
+                const int id = option;
+                assert(id >=0 && id < _number); return _offset + id; }
     };
 
 
@@ -91,14 +82,14 @@ namespace Solvers::PL_ECA_2_Vars {
         // RestoredXVar
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t)
             for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) 
-                for(auto const& [option, quality_gain] : plan.getOptions(a))
-                    solver.setColName(vars.restored_x.id(t, a, option), "restored_x_t_" + node_str(t) + "_a_" + arc_str(a) + "_" + std::to_string(option));
+                for(auto const& e : plan[a])
+                    solver.setColName(vars.restored_x.id(t, e), "restored_x_t_" + node_str(t) + "_a_" + arc_str(a) + "_" + std::to_string(e.option));
         // FVar
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) solver.setColName(vars.f.id(t), "f_t_" +  node_str(t));
         // RestoredFVar
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t)
-            for(auto const& [option, quality_gain] : plan.getOptions(t))
-                solver.setColName(vars.restored_f.id(t, option), "restored_f_t_" + node_str(t) + "_" + std::to_string(option));
+            for(auto const& e : plan[t])
+                solver.setColName(vars.restored_f.id(e), "restored_f_t_" + node_str(t) + "_" + std::to_string(e.option));
         // YVar
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) solver.setColName(vars.y.id(i), "y_" + std::to_string(i));
     }
@@ -138,9 +129,9 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
         // sum w(t) * f_t
         const int f_t = vars.f.id(t);
         solver_builder.setObjective(f_t, landscape.getQuality(t));
-        for(auto const& [option, quality_gain] : plan.getOptions(t)) {   
-            const int restored_f_t = vars.restored_f.id(t, option);
-            solver_builder.setObjective(restored_f_t, quality_gain);
+        for(auto const & e : plan[t]) {   
+            const int restored_f_t = vars.restored_f.id(e);
+            solver_builder.setObjective(restored_f_t, e.quality_gain);
         }
     }
     ////////////////////////////////////////////////////////////////////////
@@ -155,8 +146,8 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             for(Graph_t::OutArcIt b(graph, u); b != lemon::INVALID; ++b) {
                 const int x_tb = vars.x.id(t,b);
                 solver_builder.buffEntry(x_tb, 1);
-                for(auto const& [option, restored_probability] : plan.getOptions(b)) {
-                    const int restored_x_t_b = vars.restored_x.id(t, b, option);
+                for(auto const & e : plan[b]) {
+                    const int restored_x_t_b = vars.restored_x.id(t, e);
                     solver_builder.buffEntry(restored_x_t_b, 1);
                 }
             }
@@ -164,15 +155,15 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
             for(Graph_t::InArcIt a(graph, u); a != lemon::INVALID; ++a) {
                 const int x_ta = vars.x.id(t,a);
                 solver_builder.buffEntry(x_ta, -landscape.getProbability(a));
-                for(auto const& [option, restored_probability] : plan.getOptions(a)) {
-                    const int restored_x_t_a = vars.restored_x.id(t, a, option);
-                    solver_builder.buffEntry(restored_x_t_a, -restored_probability);
+                for(auto const & e : plan[a]) {
+                    const int restored_x_t_a = vars.restored_x.id(t, e);
+                    solver_builder.buffEntry(restored_x_t_a, -e.restored_probability);
                 }
             }
             // optional injected flow
-            for(auto const& [option, quality_gain] : plan.getOptions(u)) {
-                const int y_u = vars.y.id(option);
-                solver_builder.buffEntry(y_u, -quality_gain);
+            for(auto const& e : plan[u]) {
+                const int y_u = vars.y.id(e.option);
+                solver_builder.buffEntry(y_u, -e.quality_gain);
             }
             // optimisation variable
             if(u == t)
@@ -182,23 +173,22 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
         }
 
         // x_a < y_i * M
-        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            const int y_i = vars.y.id(i);
-            for(auto const& [a, restored_probability] : plan.getArcs(i)) {
-                const int x_ta = vars.restored_x.id(t, a, i);
+        for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+            for(auto const & e : plan[a]) {
+                const int y_i = vars.y.id(e.option);
+                const int x_ta = vars.restored_x.id(t, e);
                 solver_builder.buffEntry(y_i, M[graph.source(a)]);
                 solver_builder.buffEntry(x_ta, -1);
                 solver_builder.pushRow(0, OSI_Builder::INFTY);
             }
         }
-    }
-    // restored_f_t <= f_t
-    // restored_f_t <= y_i * M
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-        const int y_i = vars.y.id(i);
-        for(auto const& [t, quality_gain] : plan.getNodes(i)) {
+
+        // restored_f_t <= f_t
+        // restored_f_t <= y_i * M
+        for(const auto & e : plan[t]) {
+            const int y_i = vars.y.id(e.option);
             const int f_t = vars.f.id(t);
-            const int restored_f_t = vars.restored_f.id(t, i);
+            const int restored_f_t = vars.restored_f.id(e);
             solver_builder.buffEntry(f_t, 1);
             solver_builder.buffEntry(restored_f_t, -1);
             solver_builder.pushRow(0, OSI_Builder::INFTY);

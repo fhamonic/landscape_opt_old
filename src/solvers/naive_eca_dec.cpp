@@ -6,6 +6,8 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
     const bool parallel = params.at("parallel")->getBool();
     Chrono chrono;
     
+    const auto nodeOptions = plan.computeNodeOptionsMap();
+    const auto arcOptions = plan.computeArcOptionsMap();
 
     std::vector<RestorationPlan<Landscape>::Option> free_options;
     std::vector<std::pair<double, RestorationPlan<Landscape>::Option>> ratio_free_options;
@@ -28,12 +30,12 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
 
     ratio_options.resize(options.size());
 
-    auto compute_dec = [&landscape, &plan, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
-        DecoredLandscape decored_landscape(landscape);
+    auto compute_dec = [&landscape, &plan, &nodeOptions, &arcOptions, &options, prec_eca] (RestorationPlan<Landscape>::Option option) {
+        DecoredLandscape<Landscape> decored_landscape(landscape);
         for(RestorationPlan<Landscape>::Option it_option : options) {
             if(it_option == option)
                 continue;
-            decored_landscape.apply(plan, it_option);
+            decored_landscape.apply(nodeOptions[it_option], arcOptions[it_option]);
         }
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (prec_eca - eca) / plan.getCost(option);
@@ -60,11 +62,11 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
 
     ratio_free_options.resize(free_options.size());
 
-    auto compute_inc = [&landscape, &plan, &solution, prec_eca] (RestorationPlan<Landscape>::Option option) {
-        DecoredLandscape decored_landscape(landscape);
+    auto compute_inc = [&landscape, &plan, &nodeOptions, &arcOptions, &solution, prec_eca] (RestorationPlan<Landscape>::Option option) {
+        DecoredLandscape<Landscape> decored_landscape(landscape);
         for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
-            decored_landscape.apply(plan, i, solution.getCoef(i));
-        decored_landscape.apply(plan, option);
+            decored_landscape.apply(nodeOptions[i], arcOptions[i], solution.getCoef(i));
+        decored_landscape.apply(nodeOptions[option], arcOptions[option]);
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
         return std::make_pair(ratio, option);

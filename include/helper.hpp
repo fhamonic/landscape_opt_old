@@ -11,6 +11,9 @@
 #include <filesystem>
 #include <math.h>
 
+#include <boost/range/algorithm.hpp>
+#include <boost/range/adaptors.hpp>
+
 #include "landscape/landscape.hpp"
 #include "landscape/decored_landscape.hpp"
 
@@ -252,12 +255,11 @@ namespace Helper {
         typename Graph::template ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
         typename Graph::template ArcMap<double> arc_widths(graph, arc_width);
 
-        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
-            for(auto const& [u, quality_gain] : plan.getNodes(i))
-                node_colorsMap[u] = lemon::RED;
-            for(auto const& [a, restored_probability] : plan.getArcs(i))
-                arcs_colorsMap[a] = lemon::RED;
-        }
+        for(typename Graph::NodeIt u(graph); u != lemon::INVALID; ++u)
+            node_colorsMap[u] = plan[u].empty() ? lemon::BLACK : lemon::RED;
+
+        for(typename Graph::ArcIt a(graph); a != lemon::INVALID; ++a)
+            arcs_colorsMap[a] = plan[a].empty() ? lemon::BLACK : lemon::RED;
 
         return lemon::graphToEps(graph, path)
                 .title(name)
@@ -290,7 +292,6 @@ namespace Helper {
 
     /**
      * @brief Compute the centrality of each arc, i.e the number of shortest paths that contain it
-     * 
      * @tparam GR 
      * @tparam LM 
      * @param graph 
@@ -323,7 +324,10 @@ namespace Helper {
     }
 
 
-    void printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, const Solution & solution);
+    void printSolution(const Landscape & landscape,
+            const RestorationPlan<Landscape>& plan,
+            std::string name, concepts::Solver & solver,
+            double B, const Solution & solution);
 
     
     template <typename LS_From, typename LS_To>
@@ -331,19 +335,20 @@ namespace Helper {
             const typename LS_From::Graph::template NodeMap<typename LS_To::Node> & nodesRef, 
             const typename LS_From::Graph::template ArcMap<typename LS_To::Arc> & arcsRef) {
         assert(contracted_plan.getNbOptions() == 0);
-        for(typename RestorationPlan<LS_From>::Option i=0; i<plan.getNbOptions(); ++i) {
-            contracted_plan.addOption(plan.getCost(i));
-            for(auto const& [u, quality_gain] : plan.getNodes(i))
-                contracted_plan.addNode(i, nodesRef[u], quality_gain);
-            for(auto const& [a, restored_probability] : plan.getArcs(i))
-                contracted_plan.addArc(i, arcsRef[a], restored_probability);
-        }  
+        const typename LS_From::Graph & from_graph = contracted_plan.getLandscape().getNetwork();
+        for(typename LS_From::Graph::NodeIt u(from_graph); u != lemon::INVALID; ++u)
+            for(const auto & e : plan[u])
+                contracted_plan.addNode(e.option, nodesRef[u], e.quality_gain);
+        for(typename LS_From::Graph::ArcIt a(from_graph); a != lemon::INVALID; ++a)
+            for(const auto & e : plan[a])
+                contracted_plan.addArc(e.option, arcsRef[a], e.restored_probability);
     }
 
     // need to include the binary search tree for y-h , y+h search
-    std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape) ;
+    std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
 
-    void assert_well_formed(const Landscape & landscape, const RestorationPlan<Landscape>& plan);
+    void assert_well_formed(const Landscape & landscape,
+            const RestorationPlan<Landscape>& plan);
 }
 
 

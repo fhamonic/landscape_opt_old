@@ -6,6 +6,9 @@ Solution Solvers::Naive_ECA_Inc::solve(const Landscape & landscape, const Restor
     const bool parallel = params.at("parallel")->getBool();
     Chrono chrono;    
 
+    const auto nodeOptions = plan.computeNodeOptionsMap();
+    const auto arcOptions = plan.computeArcOptionsMap();
+
     double prec_eca = ECA::get().eval(landscape);
     if(log_level > 1) {
         std::cout << "base ECA: " << prec_eca << std::endl;
@@ -19,9 +22,9 @@ Solution Solvers::Naive_ECA_Inc::solve(const Landscape & landscape, const Restor
     
     ratio_options.resize(options.size());
 
-    auto compute = [&landscape, &plan, prec_eca] (RestorationPlan<Landscape>::Option option) {
-        DecoredLandscape decored_landscape(landscape);
-        decored_landscape.apply(plan, option, 1);
+    auto compute = [&landscape, &plan, &nodeOptions, &arcOptions, prec_eca] (RestorationPlan<Landscape>::Option option) {
+        DecoredLandscape<Landscape> decored_landscape(landscape);
+        decored_landscape.apply(nodeOptions[option], arcOptions[option]);
         const double eca = ECA::get().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
         

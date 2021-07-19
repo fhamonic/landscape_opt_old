@@ -23,7 +23,7 @@
 #include "solvers/glutton_eca_dec.hpp"
 #include "solvers/pl_eca_2.hpp"
 #include "solvers/pl_eca_3.hpp"
-#include "solvers/pl_eca_4.hpp"
+// #include "solvers/pl_eca_4.hpp"
 #include "solvers/randomized_rounding.hpp"
 
 #include "helper.hpp"
@@ -46,7 +46,7 @@ static std::vector<std::unique_ptr<concepts::Solver>> construct_solvers() {
     solvers.emplace_back(std::make_unique<Solvers::Glutton_ECA_Dec>());
     solvers.emplace_back(std::make_unique<Solvers::PL_ECA_2>());
     solvers.emplace_back(std::make_unique<Solvers::PL_ECA_3>());
-    solvers.emplace_back(std::make_unique<Solvers::PL_ECA_4>());
+    // solvers.emplace_back(std::make_unique<Solvers::PL_ECA_4>());
     solvers.emplace_back(std::make_unique<Solvers::Randomized_Rounding_ECA>());
 
     return solvers;
