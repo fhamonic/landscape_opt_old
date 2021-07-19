@@ -16,7 +16,7 @@
 #include<memory>
 #include <numeric>
 
-#include"landscape/concept/abstract_landscape.hpp"
+#include "landscape/concept/abstract_landscape.hpp"
 
 #include <boost/container/small_vector.hpp>
 #include <boost/range/algorithm/find_if.hpp>
@@ -300,7 +300,7 @@ public:
     int getNbNodeRestorationElements() const noexcept {
         const Graph & graph = _landscape.getNetwork();
         int count = 0;
-        for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u)
+        for(typename Graph::NodeIt u(graph); u != lemon::INVALID; ++u)
             count += _qualityRestorationOptions[u].size();
         return count;
     }
@@ -315,7 +315,7 @@ public:
     int getNbArcRestorationElements() const noexcept {
         const Graph & graph = _landscape.getNetwork();
         int count = 0;
-        for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a)
+        for(typename Graph::ArcIt a(graph); a != lemon::INVALID; ++a)
             count += _probabilityRestorationOptions[a].size();
         return count;
     }
@@ -338,7 +338,7 @@ public:
     void initNodeElementIDs() {
         const Graph & graph = _landscape.getNetwork();
         int count = 0;
-        for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u)
+        for(typename Graph::NodeIt u(graph); u != lemon::INVALID; ++u)
             for(auto & restoration_element : _qualityRestorationOptions[u])
                 restoration_element.id = count++;
     }
@@ -351,7 +351,7 @@ public:
     void initArcElementIDs() {
         const Graph & graph = _landscape.getNetwork();
         int count = 0;
-        for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a)
+        for(typename Graph::ArcIt a(graph); a != lemon::INVALID; ++a)
             for(auto & restoration_element : _probabilityRestorationOptions[a])
                 restoration_element.id = count++;
     }
@@ -374,7 +374,7 @@ public:
      */
     NodeOptionsMap computeNodeOptionsMap() const {
         NodeOptionsMap nodeOptionsMap(getNbOptions());
-        for(Graph_t::NodeIt v(_landscape.getNetwork()); v != lemon::INVALID; ++v)
+        for(typename Graph::NodeIt v(_landscape.getNetwork()); v != lemon::INVALID; ++v)
             for(auto const & e : _qualityRestorationOptions[v])
                 nodeOptionsMap[e.option].emplace_back(v, e.quality_gain);
         return nodeOptionsMap;
@@ -388,7 +388,7 @@ public:
      */
     ArcOptionsMap computeArcOptionsMap() const {
         ArcOptionsMap arcOptionsMap(getNbOptions());
-        for(Graph_t::ArcIt a(_landscape.getNetwork()); a != lemon::INVALID; ++a)
+        for(typename Graph::ArcIt a(_landscape.getNetwork()); a != lemon::INVALID; ++a)
             for(auto const & e : _probabilityRestorationOptions[a])
                 arcOptionsMap[e.option].emplace_back(a, e.restored_probability);
         return arcOptionsMap;
@@ -413,6 +413,28 @@ public:
      * @space \f$O(1)\f$ 
      */
     const ArcRestorationsList & operator[](Arc a) const noexcept {
+        return _probabilityRestorationOptions[a];
+    }
+
+    /**
+     * @brief Returns the restoration options concerning the node **u**
+     * @param u Node
+     * @return NodeRestorationsList 
+     * @time \f$O(1)\f$
+     * @space \f$O(1)\f$ 
+     */
+    NodeRestorationsList & operator[](Node u) noexcept {
+        return _qualityRestorationOptions[u];
+    }
+
+    /**
+     * @brief Returns the restoration options concerning the arc **a**
+     * @param a Arc
+     * @return ArcRestorationsList 
+     * @time \f$O(1)\f$
+     * @space \f$O(1)\f$ 
+     */
+    ArcRestorationsList & operator[](Arc a) noexcept {
         return _probabilityRestorationOptions[a];
     }
 

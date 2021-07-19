@@ -2,6 +2,8 @@
 
 static Solution job(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B, const Solution & relaxed_solution, int nb_draws) {
     Solution best_solution(landscape, plan);
+    const auto nodeOptions = plan.computeNodeOptionsMap();
+    const auto arcOptions = plan.computeArcOptionsMap();
 
     RandomChooser<RestorationPlan<Landscape>::Option> option_chooser;
     for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
@@ -12,7 +14,7 @@ static Solution job(const Landscape & landscape, const RestorationPlan<Landscape
 
     std::vector<RestorationPlan<Landscape>::Option> purschaised_options;
     double purschaised;
-    DecoredLandscape decored_landscape(landscape);
+    DecoredLandscape<Landscape> decored_landscape(landscape);
     double best_eca = 0.0;
 
     for(int i=0; i<nb_draws; i++) {
@@ -26,7 +28,7 @@ static Solution job(const Landscape & landscape, const RestorationPlan<Landscape
             purschaised_options.push_back(option);
             purschaised += plan.getCost(option);
 
-            decored_landscape.apply(plan, option);
+            decored_landscape.apply(nodeOptions[option], arcOptions[option]);
         }
         double eca = ECA::get().eval(decored_landscape);
 

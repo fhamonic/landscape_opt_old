@@ -28,7 +28,6 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
         contract_arc(contracted_landscape, contracted_plan, a);
     }
 
-    contracted_plan.eraseInvalidElements();
     
 
     // ///////// reduce memory usage -> TODO StaticLandscape class
@@ -55,8 +54,8 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
     Graph_t::ArcMap<double> p_max(graph);
     for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
         p_max[a] = p_min[a];
-        for(auto const& [i, restored_probability] : plan.getOptions(a))
-            p_max[a] = std::max(p_max[a], restored_probability);
+        for(const auto & e : plan[a])
+            p_max[a] = std::max(p_max[a], e.restored_probability);
     }
 
     // TODO use graph iterator

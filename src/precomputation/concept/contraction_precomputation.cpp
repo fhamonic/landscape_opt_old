@@ -43,10 +43,12 @@ void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationP
         ++next_b;
         landscape.changeTarget(b, v);
         landscape.getProbabilityRef(b) *= a_probability;
-        plan.updateProbability(b, a_probability);
+        for(auto & e : plan[a])
+            e.restored_probability *= a_probability;
     }
 
     landscape.getQualityRef(v) += a_probability * landscape.getQuality(u);
-    plan.moveQualityGains(u, v, a_probability);
+    for(auto & e : plan[u])
+        plan.addNode(e.option, v, a_probability * e.quality_gain);
     landscape.removeNode(u);
 }

@@ -335,7 +335,7 @@ namespace Helper {
             const typename LS_From::Graph::template NodeMap<typename LS_To::Node> & nodesRef, 
             const typename LS_From::Graph::template ArcMap<typename LS_To::Arc> & arcsRef) {
         assert(contracted_plan.getNbOptions() == 0);
-        const typename LS_From::Graph & from_graph = contracted_plan.getLandscape().getNetwork();
+        const typename LS_From::Graph & from_graph = plan.getLandscape().getNetwork();
         for(typename LS_From::Graph::NodeIt u(from_graph); u != lemon::INVALID; ++u)
             for(const auto & e : plan[u])
                 contracted_plan.addNode(e.option, nodesRef[u], e.quality_gain);
@@ -362,11 +362,12 @@ double max_flow_in(const LS & landscape, const RestorationPlan<LS>& plan, typena
     Reversed reversed_g(original_g);
     ProbabilityMap probabilities(original_g);
 
-    for(typename Graph::ArcIt b(original_g); b != lemon::INVALID; ++b)
+    for(typename Graph::ArcIt b(original_g); b != lemon::INVALID; ++b) {
         probabilities[b] = landscape.getProbability(b);
-    for(typename RestorationPlan<LS>::Option i=0; i<plan.getNbOptions(); ++i)
-        for(auto const& [b, restored_probability] : plan.getArcs(i))
-            probabilities[b] = std::max(probabilities[b], restored_probability);
+        for(auto const & e : plan[b])
+            probabilities[b] = std::max(probabilities[b],
+                e.restored_probability);
+    }
 
     lemon::MultiplicativeSimplerDijkstra<Reversed, ProbabilityMap> dijkstra(reversed_g, probabilities);
     double sum = 0;
@@ -376,8 +377,8 @@ double max_flow_in(const LS & landscape, const RestorationPlan<LS>& plan, typena
         typename Graph::Node v = pair.first;
         const double p_tv = pair.second;
         sum += landscape.getQuality(v) * p_tv;
-        for(auto const& [option, quality_gain] : plan.getOptions(v))
-            sum += quality_gain * p_tv;
+        for(auto const & e : plan[v])
+            sum += e.quality_gain * p_tv;
     }
     return sum;
 }
