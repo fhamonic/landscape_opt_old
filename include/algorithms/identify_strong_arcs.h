@@ -5,7 +5,7 @@
 ///\file
 ///\brief Dijkstra algorithm.
 
-#include "algorithms/multiplicative_dijkstra.h"
+#include "algorithms/multiplicative_dijkstra.hpp"
 
 
 namespace lemon {

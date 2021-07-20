@@ -14,7 +14,7 @@
 #include "parsers/std_landscape_parser.hpp"
 
 #include "utils/random_chooser.hpp"
-#include "algorithms/multiplicative_dijkstra.h"
+#include "algorithms/multiplicative_dijkstra.hpp"
 
 #include "helper.hpp"
 

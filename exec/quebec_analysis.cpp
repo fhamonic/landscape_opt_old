@@ -27,6 +27,7 @@
 #include "solvers/randomized_rounding.hpp"
 
 #include "helper.hpp"
+#include "print_helper.hpp"
 #include "instances_helper.hpp"
 
 static std::vector<std::unique_ptr<concepts::Solver>> construct_solvers() {

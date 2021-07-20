@@ -3,7 +3,7 @@
 
 #include "indices/concept/connectivity_index.hpp"
 
-#include "algorithms/multiplicative_dijkstra.h"
+#include "algorithms/multiplicative_dijkstra.hpp"
 
 #include "lemon/bits/map_extender.h"
 

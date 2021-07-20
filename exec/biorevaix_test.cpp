@@ -29,6 +29,7 @@
 #include "solvers/randomized_rounding.hpp"
 
 #include "helper.hpp"
+#include "print_helper.hpp"
 #include "instances_helper.hpp"
 
 int main() {
@@ -45,11 +46,14 @@ int main() {
     
     Helper::printInstance(instance.landscape, instance.plan, "test.eps");
 
-    Solvers::PL_ECA_3 pl_eca_3;
-    pl_eca_3.setLogLevel(2);
 
-    plan.initElementIDs();
-    pl_eca_3.solve(landscape, plan, 2);
+
+
+    // Solvers::PL_ECA_3 pl_eca_3;
+    // pl_eca_3.setLogLevel(2);
+
+    // plan.initElementIDs();
+    // pl_eca_3.solve(landscape, plan, 2);
 
     return EXIT_SUCCESS;
 }

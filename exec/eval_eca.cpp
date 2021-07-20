@@ -6,6 +6,7 @@
 #include "instances_helper.hpp"
 
 #include "helper.hpp"
+#include "print_helper.hpp"
 
 int main(int argc, const char *argv[]) {
     if(argc < 2) {

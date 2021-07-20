@@ -27,6 +27,7 @@
 #include "solvers/randomized_rounding.hpp"
 
 #include "helper.hpp"
+#include "print_helper.hpp"
 #include "instances_helper.hpp"
 
 static void populate(std::list<concepts::Solver*> & solvers) {

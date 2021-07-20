@@ -18,10 +18,10 @@ Landscape StdLandscapeParser::parse(const std::filesystem::path file_name) {
         assert(false);
     }
 
-    io::CSVReader<4> patches(patches_file);
+    io::CSVReader<4> patches(file_name.parent_path() / patches_file);
     patches.read_header(io::ignore_extra_column, "id", "weight", "x", "y");
     
-    io::CSVReader<3> links(links_file);
+    io::CSVReader<3> links(file_name.parent_path() / links_file);
     links.read_header(io::ignore_extra_column, "from", "to", "probability");
 
     int patch_id;

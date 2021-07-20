@@ -27,6 +27,7 @@
 #include "solvers/randomized_rounding.hpp"
 
 #include "helper.hpp"
+#include "print_helper.hpp"
 
 /**
  * @brief Instanciates solvers
@@ -106,13 +107,6 @@ int main(int argc, const char *argv[]) {
     StdRestorationPlanParser parser(landscape);
     RestorationPlan<Landscape> plan = parser.parse(problem_path);
 
-    StdLandscapeParser::get().write(landscape, "instances", "test", false);
-    StdRestorationPlanParser plan_parser(landscape);
-    plan_parser.write(plan, "instances", "test", false);
-
-    Helper::printInstance(landscape, plan, "instances/test");
-
-    //for debug purposes
     //Helper::assert_well_formed(landscape, plan);
 
     plan.initElementIDs();

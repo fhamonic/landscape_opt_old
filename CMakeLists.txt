@@ -29,7 +29,7 @@ if(${WITH_GUROBI} STREQUAL "ON")
 endif()
 
 ##################### Sources ######################
-file(GLOB SRC "src/*/*.cpp" "src/*/*/*.cpp" "src/*/*/*/*.cpp" "src/helper.cpp") 
+file(GLOB SRC "src/*.cpp" "src/*/*.cpp" "src/*/*/*.cpp" "src/*/*/*/*.cpp") 
 
 #################### LIB target ####################
 add_library(landscape_opt ${SRC})
