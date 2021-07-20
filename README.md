@@ -72,7 +72,6 @@ add to .bashrc:
 
 
 ## How to Compile
-
     make
 
 ## Usage
