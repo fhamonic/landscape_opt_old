@@ -1,7 +1,7 @@
 .vscode
-/build
 /cache
-/data
+/build
+/output
 *.out
 *.lp
 *.mps.gz
