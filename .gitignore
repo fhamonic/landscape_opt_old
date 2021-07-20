@@ -6,8 +6,5 @@
 *.lp
 *.mps.gz
 
-*.eps
-output/*.eps
-
 /doc/html
 /doc/latex

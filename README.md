@@ -22,14 +22,15 @@ The build process requires CMake 3.12 (https://cmake.org/) or more and the Conan
     conan profile update settings.compiler.libcxx=libstdc++11 default
 
 ### Libraries
-The project uses COINOR libraries Clp Cbc and LEMON that are not currently available in Conan so get the binaries from your system packet manager or compile them (except LEMON that is header only) from sources
+The project uses COIN-OR libraries such as LEMON for implementing graphs and Cbc as a default Mixed Integer Programming solver. libraries Clp Cbc and LEMON that are not currently available in Conan so get the binaries from your system packet manager or compile them (except LEMON that is header only) from sources
 
 #### From package manager
 ##### Ubuntu
-    sudo apt install coinor-libclp-dev coinor-libcbc-dev
     sudo apt install liblemon-dev
+    sudo apt install coinor-libclp-dev coinor-libcbc-dev
 ##### Manjaro (AUR)
     sudo pamac install coin-or-lemon
+    sudo apt install coin-or-cbc
 
 #### From sources
 ##### Lemon : http://lemon.cs.elte.hu/trac/lemon/wiki/Downloads
@@ -39,6 +40,23 @@ The project uses COINOR libraries Clp Cbc and LEMON that are not currently avail
     cmake ..
     make
     sudo make install
+
+##### Cbc using coinbrew :
+###### Ubuntu requirements
+    sudo apt install build-essential git gcc-9 g++-9 cmake gfortran
+###### Manjaro requirements
+    pamac install base-devel git cmake gcc-fortran
+
+###### Instructions
+    mkdir coinor
+    cd coinor
+    git clone https://github.com/coin-or/coinbrew
+    ./coinbrew/coinbrew fetch Cbc:releases/2.10.5
+    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel
+
+add to .bashrc :
+
+    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:<path_to>/coinor/dist/lib/"
 
 ##### Gurobi : https://www.gurobi.com/
     linux64/bin/grbgetkey <licence_key>
@@ -52,29 +70,8 @@ add to .bashrc:
     export PATH="$PATH:$GUROBI_HOME/bin"
     export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$GUROBI_HOME/lib"
 
-##### Clp and Cbc using coinbrew :
-###### Ubuntu requirements
-    sudo apt install build-essential git gcc-9 g++-9 cmake gfortran
-###### Manjaro requirements
-    pamac install base-devel git cmake gcc-fortran
-
-###### Instructions
-<!-- export OPT_CFLAGS="-pipe -flto -march=native"
-    export OPT_CXXFLAGS="-pipe -flto -march=native"
-    export LDFLAGS="-pipe -flto" -->
-
-    mkdir coinor
-    cd coinor
-    git clone https://github.com/coin-or/coinbrew
-    ./coinbrew/coinbrew fetch Cbc:releases/2.10.5
-    ./coinbrew/coinbrew build Cbc:releases/2.10.5 --enable-cbc-parallel
-
-add to .bashrc :
-
-    export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:<path_to>/coinor/dist/lib/"
 
 ## How to Compile
-Just
 
     make
 
@@ -83,7 +80,7 @@ making the project will produce a static library "llandscape_opt.a" and an execu
 
     solve <landscape_file> <problem_file> <budget_value> <solver_name> [<option>=<value>]
 
-A wrong call of "solve" will output propositions for available solvers or options.
+A wrong call of "solve" will output the available solvers names if the provided one doesn't exist and available the available options for the selected solver otherwise.
 
 "<landscape_file>" is the path to a csv file with columns "patches_file" and "links_file" giving paths to the csv files describing the set of patches and of links of the landscape.
 
