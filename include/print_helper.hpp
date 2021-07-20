@@ -202,6 +202,20 @@ namespace Helper {
     // need to include the binary search tree for y-h , y+h search
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
 
+    template <typename LS>
+    void printLandscapeSVG(const LS & landscape, std::filesystem::path path) {
+        using Graph = typename LS::Graph;
+        using Node = typename LS::Graph::Node;
+        using Arc = typename LS::Graph::Arc;
+        using QualityMap = typename LS::QualityMap;
+        using CoordsMap = typename LS::CoordsMap;
+        
+        const Graph & graph = landscape.getNetwork();
+        const CoordsMap & coordsMap = landscape.getCoordsMap();
+        const QualityMap & qualityMap = landscape.getQualityMap();
+
+    };
+
 }
 
 
