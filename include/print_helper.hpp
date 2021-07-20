@@ -202,6 +202,7 @@ namespace Helper {
     // need to include the binary search tree for y-h , y+h search
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
 
+<<<<<<< HEAD
     template <typename LS>
     void printLandscapeGraphviz(const LS & landscape, std::filesystem::path path) {
         using Graph = typename LS::Graph;
@@ -245,6 +246,8 @@ namespace Helper {
         dot_file << "}" << std::endl;
     };
 
+=======
+>>>>>>> parent of f617e58 (test graphviz)
 }
 
 
