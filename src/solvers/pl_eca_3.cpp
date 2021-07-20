@@ -357,7 +357,7 @@ Solution Solvers::PL_ECA_3::solve(const Landscape & landscape, const Restoration
 
 
     if(log_level >= 1) {
-        if(log_level >= 3) {
+        if(log_level >= 2) {
             name_variables(solver_builder, landscape, plan, preprocessed_datas, vars);
             OsiClpSolverInterface * solver_clp = solver_builder.buildSolver<OsiClpSolverInterface>(OSI_Builder::MAX);
             solver_clp->writeLp("pl_eca_3");

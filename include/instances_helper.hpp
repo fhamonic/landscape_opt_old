@@ -207,8 +207,8 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
     int N_id, id_tronc;
     double X, Y, area, cost;
     while(patches.read_row(N_id, X, Y, area, cost, id_tronc)) {
-        Point p(X, Y);
-        if((p - center).normSquare() > radius_squared) continue;
+        Point p = Point(X,Y)-center;
+        if(p.normSquare() > radius_squared) continue;
         Graph_t::Node u = landscape.addNode((cost == 1 ? area : 0), p);
         nodes[N_id] = u;
         node_prob[u] = prob(cost);

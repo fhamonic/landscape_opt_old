@@ -32,9 +32,9 @@
 #include "instances_helper.hpp"
 
 int main() {
-    Instance instance = make_instance_biorevaix_level_1(2, Point(897286.5,6272835.5), 150);
+    Instance instance = make_instance_biorevaix_level_1(2, Point(897286.5,6272835.5), 500);
     const Landscape & landscape = instance.landscape;
-    const RestorationPlan<Landscape> & plan = instance.plan;
+    RestorationPlan<Landscape> & plan = instance.plan;
 
     Helper::assert_well_formed(landscape, plan);
 
@@ -46,7 +46,9 @@ int main() {
     Helper::printInstance(instance.landscape, instance.plan, "test.eps");
 
     Solvers::PL_ECA_3 pl_eca_3;
+    pl_eca_3.setLogLevel(2);
 
+    plan.initElementIDs();
     pl_eca_3.solve(landscape, plan, 2);
 
     return EXIT_SUCCESS;

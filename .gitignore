@@ -1,6 +1,7 @@
 .vscode
 /build
 /cache
+/data
 *.out
 *.lp
 *.mps.gz

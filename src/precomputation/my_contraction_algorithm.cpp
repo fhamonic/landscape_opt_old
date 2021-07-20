@@ -28,8 +28,6 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
         contract_arc(contracted_landscape, contracted_plan, a);
     }
 
-    
-
     // ///////// reduce memory usage -> TODO StaticLandscape class
     StaticLandscape * final_landscape = new StaticLandscape();
     Graph_t::NodeMap<StaticGraph_t::Node> final_nodesRef(contracted_graph);

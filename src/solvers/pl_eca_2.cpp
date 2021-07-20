@@ -111,7 +111,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
 
     std::vector<Graph_t::Node> nodes;
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) { 
-        nodes.push_back(u); 
+        nodes.push_back(u);
     }
     // M_Map
     Graph_t::NodeMap<double> M(graph);
@@ -203,7 +203,7 @@ void fill_solver(OSI_Builder & solver_builder, const Landscape & landscape, cons
         const int y_i = vars.y.id(i);
         solver_builder.buffEntry(y_i, plan.getCost(i));
     }
-    solver_builder.pushRow(0, B);
+    solver_builder.pushRow(-OSI_Builder::INFTY, B);
     ////////////////////
     // integer constraints
     if(!relaxed) {
@@ -220,7 +220,7 @@ Solution Solvers::PL_ECA_2::solve(const Landscape & landscape, const Restoration
     const int timeout = params.at("timeout")->getInt(); (void)timeout; // pas bien
     const bool relaxed = params.at("relaxed")->getBool();
     Chrono chrono;
-    OSI_Builder solver_builder = OSI_Builder();
+    OSI_Builder solver_builder;
     Variables vars(landscape, plan);
     insert_variables(solver_builder, vars);
     if(log_level > 0) std::cout << name() << ": Start filling solver : " << solver_builder.getNbVars() << " variables" << std::endl;
