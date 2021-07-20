@@ -2,9 +2,11 @@
 /cache
 /build
 /output
-*.out
 *.lp
 *.mps.gz
+*.dot
+*.pdf
+*.eps
 
 /doc/html
 /doc/latex

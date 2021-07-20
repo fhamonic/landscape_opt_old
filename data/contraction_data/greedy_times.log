@@ -1,0 +1,7 @@
+nb_friches solver time nb_vars nb_constraints 
+20.000000 glutton_eca_dec_log=0_parallel=1 766.333333 -27267814 21980 
+50.000000 glutton_eca_dec_log=0_parallel=1 7217.666667 -27290036 21980 
+80.000000 glutton_eca_dec_log=0_parallel=1 29479.222222 -27275441 21980 
+110.000000 glutton_eca_dec_log=0_parallel=1 87948.666667 -27275441 21980 
+140.000000 glutton_eca_dec_log=0_parallel=1 208179.888889 -27275441 21980 
+170.000000 glutton_eca_dec_log=0_parallel=1 416751.111111 -27275441 21980 

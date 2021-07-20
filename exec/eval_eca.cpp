@@ -17,7 +17,7 @@ int main(int argc, const char *argv[]) {
 
     const Landscape landscape = StdLandscapeParser::get().parse(landscape_path);   
 
-    // Helper::printLandscape(landscape, "test.eps");
+    Helper::printLandscapeGraphviz(landscape, "test.dot");
 
     const double eca = ECA().eval(landscape);
 

@@ -1,10 +1,12 @@
 digraph {
-  graph [pad="0.212,0.055" bgcolor=lightgray overlap=scale]
-  node [style=filled]
-  a [fillcolor="#d62728" pos="1,0!" shape="circle" width="2"]
-  b [fillcolor="#1f77b4" pos="0,1!" shape="circle" width="2"]
-  c [fillcolor="#2ca02c" pos="2,2!" shape="circle" width="1"]
-  d [fillcolor="#ff7f0e" pos="-1,0!"  shape="circle" width="1"]
+  graph [pad="0.212,0.055" bgcolor=lightgray overlap=voronoi]
+  node [style=filled fillcolor="#50e050" shape="circle"]
+  edge [stroke="0.1" fillcolor="#e05050"]
+  a [pos="1,0!" width="2" fillcolor="#e05050"]
+  b [pos="0,1!" width="2"  fillcolor="#5050e0"]
+  c [pos="2,2!" width="1"]
+  d [pos="-1,0!" width="1"]
+  a -> b
   a -> b
   a -> c
   a -> d

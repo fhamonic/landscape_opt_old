@@ -203,7 +203,7 @@ namespace Helper {
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
 
     template <typename LS>
-    void printLandscapeSVG(const LS & landscape, std::filesystem::path path) {
+    void printLandscapeGraphviz(const LS & landscape, std::filesystem::path path) {
         using Graph = typename LS::Graph;
         using Node = typename LS::Graph::Node;
         using Arc = typename LS::Graph::Arc;
@@ -211,9 +211,38 @@ namespace Helper {
         using CoordsMap = typename LS::CoordsMap;
         
         const Graph & graph = landscape.getNetwork();
-        const CoordsMap & coordsMap = landscape.getCoordsMap();
         const QualityMap & qualityMap = landscape.getQualityMap();
+        const CoordsMap & coordsMap = landscape.getCoordsMap();
 
+        double min_x, max_x, min_y, max_y;
+        min_x = max_x = coordsMap[graph.nodeFromId(0)].x;
+        min_y = max_y = coordsMap[graph.nodeFromId(0)].y;
+        for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
+            min_x = std::min(min_x, coordsMap[u].x);
+            max_x = std::max(max_x, coordsMap[u].x);
+            min_y = std::min(min_y, coordsMap[u].y);
+            max_y = std::max(max_y, coordsMap[u].y);
+        }
+        const double scale = std::min(8.3/(max_x-min_x), 11.7/(max_y-min_y));
+
+        std::ofstream dot_file(path);
+
+        dot_file << "digraph { size=\"8.3,11.7\";\n"
+            << "graph [pad=\"0.212,0.055\" bgcolor=transparent overlap=scale]\n"
+            << "node [style=filled fillcolor=\"#50e050\" shape=\"circle\"]\n";
+
+        for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
+            dot_file << graph.id(u) << " [width=\"" << scale * std::sqrt(qualityMap[u])
+                << "\" pos=\"" << scale * (coordsMap[u].x - min_x) << "," 
+                << scale * (coordsMap[u].y - min_y) << "!\"]\n";
+        }
+
+        for(typename Graph::ArcIt a(graph); a!=lemon::INVALID; ++a) {
+            dot_file << graph.id(graph.source(a)) << " -> "
+                << graph.id(graph.target(a)) << "\n";
+        }
+
+        dot_file << "}" << std::endl;
     };
 
 }

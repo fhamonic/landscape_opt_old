@@ -33,7 +33,7 @@
 #include "instances_helper.hpp"
 
 int main() {
-    Instance instance = make_instance_biorevaix_level_1(2, Point(897286.5,6272835.5), 500);
+    Instance instance = make_instance_biorevaix_level_1(2, Point(897286.5,6272835.5), 2000);
     const Landscape & landscape = instance.landscape;
     RestorationPlan<Landscape> & plan = instance.plan;
 
@@ -43,11 +43,10 @@ int main() {
     std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork()) << std::endl;
     std::cout << "nb options:" << plan.getNbOptions() << std::endl;
     std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements() << std::endl;
+
+    std::cout << "ECA:" << Parallel_ECA().eval(landscape) << std::endl;
     
-    Helper::printInstance(instance.landscape, instance.plan, "test.eps");
-
-
-
+    Helper::printLandscapeGraphviz(landscape, "test.dot");
 
     // Solvers::PL_ECA_3 pl_eca_3;
     // pl_eca_3.setLogLevel(2);

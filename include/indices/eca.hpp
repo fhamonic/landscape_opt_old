@@ -55,6 +55,7 @@ public:
         lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(graph, probabilityMap);
         double sum = 0;
         for (typename GR::NodeIt s(graph); s != lemon::INVALID; ++s) {
+            if(qualityMap[s]==0) continue;
             dijkstra.init(s);
             while (!dijkstra.emptyQueue()) {
                 std::pair<typename GR::Node, double> pair = dijkstra.processNextNode();

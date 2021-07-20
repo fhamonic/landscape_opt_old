@@ -15,8 +15,8 @@
 
 class Parallel_ECA : public concepts::ConnectivityIndex {
 public:
-    Parallel_ECA();
-    ~Parallel_ECA();
+    Parallel_ECA() {};
+    ~Parallel_ECA() {};
 
     static double P_func(const double d, const double alpha) {
         assert(d >= 0);
@@ -51,12 +51,12 @@ public:
         
         std::vector<typename GR::Node> nodes;
         for(typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
-            if(!nodeFilter[s])
+            if(!nodeFilter[s] || qualityMap[s] == 0)
                 continue;
             nodes.push_back(s);
         }
 
-        return std::sqrt(std::transform_reduce(std::execution::par_unseq, nodes.begin(), nodes.end(), 0.0, std::plus<>(), [&](typename GR::Node s){
+        return std::sqrt(std::transform_reduce(std::execution::par_unseq, nodes.begin(), nodes.end(), 0.0, std::plus<>(), [&](typename GR::Node s) {
             double sum = 0;
             lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(g, probabilityMap);
             dijkstra.init(s);
@@ -85,8 +85,11 @@ public:
         const PM & probabilityMap = landscape.getProbabilityMap();
         
         std::vector<typename GR::Node> nodes;
-        for(typename GR::NodeIt s(g); s != lemon::INVALID; ++s)
+        for(typename GR::NodeIt s(g); s != lemon::INVALID; ++s) {
+            if(qualityMap[s] == 0)
+                continue;
             nodes.push_back(s);
+        }
 
         return std::sqrt(std::transform_reduce(std::execution::par_unseq, nodes.begin(), nodes.end(), 0.0, std::plus<>(), [&](typename GR::Node s){
             double sum = 0;
