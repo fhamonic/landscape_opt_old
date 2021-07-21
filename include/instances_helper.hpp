@@ -202,7 +202,7 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
     id_tronc_option.fill(-1);
 
     const double radius_squared = radius*radius;
-    io::CSVReader<6> patches("data/BiorevAix/raw/vertexN1_v2.csv");
+    io::CSVReader<6> patches("../landscape_opt_datas/BiorevAix/raw/vertexN1_v2.csv");
     patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "area1", "cost", "id_tronc2");
     int N_id, id_tronc;
     double X, Y, area, cost;
@@ -210,7 +210,7 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
         Point p = Point(X,Y)-center;
         if(p.normSquare() > radius_squared) continue;
         if(cost == 1000) continue;
-        Graph_t::Node u = landscape.addNode((cost == 1 ? area : 0), p);
+        Graph_t::Node u = landscape.addNode((cost==1 ? 1 : 0), p);
         nodes[N_id] = u;
         node_prob[u] = prob(cost);
         troncon_option[u] = -1;
@@ -221,7 +221,7 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
         plan.setCost(option, plan.getCost(option) + 1);
     }
 
-    io::CSVReader<2> links("data/BiorevAix/raw/AL_N1.csv");
+    io::CSVReader<2> links("../landscape_opt_datas/BiorevAix/raw/AL_N1.csv");
     links.read_header(io::ignore_extra_column, "from", "to");
     int from, to;
     while(links.read_row(from, to)) {

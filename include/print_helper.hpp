@@ -202,7 +202,6 @@ namespace Helper {
     // need to include the binary search tree for y-h , y+h search
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
 
-<<<<<<< HEAD
     template <typename LS>
     void printLandscapeGraphviz(const LS & landscape, std::filesystem::path path) {
         using Graph = typename LS::Graph;
@@ -215,6 +214,9 @@ namespace Helper {
         const QualityMap & qualityMap = landscape.getQualityMap();
         const CoordsMap & coordsMap = landscape.getCoordsMap();
 
+        const int p_width = 8;
+        const int p_height = 11;
+
         double min_x, max_x, min_y, max_y;
         min_x = max_x = coordsMap[graph.nodeFromId(0)].x;
         min_y = max_y = coordsMap[graph.nodeFromId(0)].y;
@@ -224,13 +226,13 @@ namespace Helper {
             min_y = std::min(min_y, coordsMap[u].y);
             max_y = std::max(max_y, coordsMap[u].y);
         }
-        const double scale = std::min(8.3/(max_x-min_x), 11.7/(max_y-min_y));
+        const double scale = std::min(p_width/(max_x-min_x), p_height/(max_y-min_y));
 
         std::ofstream dot_file(path);
 
-        dot_file << "digraph { size=\"8.3,11.7\";\n"
-            << "graph [pad=\"0.212,0.055\" bgcolor=transparent overlap=scale]\n"
-            << "node [style=filled fillcolor=\"#50e050\" shape=\"circle\"]\n";
+        dot_file <<"digraph { size=\"" << p_width << "," << p_height << "\";\n"
+            <<"graph [pad=\"0.212,0.055\" bgcolor=transparent overlap=scale]\n"
+            <<"node [style=filled fillcolor=\"#50e050\" shape=\"circle\"]\n";
 
         for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
             dot_file << graph.id(u) << " [width=\"" << scale * std::sqrt(qualityMap[u])
@@ -246,8 +248,6 @@ namespace Helper {
         dot_file << "}" << std::endl;
     };
 
-=======
->>>>>>> parent of f617e58 (test graphviz)
 }
 
 

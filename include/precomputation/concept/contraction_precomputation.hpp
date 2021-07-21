@@ -24,7 +24,8 @@ class ContractionResult {
 
 class ContractionPrecomputation {
     public:
-        void erase_non_connected(Landscape & landscape, Graph_t::Node t) const;
+        void erase_no_connected_nodes(Landscape & landscape, Graph_t::Node t) const;
+        void erase_no_flow_nodes(Landscape & landscape, const RestorationPlan<Landscape> & plan) const;
         void contract_arc(Landscape & contracted_landscape, RestorationPlan<Landscape> & plan, Graph_t::Arc a) const;
         
         virtual Graph_t::NodeMap<ContractionResult> * precompute(const Landscape & landscape, const RestorationPlan<Landscape> & plan) const=0;

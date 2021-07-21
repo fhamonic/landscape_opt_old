@@ -13,7 +13,7 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     Graph_t::Node contracted_t = (*refs.first)[orig_t];
 
     const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-    erase_non_connected(contracted_landscape, contracted_t);
+    erase_no_connected_nodes(contracted_landscape, contracted_t);
 
     for(Graph_t::Arc orig_a : orig_deletables_arcs) {   
         Graph_t::Arc a = (*refs.second)[orig_a];  
@@ -27,6 +27,8 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
         if(contracted_plan.contains(a)) continue;
         contract_arc(contracted_landscape, contracted_plan, a);
     }
+
+    erase_no_flow_nodes(contracted_landscape, contracted_plan);
 
     // ///////// reduce memory usage -> TODO StaticLandscape class
     StaticLandscape * final_landscape = new StaticLandscape();
@@ -65,7 +67,7 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
     Graph_t::ArcMap<std::vector<Graph_t::Node>> strong_nodes(graph);
     Graph_t::ArcMap<std::vector<Graph_t::Node>> non_weak_nodes(graph);
 
-    std::for_each(std::execution::par, arcs.begin(), arcs.end(), [&] (Graph_t::Arc a) {        
+    std::for_each(std::execution::par_unseq, arcs.begin(), arcs.end(), [&] (Graph_t::Arc a) {        
         lemon::MultiplicativeIdentifyStrong<Graph_t, Graph_t::ArcMap<double>> identifyStrong(graph, p_min, p_max);
         lemon::MultiplicativeIdentifyUseless<Graph_t, Graph_t::ArcMap<double>> identifyUseless(graph, p_min, p_max);
         identifyStrong.labeledNodesList(strong_nodes[a]).run(a);
@@ -82,7 +84,7 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const L
             deletables_arcs[u].push_back(a);
     }
 
-    std::for_each(std::execution::par, nodes.begin(), nodes.end(), [&] (Graph_t::Node u) {
+    std::for_each(std::execution::par_unseq, nodes.begin(), nodes.end(), [&] (Graph_t::Node u) {
         (*results)[u] = contract(landscape, plan, u, contractables_arcs[u], deletables_arcs[u]);
     });
     return results;

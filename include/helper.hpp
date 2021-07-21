@@ -9,6 +9,7 @@
 #define HELPER_HPP
 
 #include <filesystem>
+#include <iterator>
 #include <math.h>
 
 #include <boost/range/algorithm.hpp>
@@ -188,6 +189,41 @@ namespace Helper {
 
     void assert_well_formed(const Landscape & landscape,
             const RestorationPlan<Landscape>& plan);
+
+
+    // template <typename GR>
+    // class NodeIterator {
+    // public:
+    //     using Node = typename GR::Node;
+    //     using NodeIt = typename GR::NodeIt;
+
+    //     using difference_type = std::ptrdiff_t;
+    //     using value_type = Node;
+    //     using pointer = void;
+    //     using reference = const Node&;
+    //     using iterator_category = std::input_iterator_tag;
+
+    // private:
+    //     NodeIt it;
+    // public:
+    //     NodeIterator() : it(lemon::INVALID) {}
+    //     NodeIterator(const GR & graph) : it(graph) {}
+    //     NodeIterator(const NodeIterator<GR> & o) : it(o.it) {}
+
+    //     NodeIterator& operator=(const NodeIterator<GR> & o) { it = o.it; return *this; }
+
+    //     value_type operator*() const { return static_cast<value_type>(it); }
+    //     NodeIterator operator++(int) const { return ++NodeIterator<GR>(*this); }
+    //     NodeIterator& operator++() { ++it; return *this; }
+
+    //     bool operator==(const NodeIterator<GR> & o) const { return o.it == it; }
+    //     bool operator!=(const NodeIterator<GR> & o) const { return o.it != it; }
+    // };
+
+    // template <typename GR>
+    // std::pair<NodeIterator<GR>, NodeIterator<GR>> nodesRange(const GR & graph) {
+    //     return std::make_pair(NodeIterator(graph), NodeIterator<GR>());
+    // }
 }
 
 
