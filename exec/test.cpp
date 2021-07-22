@@ -21,6 +21,8 @@
 
 #include "precomputation/my_contraction_algorithm.hpp"
 
+#include "gcg/solver_mip.h"
+
 int main() {
     Landscape landscape = StdLandscapeParser::get().parse("data/graphe_yann/graphe_yann.index");
     const Graph_t & graph = landscape.getNetwork();
