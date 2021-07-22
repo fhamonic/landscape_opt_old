@@ -232,14 +232,25 @@ namespace Helper {
 
         dot_file <<"digraph { size=\"" << p_width << "," << p_height << "\";\n"
             <<"graph [pad=\"0.212,0.055\" bgcolor=transparent overlap=scale]\n"
-            <<"node [style=filled fillcolor=\"#50e050\" shape=\"circle\"]\n";
+            << "node [style=filled shape=\"circle\"]\n"
+            << "edge [style=filled]\n";
 
+        dot_file << "node [fillcolor=\"#50e050\"]\n";
         for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
+            if(qualityMap[u] == 0) continue;
+            dot_file << graph.id(u) << " [width=\"" << scale * std::sqrt(qualityMap[u])
+                << "\" pos=\"" << scale * (coordsMap[u].x - min_x) << "," 
+                << scale * (coordsMap[u].y - min_y) << "!\"]\n";
+        }
+        dot_file << "node [fillcolor=\"#e0e0e0\"]\n";
+        for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
+            if(qualityMap[u] != 0) continue;
             dot_file << graph.id(u) << " [width=\"" << scale * std::sqrt(qualityMap[u])
                 << "\" pos=\"" << scale * (coordsMap[u].x - min_x) << "," 
                 << scale * (coordsMap[u].y - min_y) << "!\"]\n";
         }
 
+        dot_file <<"edge [style=filled fillcolor=\"#e0e0e0\"]\n";
         for(typename Graph::ArcIt a(graph); a!=lemon::INVALID; ++a) {
             dot_file << graph.id(graph.source(a)) << " -> "
                 << graph.id(graph.target(a)) << "\n";

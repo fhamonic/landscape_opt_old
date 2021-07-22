@@ -43,8 +43,7 @@ int main() {
 
     std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork()) << std::endl;
     std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork()) << std::endl;
-    
-    
+        
     int count = 0;
     for(Graph_t::NodeIt u(landscape.getNetwork()); u != lemon::INVALID; ++u)
         count += (landscape.getQuality(u)>0 ? 1 : 0);    
