@@ -22,9 +22,13 @@
 #include <boost/range/algorithm/find_if.hpp>
 
 /**
- * @brief A class for respresenting a restoration plan.
+ * @brief A generic class for respresenting a landscape restoration plan.
  * 
- * This class is essentially a sparse matrix implementation with both row major and column major structures to ensure linear time iteration. 
+ * This class represents a restoration plan wich is theorically a set of restoration options.
+ * Each restoration option have a cost and a set of nodes and arcs that could be enhanced 
+ * alongside with informations about their weights enhancements.
+ * In this class an Option is represented by an int, a vector maps Otions to their costs
+ * and each Node/Arc is associated with the list of pairs (option, weight_enhancement) concerning it.
  */
 template <typename LS> //requires concepts::IsLandscape<LS> //c++20
 class RestorationPlan {
@@ -143,7 +147,7 @@ public:
      * @param i Option
      * @param v Node
      * @param quality_gain - quality gain on **v**
-     * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
+     * @time \f$O(\#options(v))\f$
      * @space \f$O(1)\f$ 
      */
     void addNode(Option i, Node v, double quality_gain) noexcept {
@@ -165,7 +169,7 @@ public:
      * @param v Node
      * @return bool true if the option **i** concerns node **v** 
      *      false otherwise
-     * @time \f$O(\log \#nodes(i))\f$
+     * @time \f$O(\#options(v))\f$
      * @space \f$O(1)\f$
      */
     bool contains(Option i, Node v) const noexcept {
@@ -180,7 +184,7 @@ public:
      * @brief Remove the node **v** from the option **i**
      * @param i Option
      * @param v Node
-     * @time \f$O(\log \#nodes(i) + \log \#options(v))\f$
+     * @time \f$O(\#options(v))\f$
      * @space \f$O(1)\f$ 
      */
     void removeNode(Option i, Node v) noexcept {
@@ -240,7 +244,7 @@ public:
      * @param i Option
      * @param a Arc
      * @return bool true if the option **i** concerns arc **a** false otherwise
-     * @time \f$O(\#options(i))\f$
+     * @time \f$O(\#options(a))\f$
      * @space \f$O(1)\f$
      */
     bool contains(Option i, Arc a) const noexcept { 
@@ -255,7 +259,7 @@ public:
      * @brief Remove the arc **a** from the option **i**
      * @param i Option
      * @param a Arc
-     * @time \f$O(\log \#arcs(i) + \log \#options(a))\f$
+     * @time \f$O(\#options(a))\f$
      * @space \f$O(1)\f$ 
      */
     void removeArc(Option i, Arc a) noexcept {
@@ -282,7 +286,7 @@ public:
     /**
      * @brief Remove the arc **a** from every option
      * @param a Arc
-     * @time \f$O(\sum_{i \in options(a)} \log \#arcs(i))\f$
+     * @time \f$O(1)\f$
      * @space \f$O(1)\f$ 
      */
     void removeArc(Arc a) noexcept { 
@@ -383,8 +387,8 @@ public:
     /**
      * @brief 
      * @return ArcOptionsMap
-     * @time \f$O(|V| * \#options)\f$
-     * @space \f$O(|V| * \#options)\f$
+     * @time \f$O(|A| * \#options)\f$
+     * @space \f$O(|A| * \#options)\f$
      */
     ArcOptionsMap computeArcOptionsMap() const {
         ArcOptionsMap arcOptionsMap(getNbOptions());

@@ -22,7 +22,7 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
         options.push_back(i);
     }
 
-    double prec_eca = ECA().eval_solution(landscape, plan, solution);
+    double prec_eca = ECA().eval(Helper::decore_landscape(landscape, plan, solution));
     if(log_level > 1) {
         std::cout << "base purchased: " << purchaised << std::endl;
         std::cout << "base ECA: " << prec_eca << std::endl;
@@ -58,7 +58,7 @@ Solution Solvers::Naive_ECA_Dec::solve(const Landscape & landscape, const Restor
     }
 
 
-    prec_eca = ECA().eval_solution(landscape, plan, solution);
+    prec_eca = ECA().eval(Helper::decore_landscape(landscape, plan, solution));
 
     ratio_free_options.resize(free_options.size());
 

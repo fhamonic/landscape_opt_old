@@ -35,11 +35,14 @@
 #include "boost/range/algorithm/count_if.hpp"
 
 int main() {
-    Instance instance = make_instance_biorevaix_level_1(10, Point(897286.5,6272835.5), 400);
+    Instance instance = make_instance_biorevaix_level_1(4, Point(897286.5,6272835.5), 300);
     const Landscape & landscape = instance.landscape;
     RestorationPlan<Landscape> & plan = instance.plan;
+    plan.initElementIDs();
 
     Helper::assert_well_formed(landscape, plan);
+
+    std::cout << std::setprecision(8);
 
     std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork()) << std::endl;
     std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork()) << std::endl;
@@ -50,18 +53,25 @@ int main() {
     std::cout << "nb nodes positive quality:" << count << std::endl;
     std::cout << "nb options:" << plan.getNbOptions() << std::endl;
     std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements() << std::endl;
+    std::cout << "plan total cost:" << plan.totalCost() << std::endl;
 
     std::cout << "ECA:" << Parallel_ECA().eval(landscape) << std::endl;
 
-    Helper::printLandscapeGraphviz(landscape, "test.dot");
+    // Helper::printLandscapeGraphviz(landscape, "test.dot");
+    Helper::printInstanceGraphviz(landscape, plan, "test.dot");
 
-    Solvers::PL_ECA_3 pl_eca_3;
-    pl_eca_3.setLogLevel(2);
 
-    plan.initElementIDs();
-    Solution solution = pl_eca_3.solve(landscape, plan, 2);
-
+    Solvers::PL_ECA_3 solver;
+    solver.setLogLevel(1);
+    Solution solution = solver.solve(landscape, plan, plan.totalCost() / 10);
+    std::cout << "ECA: " << Parallel_ECA().eval(Helper::decore_landscape(landscape, plan, solution)) << std::endl;
     std::cout << "cost: " << solution.getCost() << std::endl;
+
+    Solvers::Glutton_ECA_Dec naive_solver;
+    naive_solver.setParallel(true);
+    Solution naive_solution = naive_solver.solve(landscape, plan, plan.totalCost() / 10);
+    std::cout << "naive solution ECA: " << Parallel_ECA().eval(Helper::decore_landscape(landscape, plan, naive_solution)) << std::endl;
+    std::cout << "naive solution cost: " << naive_solution.getCost() << std::endl;
 
     return EXIT_SUCCESS;
 }

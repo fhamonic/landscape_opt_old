@@ -40,6 +40,7 @@ target_include_directories(landscape_opt PUBLIC thirdparty)
 target_link_libraries(landscape_opt CONAN_PKG::fast-cpp-csv-parser)
 target_link_libraries(landscape_opt CONAN_PKG::tbb)
 target_link_libraries(landscape_opt CONAN_PKG::boost)
+target_link_libraries(landscape_opt CONAN_PKG::fmt)
 target_link_libraries(landscape_opt CONAN_PKG::eigen)
 target_link_libraries(landscape_opt CONAN_PKG::range-v3)
 

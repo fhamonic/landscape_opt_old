@@ -28,15 +28,6 @@ public:
         return -alpha * std::log(p);
     }
 
-    template <typename LS>
-    double eval_solution(const LS & landscape, const RestorationPlan<LS>& plan, const Solution & solution) const {
-        DecoredLandscape<LS> decored_landscape(landscape);
-        for(typename RestorationPlan<LS>::Option i=0; i<plan.getNbOptions(); ++i)
-            decored_landscape.apply(plan, i, solution.getCoef(i));
-        double value = eval(decored_landscape);
-        return value;
-    }
-
     /**
      * @brief Computes the value of the Parallel_ECA index of the specified landscape.
      * 

@@ -37,10 +37,10 @@ public:
     using ProbabilityMap = typename LS::ProbabilityMap;
     using CoordsMap = typename LS::CoordsMap;
 private:
-    const Graph & network;
-    const QualityMap & original_qualityMap;
-    const ProbabilityMap & original_probabilityMap;
-    const CoordsMap & coordsMap;
+    std::reference_wrapper<const Graph> network;
+    std::reference_wrapper<const QualityMap> original_qualityMap;
+    std::reference_wrapper<const ProbabilityMap> original_probabilityMap;
+    std::reference_wrapper<const CoordsMap> coordsMap;
     QualityMap qualityMap;
     ProbabilityMap probabilityMap;
 
@@ -62,6 +62,18 @@ public:
         , coordsMap(landscape.getCoordsMap())
         , qualityMap(network)
         , probabilityMap(network) { reset(); }
+    DecoredLandscape(const DecoredLandscape<LS> & landscape)
+        : network(landscape.network)
+        , original_qualityMap(landscape.original_qualityMap)
+        , original_probabilityMap(landscape.original_probabilityMap)
+        , coordsMap(landscape.coordsMap)
+        , qualityMap(network)
+        , probabilityMap(network) { 
+        for(typename Graph::NodeIt u(network); u != lemon::INVALID; ++u)
+            setQuality(u, landscape.getQuality(u));
+        for(typename Graph::ArcIt a(network); a != lemon::INVALID; ++a)
+            setProbability(a, landscape.getProbability(a));
+    }
     ~DecoredLandscape() {}
 
     const Graph & getNetwork() const { return network; }
@@ -70,7 +82,7 @@ public:
     const ProbabilityMap & getProbabilityMap() const { return probabilityMap; }
 
     const double & getQuality(Node u) const { return qualityMap[u]; }
-    const Point & getCoords(Node u) const { return coordsMap[u]; }
+    const Point & getCoords(Node u) const { return coordsMap.get()[u]; }
     const double & getProbability(Arc a) const { return probabilityMap[a]; }
 
     double & getQualityRef(Node u) { return qualityMap[u]; }
@@ -85,7 +97,7 @@ public:
      * @return const double& 
      */
     const double & getOriginalQuality(Node u) const {
-        return original_qualityMap[u];
+        return original_qualityMap.get()[u];
     }
 
     /**
@@ -94,7 +106,7 @@ public:
      * @return const double& 
      */
     const double & getOriginalProbability(Graph_t::Arc a) const {
-        return original_probabilityMap[a];
+        return original_probabilityMap.get()[a];
     }
 
     /**
@@ -102,9 +114,9 @@ public:
      */
     void reset() {
         for(typename Graph::NodeIt u(network); u != lemon::INVALID; ++u)
-            setQuality(u, original_qualityMap[u]);
+            setQuality(u, original_qualityMap.get()[u]);
         for(typename Graph::ArcIt a(network); a != lemon::INVALID; ++a)
-            setProbability(a, original_probabilityMap[a]);
+            setProbability(a, original_probabilityMap.get()[a]);
     }
 
     void apply(const typename RestorationPlan<LS>::NodeEnhancements
@@ -117,8 +129,8 @@ public:
                     & arcEnhancements, const double coef = 1.0) {
         for(const auto & [a, restored_probability] : arcEnhancements) {
             probabilityMap[a] = std::max(probabilityMap[a],
-                original_probabilityMap[a] + coef *
-                (restored_probability - original_probabilityMap[a]));
+                original_probabilityMap.get()[a] + coef *
+                (restored_probability - original_probabilityMap.get()[a]));
         }
     }
 

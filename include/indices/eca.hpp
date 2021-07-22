@@ -25,25 +25,6 @@ public:
         return -alpha * std::log(p);
     }
 
-    template <typename LS>
-    double eval_solution(const LS & landscape, const RestorationPlan<LS>& plan, const Solution & solution) const {
-        using Graph = typename LS::Graph;
-        const Graph & graph = landscape.getNetwork();
-        DecoredLandscape<LS> decored_landscape(landscape);
-
-        for(typename Graph::NodeIt u(graph); u != lemon::INVALID; ++u)
-            for(const auto & e : plan[u])
-                decored_landscape.getQualityRef(u) += solution[e.option] * e.quality_gain;
-        for(typename Graph::ArcIt a(graph); a != lemon::INVALID; ++a)
-            for(const auto & e : plan[a])
-                decored_landscape.getProbabilityRef(a) = std::max(
-                    decored_landscape.getProbability(a),
-                    landscape.getProbability(a) + solution[e.option] *
-                    (e.restored_probability - landscape.getProbability(a)));
-        
-        return ECA().eval(decored_landscape);
-    }
-
     /**
      * @brief Computes the value of the ECA index of the specified landscape graph.
      * 

@@ -115,10 +115,10 @@ int main(int argc, const char *argv[]) {
                 << std::endl;
 
         for(concepts::Solver * solver : solvers) {
-            Solution * solution = solver->solve(*landscape, *plan, budget);
+            Solution solution = solver->solve(*landscape, *plan, budget);
 
             const double cost = solution->getCost();
-            const double total_eca = std::pow(eca.eval_solution(*landscape, *plan, *solution), 2);
+            const double total_eca = std::pow(ECA.eval(Helper::decore_landscape(*landscape, *plan, *solution)), 2);
 
             data_log << budget << " "
                     << solver->toString() << " "

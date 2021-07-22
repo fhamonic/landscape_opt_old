@@ -19,7 +19,7 @@ Solution Solvers::Glutton_ECA_Dec::solve(const Landscape & landscape, const Rest
         options.push_back(i);
     }
 
-    double prec_eca = ECA().eval_solution(landscape, plan, solution);
+    double prec_eca = ECA().eval(Helper::decore_landscape(landscape, plan, solution));
     if(log_level > 1) {
         std::cout << "base purchaised: " << purchaised << std::endl;
         std::cout << "base ECA: " << prec_eca << std::endl;

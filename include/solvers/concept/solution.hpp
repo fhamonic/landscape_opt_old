@@ -14,6 +14,7 @@ public:
     double obj;
 
 private:
+    // reference wrapper needed for default construct operations
     std::reference_wrapper<const Landscape> landscape;
     std::reference_wrapper<const RestorationPlan<Landscape>> plan;
 

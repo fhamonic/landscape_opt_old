@@ -14,6 +14,8 @@
 #include <boost/range/algorithm.hpp>
 #include <boost/range/adaptors.hpp>
 
+#include <fmt/os.h>
+
 #include "landscape/landscape.hpp"
 #include "landscape/decored_landscape.hpp"
 
@@ -202,61 +204,239 @@ namespace Helper {
     // need to include the binary search tree for y-h , y+h search
     std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
 
+
+    template <typename Graph>
+    class GraphToGraphviz {
+    public:
+        using NodePosMap = typename Graph::template NodeMap<lemon::dim2::Point<double>>;
+        using NodeSizeMap = typename Graph::template NodeMap<double>;
+        using NodeColorMap = typename Graph::template NodeMap<int>;
+        using ArcSizeMap = typename Graph::template ArcMap<double>;
+        using ArcColorMap = typename Graph::template ArcMap<int>;
+
+        using Node = typename Graph::Node;
+        using NodeIt = typename Graph::NodeIt;
+        using Arc = typename Graph::Arc;
+        using ArcIt = typename Graph::ArcIt;
+    private:
+        const Graph & _graph;
+        std::filesystem::path _path;
+        NodePosMap _nodePos;
+        NodeSizeMap _nodeSizes;
+        NodeColorMap _nodeColors;
+        ArcSizeMap _arcSizes;
+        ArcColorMap _arcColors;
+
+        double _pageWidth;
+        double _pageHeight;
+    public:
+        GraphToGraphviz(const Graph & g, const std::filesystem::path & p)
+            : _graph(g)
+            , _path(p)
+            , _nodePos(g)
+            , _nodeSizes(g, 1)
+            , _nodeColors(g, 0xffffff)
+            , _arcSizes(g, 1)
+            , _arcColors(g, 0x000000)
+            , _pageWidth(8)
+            , _pageHeight(11) {}
+
+        template <typename PM>
+        GraphToGraphviz<Graph> & nodePos(const PM & posMap) {
+            for(NodeIt u(_graph); u!=lemon::INVALID; ++u)
+                _nodePos[u] = posMap[u];
+            return *this;
+        }
+        template <typename SM>
+        GraphToGraphviz<Graph> & nodeSizes(const SM & sizeMap) {
+            for(NodeIt u(_graph); u!=lemon::INVALID; ++u)
+                _nodeSizes[u] = sizeMap[u];
+            return *this;
+        }
+        template <typename CM>
+        GraphToGraphviz<Graph> & nodeColors(const CM & colorMap) {
+            for(NodeIt u(_graph); u!=lemon::INVALID; ++u)
+                _nodeColors[u] = colorMap[u];
+            return *this;
+        }
+        template <typename AM>
+        GraphToGraphviz<Graph> & arcSizes(const AM & sizeMap) {
+            for(ArcIt a(_graph); a!=lemon::INVALID; ++a)
+                _arcSizes[a] = sizeMap[a];
+            return *this;
+        }
+        template <typename CM>
+        GraphToGraphviz<Graph> & arcColors(const CM & colorMap) {
+            for(ArcIt a(_graph); a!=lemon::INVALID; ++a)
+                _arcColors[a] = colorMap[a];
+            return *this;
+        }
+        GraphToGraphviz<Graph> & pageSize(double width, double height) {
+            _pageWidth = width; _pageHeight = height;
+            return *this;
+        }
+
+
+        void run() const {
+            double min_x, max_x, min_y, max_y;
+            min_x = max_x = _nodePos[_graph.nodeFromId(0)].x;
+            min_y = max_y = _nodePos[_graph.nodeFromId(0)].y;
+            for(NodeIt u(_graph); u!=lemon::INVALID; ++u) {
+                min_x = std::min(min_x, _nodePos[u].x);
+                max_x = std::max(max_x, _nodePos[u].x);
+                min_y = std::min(min_y, _nodePos[u].y);
+                max_y = std::max(max_y, _nodePos[u].y);
+            }
+            const double scale = std::min(_pageWidth/(max_x-min_x),
+                                        _pageHeight/(max_y-min_y));
+            auto scale_x = [&] (double x) { return scale * (x-min_x); };
+            auto scale_y = [&] (double y) { return scale * (y-min_y); };
+            auto scale_size = [&] (double s) { return scale * s; };
+
+            std::vector<Node> colorSortedNodes;
+            for(NodeIt u(_graph); u!=lemon::INVALID; ++u)
+                colorSortedNodes.push_back(u);
+            std::sort(colorSortedNodes.begin(), colorSortedNodes.end(), [&] (Node & a, Node & b) {
+                return _nodeColors[a] < _nodeColors[b];
+            });
+
+            std::vector<Arc> colorSortedArcs;
+            for(ArcIt a(_graph); a!=lemon::INVALID; ++a)
+                colorSortedArcs.push_back(a);
+            std::sort(colorSortedArcs.begin(), colorSortedArcs.end(), [&] (Arc & a, Arc & b) {
+                return _arcColors[a] < _arcColors[b];
+            });
+
+            auto dot_file = fmt::output_file(_path.generic_string());
+            dot_file.print("digraph {{size=\"{},{}\";\n", _pageWidth, _pageHeight);
+            dot_file.print("graph [pad=\"0.2,0.1\" bgcolor=transparent overlap=scale]\n");
+            dot_file.print("node [style=filled shape=\"circle\"]\n");
+            dot_file.print("edge [style=filled]\n");
+
+            int prev_color = -1;
+            for(Node u : colorSortedNodes) {
+                if(_nodeColors[u] != prev_color) {
+                    dot_file.print("node [fillcolor=\"#{:06x}\"]\n", 
+                        _nodeColors[u]);
+                    prev_color = _nodeColors[u];
+                }                
+                dot_file.print("{} [area=\"{}\" pos=\"{},{}!\"]\n", 
+                    _graph.id(u), scale_size(_nodeSizes[u]), 
+                    scale_x(_nodePos[u].x), scale_y(_nodePos[u].y));
+            }
+
+            prev_color = -1;
+            for(Arc a : colorSortedArcs) {
+                if(_arcColors[a] != prev_color) {
+                    dot_file.print("edge [color=\"#{:06x}\"]\n", 
+                        _arcColors[a]);
+                    prev_color = _arcColors[a];
+                }
+                dot_file.print("{} -> {} [penwidth=\"{}\"]\n", 
+                    _graph.id(_graph.source(a)),
+                    _graph.id(_graph.target(a)),
+                    _arcSizes[a]);
+            }
+
+            dot_file.print("}}");
+        }
+    };
+
     template <typename LS>
     void printLandscapeGraphviz(const LS & landscape, std::filesystem::path path) {
         using Graph = typename LS::Graph;
         using Node = typename LS::Graph::Node;
+        using NodeIt = typename LS::Graph::NodeIt;
         using Arc = typename LS::Graph::Arc;
-        using QualityMap = typename LS::QualityMap;
-        using CoordsMap = typename LS::CoordsMap;
+        using ArcIt = typename LS::Graph::ArcIt;
+        using NodeColorMap = typename Graph::template NodeMap<int>;
+        using ArcColorMap = typename Graph::template ArcMap<int>;
         
         const Graph & graph = landscape.getNetwork();
-        const QualityMap & qualityMap = landscape.getQualityMap();
-        const CoordsMap & coordsMap = landscape.getCoordsMap();
 
-        const int p_width = 8;
-        const int p_height = 11;
+        NodeColorMap nodeColors(graph);
+        for(NodeIt u(graph); u!=lemon::INVALID; ++u)
+            nodeColors[u] = landscape.getQuality(u)>0 ? 0x50e050 : 0x101010;
 
-        double min_x, max_x, min_y, max_y;
-        min_x = max_x = coordsMap[graph.nodeFromId(0)].x;
-        min_y = max_y = coordsMap[graph.nodeFromId(0)].y;
-        for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
-            min_x = std::min(min_x, coordsMap[u].x);
-            max_x = std::max(max_x, coordsMap[u].x);
-            min_y = std::min(min_y, coordsMap[u].y);
-            max_y = std::max(max_y, coordsMap[u].y);
-        }
-        const double scale = std::min(p_width/(max_x-min_x), p_height/(max_y-min_y));
+        GraphToGraphviz<Graph>(graph, path)
+            .nodePos(landscape.getCoordsMap())
+            .nodeSizes(landscape.getQualityMap())
+            .nodeColors(nodeColors)
+            .run();
+    };
 
-        std::ofstream dot_file(path);
+    template <typename LS>
+    void printInstanceGraphviz(const LS & landscape, const RestorationPlan<LS> & plan, std::filesystem::path path) {
+        using Graph = typename LS::Graph;
+        using Node = typename LS::Graph::Node;
+        using NodeIt = typename LS::Graph::NodeIt;
+        using Arc = typename LS::Graph::Arc;
+        using ArcIt = typename LS::Graph::ArcIt;
+        using NodeColorMap = typename Graph::template NodeMap<int>;
+        using ArcColorMap = typename Graph::template ArcMap<int>;
+        
+        const Graph & graph = landscape.getNetwork();
 
-        dot_file <<"digraph { size=\"" << p_width << "," << p_height << "\";\n"
-            <<"graph [pad=\"0.212,0.055\" bgcolor=transparent overlap=scale]\n"
-            << "node [style=filled shape=\"circle\"]\n"
-            << "edge [style=filled]\n";
+        NodeColorMap nodeColors(graph);
+        for(NodeIt u(graph); u!=lemon::INVALID; ++u)
+            nodeColors[u] = plan.contains(u) ? 0xe05050
+                : (landscape.getQuality(u)>0 ? 0x50e050 : 0x101010);
 
-        dot_file << "node [fillcolor=\"#50e050\"]\n";
-        for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
-            if(qualityMap[u] == 0) continue;
-            dot_file << graph.id(u) << " [width=\"" << scale * std::sqrt(qualityMap[u])
-                << "\" pos=\"" << scale * (coordsMap[u].x - min_x) << "," 
-                << scale * (coordsMap[u].y - min_y) << "!\"]\n";
-        }
-        dot_file << "node [fillcolor=\"#e0e0e0\"]\n";
-        for(typename Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
-            if(qualityMap[u] != 0) continue;
-            dot_file << graph.id(u) << " [width=\"" << scale * std::sqrt(qualityMap[u])
-                << "\" pos=\"" << scale * (coordsMap[u].x - min_x) << "," 
-                << scale * (coordsMap[u].y - min_y) << "!\"]\n";
-        }
-
-        dot_file <<"edge [style=filled fillcolor=\"#e0e0e0\"]\n";
-        for(typename Graph::ArcIt a(graph); a!=lemon::INVALID; ++a) {
-            dot_file << graph.id(graph.source(a)) << " -> "
-                << graph.id(graph.target(a)) << "\n";
+        ArcColorMap arcColors(graph);
+        for(ArcIt a(graph); a!=lemon::INVALID; ++a) {
+            arcColors[a] = plan.contains(a) ? 0xe05050 : 0x101010;
+            if(plan.contains(a)) {
+                Node u = graph.source(a);
+                Node v = graph.target(a);
+                nodeColors[u] = (nodeColors[u] & 0xffff00) | 0x0000e0;
+                nodeColors[v] = (nodeColors[v] & 0xffff00) | 0x0000e0;
+            }
         }
 
-        dot_file << "}" << std::endl;
+        GraphToGraphviz<Graph>(graph, path)
+            .nodePos(landscape.getCoordsMap())
+            .nodeSizes(landscape.getQualityMap())
+            .nodeColors(nodeColors)
+            .arcColors(arcColors)
+            .run();
+    };
+
+
+    template <typename LS>
+    void printSolutionGraphviz(const LS & landscape, const RestorationPlan<LS> & plan, const Solution & solution, std::filesystem::path path) {
+        using Graph = typename LS::Graph;
+        using Node = typename LS::Graph::Node;
+        using NodeIt = typename LS::Graph::NodeIt;
+        using Arc = typename LS::Graph::Arc;
+        using ArcIt = typename LS::Graph::ArcIt;
+        using NodeColorMap = typename Graph::template NodeMap<int>;
+        using ArcColorMap = typename Graph::template ArcMap<int>;
+        
+        const Graph & graph = landscape.getNetwork();
+
+        NodeColorMap nodeColors(graph);
+        for(NodeIt u(graph); u!=lemon::INVALID; ++u)
+            nodeColors[u] = plan.contains(u) ? 0xe05050
+                : (landscape.getQuality(u)>0 ? 0x50e050 : 0x101010);
+
+        ArcColorMap arcColors(graph);
+        for(ArcIt a(graph); a!=lemon::INVALID; ++a) {
+            arcColors[a] = plan.contains(a) ? 0xe05050 : 0x101010;
+            if(plan.contains(a)) {
+                Node u = graph.source(a);
+                Node v = graph.target(a);
+                nodeColors[u] = (nodeColors[u] & 0xffff00) | 0x0000e0;
+                nodeColors[v] = (nodeColors[v] & 0xffff00) | 0x0000e0;
+            }
+        }
+
+        GraphToGraphviz<Graph>(graph, path)
+            .nodePos(landscape.getCoordsMap())
+            .nodeSizes(landscape.getQualityMap())
+            .nodeColors(nodeColors)
+            .arcSizes(Helper::arcCentralityMap(graph, landscape.getProbability))
+            .arcColors(arcColors)
+            .run();
     };
 
 }

@@ -134,13 +134,11 @@ namespace Helper {
      * @param lengthMap 
      * @return Graph_t::ArcMap<int>* 
      */
-    template <typename GR, typename LM>
-    Graph_t::ArcMap<int> * arcCentralityMap(const GR & graph, const LM & lengthMap) {
-        typedef GR Graph;
-        typedef LM LengthMap;
-        typedef typename GR::template NodeMap<typename GR::Arc> PredMap;
+    template <typename Graph, typename LengthMap>
+    typename Graph::ArcMap<int> arcCentralityMap(const Graph & graph, const LengthMap & lengthMap) {
+        using PredMap = typename Graph::template NodeMap<typename Graph::Arc>;
 
-        Graph_t::ArcMap<int> * centralityMap = new Graph_t::ArcMap<int>(graph, 0);
+        typename Graph::ArcMap<int> centralityMap(graph, 0);
         
         lemon::Dijkstra<Graph, LengthMap> dijkstra(graph, lengthMap);
             
@@ -149,7 +147,7 @@ namespace Helper {
             const PredMap & predMap = dijkstra.predMap();
             for (typename Graph::NodeIt t(graph); t != lemon::INVALID; ++t) {
                 if(!dijkstra.reached(t)) continue;
-                typename GR::Node u = t;
+                typename Graph::Node u = t;
                 while(u != s) {
                     (*centralityMap)[predMap[t]] += 1;
                     u = graph.source(predMap[u]);
@@ -159,6 +157,24 @@ namespace Helper {
         return centralityMap;
     }
 
+    template <typename LS>
+    DecoredLandscape<LS> decore_landscape(const LS & landscape, const RestorationPlan<LS> & plan, const Solution & solution) {
+        using Graph = typename LS::Graph;
+        const Graph & graph = landscape.getNetwork();
+        DecoredLandscape<LS> decored_landscape(landscape);
+
+        for(typename Graph::NodeIt u(graph); u != lemon::INVALID; ++u)
+            for(const auto & e : plan[u])
+                decored_landscape.getQualityRef(u) += solution[e.option] * e.quality_gain;
+        for(typename Graph::ArcIt a(graph); a != lemon::INVALID; ++a)
+            for(const auto & e : plan[a])
+                decored_landscape.getProbabilityRef(a) = std::max(
+                    decored_landscape.getProbability(a),
+                    landscape.getProbability(a) + solution[e.option] *
+                    (e.restored_probability - landscape.getProbability(a)));
+
+        return decored_landscape;
+    }
 
     void printSolution(const Landscape & landscape,
             const RestorationPlan<Landscape>& plan,

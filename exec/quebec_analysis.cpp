@@ -134,7 +134,7 @@ int main() {
                         //     Solution solution = bogo.solve(landscape, plan, budget);
                         //     total_bogo_time += solution->getComputeTimeMs();
                         //     total_bogo_cost += solution->getCost();
-                        //     total_bogo_eca += std::pow(eca.eval_solution(landscape, plan, solution), 2);
+                        //     total_bogo_eca += std::pow(ECA().eval(Helper::decore_landscape(landscape, plan, solution)), 2);
                         // }
                         // data_log << pow << " " 
                         //             << thresold << " "
@@ -151,7 +151,7 @@ int main() {
                         for(const std::unique_ptr<concepts::Solver> & solver : solvers) {
                             Solution solution = solver.get()->solve(landscape, plan, budget);
 
-                            const double total_eca = std::pow(eca.eval_solution(landscape, plan, solution), 2);
+                            const double total_eca = std::pow(ECA().eval(Helper::decore_landscape(landscape, plan, solution)), 2);
 
                             data_log << pow << " " 
                                     << thresold << " "
