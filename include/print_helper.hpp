@@ -388,8 +388,8 @@ namespace Helper {
             if(plan.contains(a)) {
                 Node u = graph.source(a);
                 Node v = graph.target(a);
-                nodeColors[u] = (nodeColors[u] & 0xffff00) | 0x0000e0;
-                nodeColors[v] = (nodeColors[v] & 0xffff00) | 0x0000e0;
+                nodeColors[u] = (nodeColors[u] & 0xffff00) | 0xe00000;
+                nodeColors[v] = (nodeColors[v] & 0xffff00) | 0xe00000;
             }
         }
 
@@ -411,6 +411,7 @@ namespace Helper {
         using ArcIt = typename LS::Graph::ArcIt;
         using NodeColorMap = typename Graph::template NodeMap<int>;
         using ArcColorMap = typename Graph::template ArcMap<int>;
+        using ArcSizesMap = typename Graph::template ArcMap<double>;
         
         const Graph & graph = landscape.getNetwork();
 
@@ -425,16 +426,34 @@ namespace Helper {
             if(plan.contains(a)) {
                 Node u = graph.source(a);
                 Node v = graph.target(a);
-                nodeColors[u] = (nodeColors[u] & 0xffff00) | 0x0000e0;
-                nodeColors[v] = (nodeColors[v] & 0xffff00) | 0x0000e0;
+                nodeColors[u] = (nodeColors[u] & 0x00ffff) | 0xe00000;
+                nodeColors[v] = (nodeColors[v] & 0x00ffff) | 0xe00000;
             }
+        }
+
+        ArcSizesMap arcSizes(graph, 1);
+        const auto & arcCentrality = *Helper::corridorCentralityMap(landscape).get();
+        double max_centrality = 0;
+        for(ArcIt a(graph); a!=lemon::INVALID; ++a)
+            max_centrality = std::max(max_centrality, arcCentrality[a]);
+
+        const double pow = std::log(10) / std::log(max_centrality);
+
+        for(ArcIt a(graph); a!=lemon::INVALID; ++a) {
+            if(arcCentrality[a] == 0) continue;
+            arcSizes[a] = std::pow(arcCentrality[a], pow);
+            if(arcSizes[a] > 0) arcColors[a] = 0x5050e0;
+            if(Node u = graph.source(a); landscape.getQuality(u) == 0)
+                nodeColors[u] = (nodeColors[u] & 0xffff00) | 0x0000e0;
+            if(Node v = graph.target(a); landscape.getQuality(v) == 0)
+                nodeColors[v] = (nodeColors[v] & 0xffff00) | 0x0000e0;
         }
 
         GraphToGraphviz<Graph>(graph, path)
             .nodePos(landscape.getCoordsMap())
             .nodeSizes(landscape.getQualityMap())
             .nodeColors(nodeColors)
-            .arcSizes(Helper::arcCentralityMap(graph, landscape.getProbability))
+            .arcSizes(arcSizes)
             .arcColors(arcColors)
             .run();
     };

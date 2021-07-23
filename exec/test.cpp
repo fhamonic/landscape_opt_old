@@ -24,22 +24,8 @@
 #include "gcg/solver_mip.h"
 
 int main() {
-    Landscape landscape = StdLandscapeParser::get().parse("data/graphe_yann/graphe_yann.index");
-    const Graph_t & graph = landscape.getNetwork();
-
-    StdRestorationPlanParser plan_parser(landscape);
-    RestorationPlan<Landscape> plan = plan_parser.parse("data/graphe_yann/test.problem");
-
-    Helper::printInstance(landscape, plan, "output/original");
-
-    MyContractionAlgorithm alg2;
-    Graph_t::NodeMap<ContractionResult> * contracted_results = alg2.precompute(landscape, plan);
-
-    const ContractionResult & contracted_result = (*contracted_results)[graph.nodeFromId(16)];
-
-    Helper::printInstance(*contracted_result.landscape.get(), *contracted_result.plan.get(), "output/contracted");
-
-    delete contracted_results;
+    
+    
 
     return EXIT_SUCCESS;
 }

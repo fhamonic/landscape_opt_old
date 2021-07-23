@@ -35,7 +35,8 @@
 #include "boost/range/algorithm/count_if.hpp"
 
 int main() {
-    Instance instance = make_instance_biorevaix_level_1(4, Point(897286.5,6272835.5), 300);
+    Instance instance = make_instance_biorevaix_level_1(3, Point(897286.5,6272835.5), 400);
+    // Instance instance = make_instance_biorevaix_level_2(4);
     const Landscape & landscape = instance.landscape;
     RestorationPlan<Landscape> & plan = instance.plan;
     plan.initElementIDs();
@@ -58,20 +59,27 @@ int main() {
     std::cout << "ECA:" << Parallel_ECA().eval(landscape) << std::endl;
 
     // Helper::printLandscapeGraphviz(landscape, "test.dot");
-    Helper::printInstanceGraphviz(landscape, plan, "test.dot");
+    Helper::printInstanceGraphviz(landscape, plan, "instance_test.dot");
+
+    const double budget = plan.totalCost() / 4;
 
 
-    Solvers::PL_ECA_3 solver;
-    solver.setLogLevel(1);
-    Solution solution = solver.solve(landscape, plan, plan.totalCost() / 10);
-    std::cout << "ECA: " << Parallel_ECA().eval(Helper::decore_landscape(landscape, plan, solution)) << std::endl;
-    std::cout << "cost: " << solution.getCost() << std::endl;
+    // Solvers::PL_ECA_3 solver;
+    // solver.setLogLevel(2);
+    // Solution solution = solver.solve(landscape, plan, budget);
+    // std::cout << "ECA: " << Parallel_ECA().eval(Helper::decore_landscape(landscape, plan, solution)) << std::endl;
+    // std::cout << "cost: " << solution.getCost() << std::endl;
 
-    Solvers::Glutton_ECA_Dec naive_solver;
+
+
+    Solvers::Glutton_ECA_Inc naive_solver;
     naive_solver.setParallel(true);
-    Solution naive_solution = naive_solver.solve(landscape, plan, plan.totalCost() / 10);
+    // naive_solver.setLogLevel(2);
+    Solution naive_solution = naive_solver.solve(landscape, plan, budget);
     std::cout << "naive solution ECA: " << Parallel_ECA().eval(Helper::decore_landscape(landscape, plan, naive_solution)) << std::endl;
     std::cout << "naive solution cost: " << naive_solution.getCost() << std::endl;
+
+    Helper::printSolutionGraphviz(landscape, plan, naive_solution, "solution_test.dot");
 
     return EXIT_SUCCESS;
 }

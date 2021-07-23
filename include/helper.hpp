@@ -135,10 +135,11 @@ namespace Helper {
      * @return Graph_t::ArcMap<int>* 
      */
     template <typename Graph, typename LengthMap>
-    typename Graph::ArcMap<int> arcCentralityMap(const Graph & graph, const LengthMap & lengthMap) {
+    std::unique_ptr<typename Graph::ArcMap<int>> arcCentralityMap(const Graph & graph, const LengthMap & lengthMap) {
         using PredMap = typename Graph::template NodeMap<typename Graph::Arc>;
 
-        typename Graph::ArcMap<int> centralityMap(graph, 0);
+        std::unique_ptr<typename Graph::ArcMap<int>> centralityMap = 
+            std::make_unique<typename Graph::ArcMap<int>>(graph, 0);
         
         lemon::Dijkstra<Graph, LengthMap> dijkstra(graph, lengthMap);
             
@@ -149,7 +150,43 @@ namespace Helper {
                 if(!dijkstra.reached(t)) continue;
                 typename Graph::Node u = t;
                 while(u != s) {
-                    (*centralityMap)[predMap[t]] += 1;
+                    (*centralityMap)[predMap[u]] += 1;
+                    u = graph.source(predMap[u]);
+                }
+            }
+        }
+        return centralityMap;
+    }
+
+
+    /**
+     * @brief Compute the centrality of each arc, i.e the number of shortest paths that contain it
+     * @tparam GR 
+     * @tparam LM 
+     * @param graph 
+     * @param lengthMap 
+     * @return Graph_t::ArcMap<int>* 
+     */
+    template <typename Graph, typename QM, typename PM, typename CM>
+    std::unique_ptr<typename Graph::ArcMap<double>> corridorCentralityMap(const concepts::AbstractLandscape<Graph, QM, PM, CM> & landscape) {
+        using PredMap = typename Graph::template NodeMap<typename Graph::Arc>;
+        const Graph & graph = landscape.getNetwork();
+
+        std::unique_ptr<typename Graph::ArcMap<double>> centralityMap = 
+            std::make_unique<typename Graph::ArcMap<double>>(graph, 0);
+        
+        lemon::Dijkstra<Graph, PM> dijkstra(graph, landscape.getProbabilityMap());
+            
+        for (typename Graph::NodeIt s(graph); s != lemon::INVALID; ++s) {
+            if(landscape.getQuality(s) == 0) continue;
+            dijkstra.run(s);
+            const PredMap & predMap = dijkstra.predMap();
+            for (typename Graph::NodeIt t(graph); t != lemon::INVALID; ++t) {
+                if(landscape.getQuality(t) == 0) continue;
+                if(!dijkstra.reached(t)) continue;
+                typename Graph::Node u = t;
+                while(u != s) {
+                    (*centralityMap)[predMap[u]] += 1;
                     u = graph.source(predMap[u]);
                 }
             }

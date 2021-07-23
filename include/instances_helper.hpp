@@ -202,11 +202,11 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
     id_tronc_option.fill(-1);
 
     const double radius_squared = radius*radius;
-    io::CSVReader<6> patches("../landscape_opt_datas/BiorevAix/raw/vertexN1_v2.csv");
-    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "area1", "cost", "id_tronc2");
+    io::CSVReader<5> patches("../landscape_opt_datas/BiorevAix/raw/vertexN1_v2.csv");
+    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "cost", "id_tronc2");
     int N_id, id_tronc;
-    double X, Y, area, cost;
-    while(patches.read_row(N_id, X, Y, area, cost, id_tronc)) {
+    double X, Y, cost;
+    while(patches.read_row(N_id, X, Y, cost, id_tronc)) {
         Point p = Point(X,Y)-center;
         if(p.normSquare() > radius_squared) continue;
         if(cost == 1000) continue;
@@ -251,7 +251,7 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
     return instance;
 }
 
-Instance make_instance_biorevaix_level_2(const double restoration_coef=2, const Point center=Point(897286.5,6272835.5), const double radius=200) {
+Instance make_instance_biorevaix_level_2(const double restoration_coef=2) {
     Instance instance;
     Landscape & landscape = instance.landscape;
     const Graph_t & graph = instance.graph;
@@ -266,24 +266,31 @@ Instance make_instance_biorevaix_level_2(const double restoration_coef=2, const 
             : 0;
     };
 
-    std::array<Graph_t::Node, 688402> nodes;
+    std::array<Graph_t::Node, 98344> nodes;
     nodes.fill(lemon::INVALID);
+    std::array<int, 98344> node_tronc;
     Graph_t::NodeMap<double> node_prob(graph, 0.0);
     Graph_t::NodeMap<RestorationPlan<Landscape>::Option> troncon_option(graph);
     std::array<RestorationPlan<Landscape>::Option, 5195> id_tronc_option;
     id_tronc_option.fill(-1);
 
-    const double radius_squared = radius*radius;
-    io::CSVReader<6> patches("../landscape_opt_datas/BiorevAix/raw/vertexN2.csv");
-    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "area1", "cost", "id_tronc2");
-    int N_id, id_tronc;
-    double X, Y, area, cost;
-    while(patches.read_row(N_id, X, Y, area, cost, id_tronc)) {
-        Point p = Point(X,Y)-center;
-        if(p.normSquare() > radius_squared) continue;
+
+    int N2_id, id_tronc;
+    double X, Y, cost;
+
+    io::CSVReader<2> N1_patches("../landscape_opt_datas/BiorevAix/raw/vertexN1_v2.csv");
+    N1_patches.read_header(io::ignore_extra_column, "N2_id", "id_tronc2");
+    while(N1_patches.read_row(N2_id, id_tronc)) {
+        node_tronc[N2_id] = std::max(node_tronc[N2_id], id_tronc);
+    }
+
+    io::CSVReader<4> patches("../landscape_opt_datas/BiorevAix/raw/cropped_vertexN2.csv");
+    patches.read_header(io::ignore_extra_column, "N2_id", "X", "Y", "cost_mean");
+    while(patches.read_row(N2_id, X, Y, cost)) {
         if(cost == 1000) continue;
-        Graph_t::Node u = landscape.addNode((cost==1 ? 1 : 0), p);
-        nodes[N_id] = u;
+        id_tronc = node_tronc[N2_id];
+        Graph_t::Node u = landscape.addNode((cost==1 ? 1 : 0), Point(X,Y));
+        nodes[N2_id] = u;
         node_prob[u] = prob(cost);
         troncon_option[u] = -1;
         if(id_tronc == 0) continue;
@@ -293,7 +300,7 @@ Instance make_instance_biorevaix_level_2(const double restoration_coef=2, const 
         plan.setCost(option, plan.getCost(option) + 1);
     }
 
-    io::CSVReader<2> links("../landscape_opt_datas/BiorevAix/raw/AL_N2.csv");
+    io::CSVReader<2> links("../landscape_opt_datas/BiorevAix/raw/cropped_AL_N2.csv");
     links.read_header(io::ignore_extra_column, "from", "to");
     int from, to;
     while(links.read_row(from, to)) {
