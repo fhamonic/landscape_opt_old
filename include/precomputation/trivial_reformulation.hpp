@@ -6,7 +6,35 @@
 
 #include <lemon/connectivity.h>
 #include <range/v3/view/subrange.hpp>
+#include <range/v3/view/zip.hpp>
 
+RestorationPlan<MutableLandscape> remove_useless_options(const MutableLandscape & landscape, RestorationPlan<MutableLandscape> & plan, const double epsilon=1.0e-13) {
+    RestorationPlan<MutableLandscape> new_plan(landscape);
+
+    auto nodeOptions = plan.computeNodeOptionsMap();
+    auto arcOptions = plan.computeArcOptionsMap();
+
+    nodeOptions.erase(
+        std::remove_if(nodeOptions.begin(), nodeOptions.end(), [&](const auto & e) {
+            return e.second <= epsilon;
+        }),
+        nodeOptions.end());
+    arcOptions.erase(
+        std::remove_if(arcOptions.begin(), arcOptions.end(), [&](const auto & e) {
+            return e.second <= epsilon;
+        }),
+        arcOptions.end());
+
+    int cpt_options = 0;
+    for(const auto & [nodes, arcs] : ranges::views::zip(nodeOptions, arcOptions)) {
+        if(nodes.empty() && arcs.empty()) continue;
+        for(const auto & [u, quality_gain] : nodes)
+            new_plan.addNode(cpt_options, u, quality_gain);
+        for(const auto & [a, restored_probability] : arcs)
+            new_plan.addArc(cpt_options, a, restored_probability);
+        ++cpt_options;
+    }
+}
 
 /**
  * Erase every arc whose probability is negligeable.

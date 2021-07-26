@@ -24,6 +24,7 @@ public:
     RestorationPlan<MutableLandscape> plan;
 
     Instance() : plan(landscape) {}
+    Instance(const Instance & instance) : plan(landscape) {}
 };
 
 #endif //RESTORATION_PLAN_2_HPP
