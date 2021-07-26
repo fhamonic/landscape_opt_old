@@ -7,17 +7,17 @@
 #include "parsers/concept/parser.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
-#include"landscape/landscape.hpp"
+#include"landscape/mutable_landscape.hpp"
 
-class StdRestorationPlanParser : public concepts::Parser<RestorationPlan<Landscape>> {
+class StdRestorationPlanParser : public concepts::Parser<RestorationPlan<MutableLandscape>> {
     private:
-        const Landscape & landscape;
+        const MutableLandscape & landscape;
     public:
-        StdRestorationPlanParser(const Landscape & l);
+        StdRestorationPlanParser(const MutableLandscape & l);
         ~StdRestorationPlanParser();
    
-        RestorationPlan<Landscape> parse(std::filesystem::path file_path);
-        bool write(const RestorationPlan<Landscape> & plan, const std::filesystem::path output, const std::string name, bool use_range_ids=true);
+        RestorationPlan<MutableLandscape> parse(std::filesystem::path file_path);
+        bool write(const RestorationPlan<MutableLandscape> & plan, const std::filesystem::path output, const std::string name, bool use_range_ids=true);
 };
 
 #endif //STD_RESTORATION_PLAN_PARSER_HPP

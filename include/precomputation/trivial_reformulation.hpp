@@ -1,16 +1,64 @@
 #ifndef TRIVIAL_REFORMULATION_HPP
 #define TRIVIAL_REFORMULATION_HPP
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
 #include <lemon/connectivity.h>
+#include <range/v3/view/subrange.hpp>
 
-std::pair<Landscape, RestorationPlan<Landscape>> trivial_reformulate(Landscape & landscape, const RestorationPlan<Landscape> & plan) {
-    using Graph = Landscape::Graph;
+
+/**
+ * Erase every arc whose probability is negligeable.
+ * 
+ * @time \f$O(|A|)\f$
+ * @space \f$O(|A|)\f$
+ */
+void remove_zero_probability_arcs(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan, const double epsilon=1.0e-13) {
+    using Graph = MutableLandscape::Graph; 
+    const Graph & graph = landscape.getNetwork();    
+    for(Graph::ArcIt a(graph), next_a = a; a != lemon::INVALID; a = next_a) {
+        ++next_a;
+        if(landscape.getProbability(a) > epsilon || plan.contains(a)) continue;
+        landscape.removeArc(a);
+    }
+}
+
+/**
+ * Erase every node that cannot carry flow because its quality is null,
+ * it cannot be enhanced and there is no path from a positive quality node to it.
+ * 
+ * @time \f$O(|A|)\f$
+ * @space \f$O(|A|)\f$
+ */
+void remove_no_flow_nodes(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) {
+    const Graph_t & graph = landscape.getNetwork();
+    lemon::Dfs<Graph_t> dfs(graph);
+    dfs.init();
+    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+        if(landscape.getQuality(u) == 0 && !plan.contains(u)) continue;
+        dfs.addSource(u);
+    }
+    dfs.start();
+    for(Graph_t::NodeIt u(graph), next_u = u; u != lemon::INVALID; u = next_u) {
+        ++next_u;
+        if(dfs.reached(u)) continue;
+        landscape.removeNode(u);
+    }
+}
+
+/**
+ * Contract the strongly connected components of the subgraph
+ * induced by the arcs of probabilty 1.
+ * 
+ * @time \f$O(|A|)\f$
+ * @space \f$O(|A|)\f$
+ */
+void contract_patches_components(MutableLandscape & landscape, RestorationPlan<MutableLandscape> & plan) {
+    using Graph = MutableLandscape::Graph;
     using ArcFilterMap = Graph::ArcMap<bool>;
     using ComponentMap = Graph::NodeMap<int>;
-
+    
     const Graph & graph = landscape.getNetwork();
     ArcFilterMap arc_filter(graph, false);
     for(Graph::ArcIt a(graph); a!=lemon::INVALID; ++a)
@@ -27,16 +75,21 @@ std::pair<Landscape, RestorationPlan<Landscape>> trivial_reformulate(Landscape &
     for(int component_id=0; component_id<nb_components; ++component_id) {
         const auto & component = components[component_id];
         if(component.size() == 1) continue;
-        Graph::Node patch = landscape.addNode(0, Point(0,0));
-        for(const auto & u : component) {
+        const Graph::Node patch = *component.begin();
+        landscape.getCoordsRef(patch) *= landscape.getQuality(patch);
+        for(const auto & u : ranges::subrange(component.begin()+1, 
+                                              component.end())) {
             landscape.getQualityRef(patch) += landscape.getQuality(u);
-            landscape.getCoordsRef(patch) += landscape.getQuality(u) * landscape.getCoords(u);
-            for(Graph::InArcIt a(graph, u), next_a = a; a != lemon::INVALID; a = next_a) {
+            for(const auto & e : plan[u])
+                plan.addNode(e.option, patch, e.quality_gain);
+            landscape.getCoordsRef(patch) +=
+                landscape.getCoords(u) * landscape.getQuality(u);
+            for(Graph::InArcIt a(graph,u), next_a=a; a!=lemon::INVALID; a=next_a) {
                 ++next_a;
                 if(componentsNodeMap[graph.source(a)] == component_id) continue;
                 landscape.changeTarget(a, patch);
             }
-            for(Graph::OutArcIt b(graph, u), next_b = b; b != lemon::INVALID; b = next_b) {
+            for(Graph::OutArcIt b(graph,u), next_b=b; b!=lemon::INVALID; b=next_b) {
                 ++next_b;
                 if(componentsNodeMap[graph.target(b)] == component_id) continue;
                 landscape.changeSource(b, patch);
@@ -45,8 +98,20 @@ std::pair<Landscape, RestorationPlan<Landscape>> trivial_reformulate(Landscape &
         }
         landscape.getCoordsRef(patch) /= landscape.getQuality(patch);
     }
+}
+
+std::pair<MutableLandscape, RestorationPlan<MutableLandscape>> trivial_reformulate(MutableLandscape&& landscape, RestorationPlan<MutableLandscape>&& plan) {
+
+    contract_patches_components(landscape, plan);
 
 }
+
+// std::pair<MutableLandscape, RestorationPlan<MutableLandscape>> trivial_reformulate(const MutableLandscape & original_landscape, const RestorationPlan<MutableLandscape> & original_plan) {
+
+
+
+//     // return contract_patches_components(std::move(copy_landscape), std::move(copy_plan));
+// }
 
 
 #endif //TRIVIAL_REFORMULATION_HPP

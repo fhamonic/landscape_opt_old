@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 #include "landscape/static_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
@@ -24,11 +24,11 @@ class ContractionResult {
 
 class ContractionPrecomputation {
     public:
-        void erase_no_connected_nodes(Landscape & landscape, Graph_t::Node t) const;
-        void erase_no_flow_nodes(Landscape & landscape, const RestorationPlan<Landscape> & plan) const;
-        void contract_arc(Landscape & contracted_landscape, RestorationPlan<Landscape> & plan, Graph_t::Arc a) const;
+        void erase_no_connected_nodes(MutableLandscape & landscape, Graph_t::Node t) const;
+        void erase_no_flow_nodes(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const;
+        void contract_arc(MutableLandscape & contracted_landscape, RestorationPlan<MutableLandscape> & plan, Graph_t::Arc a) const;
         
-        virtual Graph_t::NodeMap<ContractionResult> * precompute(const Landscape & landscape, const RestorationPlan<Landscape> & plan) const=0;
+        virtual Graph_t::NodeMap<ContractionResult> * precompute(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const=0;
 };
 
 #endif //CONTRACTION_PRECOMPUTATION_HPP

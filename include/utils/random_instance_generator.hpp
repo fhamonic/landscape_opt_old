@@ -1,7 +1,7 @@
 #ifndef RANDOM_INSRANCE_GENERATOR_HPP
 #define RANDOM_INSRANCE_GENERATOR_HPP
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
 #include "utils/random_chooser.hpp"
@@ -17,11 +17,11 @@ class RandomInstanceGenerator {
         RandomInstanceGenerator() {};
         ~RandomInstanceGenerator() {};
 
-        Landscape * generate_landscape(int seed, int nb_nodes, int nb_arcs, bool symmetric=true);
-        RestorationPlan<Landscape>* generate_plan(int seed, const Landscape & landscape, int nb_options, bool restore_nodes=false);
+        MutableLandscape * generate_landscape(int seed, int nb_nodes, int nb_arcs, bool symmetric=true);
+        RestorationPlan<MutableLandscape>* generate_plan(int seed, const MutableLandscape & landscape, int nb_options, bool restore_nodes=false);
 };
 
-Landscape * RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, int nb_links, bool symmetric) {
+ MutableLandscape* RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, int nb_links, bool symmetric) {
     typedef Graph_t Graph;
     typedef Graph_t::Node Node;
     typedef Graph_t::NodeIt NodeIt;
@@ -32,7 +32,7 @@ Landscape * RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, 
     std::uniform_real_distribution<> q_dis(1, 10);
     std::uniform_real_distribution<> p_dis(0, 1);
     
-    Landscape * landscape = new Landscape();
+    MutableLandscape * landscape = new MutableLandscape();
     const Graph & graph = landscape->getNetwork(); 
 
     const double angle = 2 * M_PI / nb_nodes;
@@ -61,7 +61,7 @@ Landscape * RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, 
 }
 
 
-RestorationPlan<Landscape>* RandomInstanceGenerator::generate_plan(int seed, const Landscape & landscape, int nb_options, bool restore_nodes) {
+RestorationPlan<MutableLandscape>* RandomInstanceGenerator::generate_plan(int seed, const MutableLandscape & landscape, int nb_options, bool restore_nodes) {
     typedef Graph_t Graph;
     typedef Graph_t::Node Node;
     typedef Graph_t::NodeIt NodeIt;
@@ -73,7 +73,7 @@ RestorationPlan<Landscape>* RandomInstanceGenerator::generate_plan(int seed, con
     const int nb_arcs = restore_nodes ? nb_options/2 : nb_options;
     
     const Graph & graph = landscape.getNetwork();
-    RestorationPlan<Landscape>* plan = new RestorationPlan(landscape);
+    RestorationPlan<MutableLandscape>* plan = new RestorationPlan(landscape);
 
     RandomChooser<Arc> arcs_chooser(seed+1);
     for(ArcIt a(graph); a!=lemon::INVALID; ++a) arcs_chooser.add(a, 1.0);
@@ -83,7 +83,7 @@ RestorationPlan<Landscape>* RandomInstanceGenerator::generate_plan(int seed, con
         Arc a = arcs_chooser.pick();
         std::uniform_real_distribution<> p_dis(landscape.getProbability(a), 1);
         
-        RestorationPlan<Landscape>::Option option = plan->addOption(1);
+        RestorationPlan<MutableLandscape>::Option option = plan->addOption(1);
         plan->addArc(option, a, p_dis(gen));
     }
 
@@ -101,7 +101,7 @@ RestorationPlan<Landscape>* RandomInstanceGenerator::generate_plan(int seed, con
         nodes_chooser.reset();
         std::uniform_real_distribution<> q_dis(0, avg_quality);
         
-        RestorationPlan<Landscape>::Option option = plan->addOption(1);
+        RestorationPlan<MutableLandscape>::Option option = plan->addOption(1);
         plan->addNode(option, u, q_dis(gen));
     }
         

@@ -8,7 +8,7 @@
 #include "lemon/graph_to_eps.h"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "indices/eca.hpp"
 #include "landscape/decored_landscape.hpp"
@@ -34,27 +34,27 @@ static std::vector<std::unique_ptr<concepts::Solver>> construct_solvers() {
     int log_pl = 3;
 
     auto naive_eca_inc = std::make_unique<Solvers::Naive_ECA_Inc>();
-    naive_eca_inc.get()->setLogLevel(0).setParallel(true);
+    naive_eca_inc->setLogLevel(0).setParallel(true);
     solvers.emplace_back(std::move(naive_eca_inc));
 
     auto naive_eca_dec = std::make_unique<Solvers::Naive_ECA_Dec>();
-    naive_eca_dec.get()->setLogLevel(0).setParallel(true);
+    naive_eca_dec->setLogLevel(0).setParallel(true);
     solvers.emplace_back(std::move(naive_eca_dec));
 
     auto glutton_eca_inc = std::make_unique<Solvers::Glutton_ECA_Inc>();
-    glutton_eca_inc.get()->setLogLevel(0).setParallel(true);
+    glutton_eca_inc->setLogLevel(0).setParallel(true);
     solvers.emplace_back(std::move(glutton_eca_inc));
 
     auto glutton_eca_dec = std::make_unique<Solvers::Glutton_ECA_Dec>();
-    glutton_eca_dec.get()->setLogLevel(0).setParallel(true);
+    glutton_eca_dec->setLogLevel(0).setParallel(true);
     solvers.emplace_back(std::move(glutton_eca_dec));
 
     auto pl_eca_2 = std::make_unique<Solvers::PL_ECA_2>();
-    pl_eca_2.get()->setLogLevel(log_pl);
+    pl_eca_2->setLogLevel(log_pl);
     solvers.emplace_back(std::move(pl_eca_2));
 
     auto pl_eca_3 = std::make_unique<Solvers::PL_ECA_3>();
-    pl_eca_3.get()->setLogLevel(log_pl).setTimeout(3600);
+    pl_eca_3->setLogLevel(log_pl).setTimeout(3600);
     solvers.emplace_back(std::move(pl_eca_3));
 
     auto randomized_rounding = std::make_unique<Solvers::Randomized_Rounding_ECA>();
@@ -85,8 +85,8 @@ int main() {
     for(double nb_friches : nb_friches_values) {
         Instance instance = make_instance_marseillec(1, 0.04, 900, nb_friches);
         
-        const Landscape & landscape = instance.landscape;
-        const RestorationPlan<Landscape> & plan = instance.plan;
+        const MutableLandscape & landscape = instance.landscape;
+        const RestorationPlan<MutableLandscape> & plan = instance.plan;
         
         Helper::assert_well_formed(landscape, plan);
 

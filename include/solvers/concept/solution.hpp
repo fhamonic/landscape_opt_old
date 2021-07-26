@@ -3,7 +3,7 @@
 
 #include <cassert> // assert
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
 class Solution {
@@ -15,14 +15,14 @@ public:
 
 private:
     // reference wrapper needed for default construct operations
-    std::reference_wrapper<const Landscape> landscape;
-    std::reference_wrapper<const RestorationPlan<Landscape>> plan;
+    std::reference_wrapper<const MutableLandscape> landscape;
+    std::reference_wrapper<const RestorationPlan<MutableLandscape>> plan;
 
     std::vector<double> coefs;
 
     int compute_time_ms;
 public:
-    Solution(const Landscape & landscape, const RestorationPlan<Landscape>& plan)
+    Solution(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan)
         : landscape(landscape)
         , plan(plan)
         , coefs(plan.getNbOptions(), 0.0)
@@ -34,15 +34,15 @@ public:
     Solution & operator=(const Solution& ) = default; // copy assignment operator
     Solution & operator=(Solution&& s) = default; // move assignment operator
 
-    const RestorationPlan<Landscape>& getPlan() const { return plan; };
+    const RestorationPlan<MutableLandscape>& getPlan() const { return plan; };
 
-    bool contains(RestorationPlan<Landscape>::Option option) const {
+    bool contains(RestorationPlan<MutableLandscape>::Option option) const {
         return coefs.at(option) > std::numeric_limits<double>::epsilon();
     }
 
-    void set(RestorationPlan<Landscape>::Option option, double coef) { coefs[option] = coef; }
-    void add(RestorationPlan<Landscape>::Option option) { set(option, 1.0); }
-    void remove(RestorationPlan<Landscape>::Option option) { set(option, 0.0); }
+    void set(RestorationPlan<MutableLandscape>::Option option, double coef) { coefs[option] = coef; }
+    void add(RestorationPlan<MutableLandscape>::Option option) { set(option, 1.0); }
+    void remove(RestorationPlan<MutableLandscape>::Option option) { set(option, 0.0); }
 
     const std::vector<double> & getCoefs() const { return coefs; }
 
@@ -51,13 +51,13 @@ public:
 
     double getCost() const {
         double sum = 0;
-        for(RestorationPlan<Landscape>::Option i=0; i<plan.get().getNbOptions(); ++i)
+        for(RestorationPlan<MutableLandscape>::Option i=0; i<plan.get().getNbOptions(); ++i)
             sum += plan.get().getCost(i) * coefs[i];   
         return sum;
     }
 
-    double getCoef(RestorationPlan<Landscape>::Option i) const { return coefs[i]; }
-    double operator[](RestorationPlan<Landscape>::Option i) const { return getCoef(i); }
+    double getCoef(RestorationPlan<MutableLandscape>::Option i) const { return coefs[i]; }
+    double operator[](RestorationPlan<MutableLandscape>::Option i) const { return getCoef(i); }
 };
 
 #endif //SOLUTION_HPP

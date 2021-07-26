@@ -14,7 +14,7 @@
 #include<map>
 #include<list>
 #include<memory>
-#include <numeric>
+#include<numeric>
 
 #include "landscape/concept/abstract_landscape.hpp"
 
@@ -157,7 +157,7 @@ public:
             return p.option == i;
         });
         if(it != restoration_options.end()) {
-            it->quality_gain = quality_gain;
+            it->quality_gain += quality_gain;
             return ;
         }
         restoration_options.emplace_back(-1, i, quality_gain);
@@ -233,7 +233,8 @@ public:
             return p.option == i;
         });
         if(it != restoration_options.end()) {
-            it->restored_probability = restored_probability;
+            it->restored_probability = 
+                std::max(restored_probability, it->restored_probability);
             return ;
         }
         restoration_options.emplace_back(-1, i, restored_probability);

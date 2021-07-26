@@ -5,10 +5,10 @@
 /**
  * Erase the nodes from wich there is no path to t
  * 
- * @time \f$O(V)\f$
- * @space \f$O(V)\f$
+ * @time \f$O(|A|)\f$
+ * @space \f$O(|A|)\f$
  */
-void ContractionPrecomputation::erase_no_connected_nodes(Landscape & landscape, Graph_t::Node t) const {    
+void ContractionPrecomputation::erase_no_connected_nodes(MutableLandscape & landscape, Graph_t::Node t) const {    
     using Reversed = lemon::ReverseDigraph<const Graph_t>;
     const Graph_t & graph = landscape.getNetwork();
     Reversed rg(graph);
@@ -25,10 +25,10 @@ void ContractionPrecomputation::erase_no_connected_nodes(Landscape & landscape, 
  * Erase the nodes that cannot carry flow because are of null quality,
  * cannot be enhanced and there is no path from a positive quality node.
  * 
- * @time \f$O(V)\f$
- * @space \f$O(V)\f$
+ * @time \f$O(|A|)\f$
+ * @space \f$O(|A|)\f$
  */
-void ContractionPrecomputation::erase_no_flow_nodes(Landscape & landscape, const RestorationPlan<Landscape> & plan) const {
+void ContractionPrecomputation::erase_no_flow_nodes(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const {
     const Graph_t & graph = landscape.getNetwork();
     lemon::Dfs<Graph_t> dfs(graph);
     dfs.init();
@@ -50,7 +50,7 @@ void ContractionPrecomputation::erase_no_flow_nodes(Landscape & landscape, const
  * @time \f$O(deg(u))\f$
  * @space \f$O(deg(u))\f$
  */
-void ContractionPrecomputation::contract_arc(Landscape & landscape, RestorationPlan<Landscape>& plan, Graph_t::Arc a) const {    
+void ContractionPrecomputation::contract_arc(MutableLandscape & landscape, RestorationPlan<MutableLandscape>& plan, Graph_t::Arc a) const {    
     const Graph_t & graph = landscape.getNetwork();
     assert(graph.valid(a));
     Graph_t::Node u = graph.source(a);

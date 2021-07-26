@@ -1,7 +1,7 @@
 #ifndef CONNECTIVITY_INDEX_HPP
 #define CONNECTIVITY_INDEX_HPP
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 
 namespace concepts {
     class ConnectivityIndex {

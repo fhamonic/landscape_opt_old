@@ -11,7 +11,7 @@
 #include "solvers/pl_eca_3.hpp"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "utils/random_chooser.hpp"
 #include "algorithms/multiplicative_dijkstra.hpp"
@@ -21,7 +21,7 @@
 
 #include "precomputation/my_contraction_algorithm.hpp"
 
-void parse_quebec(Landscape & landscape, double pow, double median) {
+void parse_quebec(MutableLandscape & landscape, double pow, double median) {
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
     std::vector<Graph_t::Node> node_correspondance;
@@ -50,12 +50,12 @@ void parse_quebec(Landscape & landscape, double pow, double median) {
 
 
 
-Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, int nb_nodes) {
+ MutableLandscape* make_landscape(const MutableLandscape & landscape, Graph_t::Node center, int nb_nodes) {
     const Graph_t & graph = landscape.getNetwork();
 
     Graph_t::NodeMap<Graph_t::Node> nodes(graph, lemon::INVALID);
 
-    Landscape * new_landscape = new Landscape();
+    MutableLandscape * new_landscape = new MutableLandscape();
     const Graph_t & new_graph = new_landscape->getNetwork();
         
     const Graph_t::ArcMap<double> & probabilityMap = landscape.getProbabilityMap();
@@ -83,7 +83,7 @@ Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, in
 }
 
 int main() {
-    Landscape landscape;
+    MutableLandscape landscape;
     parse_quebec(landscape, 1, 2300);
     const Graph_t & graph = landscape.getNetwork();
 
@@ -101,11 +101,11 @@ int main() {
         for(int percent_arcs : percent_arcs_to_test) {
             for(int i=0; i<nb_de_chaque; i++) {
                 Graph_t::Node center = node_chooser.pick();
-                Landscape * sub_landscape = make_landscape(landscape, center, n);
+                MutableLandscape * sub_landscape = make_landscape(landscape, center, n);
                 const Graph_t & sub_graph = sub_landscape->getNetwork();
 
                 Graph_t::ArcMap<bool> deja_select(sub_graph, false);
-                RestorationPlan<Landscape> plan(*sub_landscape);
+                RestorationPlan<MutableLandscape> plan(*sub_landscape);
 
                 for(Graph_t::ArcIt a(sub_graph); a != lemon::INVALID; ++a) {
                     if(deja_select[a]) continue;
@@ -115,12 +115,12 @@ int main() {
                     deja_select[a] = true;
                     deja_select[reverse_a] = true;
 
-                    RestorationPlan<Landscape>::Option option = plan.addOption(15 * -std::log(sub_landscape->getProbability(a)));
+                    RestorationPlan<MutableLandscape>::Option option = plan.addOption(15 * -std::log(sub_landscape->getProbability(a)));
                     plan.addArc(option, a, (1 + sub_landscape->getProbability(a)) / 2 );
                     plan.addArc(option, reverse_a, (1 + sub_landscape->getProbability(a)) / 2);
                 }
 
-                StdLandscapeParser::get().write(*sub_landscape, "instances", "quebec-" + std::to_string(n) + "-" + std::to_string(i));
+                StdMutableLandscapeParser::get().write(*sub_landscape, "instances", "quebec-" + std::to_string(n) + "-" + std::to_string(i));
                 StdRestorationPlanParser plan_parser(*sub_landscape);
                 plan_parser.write(plan, "instances", "quebec-" + std::to_string(n) + "-" + std::to_string(i));
 

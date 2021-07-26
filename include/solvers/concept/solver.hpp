@@ -10,7 +10,7 @@
 #include <algorithm> // std::sort , for_each ...
 #include <execution> // execution::par
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 
 #include "solvers/concept/solution.hpp"
 #include "solvers/concept/restoration_plan.hpp"
@@ -78,7 +78,7 @@ namespace concepts {
                 return params;
             };
 
-            virtual Solution solve(const Landscape & landscape, const RestorationPlan<Landscape>& plan, const double B) const=0;
+            virtual Solution solve(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan, const double B) const=0;
 
             virtual const std::string name() const=0;
 

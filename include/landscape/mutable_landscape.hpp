@@ -1,7 +1,7 @@
 /**
- * @file landscape.hpp
+ * @file mutable_landscape.hpp
  * @author François Hamonic (francois.hamonic@gmail.com)
- * @brief Landscape class declaration
+ * @brief MutableLandscape class declaration
  * @version 0.1
  * @date 2020-05-08
  */
@@ -24,7 +24,7 @@
  * This class represent an editable landscape.
  * That is a graph whose nodes weigths are quality and coordinates, and arcs weigths are probabilities to success crossing. 
  */
-class Landscape : public concepts::AbstractLandscape<Graph_t> {
+class MutableLandscape : public concepts::AbstractLandscape<Graph_t> {
 private:
     Graph network;
     QualityMap qualityMap;
@@ -32,12 +32,12 @@ private:
     ProbabilityMap probabilityMap;
 
 public:
-    Landscape();
-    Landscape(const Landscape&);
-    Landscape(Landscape&&);
-    ~Landscape();
-    Landscape & operator=(const Landscape&) { assert(false && "Fuck"); return *this; };
-    Landscape & operator=(Landscape&&) { assert(false && "Fuck"); return *this; };
+    MutableLandscape();
+    MutableLandscape(const MutableLandscape&);
+    MutableLandscape(MutableLandscape&&);
+    ~MutableLandscape();
+    MutableLandscape & operator=(const MutableLandscape&) { assert(false && "Fuck"); return *this; };
+    MutableLandscape & operator=(MutableLandscape&&) { assert(false && "Fuck"); return *this; };
 
     /**
      * @brief Makes the current landscape a copy of the one passed in parameter.
@@ -45,7 +45,9 @@ public:
      * @param orig_landscape : the landscape to copy 
      * @return a pair of references maps from original landscape elements to the copied ones 
      */
-    std::pair<Graph_t::NodeMap<Node>*, Graph_t::ArcMap<Arc>*> copy(const Landscape & orig_landscape);
+    std::pair<std::unique_ptr<Graph_t::NodeMap<Graph_t::Node>>, 
+            std::unique_ptr<Graph_t::ArcMap<Graph_t::Arc>>> 
+            copy(const MutableLandscape & orig_landscape);
 
     /**
      * @brief Adds a new patch with specified quality and coordinates.

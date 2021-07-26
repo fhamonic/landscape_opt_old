@@ -8,7 +8,7 @@
 #include "lemon/graph_to_eps.h"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "indices/eca.hpp"
 #include "indices/parallel_eca.hpp"
@@ -37,8 +37,8 @@
 int main() {
     Instance instance = make_instance_biorevaix_level_1(3, Point(897286.5,6272835.5), 400);
     // Instance instance = make_instance_biorevaix_level_2(4);
-    const Landscape & landscape = instance.landscape;
-    RestorationPlan<Landscape> & plan = instance.plan;
+    const MutableLandscape & landscape = instance.landscape;
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
     plan.initElementIDs();
 
     Helper::assert_well_formed(landscape, plan);

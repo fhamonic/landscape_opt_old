@@ -1,7 +1,7 @@
 #include <iostream>
 #include <filesystem>
 
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 #include "parsers/std_restoration_plan_parser.hpp"
 #include "instances_helper.hpp"
 
@@ -15,7 +15,7 @@ int main(int argc, const char *argv[]) {
     }
     std::filesystem::path landscape_path = argv[1];
 
-    const Landscape landscape = StdLandscapeParser::get().parse(landscape_path);   
+    const MutableLandscape landscape = StdMutableLandscapeParser::get().parse(landscape_path);   
 
     Helper::printLandscapeGraphviz(landscape, "test.dot");
 

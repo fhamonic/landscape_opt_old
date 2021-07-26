@@ -16,7 +16,7 @@
 #include "Eigen/Dense"
 
 #include "landscape/concept/abstract_landscape.hpp"
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 
 #include "solvers/concept/restoration_plan.hpp"
 

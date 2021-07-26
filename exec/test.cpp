@@ -11,7 +11,7 @@
 #include "solvers/pl_eca_3.hpp"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "utils/random_chooser.hpp"
 #include "algorithms/multiplicative_dijkstra.hpp"

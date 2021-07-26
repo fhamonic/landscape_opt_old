@@ -14,7 +14,7 @@
 #include <boost/range/algorithm/find_if.hpp>
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "solvers/bogo.hpp"
 #include "solvers/naive_eca_inc.hpp"
@@ -102,10 +102,10 @@ int main(int argc, const char *argv[]) {
 
     std::string name = std::filesystem::path(problem_path).stem();
 
-    Landscape landscape = StdLandscapeParser::get().parse(landscape_path);
+    MutableLandscape landscape = StdMutableLandscapeParser::get().parse(landscape_path);
 
     StdRestorationPlanParser parser(landscape);
-    RestorationPlan<Landscape> plan = parser.parse(problem_path);
+    RestorationPlan<MutableLandscape> plan = parser.parse(problem_path);
 
     //Helper::assert_well_formed(landscape, plan);
 

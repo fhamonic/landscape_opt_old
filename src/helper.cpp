@@ -4,7 +4,7 @@ bool is_probability(const double p) {
     return (p == p) && (p >= 0) && (p <= 1);
 }
 
-void Helper::assert_well_formed(const Landscape & landscape, const RestorationPlan<Landscape>& plan) {
+void Helper::assert_well_formed(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan) {
     const Graph_t & graph = landscape.getNetwork();
 
     for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) { (void)v;

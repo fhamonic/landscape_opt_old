@@ -8,7 +8,7 @@
 #include "lemon/graph_to_eps.h"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "indices/eca.hpp"
 #include "landscape/decored_landscape.hpp"
@@ -106,8 +106,8 @@ int main() {
             for(double median : median_values) {
                 for(Point orig : orig_values) {
                     Instance instance = make_instance_quebec(pow, thresold, median, orig, Point(32360, 20000));
-                    const Landscape & landscape = instance.landscape;
-                    const RestorationPlan<Landscape> & plan = instance.plan;
+                    const MutableLandscape & landscape = instance.landscape;
+                    const RestorationPlan<MutableLandscape> & plan = instance.plan;
 
                     if(lemon::countNodes(landscape.getNetwork()) < 50) continue;
                     if(lemon::countNodes(landscape.getNetwork()) > 100) continue;

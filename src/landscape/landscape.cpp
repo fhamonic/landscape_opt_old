@@ -1,24 +1,24 @@
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 
-Landscape::Landscape() : 
+MutableLandscape::MutableLandscape() : 
         qualityMap(network),
         coordsMap(network),
         probabilityMap(network) {}
 
-Landscape::Landscape(const Landscape&) : 
+MutableLandscape::MutableLandscape(const MutableLandscape&) : 
         qualityMap(network),
         coordsMap(network),
         probabilityMap(network) { assert(false && "No fucking copy constructor and no RVO, fat chance!, use G++ or wait the upgrade of LEMON for STL compliant code"); };
-Landscape::Landscape(Landscape&&) : 
+MutableLandscape::MutableLandscape(MutableLandscape&&) : 
         qualityMap(network),
         coordsMap(network),
         probabilityMap(network) { assert(false && "No fucking move constructor and no RVO, fat chance!, use G++ or wait the upgrade of LEMON for STL compliant code"); };
 
-std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> Landscape::copy(const Landscape & landscape) {
+std::pair<std::unique_ptr<Graph_t::NodeMap<Graph_t::Node>>, std::unique_ptr<Graph_t::ArcMap<Graph_t::Arc>>> MutableLandscape::copy(const MutableLandscape & landscape) {
     const Graph_t & orig_network = landscape.getNetwork();
-    const Landscape::QualityMap & orig_qualityMap = landscape.getQualityMap();
-    const Landscape::CoordsMap & orig_coordsMap = landscape.getCoordsMap();
-    const Landscape::ProbabilityMap & orig_difficultyMap = landscape.getProbabilityMap();
+    const MutableLandscape::QualityMap & orig_qualityMap = landscape.getQualityMap();
+    const MutableLandscape::CoordsMap & orig_coordsMap = landscape.getCoordsMap();
+    const MutableLandscape::ProbabilityMap & orig_difficultyMap = landscape.getProbabilityMap();
 
     lemon::DigraphCopy<Graph_t, Graph_t> cg(orig_network, network);
 
@@ -26,51 +26,52 @@ std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> Land
     cg.nodeMap(orig_coordsMap, coordsMap);
     cg.arcMap(orig_difficultyMap, probabilityMap);
 
-    Graph_t::NodeMap<Graph_t::Node> * nodesRef = new Graph_t::NodeMap<Graph_t::Node>(orig_network);
-    Graph_t::ArcMap<Graph_t::Arc> * arcsRef = new Graph_t::ArcMap<Graph_t::Arc>(orig_network);
+    auto refs_pair = std::make_pair(
+            std::make_unique<Graph_t::NodeMap<Graph_t::Node>>(orig_network),
+            std::make_unique<Graph_t::ArcMap<Graph_t::Arc>>(orig_network));
 
-    cg.nodeRef(*nodesRef);
-    cg.arcRef(*arcsRef);
+    cg.nodeRef(*refs_pair.first);
+    cg.arcRef(*refs_pair.second);
 
     cg.run();
 
-    return std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*>(nodesRef, arcsRef);
+    return refs_pair;
 }
 
-Landscape::~Landscape() {}
+MutableLandscape::~MutableLandscape() {}
 
-Landscape::Node Landscape::addNode(double quality, Point coords) {
+MutableLandscape::Node MutableLandscape::addNode(double quality, Point coords) {
     Graph_t::Node u = network.addNode();
     this->setQuality(u, quality);
     this->setCoords(u, coords);
     return u;
 }
-Landscape::Arc Landscape::addArc(Graph_t::Node s, Graph_t::Node t, double probability) {
+MutableLandscape::Arc MutableLandscape::addArc(Graph_t::Node s, Graph_t::Node t, double probability) {
     Graph_t::Arc a = network.addArc(s, t);
     this->setProbability(a, probability);
     return a;
 }
 
-void Landscape::removeNode(Graph_t::Node u) { network.erase(u); }
-void Landscape::removeArc(Graph_t::Arc a) { network.erase(a); }
+void MutableLandscape::removeNode(Graph_t::Node u) { network.erase(u); }
+void MutableLandscape::removeArc(Graph_t::Arc a) { network.erase(a); }
 
-void Landscape::changeSource(Graph_t::Arc a, Graph_t::Node s) { network.changeSource(a, s); }
-void Landscape::changeTarget(Graph_t::Arc a, Graph_t::Node t) { network.changeTarget(a, t); }
+void MutableLandscape::changeSource(Graph_t::Arc a, Graph_t::Node s) { network.changeSource(a, s); }
+void MutableLandscape::changeTarget(Graph_t::Arc a, Graph_t::Node t) { network.changeTarget(a, t); }
 
-void Landscape::setQuality(Graph_t::Node u, double quality) { qualityMap[u] = quality; }
-void Landscape::setCoords(Graph_t::Node u, Point coords) { coordsMap[u] = coords; }
-void Landscape::setProbability(Graph_t::Arc a, double probability) { probabilityMap[a] = probability; }
+void MutableLandscape::setQuality(Graph_t::Node u, double quality) { qualityMap[u] = quality; }
+void MutableLandscape::setCoords(Graph_t::Node u, Point coords) { coordsMap[u] = coords; }
+void MutableLandscape::setProbability(Graph_t::Arc a, double probability) { probabilityMap[a] = probability; }
 
-const Graph_t & Landscape::getNetwork() const { return network; }
-const Landscape::QualityMap & Landscape::getQualityMap() const { return qualityMap; }
-const Landscape::CoordsMap & Landscape::getCoordsMap() const { return coordsMap; }
-const Landscape::ProbabilityMap & Landscape::getProbabilityMap() const { return probabilityMap; }
+const Graph_t & MutableLandscape::getNetwork() const { return network; }
+const MutableLandscape::QualityMap & MutableLandscape::getQualityMap() const { return qualityMap; }
+const MutableLandscape::CoordsMap & MutableLandscape::getCoordsMap() const { return coordsMap; }
+const MutableLandscape::ProbabilityMap & MutableLandscape::getProbabilityMap() const { return probabilityMap; }
 
 
-const double & Landscape::getQuality(Graph_t::Node u) const { return qualityMap[u]; }
-const Point & Landscape::getCoords(Graph_t::Node u) const { return coordsMap[u]; }
-const double & Landscape::getProbability(Graph_t::Arc a) const { return probabilityMap[a]; }
+const double & MutableLandscape::getQuality(Graph_t::Node u) const { return qualityMap[u]; }
+const Point & MutableLandscape::getCoords(Graph_t::Node u) const { return coordsMap[u]; }
+const double & MutableLandscape::getProbability(Graph_t::Arc a) const { return probabilityMap[a]; }
 
-double & Landscape::getQualityRef(Graph_t::Node u) { return qualityMap[u]; }
-Point & Landscape::getCoordsRef(Graph_t::Node u) { return coordsMap[u]; }
-double & Landscape::getProbabilityRef(Graph_t::Arc a) { return probabilityMap[a]; }
+double & MutableLandscape::getQualityRef(Graph_t::Node u) { return qualityMap[u]; }
+Point & MutableLandscape::getCoordsRef(Graph_t::Node u) { return coordsMap[u]; }
+double & MutableLandscape::getProbabilityRef(Graph_t::Arc a) { return probabilityMap[a]; }

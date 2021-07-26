@@ -1,6 +1,6 @@
 #include "print_helper.hpp"
 
-void Helper::printSolution(const Landscape & landscape, const RestorationPlan<Landscape>& plan, std::string name, concepts::Solver & solver, double B, const Solution & solution) {
+void Helper::printSolution(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan, std::string name, concepts::Solver & solver, double B, const Solution & solution) {
     const Graph_t & graph = landscape.getNetwork();
         
     auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
@@ -70,9 +70,9 @@ void Helper::printSolution(const Landscape & landscape, const RestorationPlan<La
 }
 
 // need to include the binary search tree for y-h , y+h search
-std::pair<Graph_t::Node, Graph_t::Node> Helper::neerestNodes(const Landscape & landscape) {
+std::pair<Graph_t::Node, Graph_t::Node> Helper::neerestNodes(const MutableLandscape & landscape) {
     const Graph_t & graph = landscape.getNetwork();
-    const Landscape::CoordsMap & coordsMap = landscape.getCoordsMap();
+    const MutableLandscape::CoordsMap & coordsMap = landscape.getCoordsMap();
 
     auto dist = [&coordsMap](Graph_t::Node a, Graph_t::Node b){
         const double dx = coordsMap[b].x - coordsMap[a].x;

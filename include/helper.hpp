@@ -15,7 +15,7 @@
 #include <boost/range/algorithm.hpp>
 #include <boost/range/adaptors.hpp>
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 #include "landscape/decored_landscape.hpp"
 
 #include "Eigen/Dense"
@@ -213,8 +213,8 @@ namespace Helper {
         return decored_landscape;
     }
 
-    void printSolution(const Landscape & landscape,
-            const RestorationPlan<Landscape>& plan,
+    void printSolution(const MutableLandscape & landscape,
+            const RestorationPlan<MutableLandscape>& plan,
             std::string name, concepts::Solver & solver,
             double B, const Solution & solution);
 
@@ -224,7 +224,7 @@ namespace Helper {
             const typename LS_From::Graph::template NodeMap<typename LS_To::Node> & nodesRef, 
             const typename LS_From::Graph::template ArcMap<typename LS_To::Arc> & arcsRef) {
         assert(contracted_plan.getNbOptions() == 0);
-        for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i)
+        for(RestorationPlan<MutableLandscape>::Option i=0; i<plan.getNbOptions(); ++i)
             contracted_plan.addOption(plan.getCost(i));
 
         const typename LS_From::Graph & from_graph = plan.getLandscape().getNetwork();
@@ -238,10 +238,10 @@ namespace Helper {
     }
 
     // need to include the binary search tree for y-h , y+h search
-    std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
+    std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const MutableLandscape & landscape);
 
-    void assert_well_formed(const Landscape & landscape,
-            const RestorationPlan<Landscape>& plan);
+    void assert_well_formed(const MutableLandscape & landscape,
+            const RestorationPlan<MutableLandscape>& plan);
 
 
     // template <typename GR>

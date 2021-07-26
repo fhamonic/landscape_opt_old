@@ -18,22 +18,11 @@
 
 #include <boost/range/algorithm/sort.hpp>
 
-#include "landscape/landscape.hpp"
-#include "solvers/concept/restoration_plan.hpp"
+#include "landscape/mutable_landscape.hpp"
+#include "solvers/concept/instance.hpp"
 
 #include "fast-cpp-csv-parser/csv.h"
 #include "utils/random_chooser.hpp"
-
-
-class Instance {
-    public:
-        Landscape landscape;
-        const Graph_t & graph;
-        RestorationPlan<Landscape> plan;
-
-        Instance() : graph(landscape.getNetwork()), plan(landscape) {}
-};
-
 
 void addCostNoise(Instance & instance, double deviation_ratio=0.2, int seed=456) {
     std::default_random_engine generator(seed);
@@ -43,7 +32,7 @@ void addCostNoise(Instance & instance, double deviation_ratio=0.2, int seed=456)
         return std::max(std::numeric_limits<double>::epsilon(), value * distribution(generator));
     };
 
-    for(RestorationPlan<Landscape>::Option i=0; i<instance.plan.getNbOptions(); ++i)
+    for(RestorationPlan<MutableLandscape>::Option i=0; i<instance.plan.getNbOptions(); ++i)
         instance.plan.setCost(i, noise(instance.plan.getCost(i)));
 }
 
@@ -51,9 +40,9 @@ void addCostNoise(Instance & instance, double deviation_ratio=0.2, int seed=456)
 Instance make_instance_marseillec(double pow, double thresold, double median, int nb_friches=100) {
     Instance instance;
     
-    Landscape & landscape = instance.landscape;
-    const Graph_t & graph = instance.graph;
-    RestorationPlan<Landscape> & plan = instance.plan;
+    MutableLandscape & landscape = instance.landscape;
+    const Graph_t & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
 
     auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
@@ -93,7 +82,7 @@ Instance make_instance_marseillec(double pow, double thresold, double median, in
 
     for(FricheData data : friches_list) {
         Graph_t::Node v1 = data.node;
-        RestorationPlan<Landscape>::Option option = plan.addOption(data.price);
+        RestorationPlan<MutableLandscape>::Option option = plan.addOption(data.price);
         Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
         
         for(Graph_t::OutArcIt a(graph, v1), next_a = a; a != lemon::INVALID; a = next_a) {
@@ -113,9 +102,9 @@ Instance make_instance_quebec(double pow, double thresold, double median,
         Point orig=Point(240548, 4986893), Point dim=Point(32360, 20000)) {
     Instance instance;
     
-    Landscape & landscape = instance.landscape;
-    const Graph_t & graph = instance.graph;
-    RestorationPlan<Landscape>& plan = instance.plan;
+    MutableLandscape & landscape = instance.landscape;
+    const Graph_t & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape>& plan = instance.plan;
 
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
@@ -143,7 +132,7 @@ Instance make_instance_quebec(double pow, double thresold, double median,
         }
 
         const double area_loss = area-count2050;
-        RestorationPlan<Landscape>::Option option = plan.addOption(area_loss);
+        RestorationPlan<MutableLandscape>::Option option = plan.addOption(area_loss);
         plan.addNode(option, u, area_loss);
     }
 
@@ -163,7 +152,7 @@ Instance make_instance_quebec(double pow, double thresold, double median,
 
     for(ThreatData data : threaten_list) {
         Graph_t::Node v1 = data.node;
-        RestorationPlan<Landscape>::Option option = plan.addOption(data.area);
+        RestorationPlan<MutableLandscape>::Option option = plan.addOption(data.area);
         Graph_t::Node v2 = landscape.addNode(0, landscape.getCoords(v1) + Point(0.001, 0.001));
         
         for(Graph_t::OutArcIt a(graph, v1), next_a = a; a != lemon::INVALID; a = next_a) {
@@ -181,9 +170,9 @@ Instance make_instance_quebec(double pow, double thresold, double median,
 
 Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const Point center=Point(897286.5,6272835.5), const double radius=200) {
     Instance instance;
-    Landscape & landscape = instance.landscape;
-    const Graph_t & graph = instance.graph;
-    RestorationPlan<Landscape>& plan = instance.plan;
+    MutableLandscape & landscape = instance.landscape;
+    const Graph_t & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape>& plan = instance.plan;
 
     auto prob = [] (const double cost) {
         return cost == 1 ? 0.999
@@ -197,8 +186,8 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
     std::array<Graph_t::Node, 688402> nodes;
     nodes.fill(lemon::INVALID);
     Graph_t::NodeMap<double> node_prob(graph, 0.0);
-    Graph_t::NodeMap<RestorationPlan<Landscape>::Option> troncon_option(graph);
-    std::array<RestorationPlan<Landscape>::Option, 5195> id_tronc_option;
+    Graph_t::NodeMap<RestorationPlan<MutableLandscape>::Option> troncon_option(graph);
+    std::array<RestorationPlan<MutableLandscape>::Option, 5195> id_tronc_option;
     id_tronc_option.fill(-1);
 
     const double radius_squared = radius*radius;
@@ -215,7 +204,7 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
         node_prob[u] = prob(cost);
         troncon_option[u] = -1;
         if(id_tronc == 0) continue;
-        RestorationPlan<Landscape>::Option & option = id_tronc_option[id_tronc];
+        RestorationPlan<MutableLandscape>::Option & option = id_tronc_option[id_tronc];
         if(option == -1) option = plan.addOption(0);
         troncon_option[u] = option;
         plan.setCost(option, plan.getCost(option) + 1);
@@ -236,11 +225,11 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
         Graph_t::Arc uv = landscape.addArc(u, v, probability);
         Graph_t::Arc vu = landscape.addArc(v, u, probability);
 
-        RestorationPlan<Landscape>::Option option_u = troncon_option[u];
-        RestorationPlan<Landscape>::Option option_v = troncon_option[v];
+        RestorationPlan<MutableLandscape>::Option option_u = troncon_option[u];
+        RestorationPlan<MutableLandscape>::Option option_v = troncon_option[v];
         if(option_u < 0 && option_v < 0) continue;
         assert(option_u < 0 || option_v < 0 || option_u == option_v);
-        RestorationPlan<Landscape>::Option option = std::max(option_u, option_v);
+        RestorationPlan<MutableLandscape>::Option option = std::max(option_u, option_v);
 
         double restored_prob = std::pow(node_prob[u], 1/(2 * (option_u >= 0 ? restoration_coef : 1)))
             * std::pow(node_prob[v], 1/(2 * (option_v >= 0 ? restoration_coef : 1)));
@@ -253,9 +242,9 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
 
 Instance make_instance_biorevaix_level_2(const double restoration_coef=2) {
     Instance instance;
-    Landscape & landscape = instance.landscape;
-    const Graph_t & graph = instance.graph;
-    RestorationPlan<Landscape>& plan = instance.plan;
+    MutableLandscape & landscape = instance.landscape;
+    const Graph_t & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape>& plan = instance.plan;
 
     auto prob = [] (const double cost) {
         return cost == 1 ? 0.999
@@ -270,8 +259,8 @@ Instance make_instance_biorevaix_level_2(const double restoration_coef=2) {
     nodes.fill(lemon::INVALID);
     std::array<int, 98344> node_tronc;
     Graph_t::NodeMap<double> node_prob(graph, 0.0);
-    Graph_t::NodeMap<RestorationPlan<Landscape>::Option> troncon_option(graph);
-    std::array<RestorationPlan<Landscape>::Option, 5195> id_tronc_option;
+    Graph_t::NodeMap<RestorationPlan<MutableLandscape>::Option> troncon_option(graph);
+    std::array<RestorationPlan<MutableLandscape>::Option, 5195> id_tronc_option;
     id_tronc_option.fill(-1);
 
 
@@ -294,7 +283,7 @@ Instance make_instance_biorevaix_level_2(const double restoration_coef=2) {
         node_prob[u] = prob(cost);
         troncon_option[u] = -1;
         if(id_tronc == 0) continue;
-        RestorationPlan<Landscape>::Option & option = id_tronc_option[id_tronc];
+        RestorationPlan<MutableLandscape>::Option & option = id_tronc_option[id_tronc];
         if(option == -1) option = plan.addOption(0);
         troncon_option[u] = option;
         plan.setCost(option, plan.getCost(option) + 1);
@@ -315,11 +304,11 @@ Instance make_instance_biorevaix_level_2(const double restoration_coef=2) {
         Graph_t::Arc uv = landscape.addArc(u, v, probability);
         Graph_t::Arc vu = landscape.addArc(v, u, probability);
 
-        RestorationPlan<Landscape>::Option option_u = troncon_option[u];
-        RestorationPlan<Landscape>::Option option_v = troncon_option[v];
+        RestorationPlan<MutableLandscape>::Option option_u = troncon_option[u];
+        RestorationPlan<MutableLandscape>::Option option_v = troncon_option[v];
         if(option_u < 0 && option_v < 0) continue;
         assert(option_u < 0 || option_v < 0 || option_u == option_v);
-        RestorationPlan<Landscape>::Option option = std::max(option_u, option_v);
+        RestorationPlan<MutableLandscape>::Option option = std::max(option_u, option_v);
 
         double restored_prob = std::pow(node_prob[u], 1/(2 * (option_u >= 0 ? restoration_coef : 1)))
             * std::pow(node_prob[v], 1/(2 * (option_v >= 0 ? restoration_coef : 1)));
@@ -327,102 +316,6 @@ Instance make_instance_biorevaix_level_2(const double restoration_coef=2) {
         plan.addArc(option, uv, restored_prob);
         plan.addArc(option, vu, restored_prob);
     }
-    return instance;
-}
-
-
-template <int Level>
-Instance make_instance_biorevaix_upscale(void) {
-    Instance instance;
-    Landscape & target_landscape = instance.landscape;
-    const Graph_t & target_graph = instance.graph;
-    RestorationPlan<Landscape>& plan = instance.plan;
-
-
-    auto p = [] (const double cost) {
-        return cost == 1 ? 0.999
-            : cost == 10 ? 0.98
-            : cost == 150 ? 0.8
-            : cost == 300 ? 0.6
-            : cost == 800 ? 0.4
-            : 0;
-    };
-    
-    Landscape detailed_landscape;
-    const Graph_t & detailed_graph = detailed_landscape.getNetwork();
-
-    std::array<Graph_t::Node, 688401> detailed_nodes;
-    struct NodeData { int id[4]; int center[4]; double prob; };
-    Graph_t::NodeMap<NodeData> detailed_node_datas(detailed_graph, 0.0);
-
-    std::array<Graph_t::Node, 2007 * static_cast<int>(std::pow(7, 4-Level))> level_id_to_detailed_nodes;
-    std::array<Graph_t::Node, 2007 * static_cast<int>(std::pow(7, 4-Level))> target_nodes;
-    Graph_t::NodeMap<int> target_node_id(target_graph, 0.0);
-
-    std::vector<Graph_t::Arc> target_arcs;
-
-    io::CSVReader<11> patches("data/BiorevAix/raw/vertex.csv");
-    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "N2_id", "N2_pts", "N3_id", "N3_pts", "N4_id", "N4_pts", "area1", "cost");
-    int N_id[4];
-    int N_center[4]; N_center[0] = true;
-    double X, Y, area, cost;
-    while(patches.read_row(N_id[0], X, Y, N_id[1], N_center[1], N_id[2], N_center[2], N_id[3], N_center[3], area, cost)) {
-        Graph_t::Node u = detailed_landscape.addNode((cost == 1 ? area : 0), Point(X, Y));
-        detailed_nodes[N_id[0]-1] = u;
-        detailed_node_datas[u] = NodeData { N_id, N_center, p(cost) };
-        const int level_id = N_id[Level-1]-1;
-        if(N_center[level_id]) {
-            level_id_to_detailed_nodes[level_id] = u;
-            Graph_t::Node target_u = target_landscape.addNode(0, Point(X,Y));
-            target_nodes[level_id] = target_u;
-            target_node_id[target_u] = level_id;
-        }
-    }
-    int from, to;
-    io::CSVReader<2> detailed_links("data/BiorevAix/raw/AL_N1.csv");
-    detailed_links.read_header(io::ignore_extra_column, "from", "to");
-    while(detailed_links.read_row(from, to)) {
-        Graph_t::Node u = detailed_nodes[from-1];
-        Graph_t::Node v = detailed_nodes[to-1];
-        const double probability = std::sqrt(detailed_node_datas[u].prob * detailed_node_datas[v].prob);
-        detailed_landscape.addArc(u, v, probability);
-        detailed_landscape.addArc(v, u, probability);
-    }
-    io::CSVReader<2> target_links("data/BiorevAix/raw/AL_N"+std::to_string(Level)+".csv");
-    target_links.read_header(io::ignore_extra_column, "from", "to");
-    while(target_links.read_row(from, to)) {
-        Graph_t::Node u = target_nodes[from-1];
-        Graph_t::Node v = target_nodes[to-1];
-        target_arcs.push_back(target_landscape.addArc(u, v, 0));
-        target_arcs.push_back(target_landscape.addArc(v, u, 0));
-    }
-
-    struct WithinHexagonFilter {
-        const Graph_t::NodeMap<NodeData> & detailed_node_datas;
-        int id;
-        bool operator[](Graph_t::Node u) {
-            return detailed_node_datas[u].id[Level-1] == id;
-        }
-    };
-    struct TouchingHexagonsFilter {
-        const Graph_t::NodeMap<NodeData> & detailed_node_datas;
-        int id1, id2;
-        bool operator[](Graph_t::Node u) {
-            return detailed_node_datas[u].id[Level-1] == id1
-                    || detailed_node_datas[u].id[Level-1] == id2;
-        }
-    };
-
-    std::for_each(std::execution::par_unseq, target_nodes.begin(), target_nodes.end(), [&] (const Graph_t::Node & u) {
-        auto subgraph = lemon::filterNodes(detailed_graph, WithinHexagonFilter{ detailed_node_datas, target_node_id[u] });
-    });
-    std::for_each(std::execution::par_unseq, target_arcs.begin(), target_arcs.end(), [&] (const Graph_t::Arc & a) {
-        Graph_t::Node u = target_graph.source(a);
-        Graph_t::Node v = target_graph.target(a);
-        auto subgraph = lemon::filterNodes(detailed_graph, WithinHexagonFilter{ detailed_node_datas, target_node_id[u] });
-
-    });
-
     return instance;
 }
 

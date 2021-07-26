@@ -11,7 +11,7 @@
 #include "solvers/pl_eca_3.hpp"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "utils/random_chooser.hpp"
 #include "algorithms/multiplicative_dijkstra.hpp"
@@ -20,7 +20,7 @@
 
 #include "precomputation/my_contraction_algorithm.hpp"
 
-void parse_quebec(Landscape & landscape, double pow, double median) {
+void parse_quebec(MutableLandscape & landscape, double pow, double median) {
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
     std::vector<Graph_t::Node> node_correspondance;
@@ -49,12 +49,12 @@ void parse_quebec(Landscape & landscape, double pow, double median) {
 
 
 
-Landscape * make_landscape(const Landscape & landscape, Graph_t::Node center, int nb_nodes) {
+ MutableLandscape* make_landscape(const MutableLandscape & landscape, Graph_t::Node center, int nb_nodes) {
     const Graph_t & graph = landscape.getNetwork();
 
     Graph_t::NodeMap<Graph_t::Node> nodes(graph, lemon::INVALID);
 
-    Landscape * new_landscape = new Landscape();
+    MutableLandscape * new_landscape = new MutableLandscape();
     const Graph_t & new_graph = new_landscape->getNetwork();
         
     const Graph_t::ArcMap<double> & probabilityMap = landscape.getProbabilityMap();
@@ -95,11 +95,11 @@ int main() {
             << std::endl;
 
 
-    Landscape landscape;
+    MutableLandscape landscape;
     parse_quebec(landscape, 1, 2300);
     const Graph_t & graph = landscape.getNetwork();
 
-    // StdLandscapeParser::get().write(*landscape, "output", "out_landscape");
+    // StdMutableLandscapeParser::get().write(*landscape, "output", "out_landscape");
 
     MyContractionAlgorithm alg2;
 
@@ -124,7 +124,7 @@ int main() {
         std::cout << "step " << i << "/" << nb_tests << std::endl;
 
         for(int n : n_to_test) {
-            Landscape * sub_landscape = make_landscape(landscape, center, n);
+            MutableLandscape * sub_landscape = make_landscape(landscape, center, n);
             const Graph_t & sub_graph = sub_landscape->getNetwork();
 
             const int m = lemon::countArcs(sub_graph);
@@ -135,7 +135,7 @@ int main() {
                 arc_chooser.add(a, 1);
 
 
-            RestorationPlan<Landscape> plan(*sub_landscape);
+            RestorationPlan<MutableLandscape> plan(*sub_landscape);
             for(int percent_arcs=0; percent_arcs<=100; percent_arcs+=5) {
                 Solution * solution2 = pl_eca_2->solve(*sub_landscape, plan, 0);
                 Solution * solution3 = pl_eca_3->solve(*sub_landscape, plan, 0);
@@ -156,7 +156,7 @@ int main() {
                 if(percent_arcs == 100) break;
                 for(int i=0; i<(m/20); ++i) {
                     Graph_t::Arc a = arc_chooser.pick();
-                    RestorationPlan<Landscape>::Option option = plan.addOption(1);
+                    RestorationPlan<MutableLandscape>::Option option = plan.addOption(1);
                     plan.addArc(option, a, std::sqrt(sub_landscape->getProbability(a)));
                 }
             }

@@ -1,10 +1,10 @@
 #include "parsers/std_restoration_plan_parser.hpp"
 
-StdRestorationPlanParser::StdRestorationPlanParser(const Landscape & l) : landscape(l) {}
+StdRestorationPlanParser::StdRestorationPlanParser(const MutableLandscape & l) : landscape(l) {}
 StdRestorationPlanParser::~StdRestorationPlanParser() {}
    
-RestorationPlan<Landscape> StdRestorationPlanParser::parse(std::filesystem::path file_path) {
-    RestorationPlan<Landscape> plan(landscape);
+RestorationPlan<MutableLandscape> StdRestorationPlanParser::parse(std::filesystem::path file_path) {
+    RestorationPlan<MutableLandscape> plan(landscape);
     const Graph_t & graph = landscape.getNetwork();
 
     if(!std::filesystem::exists(file_path)) {
@@ -41,7 +41,7 @@ RestorationPlan<Landscape> StdRestorationPlanParser::parse(std::filesystem::path
 
         file >> nb_elems; if(unexpected_eof()) { assert(false); }
 
-        RestorationPlan<Landscape>::Option option = plan.addOption(cost);
+        RestorationPlan<MutableLandscape>::Option option = plan.addOption(cost);
 
         for(int i=0; i<nb_elems; i++) {
             char type;
@@ -79,8 +79,8 @@ RestorationPlan<Landscape> StdRestorationPlanParser::parse(std::filesystem::path
     return plan;
 }
 
-bool StdRestorationPlanParser::write(const RestorationPlan<Landscape>& plan, const std::filesystem::path output, const std::string name, bool use_range_ids) {
-    const Landscape & landscape = plan.getLandscape();
+bool StdRestorationPlanParser::write(const RestorationPlan<MutableLandscape>& plan, const std::filesystem::path output, const std::string name, bool use_range_ids) {
+    const MutableLandscape & landscape = plan.getLandscape();
     const Graph_t & graph = landscape.getNetwork();
 
     std::ofstream problem_file(output / (name + ".problem"));
@@ -98,7 +98,7 @@ bool StdRestorationPlanParser::write(const RestorationPlan<Landscape>& plan, con
     const auto nodeOptions = plan.computeNodeOptionsMap();
     const auto arcOptions = plan.computeArcOptionsMap();
 
-    for(RestorationPlan<Landscape>::Option i=0; i<plan.getNbOptions(); ++i) {
+    for(RestorationPlan<MutableLandscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         problem_file << plan.getCost(i) << " " 
             << (nodeOptions[i].size() + arcOptions[i].size()) << std::endl;
 

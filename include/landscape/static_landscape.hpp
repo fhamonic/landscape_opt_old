@@ -22,7 +22,7 @@ typedef lemon::StaticDigraph StaticGraph_t;
 /**
  * @brief Class that represent a non-editable landscape.
  * 
- * This class represent a non-editable landscape which has faster iterators and is more memory efficient than \ref Landscape.
+ * This class represent a non-editable landscape which has faster iterators and is more memory efficient than \ref MutableLandscape.
  */
 class StaticLandscape : public concepts::AbstractLandscape<StaticGraph_t> {
     private:

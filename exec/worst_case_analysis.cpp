@@ -8,7 +8,7 @@
 #include "lemon/graph_to_eps.h"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "indices/eca.hpp"
 #include "landscape/decored_landscape.hpp"
@@ -84,9 +84,9 @@ int main(int argc, const char *argv[]) {
 
     const ECA & eca = ECA();
 
-    Landscape * landscape = StdLandscapeParser::get().parse(path / (name + ".index"));
+    MutableLandscape * landscape = StdMutableLandscapeParser::get().parse(path / (name + ".index"));
     StdRestorationPlanParser parser(*landscape);
-    RestorationPlan<Landscape> * plan = parser.parse(path / (name + ".problem"));
+    RestorationPlan<MutableLandscape> * plan = parser.parse(path / (name + ".problem"));
 
     std::vector<double> budget_values;
     for(double i=0; i<=plan->totalCost(); i+=1) budget_values.push_back(i);

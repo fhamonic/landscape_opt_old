@@ -5,10 +5,10 @@
 
 #include "algorithms/identify_strong_arcs.h"
 
-ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, const RestorationPlan<Landscape> & plan, Graph_t::Node orig_t, const std::vector<Graph_t::Arc> & orig_contractables_arcs, const std::vector<Graph_t::Arc> & orig_deletables_arcs) const {
-    Landscape contracted_landscape;
-    std::pair<Graph_t::NodeMap<Graph_t::Node>*, Graph_t::ArcMap<Graph_t::Arc>*> refs = contracted_landscape.copy(landscape);
-    RestorationPlan<Landscape>contracted_plan(contracted_landscape);
+ContractionResult MyContractionAlgorithm::contract(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan, Graph_t::Node orig_t, const std::vector<Graph_t::Arc> & orig_contractables_arcs, const std::vector<Graph_t::Arc> & orig_deletables_arcs) const {
+    MutableLandscape contracted_landscape;
+    auto refs = contracted_landscape.copy(landscape);
+    RestorationPlan<MutableLandscape>contracted_plan(contracted_landscape);
     Helper::copyPlan(contracted_plan, plan, *refs.first, *refs.second);
     Graph_t::Node contracted_t = (*refs.first)[orig_t];
 
@@ -39,14 +39,11 @@ ContractionResult MyContractionAlgorithm::contract(const Landscape & landscape, 
     Helper::copyPlan(*final_plan, contracted_plan, final_nodesRef, final_arcsRef);
     StaticGraph_t::Node final_t = final_nodesRef[contracted_t];
 
-    delete refs.first;
-    delete refs.second;
-
     return ContractionResult(final_landscape, final_plan, final_t);
 }
 
 
-Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const Landscape & landscape, const RestorationPlan<Landscape> & plan) const {
+Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const {
     const Graph_t & graph = landscape.getNetwork();
     Graph_t::NodeMap<ContractionResult> * results = new Graph_t::NodeMap<ContractionResult>(graph);
 

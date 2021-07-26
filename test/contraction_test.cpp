@@ -8,7 +8,7 @@
 #include "lemon/graph_to_eps.h"
 
 #include "parsers/std_restoration_plan_parser.hpp"
-#include "parsers/std_landscape_parser.hpp"
+#include "parsers/std_mutable_landscape_parser.hpp"
 
 #include "utils/random_chooser.hpp"
 
@@ -54,10 +54,10 @@ int main (int argc, const char *argv[]) {
     std::cout << std::setprecision(10);
 
     
-    Landscape landscape = StdLandscapeParser::get().parse(landscape_path);
+    MutableLandscape landscape = StdMutableLandscapeParser::get().parse(landscape_path);
     const Graph_t & graph = landscape.getNetwork();
     StdRestorationPlanParser parser(landscape);
-    RestorationPlan<Landscape> plan = parser.parse(plan_path);
+    RestorationPlan<MutableLandscape> plan = parser.parse(plan_path);
     
     Helper::assert_well_formed(landscape, plan);
     const auto nodeOptions = plan.computeNodeOptionsMap();
@@ -87,7 +87,7 @@ int main (int argc, const char *argv[]) {
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
         ContractionResult result = (*results)[t];
         const double base = compute_value_reversed(landscape, t);
-        const double contracted = compute_value_reversed(*result.landscape.get(), result.t);
+        const double contracted = compute_value_reversed(*result.landscape, result.t);
         
         if(fabs(base - contracted) > epsilon) {
             std::cout << graph.id(t) << " : " << base << " != " << contracted << std::endl;
@@ -111,7 +111,7 @@ int main (int argc, const char *argv[]) {
         for(int j=0; j<nb_picked_options; ++j)
             picked_options.push_back(option_chooser.pick());
 
-        DecoredLandscape<Landscape> decored_landscape(landscape);
+        DecoredLandscape<MutableLandscape> decored_landscape(landscape);
         for(int option_id : picked_options)
             decored_landscape.apply(nodeOptions[option_id], arcOptions[option_id]);
 
@@ -119,7 +119,7 @@ int main (int argc, const char *argv[]) {
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
             ContractionResult result = (*results)[t];
 
-            DecoredLandscape<StaticLandscape> decored_contracted_landscape(*result.landscape.get());
+            DecoredLandscape<StaticLandscape> decored_contracted_landscape(*result.landscape);
             for(int option_id : picked_options)
                 decored_contracted_landscape.apply(t_nodeOptions[t][option_id], t_arcOptions[t][option_id]);
 

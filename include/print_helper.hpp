@@ -16,7 +16,7 @@
 
 #include <fmt/os.h>
 
-#include "landscape/landscape.hpp"
+#include "landscape/mutable_landscape.hpp"
 #include "landscape/decored_landscape.hpp"
 
 #include "Eigen/Dense"
@@ -195,14 +195,14 @@ namespace Helper {
                 .run();
     }
 
-    void printSolution(const Landscape & landscape,
-            const RestorationPlan<Landscape>& plan,
+    void printSolution(const MutableLandscape & landscape,
+            const RestorationPlan<MutableLandscape>& plan,
             std::string name, concepts::Solver & solver,
             double B, const Solution & solution);
 
     
     // need to include the binary search tree for y-h , y+h search
-    std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const Landscape & landscape);
+    std::pair<Graph_t::Node, Graph_t::Node> neerestNodes(const MutableLandscape & landscape);
 
 
     template <typename Graph>
@@ -432,7 +432,7 @@ namespace Helper {
         }
 
         ArcSizesMap arcSizes(graph, 1);
-        const auto & arcCentrality = *Helper::corridorCentralityMap(landscape).get();
+        const auto & arcCentrality = *Helper::corridorCentralityMap(landscape);
         double max_centrality = 0;
         for(ArcIt a(graph); a!=lemon::INVALID; ++a)
             max_centrality = std::max(max_centrality, arcCentrality[a]);
