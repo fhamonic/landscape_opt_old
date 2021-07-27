@@ -3,72 +3,58 @@
 
 #include "landscape/mutable_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
+#include "solvers/concept/instance.hpp"
 
 #include <lemon/connectivity.h>
 #include <range/v3/view/subrange.hpp>
 #include <range/v3/view/zip.hpp>
 
-RestorationPlan<MutableLandscape> remove_useless_options(const MutableLandscape & landscape, RestorationPlan<MutableLandscape> & plan, const double epsilon=1.0e-13) {
-    RestorationPlan<MutableLandscape> new_plan(landscape);
-
-    auto nodeOptions = plan.computeNodeOptionsMap();
-    auto arcOptions = plan.computeArcOptionsMap();
-
-    nodeOptions.erase(
-        std::remove_if(nodeOptions.begin(), nodeOptions.end(), [&](const auto & e) {
-            return e.second <= epsilon;
-        }),
-        nodeOptions.end());
-    arcOptions.erase(
-        std::remove_if(arcOptions.begin(), arcOptions.end(), [&](const auto & e) {
-            return e.second <= epsilon;
-        }),
-        arcOptions.end());
-
-    int cpt_options = 0;
-    for(const auto & [nodes, arcs] : ranges::views::zip(nodeOptions, arcOptions)) {
-        if(nodes.empty() && arcs.empty()) continue;
-        for(const auto & [u, quality_gain] : nodes)
-            new_plan.addNode(cpt_options, u, quality_gain);
-        for(const auto & [a, restored_probability] : arcs)
-            new_plan.addArc(cpt_options, a, restored_probability);
-        ++cpt_options;
-    }
-}
 
 /**
- * Erase every arc whose probability is negligeable.
+ * Erase every arc whose probability in the best scenario is negligeable,
+ * according to **epsilon**.
  * 
  * @time \f$O(|A|)\f$
  * @space \f$O(|A|)\f$
  */
-void remove_zero_probability_arcs(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan, const double epsilon=1.0e-13) {
+void remove_zero_probability_arcs(MutableLandscape & landscape, 
+                    const RestorationPlan<MutableLandscape> & plan, 
+                    const double epsilon=1.0e-13) {
     using Graph = MutableLandscape::Graph; 
     const Graph & graph = landscape.getNetwork();    
     for(Graph::ArcIt a(graph), next_a = a; a != lemon::INVALID; a = next_a) {
         ++next_a;
-        if(landscape.getProbability(a) > epsilon || plan.contains(a)) continue;
+        double probability = landscape.getProbability(a);
+        for(const auto & e : plan[a])
+            probability = std::max(probability, e.restored_probability);
+        if(probability > epsilon) continue;
         landscape.removeArc(a);
     }
 }
 
 /**
- * Erase every node that cannot carry flow because its quality is null,
- * it cannot be enhanced and there is no path from a positive quality node to it.
+ * Erase every node that cannot carry flow because its quality is negligeable,
+ * according to **epsilon**, in the best scenario, it cannot be enhanced and 
+ * there is no path from a positive quality node to it.
  * 
  * @time \f$O(|A|)\f$
  * @space \f$O(|A|)\f$
  */
-void remove_no_flow_nodes(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) {
+void remove_no_flow_nodes(MutableLandscape & landscape, 
+                    const RestorationPlan<MutableLandscape> & plan,
+                    const double epsilon=1.0e-13) {
     const Graph_t & graph = landscape.getNetwork();
     lemon::Dfs<Graph_t> dfs(graph);
     dfs.init();
     for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
-        if(landscape.getQuality(u) == 0 && !plan.contains(u)) continue;
+        double quality = landscape.getQuality(u);
+        for(const auto & e : plan[u])
+            quality += e.quality_gain;
+        if(quality <= epsilon) continue;
         dfs.addSource(u);
     }
     dfs.start();
-    for(Graph_t::NodeIt u(graph), next_u = u; u != lemon::INVALID; u = next_u) {
+    for(Graph_t::NodeIt u(graph), next_u=u; u!=lemon::INVALID; u=next_u) {
         ++next_u;
         if(dfs.reached(u)) continue;
         landscape.removeNode(u);
@@ -128,18 +114,62 @@ void contract_patches_components(MutableLandscape & landscape, RestorationPlan<M
     }
 }
 
-std::pair<MutableLandscape, RestorationPlan<MutableLandscape>> trivial_reformulate(MutableLandscape&& landscape, RestorationPlan<MutableLandscape>&& plan) {
+/**
+ * Removes empty options from the **plan**.
+ * 
+ * @time \f$O((|V| + |A|) * \#options)\f$
+ * @space \f$O((|V| + |A|) * \#options)\f$
+ */
+Instance copy_and_compact_instance(const MutableLandscape & landscape, 
+                  const RestorationPlan<MutableLandscape> & plan) {
+    Instance instance;
+    auto refs = instance.landscape.copy(landscape);
+    RestorationPlan<MutableLandscape> & new_plan = instance.plan;
 
-    contract_patches_components(landscape, plan);
+    auto nodeOptions = plan.computeNodeOptionsMap();
+    auto arcOptions = plan.computeArcOptionsMap();
 
+    for(int i=0; i<plan.getNbOptions(); ++i) {
+        if(nodeOptions[i].empty() && arcOptions[i].empty()) continue;
+        RestorationPlan<MutableLandscape>::Option option =
+            new_plan.addOption(plan.getCost(i));
+        for(const auto & [u, quality_gain] : nodeOptions[i])
+            new_plan.addNode(option, (*refs.first)[u], quality_gain);
+        for(const auto & [a, restored_probability] : arcOptions[i])
+            new_plan.addArc(option, (*refs.second)[a], restored_probability);
+    }
+
+    return instance;
 }
 
-// std::pair<MutableLandscape, RestorationPlan<MutableLandscape>> trivial_reformulate(const MutableLandscape & original_landscape, const RestorationPlan<MutableLandscape> & original_plan) {
-
-
-
-//     // return contract_patches_components(std::move(copy_landscape), std::move(copy_plan));
-// }
+/**
+ * Performs trivial simplifications of the given instance such as :
+ * - removing arc whose probability is negligeable
+ * - removing nodes that can only carry negligeable flow
+ * - contracting the strongly connected components formed by 
+ *      arcs of probability 1
+ * 
+ * @time \f$O((|V| + |A|) * \#options)\f$
+ * @space \f$O((|V| + |A|) * \#options)\f$
+ */
+Instance trivial_reformulate(MutableLandscape&& landscape, 
+            RestorationPlan<MutableLandscape>&& plan) {
+    remove_zero_probability_arcs(landscape, plan);
+    remove_no_flow_nodes(landscape, plan);
+    contract_patches_components(landscape, plan);
+    return copy_and_compact_instance(landscape, plan);
+}
+Instance trivial_reformulate(Instance&& instance) {
+    return trivial_reformulate(std::move(instance.landscape), 
+                               std::move(instance.plan));
+}
+Instance trivial_reformulate(const MutableLandscape & landscape,
+            const RestorationPlan<MutableLandscape> & plan) {
+    return trivial_reformulate(copy_and_compact_instance(landscape, plan));
+}
+Instance trivial_reformulate(const Instance & instance) {
+    return trivial_reformulate(instance.landscape, instance.plan);
+}
 
 
 #endif //TRIVIAL_REFORMULATION_HPP
