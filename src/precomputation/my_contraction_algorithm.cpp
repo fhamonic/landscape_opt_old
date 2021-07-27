@@ -13,7 +13,7 @@ ContractionResult MyContractionAlgorithm::contract(const MutableLandscape & land
     Graph_t::Node contracted_t = (*refs.first)[orig_t];
 
     const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-    erase_no_connected_nodes(contracted_landscape, contracted_t);
+    remove_unconnected_nodes(contracted_landscape, contracted_t);
 
     for(Graph_t::Arc orig_a : orig_deletables_arcs) {   
         Graph_t::Arc a = (*refs.second)[orig_a];  
@@ -28,7 +28,7 @@ ContractionResult MyContractionAlgorithm::contract(const MutableLandscape & land
         contract_arc(contracted_landscape, contracted_plan, a);
     }
 
-    erase_no_flow_nodes(contracted_landscape, contracted_plan);
+    remove_no_flow_nodes(contracted_landscape, contracted_plan);
 
     // ///////// reduce memory usage -> TODO StaticLandscape class
     StaticLandscape * final_landscape = new StaticLandscape();

@@ -8,36 +8,13 @@
  * @time \f$O(|A|)\f$
  * @space \f$O(|A|)\f$
  */
-void ContractionPrecomputation::erase_no_connected_nodes(MutableLandscape & landscape, Graph_t::Node t) const {    
+void ContractionPrecomputation::remove_unconnected_nodes(MutableLandscape & landscape, Graph_t::Node t) const {    
     using Reversed = lemon::ReverseDigraph<const Graph_t>;
     const Graph_t & graph = landscape.getNetwork();
     Reversed rg(graph);
     lemon::Dfs<Reversed> dfs(rg);
     dfs.run(t);
-    for(Graph_t::NodeIt u(graph), next_u = u; u != lemon::INVALID; u = next_u) {
-        ++next_u;
-        if(dfs.reached(u)) continue;
-        landscape.removeNode(u);
-    }
-}
-
-/**
- * Erase the nodes that cannot carry flow because are of null quality,
- * cannot be enhanced and there is no path from a positive quality node.
- * 
- * @time \f$O(|A|)\f$
- * @space \f$O(|A|)\f$
- */
-void ContractionPrecomputation::erase_no_flow_nodes(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const {
-    const Graph_t & graph = landscape.getNetwork();
-    lemon::Dfs<Graph_t> dfs(graph);
-    dfs.init();
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
-        if(landscape.getQuality(u) == 0 && !plan.contains(u)) continue;
-        dfs.addSource(u);
-    }
-    dfs.start();
-    for(Graph_t::NodeIt u(graph), next_u = u; u != lemon::INVALID; u = next_u) {
+    for(Graph_t::NodeIt u(graph), next_u=u; u!=lemon::INVALID; u=next_u) {
         ++next_u;
         if(dfs.reached(u)) continue;
         landscape.removeNode(u);

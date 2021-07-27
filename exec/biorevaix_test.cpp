@@ -38,7 +38,7 @@
 
 int main() {
     std::cout << std::setprecision(8);
-    Instance raw_instance = make_instance_biorevaix_level_1(4, Point(897286.5,6272835.5), 400);
+    Instance raw_instance = make_instance_biorevaix_level_1(6, Point(897286.5,6272835.5), 400);
 
     std::cout << "ECA:" << Parallel_ECA().eval(raw_instance.landscape) << std::endl;
     // Instance raw_instance = make_instance_biorevaix_level_2(4);
@@ -48,6 +48,13 @@ int main() {
     plan.initElementIDs();
 
     Helper::assert_well_formed(landscape, plan);
+
+    StdMutableLandscapeParser::get().write(landscape, "", "bug");
+    StdRestorationPlanParser plan_parser(landscape);
+    plan_parser.write(plan, "", "bug");
+    return EXIT_SUCCESS;
+
+
 
 
     std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork()) << std::endl;

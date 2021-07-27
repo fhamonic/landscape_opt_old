@@ -9,6 +9,8 @@
 
 #include "indices/eca.hpp"
 
+#include "precomputation/trivial_reformulation.hpp"
+
 #include "helper.hpp"
 
 class ContractionResult {
@@ -24,8 +26,7 @@ class ContractionResult {
 
 class ContractionPrecomputation {
     public:
-        void erase_no_connected_nodes(MutableLandscape & landscape, Graph_t::Node t) const;
-        void erase_no_flow_nodes(MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const;
+        void remove_unconnected_nodes(MutableLandscape & landscape, Graph_t::Node t) const;
         void contract_arc(MutableLandscape & contracted_landscape, RestorationPlan<MutableLandscape> & plan, Graph_t::Arc a) const;
         
         virtual Graph_t::NodeMap<ContractionResult> * precompute(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const=0;

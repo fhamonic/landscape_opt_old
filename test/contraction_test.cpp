@@ -105,6 +105,8 @@ int main (int argc, const char *argv[]) {
     std::uniform_int_distribution<> dis(0, nb_options);
 
     for(int i=0; i<1000; ++i) {
+        std::cout << i << "/" << 1000 << std::endl;
+        
         std::vector<int> picked_options;
         double nb_picked_options = dis(gen);
         option_chooser.reset();
