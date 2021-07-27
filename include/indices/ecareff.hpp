@@ -24,11 +24,11 @@ class ECAReff : public concepts::ConnectivityIndex {
 template <typename GR, typename DM>
 typename GR::template NodeMap<typename GR::template NodeMap<double> *> * ECAReff::getReff(const GR & g, const DM & resistance) {
     
-    typedef typename GR::template NodeMap<double> NodeResistancesMap;
-    typedef typename GR::template NodeMap<NodeResistancesMap *> ResistancesMap;
-    typedef GR Graph;
-    typedef typename GR::Node Node;
-    typedef typename GR::template NodeMap<int> IndiceMap;
+    using NodeResistancesMap = typename GR::template NodeMap<double>;
+    using ResistancesMap = typename GR::template NodeMap<NodeResistancesMap *>;
+    using Graph = GR;
+    using Node = typename GR::Node;
+    using IndiceMap = typename GR::template NodeMap<int>;
     
     // identify nodes of connected components
     IndiceMap componentMap(g);
@@ -105,10 +105,10 @@ typename GR::template NodeMap<typename GR::template NodeMap<double> *> * ECAReff
 
 template <typename GR, typename QM, typename DM, typename CM>
 double ECAReff::eval(const concepts::AbstractLandscape<GR, QM, DM, CM> & landscape) {
-    typedef GR Graph;
-    typedef QM QualityMap;
-    typedef DM DifficultyMap;
-    typedef typename GR::template NodeMap<typename GR::template NodeMap<double> *> ResistancesMap;
+    using Graph = GR;
+    using QualityMap = QM;
+    using DifficultyMap = DM;
+    using ResistancesMap = typename GR::template NodeMap<typename GR::template NodeMap<double> *>;
 
     double sum = 0;
 

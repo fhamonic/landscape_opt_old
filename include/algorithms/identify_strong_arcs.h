@@ -12,8 +12,8 @@ namespace lemon {
 
     template <typename TR>
     class LabeledValue {
-        typedef TR OperationTraits;
-        typedef typename OperationTraits::Value Value;
+        using OperationTraits = TR;
+        using Value = typename OperationTraits::Value;
 
         public:
             Value value;
@@ -26,44 +26,44 @@ namespace lemon {
 
     template<typename GR, typename LEN>
     struct IdentifyDefaultTraits {
-        typedef GR Digraph;
+        using Digraph = GR;
 
-        typedef LEN LengthMap;
-        typedef typename LEN::Value Value;
+        using LengthMap = LEN;
+        using Value = typename LEN::Value;
 
-        typedef DijkstraDefaultOperationTraits<Value> OperationTraits;
-        typedef LabeledValue<OperationTraits> LabeledDist;
+        using OperationTraits = DijkstraDefaultOperationTraits<Value>;
+        using LabeledDist = LabeledValue<OperationTraits>;
 
-        typedef typename Digraph::template NodeMap<int> HeapCrossRef;
+        using HeapCrossRef = typename Digraph::template NodeMap<int>;
         static HeapCrossRef *createHeapCrossRef(const Digraph &g) { return new HeapCrossRef(g); }
 
-        typedef BinHeap<LabeledDist, HeapCrossRef, std::less<LabeledDist> > Heap;
+        using Heap = BinHeap<LabeledDist, HeapCrossRef, std::less<LabeledDist> >;
         static Heap *createHeap(HeapCrossRef& r) { return new Heap(r); }
 
-        typedef typename Digraph::Node Node;
-        typedef std::vector<Node> NodeList;
+        using Node = typename Digraph::Node;
+        using NodeList = std::vector<Node>;
         static NodeList * createNodeList(const Digraph &) { return new std::vector<Node>(); }
         static void addNode(NodeList &n, Node u) { n.push_back(u); }
     };
 
     template<typename GR, typename LEN>
     struct IdentifyMultiplicativeTraits {
-        typedef GR Digraph;
+        using Digraph = GR;
 
-        typedef LEN LengthMap;
-        typedef typename LEN::Value Value;
+        using LengthMap = LEN;
+        using Value = typename LEN::Value;
         
-        typedef DijkstraMultiplicativeOperationTraits<Value> OperationTraits;
-        typedef LabeledValue<OperationTraits> LabeledDist;
+        using OperationTraits = DijkstraMultiplicativeOperationTraits<Value>;
+        using LabeledDist = LabeledValue<OperationTraits>;
 
-        typedef typename Digraph::template NodeMap<int> HeapCrossRef;
+        using HeapCrossRef = typename Digraph::template NodeMap<int>;
         static HeapCrossRef *createHeapCrossRef(const Digraph &g) { return new HeapCrossRef(g); }
 
-        typedef BinHeap<LabeledDist, HeapCrossRef, std::less<LabeledDist>> Heap;
+        using Heap = BinHeap<LabeledDist, HeapCrossRef, std::less<LabeledDist>>;
         static Heap *createHeap(HeapCrossRef& r) { return new Heap(r); }
 
-        typedef typename Digraph::Node Node;
-        typedef std::vector<Node> NodeList;
+        using Node = typename Digraph::Node;
+        using NodeList = std::vector<Node>;
         static NodeList * createNodeList(const Digraph &) { return new std::vector<Node>(); }
         static void addNode(NodeList &n, Node u) { n.push_back(u); }
     };
@@ -75,23 +75,23 @@ namespace lemon {
                 typename TR=IdentifyDefaultTraits<GR,LEN> >
     class IdentifyStrong {
     public:
-        typedef typename TR::Digraph Digraph;
-        typedef typename TR::Value Value;
-        typedef typename TR::LabeledDist LabeledDist;
-        typedef typename TR::LengthMap LengthMap;
+        using Digraph = typename TR::Digraph;
+        using Value = typename TR::Value;
+        using LabeledDist = typename TR::LabeledDist;
+        using LengthMap = typename TR::LengthMap;
         
-        typedef typename TR::HeapCrossRef HeapCrossRef;
-        typedef typename TR::Heap Heap;
-        typedef typename TR::NodeList NodeList;
-        typedef typename TR::OperationTraits OperationTraits;
+        using HeapCrossRef = typename TR::HeapCrossRef;
+        using Heap = typename TR::Heap;
+        using NodeList = typename TR::NodeList;
+        using OperationTraits = typename TR::OperationTraits;
 
-        typedef TR Traits;
+        using Traits = TR;
 
     private:
-        typedef typename Digraph::Node Node;
-        typedef typename Digraph::NodeIt NodeIt;
-        typedef typename Digraph::Arc Arc;
-        typedef typename Digraph::OutArcIt OutArcIt;
+        using Node = typename Digraph::Node;
+        using NodeIt = typename Digraph::NodeIt;
+        using Arc = typename Digraph::Arc;
+        using OutArcIt = typename Digraph::OutArcIt;
 
         const Digraph *G;    
         const LengthMap *_worst_length;
@@ -234,23 +234,23 @@ namespace lemon {
                 typename TR=IdentifyDefaultTraits<GR,LEN> >
     class IdentifyUseless {
     public:
-        typedef typename TR::Digraph Digraph;
-        typedef typename TR::Value Value;
-        typedef typename TR::LabeledDist LabeledDist;
-        typedef typename TR::LengthMap LengthMap;
+        using Digraph = typename TR::Digraph;
+        using Value = typename TR::Value;
+        using LabeledDist = typename TR::LabeledDist;
+        using LengthMap = typename TR::LengthMap;
         
-        typedef typename TR::HeapCrossRef HeapCrossRef;
-        typedef typename TR::Heap Heap;
-        typedef typename TR::NodeList NodeList;
-        typedef typename TR::OperationTraits OperationTraits;
+        using HeapCrossRef = typename TR::HeapCrossRef;
+        using Heap = typename TR::Heap;
+        using NodeList = typename TR::NodeList;
+        using OperationTraits = typename TR::OperationTraits;
 
-        typedef TR Traits;
+        using Traits = TR;
 
     private:
-        typedef typename Digraph::Node Node;
-        typedef typename Digraph::NodeIt NodeIt;
-        typedef typename Digraph::Arc Arc;
-        typedef typename Digraph::OutArcIt OutArcIt;
+        using Node = typename Digraph::Node;
+        using NodeIt = typename Digraph::NodeIt;
+        using Arc = typename Digraph::Arc;
+        using OutArcIt = typename Digraph::OutArcIt;
 
         const Digraph *G;    
         const LengthMap *_worst_length;

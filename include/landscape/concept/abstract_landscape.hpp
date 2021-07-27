@@ -15,10 +15,10 @@
 #include "lemon/bfs.h"
 
 #include "lemon/list_graph.h"
-typedef lemon::ListDigraph Graph_t;
+using Graph_t = lemon::ListDigraph;
 
 #include "lemon/dim2.h"
-typedef lemon::dim2::Point<double> Point;
+using Point = lemon::dim2::Point<double>;
 
 namespace concepts {
     template <class GR, 

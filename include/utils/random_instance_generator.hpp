@@ -22,10 +22,10 @@ class RandomInstanceGenerator {
 };
 
  MutableLandscape* RandomInstanceGenerator::generate_landscape(int seed, int nb_nodes, int nb_links, bool symmetric) {
-    typedef Graph_t Graph;
-    typedef Graph_t::Node Node;
-    typedef Graph_t::NodeIt NodeIt;
-    typedef std::pair<Node, Node> NodePair;
+    using Graph = Graph_t;
+    using Node = Graph_t::Node;
+    using NodeIt = Graph_t::NodeIt;
+    using NodePair = std::pair<Node, Node>;
 
     std::default_random_engine gen;
     gen.seed(seed);
@@ -62,11 +62,11 @@ class RandomInstanceGenerator {
 
 
 RestorationPlan<MutableLandscape>* RandomInstanceGenerator::generate_plan(int seed, const MutableLandscape & landscape, int nb_options, bool restore_nodes) {
-    typedef Graph_t Graph;
-    typedef Graph_t::Node Node;
-    typedef Graph_t::NodeIt NodeIt;
-    typedef Graph_t::Arc Arc;
-    typedef Graph_t::ArcIt ArcIt;
+    using Graph = Graph_t;
+    using Node = Graph_t::Node;
+    using NodeIt = Graph_t::NodeIt;
+    using Arc = Graph_t::Arc;
+    using ArcIt = Graph_t::ArcIt;
 
     std::default_random_engine gen;
     gen.seed(seed);

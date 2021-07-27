@@ -47,7 +47,7 @@ Instance make_instance_marseillec(double pow, double thresold, double median, in
     auto d = [&landscape] (Graph_t::Node u, Graph_t::Node v) { return std::sqrt((landscape.getCoords(u) - landscape.getCoords(v)).normSquare()); };
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
 
-    typedef struct { Point p; double area; double price; Graph_t::Node node; } FricheData;
+    using FricheData = struct { Point p; double area; double price; Graph_t::Node node; };
     RandomChooser<FricheData> friches_chooser(9876);
     std::vector<FricheData> friches_list;
 
@@ -109,7 +109,7 @@ Instance make_instance_quebec(double pow, double thresold, double median,
     auto p = [median, pow] (const double d) { return std::exp(std::pow(d,pow)/std::pow(median, pow)*std::log(0.5)); };
     
     std::vector<Graph_t::Node> node_correspondance;
-    typedef struct { Graph_t::Node node; double area; } ThreatData;
+    using ThreatData = struct { Graph_t::Node node; double area; };
     std::vector<ThreatData> threaten_list;
 
     io::CSVReader<4> patches("data/quebec_leam_v3/raw/sommets_leam_v3.csv");
@@ -175,7 +175,7 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
     RestorationPlan<MutableLandscape>& plan = instance.plan;
 
     auto prob = [] (const double cost) {
-        return cost == 1 ? 0.999
+        return cost == 1 ? 1
             : cost == 10 ? 0.98
             : cost == 150 ? 0.8
             : cost == 300 ? 0.6

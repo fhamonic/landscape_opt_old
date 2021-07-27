@@ -17,7 +17,7 @@
 
 #include "landscape/concept/abstract_landscape.hpp"
 
-typedef lemon::StaticDigraph StaticGraph_t;
+using StaticGraph_t = lemon::StaticDigraph;
 
 /**
  * @brief Class that represent a non-editable landscape.

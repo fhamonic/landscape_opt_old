@@ -47,7 +47,7 @@ namespace Helper {
      */
     template <typename GR, typename DM>
     static Eigen::Matrix<typename DM::Value, Eigen::Dynamic, Eigen::Dynamic> * distanceMatrix(const GR & g, DM & l) {
-        typedef typename DM::Value Value;
+        using Value = typename DM::Value;
 
         const int n = lemon::countNodes(g);
         Eigen::Matrix<Value,Eigen::Dynamic, Eigen::Dynamic> * distances = new Eigen::Matrix<Value, Eigen::Dynamic, Eigen::Dynamic>(n, n);
@@ -88,7 +88,7 @@ namespace Helper {
      */
     template <typename GR, typename DM>
     static Eigen::Matrix<typename DM::Value, Eigen::Dynamic, Eigen::Dynamic> * multDistanceMatrix(const GR & g, DM & p) {
-        typedef typename DM::Value Value;
+        using Value = typename DM::Value;
 
         const int n = lemon::countNodes(g);
         Eigen::Matrix<Value,Eigen::Dynamic, Eigen::Dynamic> * distances = new Eigen::Matrix<Value, Eigen::Dynamic, Eigen::Dynamic>(n, n);
@@ -282,9 +282,9 @@ namespace Helper {
 
 template <typename LS>
 double max_flow_in(const LS & landscape, const RestorationPlan<LS>& plan, typename LS::Node t) {
-    typedef typename LS::Graph Graph;
-    typedef typename LS::ProbabilityMap ProbabilityMap;
-    typedef lemon::ReverseDigraph<const Graph> Reversed;
+    using Graph = typename LS::Graph;
+    using ProbabilityMap = typename LS::ProbabilityMap;
+    using Reversed = lemon::ReverseDigraph<const Graph>;
 
     const Graph & original_g = landscape.getNetwork();
     Reversed reversed_g(original_g);

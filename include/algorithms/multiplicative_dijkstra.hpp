@@ -14,7 +14,7 @@ namespace lemon {
      */
     template <typename V>
     struct DijkstraMultiplicativeOperationTraits {
-        typedef V Value;
+        using Value = V;
         
         static Value zero() { return static_cast<Value>(1);}
         static Value plus(const Value& left, const Value& right) { return left * right; }
@@ -29,26 +29,26 @@ namespace lemon {
      */
     template<typename GR, typename LEN>
     struct DijkstraMultiplicativeTraits {
-        typedef GR Digraph;
+        using Digraph = GR;
 
-        typedef LEN LengthMap;
-        typedef typename LEN::Value Value;
+        using LengthMap = LEN;
+        using Value = typename LEN::Value;
 
-        typedef DijkstraMultiplicativeOperationTraits<Value> OperationTraits;
+        using OperationTraits = DijkstraMultiplicativeOperationTraits<Value>;
 
-        typedef typename Digraph::template NodeMap<int> HeapCrossRef;
+        using HeapCrossRef = typename Digraph::template NodeMap<int>;
         static HeapCrossRef *createHeapCrossRef(const Digraph &g) { return new HeapCrossRef(g); }
 
-        typedef BinHeap<typename LEN::Value, HeapCrossRef, std::greater<Value> > Heap;
+        using Heap = BinHeap<typename LEN::Value, HeapCrossRef, std::greater<Value> >;
         static Heap *createHeap(HeapCrossRef& r) { return new Heap(r); }
 
-        typedef typename Digraph::template NodeMap<typename Digraph::Arc> PredMap;
+        using PredMap = typename Digraph::template NodeMap<typename Digraph::Arc>;
         static PredMap *createPredMap(const Digraph &g) { return new PredMap(g); }
 
-        typedef NullMap<typename Digraph::Node,bool> ProcessedMap;
+        using ProcessedMap = NullMap<typename Digraph::Node,bool>;
         static ProcessedMap *createProcessedMap(const Digraph &) { return new ProcessedMap(); }
 
-        typedef typename Digraph::template NodeMap<typename LEN::Value> DistMap;
+        using DistMap = typename Digraph::template NodeMap<typename LEN::Value>;
         static DistMap *createDistMap(const Digraph &g) { return new DistMap(g); }
     };
 

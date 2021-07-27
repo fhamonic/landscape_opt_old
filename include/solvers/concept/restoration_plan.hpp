@@ -3,7 +3,7 @@
  * @author François Hamonic (francois.hamonic@gmail.com)
  * @brief Restorationplan class declaration
  * @version 0.3
- * @date 2021-07-18
+ * @date 2021-07-27
  * 
  * @copyright Copyright (c) 2021
  */
@@ -143,6 +143,10 @@ public:
     double getCost(Option i) const noexcept { return _costs[i]; }
 
     /**
+     * Add a restoration enhancement for the node **u** within option **i**.
+     * If there is already an enhancement for the node **u** and option **i**,
+     * **quality_gain** is added to the enhancement quality gain.
+     * 
      * @brief Add the node **v** to the option **i**
      * @param i Option
      * @param v Node
@@ -219,6 +223,10 @@ public:
 
 
     /**
+     * Add a restoration enhancement for the arc **a** within option **i**.
+     * If there is already an enhancement for the arc **a** and option **i**,
+     * the restored probability is updated to keep the maximum value.
+     * 
      * @brief Add the arc **a** to the option **i**
      * @param i Option
      * @param a Arc 

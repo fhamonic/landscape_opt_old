@@ -15,7 +15,7 @@
  * according to **epsilon**.
  * 
  * @time \f$O(|A|)\f$
- * @space \f$O(|A|)\f$
+ * @space \f$O(1)\f$
  */
 void remove_zero_probability_arcs(MutableLandscape & landscape, 
                     const RestorationPlan<MutableLandscape> & plan, 
@@ -37,8 +37,8 @@ void remove_zero_probability_arcs(MutableLandscape & landscape,
  * according to **epsilon**, in the best scenario, it cannot be enhanced and 
  * there is no path from a positive quality node to it.
  * 
- * @time \f$O(|A|)\f$
- * @space \f$O(|A|)\f$
+ * @time \f$O(|V| + |A|)\f$
+ * @space \f$O(|V|)\f$
  */
 void remove_no_flow_nodes(MutableLandscape & landscape, 
                     const RestorationPlan<MutableLandscape> & plan,
@@ -65,7 +65,7 @@ void remove_no_flow_nodes(MutableLandscape & landscape,
  * Contract the strongly connected components of the subgraph
  * induced by the arcs of probabilty 1.
  * 
- * @time \f$O(|A|)\f$
+ * @time \f$O(|V| + |A|)\f$
  * @space \f$O(|A|)\f$
  */
 void contract_patches_components(MutableLandscape & landscape, RestorationPlan<MutableLandscape> & plan) {
@@ -115,6 +115,39 @@ void contract_patches_components(MutableLandscape & landscape, RestorationPlan<M
 }
 
 /**
+ * Aggregate parallel arcs.
+ * 
+ * @time \f$O((|V| + |A|) * \#options)\f$
+ * @space \f$O(|V|)\f$
+ */
+void aggregate_parallel_arcs(MutableLandscape & landscape, RestorationPlan<MutableLandscape> & plan) {
+    using Graph = MutableLandscape::Graph;
+    using AdjacencyMap = Graph::NodeMap<Graph::Arc>;
+    
+    const Graph & graph = landscape.getNetwork();
+    AdjacencyMap adjacency(graph, lemon::INVALID);
+
+    for(Graph::NodeIt u(graph); u!=lemon::INVALID; ++u) {
+        for(Graph::OutArcIt a(graph,u), next_a=a; a!=lemon::INVALID; a=next_a) {
+            ++next_a;
+            Graph::Node v = graph.target(a);
+            Graph::Arc b = adjacency[v];
+            if(b == lemon::INVALID || graph.source(b) != u) {
+                adjacency[v] = a;
+                continue;
+            }
+            landscape.getProbabilityRef(b) = std::max(
+                                landscape.getProbabilityRef(b),
+                                landscape.getProbabilityRef(a));
+            for(const auto & e : plan[a])
+                plan.addArc(e.option, b, e.restored_probability);     
+            
+            landscape.removeArc(a);      
+        }
+    }
+}
+
+/**
  * Removes empty options from the **plan**.
  * 
  * @time \f$O((|V| + |A|) * \#options)\f$
@@ -148,6 +181,7 @@ Instance copy_and_compact_instance(const MutableLandscape & landscape,
  * - removing nodes that can only carry negligeable flow
  * - contracting the strongly connected components formed by 
  *      arcs of probability 1
+ * - aggregating parallels arcs
  * 
  * @time \f$O((|V| + |A|) * \#options)\f$
  * @space \f$O((|V| + |A|) * \#options)\f$
@@ -157,6 +191,7 @@ Instance trivial_reformulate(MutableLandscape&& landscape,
     remove_zero_probability_arcs(landscape, plan);
     remove_no_flow_nodes(landscape, plan);
     contract_patches_components(landscape, plan);
+    aggregate_parallel_arcs(landscape, plan);
     return copy_and_compact_instance(landscape, plan);
 }
 Instance trivial_reformulate(Instance&& instance) {

@@ -18,21 +18,21 @@ namespace lemon {
                 typename TR=DijkstraDefaultTraits<GR,LEN> >
     class SimplerDijkstra {
     public:
-        typedef typename TR::Digraph Digraph;
-        typedef typename TR::Value Value;
-        typedef typename TR::LengthMap LengthMap;
+        using Digraph = typename TR::Digraph;
+        using Value = typename TR::Value;
+        using LengthMap = typename TR::LengthMap;
         
-        typedef typename TR::HeapCrossRef HeapCrossRef;
-        typedef typename TR::Heap Heap;
-        typedef typename TR::OperationTraits OperationTraits;
+        using HeapCrossRef = typename TR::HeapCrossRef;
+        using Heap = typename TR::Heap;
+        using OperationTraits = typename TR::OperationTraits;
 
-        typedef TR Traits;
+        using Traits = TR;
 
     private:
-        typedef typename Digraph::Node Node;
-        typedef typename Digraph::NodeIt NodeIt;
-        typedef typename Digraph::Arc Arc;
-        typedef typename Digraph::OutArcIt OutArcIt;
+        using Node = typename Digraph::Node;
+        using NodeIt = typename Digraph::NodeIt;
+        using Arc = typename Digraph::Arc;
+        using OutArcIt = typename Digraph::OutArcIt;
 
         const Digraph *G;    
         const LengthMap *_length;
