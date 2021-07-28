@@ -131,6 +131,9 @@ Instance copy_and_compact_instance(const MutableLandscape & landscape,
 
     return instance;
 }
+Instance copy_and_compact_instance(const Instance & instance) {
+    return copy_and_compact_instance(instance.landscape, instance.plan);
+}
 
 Instance trivial_reformulate(MutableLandscape&& landscape, 
             RestorationPlan<MutableLandscape>&& plan) {

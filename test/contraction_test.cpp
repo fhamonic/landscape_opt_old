@@ -68,16 +68,19 @@ int main (int argc, const char *argv[]) {
     MyContractionAlgorithm algo;
 
     t0 = std::chrono::high_resolution_clock::now();
-    Graph_t::NodeMap<ContractionResult> * results = algo.precompute(landscape, plan);
+    auto results = algo.precompute(landscape, plan);
     t1 = std::chrono::high_resolution_clock::now();
+
+    int normal_time_us = std::chrono::duration_cast<std::chrono::milliseconds>(t1-t0).count();
+    std::cout << "Contraction done in " << normal_time_us << " ms" << std::endl;
 
 
     Graph_t::NodeMap<RestorationPlan<StaticLandscape>::NodeOptionsMap> t_nodeOptions(graph);
     Graph_t::NodeMap<RestorationPlan<StaticLandscape>::ArcOptionsMap> t_arcOptions(graph);
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-        ContractionResult result = (*results)[t];
-        t_nodeOptions[t] = result.plan->computeNodeOptionsMap();
-        t_arcOptions[t] = result.plan->computeArcOptionsMap();
+        const ContractionResult & result = *(*results)[t];
+        t_nodeOptions[t] = result.plan.computeNodeOptionsMap();
+        t_arcOptions[t] = result.plan.computeArcOptionsMap();
     }
 
 
@@ -85,9 +88,9 @@ int main (int argc, const char *argv[]) {
     const double epsilon = 0.0001;
 
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-        ContractionResult result = (*results)[t];
+        const ContractionResult & result = *(*results)[t];
         const double base = compute_value_reversed(landscape, t);
-        const double contracted = compute_value_reversed(*result.landscape, result.t);
+        const double contracted = compute_value_reversed(result.landscape, result.t);
         
         if(fabs(base - contracted) > epsilon) {
             std::cout << graph.id(t) << " : " << base << " != " << contracted << std::endl;
@@ -119,9 +122,9 @@ int main (int argc, const char *argv[]) {
 
 
         for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-            ContractionResult result = (*results)[t];
+            const ContractionResult & result = *(*results)[t];
 
-            DecoredLandscape<StaticLandscape> decored_contracted_landscape(*result.landscape);
+            DecoredLandscape<StaticLandscape> decored_contracted_landscape(result.landscape);
             for(int option_id : picked_options)
                 decored_contracted_landscape.apply(t_nodeOptions[t][option_id], t_arcOptions[t][option_id]);
 
@@ -140,18 +143,16 @@ int main (int argc, const char *argv[]) {
     int sum_of_nb_nodes = 0;
     int sum_of_nb_arcs = 0;
     for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
-        ContractionResult result = (*results)[t];
-        sum_of_nb_nodes += lemon::countNodes(result.landscape->getNetwork());   
-        sum_of_nb_arcs += lemon::countArcs(result.landscape->getNetwork());
+        const ContractionResult & result = *(*results)[t];
+        sum_of_nb_nodes += lemon::countNodes(result.landscape.getNetwork());   
+        sum_of_nb_arcs += lemon::countArcs(result.landscape.getNetwork());
     }
 
     std::cout << "Total nb of nodes : " << sum_of_nb_nodes << std::endl;
     std::cout << "Total nb of arcs : " << sum_of_nb_arcs << std::endl;
 
-    int normal_time_us = std::chrono::duration_cast<std::chrono::milliseconds>(t1-t0).count();
-    std::cout << "Contraction done in " << normal_time_us << " ms" << std::endl;
-
-    delete results;
+    // int normal_time_us = std::chrono::duration_cast<std::chrono::milliseconds>(t1-t0).count();
+    // std::cout << "Contraction done in " << normal_time_us << " ms" << std::endl;
 
     return EXIT_SUCCESS;
 }
