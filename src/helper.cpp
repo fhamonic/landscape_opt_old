@@ -22,6 +22,8 @@ void Helper::assert_well_formed(const MutableLandscape & landscape, const Restor
         for(auto const & e : plan[a]) { (void)e;
             assert(plan.contains(e.option));
             assert(is_probability(e.restored_probability));
+            if(e.restored_probability <= landscape.getProbability(a))
+                std::cout << e.restored_probability << " <= " << landscape.getProbability(a) << std::endl;
             assert(e.restored_probability > landscape.getProbability(a));
         }
     }

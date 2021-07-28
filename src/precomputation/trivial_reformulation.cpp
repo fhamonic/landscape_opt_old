@@ -37,7 +37,8 @@ void remove_no_flow_nodes(MutableLandscape & landscape,
     }
 }
 
-void contract_patches_components(MutableLandscape & landscape, RestorationPlan<MutableLandscape> & plan) {
+void contract_patches_components(MutableLandscape & landscape, 
+                RestorationPlan<MutableLandscape> & plan) {
     using Graph = MutableLandscape::Graph;
     using ArcFilterMap = Graph::ArcMap<bool>;
     using ComponentMap = Graph::NodeMap<int>;
@@ -49,7 +50,8 @@ void contract_patches_components(MutableLandscape & landscape, RestorationPlan<M
 
     lemon::FilterArcs subgraph(graph, arc_filter);
     ComponentMap componentsNodeMap(graph);
-    const int nb_components = lemon::stronglyConnectedComponents(subgraph, componentsNodeMap);
+    const int nb_components = 
+            lemon::stronglyConnectedComponents(subgraph, componentsNodeMap);
 
     std::vector<std::vector<Graph::Node>> components(nb_components);
     for(Graph::NodeIt u(graph); u!=lemon::INVALID; ++u)
@@ -83,7 +85,8 @@ void contract_patches_components(MutableLandscape & landscape, RestorationPlan<M
     }
 }
 
-void aggregate_parallel_arcs(MutableLandscape & landscape, RestorationPlan<MutableLandscape> & plan) {
+void aggregate_parallel_arcs(MutableLandscape & landscape, 
+            RestorationPlan<MutableLandscape> & plan) {
     using Graph = MutableLandscape::Graph;
     using AdjacencyMap = Graph::NodeMap<Graph::Arc>;
     

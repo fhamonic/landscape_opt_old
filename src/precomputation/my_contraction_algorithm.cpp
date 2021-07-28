@@ -8,7 +8,7 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
     using ProbabilityMap = MutableLandscape::ProbabilityMap;
     
     const Graph & graph = landscape.getNetwork();
-    auto results = std::make_unique<Graph::NodeMap<std::shared_ptr<ContractionResult>>>(graph, nullptr);
+    auto results = std::make_unique<Graph::NodeMap<std::shared_ptr<ContractionResult>>>(graph);
 
     const ProbabilityMap & p_min = landscape.getProbabilityMap();
     ProbabilityMap p_max(graph);
@@ -18,41 +18,18 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
             p_max[a] = std::max(p_max[a], e.restored_probability);
     }
 
-    // TODO use graph iterator
-    /*
-    std::vector<Graph::Arc> arcs;
-    for(Graph::ArcIt b(graph); b != lemon::INVALID; ++b) arcs.push_back(b);
-
-    Graph::ArcMap<std::vector<Graph::Node>> strong_nodes(graph);
-    Graph::ArcMap<std::vector<Graph::Node>> non_weak_nodes(graph);
-
-    std::for_each(std::execution::par_unseq, arcs.begin(), arcs.end(), [&] (Graph::Arc a) {        
-        lemon::MultiplicativeIdentifyStrong<Graph, ProbabilityMap> identifyStrong(graph, p_min, p_max);
-        lemon::MultiplicativeIdentifyUseless<Graph, ProbabilityMap> identifyUseless(graph, p_min, p_max);
-        identifyStrong.labeledNodesList(strong_nodes[a]).run(a);
-        identifyUseless.labeledNodesList(non_weak_nodes[a]).run(a);
-    });
-
-    // transpose
-    Graph::NodeMap<std::vector<Graph::Arc>> contractables_arcs(graph);
-    Graph::NodeMap<std::vector<Graph::Arc>> deletables_arcs(graph);
-    for(Graph::ArcIt a(graph); a != lemon::INVALID; ++a) {
-        for(Graph::Node u : strong_nodes[a])
-            contractables_arcs[u].push_back(a);
-        for(Graph::Node u : non_weak_nodes[a])
-            deletables_arcs[u].push_back(a);
-    }
-    */
-
     tbb::concurrent_queue<Graph::Arc> arcs;
     for(Graph::ArcIt b(graph); b != lemon::INVALID; ++b)
         arcs.push(b);
 
+    Graph::NodeMap<bool> node_filter(graph, false);
+    for(Graph::Node u : target_nodes)
+        node_filter[u] = true;
+
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> contractables_arcs(graph);
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> deletables_arcs(graph);
 
-    std::vector<int> threads(12);
-
+    std::vector<int> threads(std::thread::hardware_concurrency());
     std::for_each(std::execution::par_unseq, threads.begin(), threads.end(), [&] (int) {
         std::vector<Graph::Node> strong_nodes;
         std::vector<Graph::Node> non_weak_nodes;
@@ -69,10 +46,14 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
             identifyStrong.run(a);
             identifyUseless.run(a);
 
-            for(Graph::Node u : strong_nodes)
+            for(Graph::Node u : strong_nodes) {
+                if(!node_filter[u]) continue;
                 contractables_arcs[u].push_back(a);
-            for(Graph::Node u : non_weak_nodes)
+            }
+            for(Graph::Node u : non_weak_nodes) {
+                if(!node_filter[u]) continue;
                 deletables_arcs[u].push_back(a);
+            }
 
             strong_nodes.clear();
             non_weak_nodes.clear();

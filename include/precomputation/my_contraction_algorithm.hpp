@@ -14,6 +14,31 @@
 
 #include "helper.hpp"
 
+template<typename GR, typename LEN>
+struct IdentifySpecialTraits {
+    using Digraph = GR;
+
+    using LengthMap = LEN;
+    using Value = typename LEN::Value;
+    
+    using OperationTraits = lemon::DijkstraMultiplicativeOperationTraits<Value>;
+    using LabeledDist = lemon::LabeledValue<OperationTraits>;
+
+    using HeapCrossRef = typename Digraph::template NodeMap<int>;
+    static HeapCrossRef *createHeapCrossRef(const Digraph &g) { return new HeapCrossRef(g); }
+
+    using Heap = lemon::BinHeap<LabeledDist, HeapCrossRef, std::less<LabeledDist>>;
+    static Heap *createHeap(HeapCrossRef& r) { return new Heap(r); }
+
+    using Node = typename Digraph::Node;
+    using NodeList = typename Digraph::template NodeMap<std::tuple<typename Digraph::Arc, bool, tbb::concurrent_vector<typename Digraph::Arc>>>;
+    static NodeList * createNodeList(const Digraph & g) { return NodeList(g); }
+    static void addNode(NodeList &n, Node u) { 
+        if(!std::get<1>(n[u])) return;
+        std::get<2>(n[u]).push_back(std::get<0>(n[u]));
+    }
+};
+
 class MyContractionAlgorithm : public ContractionPrecomputation {
 public:
         
@@ -52,8 +77,6 @@ public:
 
         return std::make_shared<ContractionResult>(contracted_landscape, contracted_plan, contracted_t);
     }
-
-
 
     std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> precompute(
                     const MutableLandscape & landscape,

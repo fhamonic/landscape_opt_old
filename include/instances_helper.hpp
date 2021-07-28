@@ -234,6 +234,8 @@ Instance make_instance_biorevaix_level_1(const double restoration_coef=2, const 
         double restored_prob = std::pow(node_prob[u], 1/(2 * (option_u >= 0 ? restoration_coef : 1)))
             * std::pow(node_prob[v], 1/(2 * (option_v >= 0 ? restoration_coef : 1)));
 
+        if(restored_prob <= probability) continue;
+
         plan.addArc(option, uv, restored_prob);
         plan.addArc(option, vu, restored_prob);
     }
