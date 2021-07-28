@@ -1,5 +1,7 @@
 #include "precomputation/my_contraction_algorithm.hpp"
 
+#include <atomic>
+
 std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContractionAlgorithm::precompute(
                 const MutableLandscape & landscape, 
                 const RestorationPlan<MutableLandscape> & plan, 
@@ -18,9 +20,10 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
             p_max[a] = std::max(p_max[a], e.restored_probability);
     }
 
-    tbb::concurrent_queue<Graph::Arc> arcs;
+    std::vector<Graph::Arc> arcs;
     for(Graph::ArcIt b(graph); b != lemon::INVALID; ++b)
-        arcs.push(b);
+        arcs.push_back(b);
+    std::atomic<size_t> cpt_arc = 0;
 
     Graph::NodeMap<bool> node_filter(graph, false);
     for(Graph::Node u : target_nodes)
@@ -29,36 +32,35 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> contractables_arcs(graph);
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> deletables_arcs(graph);
 
-    std::vector<int> threads(std::thread::hardware_concurrency());
-    std::for_each(std::execution::par_unseq, threads.begin(), threads.end(), [&] (int) {
-        std::vector<Graph::Node> strong_nodes;
-        std::vector<Graph::Node> non_weak_nodes;
-        lemon::MultiplicativeIdentifyStrong<Graph, ProbabilityMap> identifyStrong(graph, p_min, p_max);
-        lemon::MultiplicativeIdentifyUseless<Graph, ProbabilityMap> identifyUseless(graph, p_min, p_max);
-        identifyStrong.labeledNodesList(strong_nodes);
-        identifyUseless.labeledNodesList(non_weak_nodes);
+    std::vector<std::thread> threads;
+    for(size_t i=0; i<std::thread::hardware_concurrency(); ++i) {
+        threads.emplace_back([&](void) {
+            std::vector<Graph::Node> strong_nodes;
+            std::vector<Graph::Node> non_weak_nodes;
+            lemon::MultiplicativeIdentifyStrong<Graph, ProbabilityMap> identifyStrong(graph, p_min, p_max);
+            lemon::MultiplicativeIdentifyUseless<Graph, ProbabilityMap> identifyUseless(graph, p_min, p_max);
+            identifyStrong.labeledNodesList(strong_nodes);
+            identifyUseless.labeledNodesList(non_weak_nodes);
 
-        Graph::Arc a;
-        while(!arcs.empty()) {
-            if(!arcs.try_pop(a))
-                continue;
-
-            identifyStrong.run(a);
-            identifyUseless.run(a);
-
-            for(Graph::Node u : strong_nodes) {
-                if(!node_filter[u]) continue;
-                contractables_arcs[u].push_back(a);
+            for(size_t local_cpt{}; (local_cpt=cpt_arc.fetch_add(1, std::memory_order_relaxed)) < arcs.size();) {
+                Graph::Arc a = arcs[local_cpt];
+                identifyStrong.run(a);
+                identifyUseless.run(a);
+                for(Graph::Node u : strong_nodes) {
+                    if(!node_filter[u]) continue;
+                    contractables_arcs[u].push_back(a);
+                }
+                for(Graph::Node u : non_weak_nodes) {
+                    if(!node_filter[u]) continue;
+                    deletables_arcs[u].push_back(a);
+                }
+                strong_nodes.clear();
+                non_weak_nodes.clear();
             }
-            for(Graph::Node u : non_weak_nodes) {
-                if(!node_filter[u]) continue;
-                deletables_arcs[u].push_back(a);
-            }
+        });
+    }
+    for(auto & thread : threads) thread.join();
 
-            strong_nodes.clear();
-            non_weak_nodes.clear();
-        }
-    });
 
     std::for_each(std::execution::par_unseq,
                 target_nodes.begin(), 
