@@ -45,7 +45,10 @@ public:
         for(Graph::Arc orig_a : orig_contractables_arcs) {
             Graph::Arc a = (*refs.second)[orig_a];
             if(!contracted_graph.valid(a)) continue;
-            if(contracted_plan.contains(a)) continue;
+            if(contracted_plan.contains(a)) {
+                contract_restorable_arc(contracted_landscape, contracted_plan, a);
+                continue;
+            }
             contract_arc(contracted_landscape, contracted_plan, a);
         }
 

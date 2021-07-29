@@ -38,8 +38,10 @@
 
 int main() {
     std::cout << std::setprecision(8);
-    Instance raw_instance = make_instance_biorevaix_level_1(6, Point(897286.5,6272835.5), 600);
-    //*
+    // Instance raw_instance = make_instance_biorevaix_level_1(6, Point(897286.5,6272835.5), 600);
+    // Instance raw_instance = make_instance_biorevaix_level_1_area_2(6);
+    Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
+    /*
     std::cout << "ECA:" << Parallel_ECA().eval(raw_instance.landscape) << std::endl;
     Instance instance = trivial_reformulate(std::move(raw_instance));
     /*/
@@ -73,6 +75,11 @@ int main() {
 
     std::cout << "ECA:" << Parallel_ECA().eval(landscape) << std::endl;
 
+    double intra_patch = 0;
+    for(Graph_t::NodeIt u(landscape.getNetwork()); u != lemon::INVALID; ++u)
+        intra_patch += landscape.getQuality(u)*landscape.getQuality(u);    
+    std::cout << sqrt(Parallel_ECA().eval(landscape)*Parallel_ECA().eval(landscape) - intra_patch) << std::endl;
+
     // Helper::printLandscapeGraphviz(landscape, "test.dot");
     Helper::printInstanceGraphviz(landscape, plan, "instance_test.dot");
 
@@ -83,6 +90,8 @@ int main() {
     solver.setLogLevel(2);
     Solution solution = solver.solve(landscape, plan, budget);
     std::cout << "ECA: " << Parallel_ECA().eval(Helper::decore_landscape(landscape, plan, solution)) << std::endl;
+
+
     std::cout << "cost: " << solution.getCost() << std::endl;
 
 

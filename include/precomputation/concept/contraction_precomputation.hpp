@@ -36,6 +36,7 @@ class ContractionPrecomputation {
     public:
         void remove_unconnected_nodes(MutableLandscape & landscape, Graph_t::Node t) const;
         void contract_arc(MutableLandscape & contracted_landscape, RestorationPlan<MutableLandscape> & plan, Graph_t::Arc a) const;
+        void contract_restorable_arc(MutableLandscape & landscape, RestorationPlan<MutableLandscape>& plan, Graph_t::Arc a) const;
         
         virtual std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>>
             precompute(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const=0;
