@@ -2,6 +2,7 @@
 #define MY_CONTRACTION_ALGORITHM_HPP
 
 #include <algorithm>
+#include <atomic>
 #include <execution>
 #include <thread>
 #include <memory>

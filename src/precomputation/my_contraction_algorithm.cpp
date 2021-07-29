@@ -1,7 +1,5 @@
 #include "precomputation/my_contraction_algorithm.hpp"
 
-#include <atomic>
-
 std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContractionAlgorithm::precompute(
                 const MutableLandscape & landscape, 
                 const RestorationPlan<MutableLandscape> & plan, 
