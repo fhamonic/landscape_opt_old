@@ -85,7 +85,7 @@ tbb::concurrent_queue<Graph::Arc> arcs;
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> contractables_arcs(graph);
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> deletables_arcs(graph);
 
-    std::vector<int> threads(12);
+    std::vector<int> threads(std::thread::hardware_concurrency());
 
     std::for_each(std::execution::par_unseq, threads.begin(), threads.end(), [&] (int) {
         std::vector<Graph::Node> strong_nodes;

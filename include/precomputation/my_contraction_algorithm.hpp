@@ -22,8 +22,8 @@ public:
                 const MutableLandscape & landscape,
                 const RestorationPlan<MutableLandscape> & plan,
                 Graph_t::Node orig_t, 
-                const ArcList & orig_contractables_arcs, 
-                const ArcList & orig_deletables_arcs) const {
+                ArcList & orig_contractables_arcs, 
+                ArcList & orig_deletables_arcs) const {
         using Graph = MutableLandscape::Graph;
         
         MutableLandscape contracted_landscape;
