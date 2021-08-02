@@ -1,6 +1,6 @@
 # Landscape_Opt
 
-Library for handling ecological landscape datas and optimize their connectivity according to the PC indicator and other indices.
+Library for modeling and optimizing ecological landscapes according to the PC connectivity indicator.
 
 [![Generic badge](https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B)](https://en.cppreference.com/w/cpp/17)
 [![Generic badge](https://img.shields.io/badge/CMake-3.12+-blue.svg?style=flat&logo=cmake)](https://cmake.org/cmake/help/latest/release/3.12.html)
