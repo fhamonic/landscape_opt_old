@@ -63,8 +63,6 @@ namespace Solvers::PL_ECA_3_Vars {
         int id() const { return _offset; }
     };
     class RestoredFVar : public OSI_Builder::VarType {
-    private:
-        std::vector<int> offsets;
     public:
         RestoredFVar(const ContractionResult & cr)
             : VarType(cr.plan.getNbNodeRestorationElements()) {}

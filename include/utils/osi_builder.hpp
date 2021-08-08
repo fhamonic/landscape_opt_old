@@ -23,6 +23,8 @@
 
 #include "coin/CoinPackedMatrix.hpp"
 
+#include "lemon/lp.h"
+
 /**
  * @brief A practical class for building OsiSolver instances 
  */
