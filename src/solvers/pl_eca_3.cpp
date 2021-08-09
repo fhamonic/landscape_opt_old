@@ -289,14 +289,15 @@ Solution Solvers::PL_ECA_3::solve(const MutableLandscape & landscape, const Rest
     model.addCutGenerator(&cut_flow, 1, "FlowCover");
     CglMixedIntegerRounding2 cut_mir;
     model.addCutGenerator(&cut_mir, 1, "MIR");
-    model.setAllowableGap(1e-8);
+    model.setAllowableGap(1e-10);
+    CbcMain0(model);
     model.branchAndBound(1);
     ////////////////////
     const double * var_solution = model.bestSolution();
     if(var_solution == nullptr) {
         std::cerr << name() << ": Fail" << std::endl;
         delete solver;
-        return nullptr;
+        throw "caca";
     }
     for(RestorationPlan<MutableLandscape>::Option i=0; i<plan.getNbOptions(); ++i) {
         const int y_i = vars.y.id(i);

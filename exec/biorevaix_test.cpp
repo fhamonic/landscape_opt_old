@@ -38,10 +38,10 @@
 
 int main() {
     std::cout << std::setprecision(8);
-    // Instance raw_instance = make_instance_biorevaix_level_1(6, Point(897286.5,6272835.5), 600);
+    Instance raw_instance = make_instance_biorevaix_level_1(6, Point(897286.5,6272835.5), 500);
     // Instance raw_instance = make_instance_biorevaix_level_1_area_2(6);
-    Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
-    /*
+    // Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
+    //*
     std::cout << "ECA:" << Parallel_ECA().eval(raw_instance.landscape) << std::endl;
     Instance instance = trivial_reformulate(std::move(raw_instance));
     /*/
