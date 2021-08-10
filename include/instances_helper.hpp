@@ -335,19 +335,27 @@ Instance make_instance_biorevaix_level_2_v7(const double restoration_coef=2) {
     nodes.fill(lemon::INVALID);
     Graph_t::NodeMap<double> node_prob(graph, 0.0);
     Graph_t::NodeMap<RestorationPlan<MutableLandscape>::Option> troncon_option(graph);
-    std::array<RestorationPlan<MutableLandscape>::Option, 5195> id_tronc_option;
+    std::array<RestorationPlan<MutableLandscape>::Option, 2008> id_tronc_option;
     id_tronc_option.fill(-1);
 
-    io::CSVReader<5> patches("../landscape_opt_datas/BiorevAix/vertexN2_v7.txt");
-    patches.read_header(io::ignore_extra_column, "N2_id", "X", "Y", "area2", "cost_mode");
-    int N_id, area2;
+    io::CSVReader<7> patches("../landscape_opt_datas/BiorevAix/vertexN2_v7.txt");
+    patches.read_header(io::ignore_extra_column, "N2_id", "X", "Y", "N4_id", "area2", "area4", "cost_mode");
+    int N2_id, N4_id;
+    int area2, area4;
     double X, Y, cost;
-    while(patches.read_row(N_id, X, Y, area2, cost)) {
-        // if(!area2) continue;
+    while(patches.read_row(N2_id, X, Y, N4_id, area2, area4, cost)) {
+        if(!area2) continue;
+        // if(!area4) continue;
         // if(cost == 1000) continue;
         Graph_t::Node u = landscape.addNode((cost==1 ? 1 : 0), Point(X,Y));
-        nodes[N_id] = u;
+        nodes[N2_id] = u;
         node_prob[u] = prob(cost);
+
+        if(cost != 800) continue;
+        RestorationPlan<MutableLandscape>::Option & option = id_tronc_option[N4_id];
+        if(option == -1) option = plan.addOption(0);
+        troncon_option[u] = option;
+        plan.setCost(option, plan.getCost(option) + 1);    
     }
 
     io::CSVReader<2> links("../landscape_opt_datas/BiorevAix/AL_N2.txt");
@@ -360,10 +368,28 @@ Instance make_instance_biorevaix_level_2_v7(const double restoration_coef=2) {
         double probability = std::sqrt(node_prob[u]*node_prob[v]);
         probability = std::max(std::min(probability, 1.0), 0.0);
 
-        // if(probability == 0) continue;
+        if(probability == 0) continue;
 
         Graph_t::Arc uv = landscape.addArc(u, v, probability);
         Graph_t::Arc vu = landscape.addArc(v, u, probability);
+
+        RestorationPlan<MutableLandscape>::Option option_u = troncon_option[u];
+        RestorationPlan<MutableLandscape>::Option option_v = troncon_option[v];
+        if(option_u<0 && option_v<0) continue;
+        if(option_u>0 && option_v>0 && option_u!=option_v) {
+            
+
+
+
+            continue;
+        };
+        RestorationPlan<MutableLandscape>::Option option = std::max(option_u, option_v);
+        double restored_prob = 
+              std::pow(node_prob[u], 1/(2 * (option_u >= 0 ? restoration_coef : 1)))
+            * std::pow(node_prob[v], 1/(2 * (option_v >= 0 ? restoration_coef : 1)));
+        if(restored_prob <= probability) continue;
+        plan.addArc(option, uv, restored_prob);
+        plan.addArc(option, vu, restored_prob);
     }
     return instance;
 }

@@ -332,7 +332,7 @@ Solution Solvers::PL_ECA_3::solve(const MutableLandscape & landscape, const Rest
     CoinPackedMatrix * matrix = solver_builder.getMatrix();
     const int nb_rows = matrix->getNumRows();
     const int nb_elems = matrix->getNumElements();
-    int * begins = new int[nb_elems]; std::copy(matrix->getVectorStarts(), matrix->getVectorStarts()+nb_elems, begins);
+    int * begins = new int[nb_rows]; std::copy(matrix->getVectorStarts(), matrix->getVectorStarts()+nb_rows, begins);
     int * indices = new int[nb_elems]; std::copy(matrix->getIndices(), matrix->getIndices()+nb_elems, indices);
     double * elements = new double[nb_elems]; std::copy(matrix->getElements(), matrix->getElements()+nb_elems, elements);
     double * row_lb = solver_builder.getRowLB();
