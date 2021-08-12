@@ -73,6 +73,7 @@ void ContractionPrecomputation::contract_restorable_arc(MutableLandscape & lands
     const Graph_t & graph = landscape.getNetwork();
     assert(graph.valid(a));
     assert(plan.contains(a));
+    static_cast<void>(plan);
     // bool contractable = restorable_arc_is_contractable(landscape, plan, a);
 
     Graph_t::Node u = graph.source(a);

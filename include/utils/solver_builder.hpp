@@ -71,7 +71,7 @@ namespace SolverBuilder_Utils {
                 }
                 (*first).second += (*next).second;               
             }
-            const size_t new_length = std::distance(begin, first+1);
+            const std::size_t new_length = std::distance(begin, first+1);
             _indices.resize(new_length);
             _coefficients.resize(new_length);
             return *this;

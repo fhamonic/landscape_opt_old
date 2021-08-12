@@ -124,7 +124,7 @@ tbb::concurrent_queue<Graph::Arc> arcs;
 
 
     // std::vector<std::thread> threads;
-    // for(size_t i=0; i<std::thread::hardware_concurrency(); ++i) {
+    // for(std::size_t i=0; i<std::thread::hardware_concurrency(); ++i) {
     //     threads.emplace_back([&](void) {
     //         std::vector<Graph::Node> strong_nodes;
     //         std::vector<Graph::Node> non_weak_nodes;
@@ -133,7 +133,7 @@ tbb::concurrent_queue<Graph::Arc> arcs;
     //         identifyStrong.labeledNodesList(strong_nodes);
     //         identifyUseless.labeledNodesList(non_weak_nodes);
 
-    //         for(size_t local_cpt{}; (local_cpt=cpt_arc.fetch_add(1, std::memory_order_relaxed)) < arcs.size();) {
+    //         for(std::size_t local_cpt{}; (local_cpt=cpt_arc.fetch_add(1, std::memory_order_relaxed)) < arcs.size();) {
     //             Graph::Arc a = arcs[local_cpt];
     //             identifyStrong.run(a);
     //             identifyUseless.run(a);
@@ -171,7 +171,7 @@ tbb::concurrent_queue<Graph::Arc> arcs;
         identifyStrong.labeledNodesList(strong_nodes);
         identifyUseless.labeledNodesList(non_weak_nodes);
 
-        for(size_t local_cpt{}; (local_cpt=cpt_arc.fetch_add(1, std::memory_order_relaxed)) < arcs.size();) {
+        for(std::size_t local_cpt{}; (local_cpt=cpt_arc.fetch_add(1, std::memory_order_relaxed)) < arcs.size();) {
             Graph::Arc a = arcs[local_cpt];
 
             identifyStrong.run(a);

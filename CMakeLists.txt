@@ -11,9 +11,15 @@ SET(CMAKE_CXX_STANDARD 17)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(WARNINGS "" OFF)
+option(HARDCORE_WARNINGS "" OFF)
 option(COMPILE_FOR_NATIVE "" OFF)
 option(COMPILE_WITH_LTO "" OFF)
 option(WITH_GUROBI "" OFF)
+
+set(WARNINGS_LIST "-Wall;-Wextra;")
+set(HARDCORE_WARNINGS_LIST
+    "-Wall;-Wextra;-Wshadow;-Wpedantic;-Wnon-virtual-dtor;-Wold-style-cast;-Wcast-align;-Wunused;-Woverloaded-virtual;-Wpedantic;-Wconversion;-Wsign-conversion;-Wmisleading-indentation;-Wduplicated-cond;-Wduplicated-branches;-Wlogical-op;-Wnull-dereference;-Wuseless-cast;-Wdouble-promotion;-Wformat=2;-Wlifetime"
+)
 
 #################### Modules ####################
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
@@ -53,7 +59,8 @@ if(${WITH_GUROBI} STREQUAL "ON")
     target_link_libraries(landscape_opt ${GUROBI_LIBRARIES})
 endif()
 
-target_compile_options_if_exists(landscape_opt PRIVATE ${WARNINGS} -Wall)
+target_compile_options_if_exists(landscape_opt PRIVATE ${WARNINGS} ${WARNINGS_LIST})
+target_compile_options_if_exists(landscape_opt PRIVATE ${HARDCORE_WARNINGS} ${HARDCORE_WARNINGS_LIST})
 target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_FOR_NATIVE} -march=native)
 target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_WITH_LTO} -flto)
 

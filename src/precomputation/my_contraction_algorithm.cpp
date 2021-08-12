@@ -21,7 +21,7 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
     std::vector<Graph::Arc> arcs;
     for(Graph::ArcIt b(graph); b != lemon::INVALID; ++b)
         arcs.push_back(b);
-    std::atomic<size_t> cpt_arc = 0;
+    std::atomic<std::size_t> cpt_arc = 0;
 
     Graph::NodeMap<bool> node_filter(graph, false);
     for(Graph::Node u : target_nodes)
@@ -31,7 +31,7 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> deletables_arcs(graph);
 
     std::vector<std::thread> threads;
-    for(size_t i=0; i<std::thread::hardware_concurrency(); ++i) {
+    for(std::size_t i=0; i<std::thread::hardware_concurrency(); ++i) {
         threads.emplace_back([&](void) {
             std::vector<Graph::Node> strong_nodes;
             std::vector<Graph::Node> non_weak_nodes;
@@ -40,7 +40,7 @@ std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>> MyContract
             identifyStrong.labeledNodesList(strong_nodes);
             identifyUseless.labeledNodesList(non_weak_nodes);
 
-            for(size_t local_cpt{}; (local_cpt=cpt_arc.fetch_add(1, std::memory_order_relaxed)) < arcs.size();) {
+            for(std::size_t local_cpt{}; (local_cpt=cpt_arc.fetch_add(1, std::memory_order_relaxed)) < arcs.size();) {
                 Graph::Arc a = arcs[local_cpt];
                 identifyStrong.run(a);
                 identifyUseless.run(a);

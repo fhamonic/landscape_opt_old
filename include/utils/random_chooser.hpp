@@ -13,7 +13,7 @@ class RandomChooser {
         double distrib_sum;
         std::vector<std::pair<T,double>> elements;
         double rest;
-        size_t picked;
+        std::size_t picked;
     public:
         RandomChooser<T>() : distrib_sum{0.0}, rest{0.0}, picked{0} {};
         RandomChooser<T>(int seed) : distrib_sum{0.0}, rest{0.0}, picked{0} {
