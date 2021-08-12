@@ -14,32 +14,43 @@
 #include "helper.hpp"
 
 class ContractionResult {
-    public:
-        StaticLandscape landscape;
-        RestorationPlan<StaticLandscape> plan;
-        StaticGraph_t::Node t;
+public:
+    StaticLandscape landscape;
+    RestorationPlan<StaticLandscape> plan;
+    StaticLandscape::Node t;
 
-        ContractionResult(const MutableLandscape & contracted_landscape,
-                    const RestorationPlan<MutableLandscape> & contracted_plan, 
-                    Graph_t::Node contracted_t) : plan(landscape) {
-            const Graph_t & contracted_graph = contracted_landscape.getNetwork();
-            Graph_t::NodeMap<StaticGraph_t::Node> final_nodesRef(contracted_graph);
-            Graph_t::ArcMap<StaticGraph_t::Arc> final_arcsRef(contracted_graph);
-            landscape.build(contracted_landscape, final_nodesRef, final_arcsRef);
-            Helper::copyPlan(plan, contracted_plan, final_nodesRef, final_arcsRef);
-            t = final_nodesRef[contracted_t];
-        }
-        ~ContractionResult() {}
+    ContractionResult(const MutableLandscape & contracted_landscape,
+                      const RestorationPlan<MutableLandscape> & contracted_plan,
+                      MutableLandscape::Node contracted_t)
+        : plan(landscape) {
+        const MutableLandscape::Graph & contracted_graph =
+            contracted_landscape.getNetwork();
+        MutableLandscape::Graph::NodeMap<StaticLandscape::Node> final_nodesRef(
+            contracted_graph);
+        MutableLandscape::Graph::ArcMap<StaticLandscape::Arc> final_arcsRef(
+            contracted_graph);
+        landscape.build(contracted_landscape, final_nodesRef, final_arcsRef);
+        Helper::copyPlan(plan, contracted_plan, final_nodesRef, final_arcsRef);
+        t = final_nodesRef[contracted_t];
+    }
+    ~ContractionResult() {}
 };
 
 class ContractionPrecomputation {
-    public:
-        void remove_unconnected_nodes(MutableLandscape & landscape, Graph_t::Node t) const;
-        void contract_arc(MutableLandscape & contracted_landscape, RestorationPlan<MutableLandscape> & plan, Graph_t::Arc a) const;
-        void contract_restorable_arc(MutableLandscape & landscape, RestorationPlan<MutableLandscape>& plan, Graph_t::Arc a) const;
-        
-        virtual std::unique_ptr<Graph_t::NodeMap<std::shared_ptr<ContractionResult>>>
-            precompute(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape> & plan) const=0;
+public:
+    void remove_unconnected_nodes(MutableLandscape & landscape,
+                                  MutableLandscape::Node t) const;
+    void contract_arc(MutableLandscape & contracted_landscape,
+                      RestorationPlan<MutableLandscape> & plan,
+                      MutableLandscape::Arc a) const;
+    void contract_restorable_arc(MutableLandscape & landscape,
+                                 RestorationPlan<MutableLandscape> & plan,
+                                 MutableLandscape::Arc a) const;
+
+    virtual std::unique_ptr<
+        MutableLandscape::Graph::NodeMap<std::shared_ptr<ContractionResult>>>
+    precompute(const MutableLandscape & landscape,
+               const RestorationPlan<MutableLandscape> & plan) const = 0;
 };
 
-#endif //CONTRACTION_PRECOMPUTATION_HPP
+#endif  // CONTRACTION_PRECOMPUTATION_HPP

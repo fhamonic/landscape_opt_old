@@ -7,14 +7,14 @@
 namespace Solvers::PL_ECA_4_Vars {
     class PreprocessedDatas {
         public:
-            std::vector<Graph_t::Node> target_nodes;
-            Graph_t::NodeMap<ContractionResult> * contracted_instances;
-            Graph_t::NodeMap<StaticGraph_t::NodeMap<double>*> M_Maps_Map;
+            std::vector<MutableLandscape::Node> target_nodes;
+            MutableLandscape::Graph::NodeMap<ContractionResult> * contracted_instances;
+            MutableLandscape::Graph::NodeMap<StaticLandscape::Graph::NodeMap<double>*> M_Maps_Map;
 
             PreprocessedDatas(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan) : M_Maps_Map(landscape.getNetwork()) {
-                const Graph_t & graph = landscape.getNetwork();
+                const MutableLandscape::Graph & graph = landscape.getNetwork();
                 // target_nodes
-                for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) { 
+                for(MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u) { 
                     if(landscape.getQuality(u) == 0 && !plan.contains(u)) continue;
                     target_nodes.push_back(u); 
                 }
@@ -22,20 +22,20 @@ namespace Solvers::PL_ECA_4_Vars {
                 MyContractionAlgorithm alg2;
                 contracted_instances = alg2.precompute(landscape, plan);
                 // M_Maps_Map
-                std::for_each(std::execution::par, target_nodes.begin(), target_nodes.end(), [&] (Graph_t::Node t) {
+                std::for_each(std::execution::par, target_nodes.begin(), target_nodes.end(), [&] (MutableLandscape::Node t) {
                     const ContractionResult & cr = (*contracted_instances)[t];
                     const StaticLandscape & contracted_landscape = *cr.landscape;
-                    const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
+                    const StaticLandscape::Graph & contracted_graph = contracted_landscape.getNetwork();
                     const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
 
-                    M_Maps_Map[t] = new StaticGraph_t::NodeMap<double>(contracted_graph);
-                    StaticGraph_t::NodeMap<double> & M_Map = *M_Maps_Map[t];
-                    for(StaticGraph_t::NodeIt v(contracted_graph); v != lemon::INVALID; ++v)
+                    M_Maps_Map[t] = new StaticLandscape::Graph::NodeMap<double>(contracted_graph);
+                    StaticLandscape::Graph::NodeMap<double> & M_Map = *M_Maps_Map[t];
+                    for(StaticLandscape::NodeIt v(contracted_graph); v != lemon::INVALID; ++v)
                         M_Map[v] = max_flow_in(contracted_landscape, contracted_plan, v);
                 });
             }
             ~PreprocessedDatas() {
-                for(Graph_t::Node v : target_nodes) delete  M_Maps_Map[v];
+                for(MutableLandscape::Node v : target_nodes) delete  M_Maps_Map[v];
                 delete contracted_instances;
             }
     };
@@ -45,7 +45,7 @@ namespace Solvers::PL_ECA_4_Vars {
         const ContractionResult & _cr;
 
         XVar(const ContractionResult & cr): VarType(lemon::countArcs(cr.landscape->getNetwork())), _cr(cr) {}
-        int id(StaticGraph_t::Arc a) const { 
+        int id(StaticLandscape::Arc a) const { 
             const int id = _cr.landscape->getNetwork().id(a);
             assert(id >=0 && id < _number); return _offset + id; 
         }
@@ -88,39 +88,39 @@ namespace Solvers::PL_ECA_4_Vars {
 
     class Variables {
         public:
-            Graph_t::NodeMap<ContractedVars*> contracted;
+            MutableLandscape::Graph::NodeMap<ContractedVars*> contracted;
             YVar y;
             const PreprocessedDatas & _pdatas;
             Variables(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan, PreprocessedDatas & pdatas) :
                     contracted(landscape.getNetwork(), nullptr), y(plan), _pdatas(pdatas) {
-                for(Graph_t::Node v : pdatas.target_nodes)
+                for(MutableLandscape::Node v : pdatas.target_nodes)
                     contracted[v] = new ContractedVars((*pdatas.contracted_instances)[v]);
             }
             ~Variables() {
-                for(Graph_t::Node v : _pdatas.target_nodes) delete contracted[v];
+                for(MutableLandscape::Node v : _pdatas.target_nodes) delete contracted[v];
             }
-            ContractedVars & operator[](Graph_t::Node t) const { return *contracted[t]; }
+            ContractedVars & operator[](MutableLandscape::Node t) const { return *contracted[t]; }
     };
 
     void name_variables(OSI_Builder & solver, const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan, PreprocessedDatas & pdatas, const Variables & vars) {
-        const Graph_t & graph = landscape.getNetwork();
-        auto node_str = [&graph] (Graph_t::Node v) { return std::to_string(graph.id(v)); };
+        const MutableLandscape::Graph & graph = landscape.getNetwork();
+        auto node_str = [&graph] (MutableLandscape::Node v) { return std::to_string(graph.id(v)); };
         // XVar
-        for(Graph_t::Node t : pdatas.target_nodes) {
+        for(MutableLandscape::Node t : pdatas.target_nodes) {
             const ContractedVars & cvars = vars[t];
             const ContractionResult & cr = (*pdatas.contracted_instances)[t];
             const StaticLandscape & contracted_landscape = *cr.landscape;
-            const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
+            const StaticLandscape::Graph & contracted_graph = contracted_landscape.getNetwork();
             // const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
-            for(StaticGraph_t::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
+            for(StaticLandscape::ArcIt a(contracted_graph); a != lemon::INVALID; ++a) {
                 // solver->setColName(x_var->id(a), "x_t_" + node_str(t) + "_a_" + std::to_string(contracted_graph.id(a)));
                 solver.setColName(cvars.x.id(a), "x_t_" + node_str(t) + "(" + std::to_string(contracted_graph.id(cr.t)) + ")_a_" + std::to_string(contracted_graph.id(a)) + "(" + std::to_string(contracted_graph.id(contracted_graph.source(a))) + ","+ std::to_string(contracted_graph.id(contracted_graph.target(a))) + ")" );
             }
         }
         // FVar
-        for(Graph_t::Node t : pdatas.target_nodes) solver.setColName(vars[t].f.id(), "f_t_" + node_str(t));
+        for(MutableLandscape::Node t : pdatas.target_nodes) solver.setColName(vars[t].f.id(), "f_t_" + node_str(t));
         // RestoredFVar
-        for(Graph_t::Node t : pdatas.target_nodes)
+        for(MutableLandscape::Node t : pdatas.target_nodes)
             for(auto const& [option, quality_gain] : plan.getOptions(t))
                 solver.setColName(vars[t].restored_f.id(option), "restored_f_t_" + node_str(t) + "_" + std::to_string(option));
         // YVar
@@ -131,7 +131,7 @@ namespace Solvers::PL_ECA_4_Vars {
 using namespace Solvers::PL_ECA_4_Vars;
 
 void insert_variables(OSI_Builder & solver_builder, Variables & vars, PreprocessedDatas & pdatas) {
-    for(Graph_t::Node t : pdatas.target_nodes) {
+    for(MutableLandscape::Node t : pdatas.target_nodes) {
         solver_builder.addVarType(&vars[t].x);
         solver_builder.addVarType(&vars[t].f);
         solver_builder.addVarType(&vars[t].restored_f);
@@ -145,7 +145,7 @@ void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::
     ////////////////////////////////////////////////////////////////////////
     // Columns : Objective
     ////////////////////
-    for(Graph_t::Node t : pdatas.target_nodes) {
+    for(MutableLandscape::Node t : pdatas.target_nodes) {
         // sum w(t) * f_t
         const int f_t = vars[t].f.id();
         solver_builder.setObjective(f_t, landscape.getQuality(t));
@@ -157,18 +157,18 @@ void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::
     ////////////////////////////////////////////////////////////////////////
     // Rows : Constraints
     ////////////////////
-    for(Graph_t::Node t : pdatas.target_nodes) {
+    for(MutableLandscape::Node t : pdatas.target_nodes) {
         const ContractedVars & cvars = vars[t];
         const int f_t = cvars.f.id();
         const ContractionResult & cr = (*pdatas.contracted_instances)[t];
         const StaticLandscape & contracted_landscape = *cr.landscape;
-        const StaticGraph_t & contracted_graph = contracted_landscape.getNetwork();
+        const StaticLandscape::Graph & contracted_graph = contracted_landscape.getNetwork();
         const RestorationPlan<StaticLandscape>& contracted_plan = *cr.plan;
         // out_flow(u) <= in_flow(u) + w(u)
-        for(StaticGraph_t::NodeIt u(contracted_graph); u != lemon::INVALID; ++u) {
+        for(StaticLandscape::NodeIt u(contracted_graph); u != lemon::INVALID; ++u) {
             SolverBuilder_Utils::quadratic_ineq_constraint_lhs_easy_init constraint_lhs;
             // out flow
-            for(StaticGraph_t::OutArcIt b(contracted_graph, u); b != lemon::INVALID; ++b)
+            for(StaticLandscape::Graph::OutArcIt b(contracted_graph, u); b != lemon::INVALID; ++b)
                 constraint_lhs(cvars.x.id(b));
             // optimisation variable
             if(u == cr.t) constraint_lhs(f_t);
@@ -176,7 +176,7 @@ void fill_solver(OSI_Builder & solver_builder, std::vector<SolverBuilder_Utils::
             auto constraint_rhs = constraint_lhs.less();
 
             // in flow
-            for(StaticGraph_t::InArcIt a(contracted_graph, u); a != lemon::INVALID; ++a) {
+            for(StaticLandscape::Graph::InArcIt a(contracted_graph, u); a != lemon::INVALID; ++a) {
                 constraint_rhs(cvars.x.id(a), contracted_landscape.getProbability(a));
                 for(auto const& [option, restored_probability] : contracted_plan.getOptions(a)) {
                     constraint_rhs(vars.y.id(option), cvars.x.id(a), 

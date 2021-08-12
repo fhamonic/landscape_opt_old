@@ -1,9 +1,9 @@
 #include "precomputation/my_contraction_algorithm.hpp"
 
-Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(
+MutableLandscape::Graph::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(
                 const MutableLandscape & landscape, 
                 const RestorationPlan<MutableLandscape> & plan, 
-                const std::vector<Graph_t::Node> & target_nodes) const {
+                const std::vector<MutableLandscape::Node> & target_nodes) const {
     using Graph = MutableLandscape::Graph;
     using ProbabilityMap = MutableLandscape::ProbabilityMap;
 
@@ -66,12 +66,12 @@ Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(
     return results;
 }
 
-Graph_t::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(
+MutableLandscape::Graph::NodeMap<ContractionResult> * MyContractionAlgorithm::precompute(
                 const MutableLandscape & landscape, 
                 const RestorationPlan<MutableLandscape> & plan) const {
-    const Graph_t & graph = landscape.getNetwork();
-    std::vector<Graph_t::Node> nodes;
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u)
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
+    std::vector<MutableLandscape::Node> nodes;
+    for(MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u)
         nodes.push_back(u);
     return precompute(landscape, plan, nodes);
 }

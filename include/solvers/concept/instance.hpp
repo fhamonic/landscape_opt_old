@@ -4,16 +4,16 @@
  * @brief Restorationplan class declaration
  * @version 0.3
  * @date 2021-07-18
- * 
+ *
  * @copyright Copyright (c) 2021
  */
 #ifndef INSTANCE_HPP
 #define INSTANCE_HPP
 
-#include<cassert>
-#include<map>
-#include<list>
-#include<memory>
+#include <cassert>
+#include <list>
+#include <map>
+#include <memory>
 
 #include "landscape/mutable_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
@@ -24,7 +24,9 @@ public:
     RestorationPlan<MutableLandscape> plan;
 
     Instance() : plan(landscape) {}
-    Instance(const Instance & instance) : plan(landscape) { static_cast<void>(instance); }
+    Instance(const Instance & instance) : plan(landscape) {
+        static_cast<void>(instance);
+    }
 };
 
-#endif //RESTORATION_PLAN_2_HPP
+#endif  // RESTORATION_PLAN_2_HPP

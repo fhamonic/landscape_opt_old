@@ -8,24 +8,25 @@
 
 template <typename T>
 class RandomChooser {
-    private:
-        std::default_random_engine gen;
-        double distrib_sum;
-        std::vector<std::pair<T,double>> elements;
-        double rest;
-        std::size_t picked;
-    public:
-        RandomChooser<T>() : distrib_sum{0.0}, rest{0.0}, picked{0} {};
-        RandomChooser<T>(int seed) : distrib_sum{0.0}, rest{0.0}, picked{0} {
-            gen.seed(seed);
-        };
-        ~RandomChooser<T>() {};
+private:
+    std::default_random_engine gen;
+    double distrib_sum;
+    std::vector<std::pair<T, double>> elements;
+    double rest;
+    std::size_t picked;
 
-        void add(T e, double distrib);
+public:
+    RandomChooser<T>() : distrib_sum{0.0}, rest{0.0}, picked{0} {};
+    RandomChooser<T>(int seed) : distrib_sum{0.0}, rest{0.0}, picked{0} {
+        gen.seed(seed);
+    };
+    ~RandomChooser<T>(){};
 
-        bool canPick();
-        T pick();
-        void reset();
+    void add(T e, double distrib);
+
+    bool canPick();
+    T pick();
+    void reset();
 };
 
 template <typename T>
@@ -47,26 +48,24 @@ T RandomChooser<T>::pick() {
     double rv = dis(gen);
 
     int i = 0;
-    for(; ; i++) {
+    for(;; i++) {
         rv -= elements[i].second;
-        if(rv < 0) 
-            break;
+        if(rv < 0) break;
     }
     std::pair tmp = elements[i];
     rest -= tmp.second;
-    picked ++;
+    picked++;
 
-    elements[i] = elements[elements.size()-picked];
-    elements[elements.size()-picked] = tmp;
+    elements[i] = elements[elements.size() - picked];
+    elements[elements.size() - picked] = tmp;
 
     return tmp.first;
 }
 
 template <typename T>
-void RandomChooser<T>::reset() {    
+void RandomChooser<T>::reset() {
     rest = distrib_sum;
-    picked = 0;      
+    picked = 0;
 }
-
 
 #endif

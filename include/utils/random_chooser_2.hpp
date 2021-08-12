@@ -12,50 +12,48 @@
 
 template <typename T>
 class SumTree {
-    private:
-        std::default_random_engine gen;
-        typedef struct _node {
-            _node * parent;
-            double weight;
-            union {
-                struct {
-                    _node * left;
-                    _node * right;
-                } inner;
-                struct {
-                    _node * next;
-                    double coef;
-                    T data;
-                } leaf;
-            } u;
-            int type;
-        } Node;
-        Node * _root;
-        Node * _last_leaf;
-        void update(Node * leaf, double value);
-        Node * find(Node * node, double rest);
-        double reset_node(Node * node);
-        void free_node(Node * node);
-    public:
-        SumTree() : _root(nullptr), _last_leaf(nullptr) {}
-        SumTree(int seed) : _root(nullptr), _last_leaf(nullptr) {
-            gen.seed(seed);
-        }
-        ~SumTree() { 
-            if(isEmpty())
-                return;
-            free_node(_root);
-            _root = nullptr;
-        }
-        int isEmpty() { return _root == nullptr; }
-        int canPick() { return isEmpty() ? false : (_root->weight > 0.0); }
-        void add(T val, double coef);
-        T pick_and_reset();
-        T pick();
-        void reset();
+private:
+    std::default_random_engine gen;
+    typedef struct _node {
+        _node * parent;
+        double weight;
+        union {
+            struct {
+                _node * left;
+                _node * right;
+            } inner;
+            struct {
+                _node * next;
+                double coef;
+                T data;
+            } leaf;
+        } u;
+        int type;
+    } Node;
+    Node * _root;
+    Node * _last_leaf;
+    void update(Node * leaf, double value);
+    Node * find(Node * node, double rest);
+    double reset_node(Node * node);
+    void free_node(Node * node);
 
-        void print_node(Node * node, int depth);
-        void print();
+public:
+    SumTree() : _root(nullptr), _last_leaf(nullptr) {}
+    SumTree(int seed) : _root(nullptr), _last_leaf(nullptr) { gen.seed(seed); }
+    ~SumTree() {
+        if(isEmpty()) return;
+        free_node(_root);
+        _root = nullptr;
+    }
+    int isEmpty() { return _root == nullptr; }
+    int canPick() { return isEmpty() ? false : (_root->weight > 0.0); }
+    void add(T val, double coef);
+    T pick_and_reset();
+    T pick();
+    void reset();
+
+    void print_node(Node * node, int depth);
+    void print();
 };
 
 template <typename T>
@@ -67,8 +65,7 @@ void SumTree<T>::update(Node * leaf, double value) {
 
 template <typename T>
 void SumTree<T>::add(T item, double coef) {
-    if(coef == 0.0)
-        return;
+    if(coef == 0.0) return;
 
     Node * new_leaf = new Node;
     new_leaf->weight = 0;
@@ -92,13 +89,15 @@ void SumTree<T>::add(T item, double coef) {
         else
             _last_leaf->parent->u.inner.right = new_inner;
     }
-       
+
     new_inner->parent = _last_leaf->parent;
     new_inner->weight = _last_leaf->weight;
-    new_inner->u.inner.left = _last_leaf;   _last_leaf->parent = new_inner;
-    new_inner->u.inner.right = new_leaf;    new_leaf->parent = new_inner;
+    new_inner->u.inner.left = _last_leaf;
+    _last_leaf->parent = new_inner;
+    new_inner->u.inner.right = new_leaf;
+    new_leaf->parent = new_inner;
     new_inner->type = INNER;
-    
+
     new_leaf->u.leaf.next = _last_leaf->u.leaf.next;
     _last_leaf->u.leaf.next = new_leaf;
 
@@ -109,11 +108,9 @@ void SumTree<T>::add(T item, double coef) {
 
 template <typename T>
 SumTree<T>::Node * SumTree<T>::find(Node * node, double rest) {
-    if(node->type == LEAF)
-        return node;
+    if(node->type == LEAF) return node;
     const double left_weight = node->u.inner.left->weight;
-    if(rest < left_weight)
-        return find(node->u.inner.left, rest);
+    if(rest < left_weight) return find(node->u.inner.left, rest);
     return find(node->u.inner.right, rest - left_weight);
 }
 
@@ -138,8 +135,7 @@ T SumTree<T>::pick() {
 
 template <typename T>
 double SumTree<T>::reset_node(Node * node) {
-    if(node->type == LEAF)
-        return node->weight = node->u.leaf.coef;
+    if(node->type == LEAF) return node->weight = node->u.leaf.coef;
     const double sum_left = reset_node(node->u.inner.left);
     const double sum_right = reset_node(node->u.inner.right);
     return node->weight = sum_left + sum_right;
@@ -147,8 +143,7 @@ double SumTree<T>::reset_node(Node * node) {
 
 template <typename T>
 void SumTree<T>::reset() {
-    if(isEmpty())
-        return;
+    if(isEmpty()) return;
     reset_node(_root);
 }
 
@@ -160,7 +155,6 @@ void SumTree<T>::free_node(Node * node) {
     }
     delete node;
 }
-
 
 template <typename T>
 void SumTree<T>::print_node(Node * node, int depth) {
@@ -176,10 +170,9 @@ void SumTree<T>::print_node(Node * node, int depth) {
 }
 template <typename T>
 void SumTree<T>::print() {
-    if(isEmpty())
-        return;
+    if(isEmpty()) return;
     print_node(_root, 0);
     std::cout << std::endl;
 }
 
-#endif //RANDOM_CHOOSER_2_HPP
+#endif  // RANDOM_CHOOSER_2_HPP

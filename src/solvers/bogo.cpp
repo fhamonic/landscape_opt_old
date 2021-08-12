@@ -2,13 +2,17 @@
 
 #include "utils/random_chooser.hpp"
 
-Solution Solvers::Bogo::solve(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan, const double B) const {
+Solution Solvers::Bogo::solve(const MutableLandscape & landscape,
+                              const RestorationPlan<MutableLandscape> & plan,
+                              const double B) const {
     Solution solution(landscape, plan);
     const int seed = params.at("seed")->getInt();
     Chrono chrono;
 
-    RandomChooser<RestorationPlan<MutableLandscape>::Option> option_chooser(seed);
-    for(RestorationPlan<MutableLandscape>::Option i=0; i<plan.getNbOptions(); ++i)
+    RandomChooser<RestorationPlan<MutableLandscape>::Option> option_chooser(
+        seed);
+    for(RestorationPlan<MutableLandscape>::Option i = 0;
+        i < plan.getNbOptions(); ++i)
         option_chooser.add(i, 1);
 
     double purschaised = 0.0;
@@ -21,6 +25,6 @@ Solution Solvers::Bogo::solve(const MutableLandscape & landscape, const Restorat
     }
 
     solution.setComputeTimeMs(chrono.timeMs());
-    
+
     return solution;
 }

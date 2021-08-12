@@ -4,17 +4,7 @@
 #include "landscape/mutable_landscape.hpp"
 
 namespace concepts {
-    class ConnectivityIndex {
-        public:
-            ConnectivityIndex() {};
-            ~ConnectivityIndex() {};
-    
-            template <typename GR, typename QM, typename DM>
-            double eval(const concepts::AbstractLandscape<GR, QM, DM> & landscape) {
-                (void) landscape;
-                return 0.0;
-            }
-    };
-}
+struct ConnectivityIndex {};
+}  // namespace concepts
 
-#endif //CONNECTIVITY_INDEX_HPP
+#endif  // CONNECTIVITY_INDEX_HPP

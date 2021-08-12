@@ -1,13 +1,13 @@
 #include "print_helper.hpp"
 
 void Helper::printSolution(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan, std::string name, concepts::Solver & solver, double B, const Solution & solution) {
-    const Graph_t & graph = landscape.getNetwork();
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
         
     auto radius = [&] (double area) { return std::sqrt(area / (2*M_PI)); };
-    Graph_t::NodeMap<int> node_idsMap(graph);
-    Graph_t::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
-    Graph_t::NodeMap<double> node_sizesMap(graph, 0);
-    for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
+    MutableLandscape::Graph::NodeMap<int> node_idsMap(graph);
+    MutableLandscape::Graph::NodeMap<lemon::Color> node_colorsMap(graph, lemon::WHITE);
+    MutableLandscape::Graph::NodeMap<double> node_sizesMap(graph, 0);
+    for(MutableLandscape::NodeIt v(graph); v != lemon::INVALID; ++v) {
         node_idsMap[v] = graph.id(v);
         node_sizesMap[v] = radius(landscape.getQuality(v));
     }
@@ -19,8 +19,8 @@ void Helper::printSolution(const MutableLandscape & landscape, const Restoration
     const auto & [r_max, min_dist] = findNodeScale(landscape);
     const double a_max = r_max*2*radius(minNonZeroQuality(landscape));
 
-    Graph_t::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
-    Graph_t::ArcMap<double> arc_widths(graph, 0.001);
+    MutableLandscape::Graph::ArcMap<lemon::Color> arcs_colorsMap(graph, lemon::BLACK);
+    MutableLandscape::Graph::ArcMap<double> arc_widths(graph, 0.001);
 
 
     std::string str_B = std::to_string(B);
@@ -32,13 +32,13 @@ void Helper::printSolution(const MutableLandscape & landscape, const Restoration
 
     std::cout << title << std::endl;
 
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+    for(MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u) {
         double coef = 0;
         for(const auto & e : plan[u])
             coef = std::max(coef, solution[e.option]);
         node_colorsMap[u] = lemon::Color(1-coef, coef, 0.0);
     }
-    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+    for(MutableLandscape::ArcIt a(graph); a != lemon::INVALID; ++a) {
         double coef = 0;
         for(const auto & e : plan[a])
             coef = std::max(coef, solution[e.option]);
@@ -70,41 +70,41 @@ void Helper::printSolution(const MutableLandscape & landscape, const Restoration
 }
 
 // need to include the binary search tree for y-h , y+h search
-std::pair<Graph_t::Node, Graph_t::Node> Helper::neerestNodes(const MutableLandscape & landscape) {
-    const Graph_t & graph = landscape.getNetwork();
+std::pair<MutableLandscape::Node, MutableLandscape::Node> Helper::neerestNodes(const MutableLandscape & landscape) {
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
     const MutableLandscape::CoordsMap & coordsMap = landscape.getCoordsMap();
 
-    auto dist = [&coordsMap](Graph_t::Node a, Graph_t::Node b){
+    auto dist = [&coordsMap](MutableLandscape::Node a, MutableLandscape::Node b){
         const double dx = coordsMap[b].x - coordsMap[a].x;
         const double dy = coordsMap[b].y - coordsMap[a].y;
         return dx*dx + dy*dy;
     };
 
-    std::vector<Graph_t::Node> nodes;
-    for (Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u)
+    std::vector<MutableLandscape::Node> nodes;
+    for (MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u)
         nodes.push_back(u);
 
-    std::sort(nodes.begin(), nodes.end(), [&coordsMap](Graph_t::Node a, Graph_t::Node b) {
+    std::sort(nodes.begin(), nodes.end(), [&coordsMap](MutableLandscape::Node a, MutableLandscape::Node b) {
         return coordsMap[a].x < coordsMap[b].x;
     });
 
-    std::list<Graph_t::Node> near_line;
+    std::list<MutableLandscape::Node> near_line;
     near_line.push_back(nodes[0]);
     near_line.push_back(nodes[1]);
     double min_distance = dist(nodes[0], nodes[1]);
-    std::pair<Graph_t::Node, Graph_t::Node> neerestPair(nodes[0], nodes[1]);
+    std::pair<MutableLandscape::Node, MutableLandscape::Node> neerestPair(nodes[0], nodes[1]);
 
     const int n = nodes.size();
     for(int i=2; i<n; i++) {
-        const Graph_t::Node p = nodes[i];
+        const MutableLandscape::Node p = nodes[i];
         const double current_x = coordsMap[p].x;
         while(coordsMap[near_line.front()].x < current_x - min_distance)
             near_line.pop_front();
-        for(Graph_t::Node u : near_line) {
+        for(MutableLandscape::Node u : near_line) {
             const double d_up = dist(u, p);
             if(min_distance < d_up)
                 continue;
-            neerestPair = std::pair<Graph_t::Node, Graph_t::Node>(u,p);
+            neerestPair = std::pair<MutableLandscape::Node, MutableLandscape::Node>(u,p);
         }
         near_line.push_back(p);
     }

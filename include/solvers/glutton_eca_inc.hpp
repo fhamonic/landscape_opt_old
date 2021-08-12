@@ -1,33 +1,35 @@
 #ifndef GLUTTON_ECA_INC_SOLVER_HPP
 #define GLUTTON_ECA_INC_SOLVER_HPP
 
-#include "solvers/concept/solver.hpp"
 #include "indices/eca.hpp"
+#include "solvers/concept/solver.hpp"
 
 #include <execution>
 
 namespace Solvers {
-    class Glutton_ECA_Inc : public concepts::Solver {
-        public:
-            Glutton_ECA_Inc() {
-                params["log"] = new IntParam(0);
-                params["parallel"] = new IntParam(0);
-            }
+class Glutton_ECA_Inc : public concepts::Solver {
+public:
+    Glutton_ECA_Inc() {
+        params["log"] = new IntParam(0);
+        params["parallel"] = new IntParam(0);
+    }
 
-            Glutton_ECA_Inc & setLogLevel(int log_level) {
-                params["log"]->set(log_level);
-                return *this;
-            }
-            
-            Glutton_ECA_Inc & setParallel(int parallel) {
-                params["parallel"]->set(parallel);
-                return *this;
-            }
+    Glutton_ECA_Inc & setLogLevel(int log_level) {
+        params["log"]->set(log_level);
+        return *this;
+    }
 
-            Solution solve(const MutableLandscape & landscape, const RestorationPlan<MutableLandscape>& plan, const double B) const;
+    Glutton_ECA_Inc & setParallel(int parallel) {
+        params["parallel"]->set(parallel);
+        return *this;
+    }
 
-            const std::string name() const { return "glutton_eca_inc"; } 
-    };
-}
+    Solution solve(const MutableLandscape & landscape,
+                   const RestorationPlan<MutableLandscape> & plan,
+                   const double B) const;
 
-#endif // GLUTTON_ECA_SOLVER_HPP
+    const std::string name() const { return "glutton_eca_inc"; }
+};
+}  // namespace Solvers
+
+#endif  // GLUTTON_ECA_SOLVER_HPP

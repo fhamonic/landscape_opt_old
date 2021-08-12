@@ -9,11 +9,9 @@
 #ifndef DECORED_LANDSCAPE_HPP
 #define DECORED_LANDSCAPE_HPP
 
-#include "lemon/list_graph.h"
 #include "lemon/adaptors.h"
+#include "lemon/list_graph.h"
 #include "lemon/maps.h"
-
-#include "Eigen/Dense"
 
 #include "landscape/concept/abstract_landscape.hpp"
 #include "landscape/mutable_landscape.hpp"
@@ -22,13 +20,12 @@
 
 /**
  * @brief Class that represent an decored landscape.
- * 
+ *
  * This class represent a decored landscape.
  * That is a modification of the weights of a reference landscape.
  */
 template <typename LS>
-class DecoredLandscape
-    : public concepts::AbstractLandscape<typename LS::Graph> {
+class DecoredLandscape : public concepts::Landscape<typename LS::Graph> {
 public:
     using Graph = typename LS::Graph;
     using Node = typename LS::Graph::Node;
@@ -36,6 +33,7 @@ public:
     using QualityMap = typename LS::QualityMap;
     using ProbabilityMap = typename LS::ProbabilityMap;
     using CoordsMap = typename LS::CoordsMap;
+
 private:
     std::reference_wrapper<const Graph> network;
     std::reference_wrapper<const QualityMap> original_qualityMap;
@@ -46,29 +44,33 @@ private:
 
 public:
     DecoredLandscape(const Graph & original_network,
-        const QualityMap & original_qualityMap,
-        const ProbabilityMap & original_probabilityMap,
-        const CoordsMap & coordsMap)
+                     const QualityMap & original_qualityMap,
+                     const ProbabilityMap & original_probabilityMap,
+                     const CoordsMap & coordsMap)
         : network(original_network)
         , original_qualityMap(original_qualityMap)
         , original_probabilityMap(original_probabilityMap)
         , coordsMap(coordsMap)
         , qualityMap(network)
-        , probabilityMap(network) { reset(); }
+        , probabilityMap(network) {
+        reset();
+    }
     DecoredLandscape(const LS & landscape)
         : network(landscape.getNetwork())
         , original_qualityMap(landscape.getQualityMap())
         , original_probabilityMap(landscape.getProbabilityMap())
         , coordsMap(landscape.getCoordsMap())
         , qualityMap(network)
-        , probabilityMap(network) { reset(); }
+        , probabilityMap(network) {
+        reset();
+    }
     DecoredLandscape(const DecoredLandscape<LS> & landscape)
         : network(landscape.network)
         , original_qualityMap(landscape.original_qualityMap)
         , original_probabilityMap(landscape.original_probabilityMap)
         , coordsMap(landscape.coordsMap)
         , qualityMap(network)
-        , probabilityMap(network) { 
+        , probabilityMap(network) {
         for(typename Graph::NodeIt u(network); u != lemon::INVALID; ++u)
             setQuality(u, landscape.getQuality(u));
         for(typename Graph::ArcIt a(network); a != lemon::INVALID; ++a)
@@ -93,8 +95,8 @@ public:
 
     /**
      * @brief Get the original quality of specified node.
-     * @param u 
-     * @return const double& 
+     * @param u
+     * @return const double&
      */
     const double & getOriginalQuality(Node u) const {
         return original_qualityMap.get()[u];
@@ -102,10 +104,10 @@ public:
 
     /**
      * @brief Get the original difficulty of specified arc.
-     * @param u 
-     * @return const double& 
+     * @param u
+     * @return const double&
      */
-    const double & getOriginalProbability(Graph_t::Arc a) const {
+    const double & getOriginalProbability(MutableLandscape::Arc a) const {
         return original_probabilityMap.get()[a];
     }
 
@@ -119,27 +121,32 @@ public:
             setProbability(a, original_probabilityMap.get()[a]);
     }
 
-    void apply(const typename RestorationPlan<LS>::NodeEnhancements
-                    & nodeEnhancements, const double coef = 1.0) {
+    void apply(
+        const typename RestorationPlan<LS>::NodeEnhancements & nodeEnhancements,
+        const double coef = 1.0) {
         for(const auto & [u, quality_gain] : nodeEnhancements)
-            qualityMap[u] =+ coef * quality_gain;
+            qualityMap[u] = +coef * quality_gain;
     }
 
-    void apply(const typename RestorationPlan<LS>::ArcEnhancements
-                    & arcEnhancements, const double coef = 1.0) {
+    void apply(
+        const typename RestorationPlan<LS>::ArcEnhancements & arcEnhancements,
+        const double coef = 1.0) {
         for(const auto & [a, restored_probability] : arcEnhancements) {
-            probabilityMap[a] = std::max(probabilityMap[a],
-                original_probabilityMap.get()[a] + coef *
-                (restored_probability - original_probabilityMap.get()[a]));
+            probabilityMap[a] =
+                std::max(probabilityMap[a],
+                         original_probabilityMap.get()[a] +
+                             coef * (restored_probability -
+                                     original_probabilityMap.get()[a]));
         }
     }
 
-    void apply(const typename RestorationPlan<LS>::NodeEnhancements
-        & nodeEnhancements, const typename RestorationPlan<LS>::ArcEnhancements
-        & arcEnhancements, const double coef = 1.0) {
+    void apply(
+        const typename RestorationPlan<LS>::NodeEnhancements & nodeEnhancements,
+        const typename RestorationPlan<LS>::ArcEnhancements & arcEnhancements,
+        const double coef = 1.0) {
         apply(nodeEnhancements, coef);
         apply(arcEnhancements, coef);
     }
 };
 
-#endif //DECORED_LANDSCAPE_HPP
+#endif  // DECORED_LANDSCAPE_HPP

@@ -9,14 +9,14 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     const int timeout = params.at("timeout")->getInt();
     std::chrono::time_point<std::chrono::high_resolution_clock> last_time, current_time;
 
-    const Graph_t & graph = landscape.getNetwork();
-    const Graph_t::NodeMap<double> & qualityMap = landscape.getQualityMap();
-    const Graph_t::ArcMap<double> & worst_difficultyMap = landscape.getDifficultyMap();
-    Graph_t::ArcMap<double> best_difficultyMap(graph);
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
+    const MutableLandscape::Graph::NodeMap<double> & qualityMap = landscape.getQualityMap();
+    const MutableLandscape::Graph::ArcMap<double> & worst_difficultyMap = landscape.getDifficultyMap();
+    MutableLandscape::Graph::ArcMap<double> best_difficultyMap(graph);
  
     const int nb_options = plan.options().size();
 
-    for(Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+    for(MutableLandscape::ArcIt a(graph); a != lemon::INVALID; ++a) {
         best_difficultyMap[a] = worst_difficultyMap[a];
 
         assert(plan.getOptions(a).size() <= 1);
@@ -26,10 +26,10 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
         }
     }
 
-    Graph_t::NodeMap<int> unthreatened_nodes_idMap(graph, -1);
+    MutableLandscape::Graph::NodeMap<int> unthreatened_nodes_idMap(graph, -1);
 
     int cpt = 0;
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+    for(MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u) {
         if(plan.contains(u))
             continue;
         unthreatened_nodes_idMap[u] = cpt;
@@ -40,13 +40,13 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     const int m = lemon::countArcs(graph);
 
     // optimization variables
-    auto l_var = [&] (Graph_t::Node s, Graph_t::Node t) {
+    auto l_var = [&] (MutableLandscape::Node s, MutableLandscape::Node t) {
         return OSI_Builder::compose_pair(graph.id(s), graph.id(t));
     };
     const int l_var_number = OSI_Builder::nb_pairs(n);
 
     const int I_offset = l_var_number;
-    auto I_var = [&] (Graph_t::Node s, Graph_t::Node t, Graph_t::Arc a, int status) {
+    auto I_var = [&] (MutableLandscape::Node s, MutableLandscape::Node t, MutableLandscape::Arc a, int status) {
         return I_offset + OSI_Builder::compose_pair(graph.id(s),graph.id(t)) * (2*m) * 2 + graph.id(a) * 2 + status;
     };
     const int I_var_number = OSI_Builder::nb_pairs(n)*(2*m)*2;
@@ -59,7 +59,7 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     const int x_var_number = nb_options;
 
     const int H_offset = x_offset + x_var_number;
-    std::function<int (Graph_t::Node,Graph_t::Node,int)> H_var = [&] (Graph_t::Node s, Graph_t::Node t, int i) {
+    std::function<int (MutableLandscape::Node,MutableLandscape::Node,int)> H_var = [&] (MutableLandscape::Node s, MutableLandscape::Node t, int i) {
         assert(i >= 0 && i < g);
         return H_offset + OSI_Builder::compose_pair(graph.id(s),graph.id(t)) * g + i;
     };
@@ -77,7 +77,7 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
         return -alpha * std::log(v);
     };
 
-    auto o_const = [&] (Graph_t::Node s, Graph_t::Node t, int i) {
+    auto o_const = [&] (MutableLandscape::Node s, MutableLandscape::Node t, int i) {
         const int id_s = graph.id(s), id_t = graph.id(t);
 
         const double P_max = P_func((*best_distances)(id_s, id_t));
@@ -85,7 +85,7 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
 
         return P_max - (P_max-P_min)/(double)(g-1) * i;
     };
-    auto m_const = [&] (Graph_t::Node s, Graph_t::Node t, int i) {
+    auto m_const = [&] (MutableLandscape::Node s, MutableLandscape::Node t, int i) {
         return inv_P_func(o_const(s,t,i));
     };
 
@@ -111,8 +111,8 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     // Columns : Objective
     ////////////////////
     // sum H_sti * o_sti
-    for(Graph_t::NodeIt s(graph); s != lemon::INVALID; ++s) {
-        for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    for(MutableLandscape::NodeIt s(graph); s != lemon::INVALID; ++s) {
+        for(MutableLandscape::NodeIt t(graph); t != lemon::INVALID; ++t) {
             const int id_s = graph.id(s);
             const int id_t = graph.id(t);
             if(id_s >= id_t)
@@ -129,13 +129,13 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     // Rows : Constraints
     ////////////////////
     // l_st >= sum I_sta * l(a)
-    for(Graph_t::NodeIt s(graph); s != lemon::INVALID; ++s) {
-        for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    for(MutableLandscape::NodeIt s(graph); s != lemon::INVALID; ++s) {
+        for(MutableLandscape::NodeIt t(graph); t != lemon::INVALID; ++t) {
             if(graph.id(s) >= graph.id(t))
                 continue;
             const int l_st = l_var(s,t);
             solver_builder.buffEntry(l_st, 1);
-            for(typename Graph_t::ArcIt a(graph); a != lemon::INVALID; ++a) {
+            for(typename MutableLandscape::ArcIt a(graph); a != lemon::INVALID; ++a) {
                 const int I_sta_r = I_var(s,t,a,RESTORED);
                 solver_builder.buffEntry(I_sta_r, -best_difficultyMap[a]);
                 const int I_sta_d = I_var(s,t,a,DEFAULT);
@@ -147,18 +147,18 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     ////////////////////
     // I_sta flow constraints
     // in_flow - out_flow >= bound  
-    for(Graph_t::NodeIt s(graph); s != lemon::INVALID; ++s) {
-        for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    for(MutableLandscape::NodeIt s(graph); s != lemon::INVALID; ++s) {
+        for(MutableLandscape::NodeIt t(graph); t != lemon::INVALID; ++t) {
             if(graph.id(s) >= graph.id(t))
                 continue;
-            for(Graph_t::NodeIt v(graph); v != lemon::INVALID; ++v) {
-                for(typename Graph_t::InArcIt a(graph, v); a != lemon::INVALID; ++a) {
+            for(MutableLandscape::NodeIt v(graph); v != lemon::INVALID; ++v) {
+                for(typename MutableLandscape::Graph::InArcIt a(graph, v); a != lemon::INVALID; ++a) {
                     const int I_sta_r = I_var(s,t,a,RESTORED);
                     solver_builder.buffEntry(I_sta_r, 1);
                     const int I_sta_d = I_var(s,t,a,DEFAULT);
                     solver_builder.buffEntry(I_sta_d, 1);
                 }
-                for(typename Graph_t::OutArcIt a(graph, v); a != lemon::INVALID; ++a) {
+                for(typename MutableLandscape::Graph::OutArcIt a(graph, v); a != lemon::INVALID; ++a) {
                     const int I_sta_r = I_var(s,t,a,RESTORED);
                     solver_builder.buffEntry(I_sta_r, -1);
                     const int I_sta_d = I_var(s,t,a,DEFAULT);
@@ -172,15 +172,15 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     }
     ////////////////////
     // I_sta_p <= x_e
-    for(Graph_t::NodeIt s(graph); s != lemon::INVALID; ++s) {
-        for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    for(MutableLandscape::NodeIt s(graph); s != lemon::INVALID; ++s) {
+        for(MutableLandscape::NodeIt t(graph); t != lemon::INVALID; ++t) {
             if(graph.id(s) >= graph.id(t))
                 continue;
 
             for(int i=0; i<nb_options; i++) {
                 RestorationPlan<MutableLandscape>::Option* option = plan.options()[i];
                 const double x_i = x_var(i);
-                for(Graph_t::Arc a : option->arcs()) {
+                for(MutableLandscape::Arc a : option->arcs()) {
                     const int I_sta_r = I_var(s,t,a,RESTORED);
                     solver_builder.buffEntry(I_sta_r, 1);
                     solver_builder.buffEntry(x_i, -1);
@@ -192,8 +192,8 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
     ////////////////////
     // H_sti  ->  l_st <= m_i
     // sum H_sti <= 1
-    for(Graph_t::NodeIt s(graph); s != lemon::INVALID; ++s) {
-        for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    for(MutableLandscape::NodeIt s(graph); s != lemon::INVALID; ++s) {
+        for(MutableLandscape::NodeIt t(graph); t != lemon::INVALID; ++t) {
             if(graph.id(s) >= graph.id(t))
                 continue;
             const int l_st = l_var(s,t);
@@ -233,8 +233,8 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
 
     OsiClpSolverInterface * solver = solver_builder.buildSolver(OSI_Builder::MAX);
 
-    for(Graph_t::NodeIt s(graph); s != lemon::INVALID; ++s) {
-        for(Graph_t::NodeIt t(graph); t != lemon::INVALID; ++t) {
+    for(MutableLandscape::NodeIt s(graph); s != lemon::INVALID; ++s) {
+        for(MutableLandscape::NodeIt t(graph); t != lemon::INVALID; ++t) {
             if(graph.id(s) >= graph.id(t))
                 continue;
             for(int i=0; i<g; i++) {
@@ -298,7 +298,7 @@ Solution * PL_ECA_Solver::solve(const MutableLandscape & landscape, const Restor
 
     const double obj = model.getObjValue();
     double eca = 2*obj;
-    for(Graph_t::NodeIt u(graph); u != lemon::INVALID; ++u) {
+    for(MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u) {
         eca += qualityMap[u]*qualityMap[u];
     }
     std::cout << "ECA from obj : " << std::sqrt(eca) << std::endl;

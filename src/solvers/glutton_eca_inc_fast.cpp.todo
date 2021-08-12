@@ -9,7 +9,7 @@ Solution Solvers::Glutton_ECA_Inc::solve(const MutableLandscape & landscape, con
     const bool parallel = params.at("parallel")->getBool();
     Chrono chrono;
  
-    const Graph_t & graph = landscape.getNetwork();
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
 
     std::vector<RestorationPlan<MutableLandscape>::Option> options;
     double purchaised = 0.0;
@@ -27,8 +27,8 @@ Solution Solvers::Glutton_ECA_Inc::solve(const MutableLandscape & landscape, con
         return (p1.first > p2.first) ? p1 : p2;
     };
     auto compute_option = [&landscape, &plan, &prec_eca, &p_matrix, &solution] (RestorationPlan<MutableLandscape>::Option option) {
-        const Graph_t & graph = landscape.getNetwork();
-        for (Graph_t::NodeIt k(graph); k != lemon::INVALID; ++k) {
+        const MutableLandscape::Graph & graph = landscape.getNetwork();
+        for (MutableLandscape::NodeIt k(graph); k != lemon::INVALID; ++k) {
 
         }
 
@@ -71,8 +71,8 @@ Solution Solvers::Glutton_ECA_Inc::solve(const MutableLandscape & landscape, con
                 for(auto const& [u, quality_gain] : plan.getNodes(best_option))
                     std::cout << "\tn " << graph.id(u) << std::endl;
                 for(auto const& [a, restored_probability] : plan.getArcs(best_option)) {
-                    Graph_t::Node source = graph.source(a);
-                    Graph_t::Node target = graph.target(a);
+                    MutableLandscape::Node source = graph.source(a);
+                    MutableLandscape::Node target = graph.target(a);
                     std::cout << "\ta " << " " << graph.id(source) << " " << graph.id(target) << std::endl;
                 }
             }

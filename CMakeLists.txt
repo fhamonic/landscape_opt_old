@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(Landscape_Opt VERSION 1.0
-    DESCRIPTION "Library for handling ecological landscape datas and optimize their connectivity according to the PC indicator .. and more incomming"
+project(
+    Landscape_Opt
+    VERSION 1.0
+    DESCRIPTION
+        "Library for handling ecological landscape datas and optimize their connectivity according to the PC indicator .. and more incomming"
     LANGUAGES CXX)
 
 # set(CMAKE_VERBOSE_MAKEFILE ON)
 
-#################### Options ####################
-SET(CMAKE_CXX_STANDARD 17)
-SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+# ################### Options ####################
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(WARNINGS "" OFF)
 option(HARDCORE_WARNINGS "" OFF)
@@ -21,11 +24,11 @@ set(HARDCORE_WARNINGS_LIST
     "-Wall;-Wextra;-Wshadow;-Wpedantic;-Wnon-virtual-dtor;-Wold-style-cast;-Wcast-align;-Wunused;-Woverloaded-virtual;-Wpedantic;-Wconversion;-Wsign-conversion;-Wmisleading-indentation;-Wduplicated-cond;-Wduplicated-branches;-Wlogical-op;-Wnull-dereference;-Wuseless-cast;-Wdouble-promotion;-Wformat=2;-Wlifetime"
 )
 
-#################### Modules ####################
+# ################### Modules ####################
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 include(CMakeBuildTypeUtils)
 
-#################### Packages ####################
+# ################### Packages ####################
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
@@ -35,10 +38,10 @@ if(${WITH_GUROBI} STREQUAL "ON")
     find_package(GUROBI REQUIRED)
 endif()
 
-##################### Sources ######################
-file(GLOB SRC "src/*.cpp" "src/*/*.cpp" "src/*/*/*.cpp" "src/*/*/*/*.cpp") 
+# #################### Sources ######################
+file(GLOB SRC "src/*.cpp" "src/*/*.cpp" "src/*/*/*.cpp" "src/*/*/*/*.cpp")
 
-#################### LIB target ####################
+# ################### LIB target ####################
 add_library(landscape_opt ${SRC})
 
 target_include_directories(landscape_opt PUBLIC include)
@@ -59,19 +62,20 @@ if(${WITH_GUROBI} STREQUAL "ON")
     target_link_libraries(landscape_opt ${GUROBI_LIBRARIES})
 endif()
 
-target_compile_options_if_exists(landscape_opt PRIVATE ${WARNINGS} ${WARNINGS_LIST})
-target_compile_options_if_exists(landscape_opt PRIVATE ${HARDCORE_WARNINGS} ${HARDCORE_WARNINGS_LIST})
-target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_FOR_NATIVE} -march=native)
-target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_WITH_LTO} -flto)
+target_compile_options_if_exists(landscape_opt PRIVATE ${WARNINGS}
+                                 ${WARNINGS_LIST})
+target_compile_options_if_exists(landscape_opt PRIVATE ${HARDCORE_WARNINGS}
+                                 ${HARDCORE_WARNINGS_LIST})
+target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_FOR_NATIVE}
+                                 -march=native)
+target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_WITH_LTO}
+                                 -flto)
 
-################### EXEC target ####################
+# ################## EXEC target ####################
 add_executable(solve exec/solve.cpp)
 target_include_directories(solve PUBLIC include)
 target_include_directories(solve PUBLIC thirdparty)
 target_link_libraries(solve PUBLIC landscape_opt)
-
-
-
 
 add_executable(quebec_analysis exec/quebec_analysis.cpp)
 target_include_directories(quebec_analysis PUBLIC include)
@@ -82,7 +86,6 @@ add_executable(marseille_analysis exec/marseille_analysis.cpp)
 target_include_directories(marseille_analysis PUBLIC include)
 target_include_directories(marseille_analysis PUBLIC thirdparty)
 target_link_libraries(marseille_analysis PUBLIC landscape_opt)
-
 
 add_executable(eval_eca exec/eval_eca.cpp)
 target_include_directories(eval_eca PUBLIC include)
@@ -98,9 +101,6 @@ add_executable(biorevaix_test exec/biorevaix_test.cpp)
 target_include_directories(biorevaix_test PUBLIC include)
 target_include_directories(biorevaix_test PUBLIC thirdparty)
 target_link_libraries(biorevaix_test PUBLIC landscape_opt)
-
-
-
 
 add_executable(contraction_test test/contraction_test.cpp)
 target_include_directories(contraction_test PUBLIC include)
