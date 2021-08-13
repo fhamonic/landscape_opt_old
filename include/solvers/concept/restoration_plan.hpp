@@ -21,6 +21,8 @@
 #include <boost/container/small_vector.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 
+#include <range/v3/view/iota.hpp>
+
 /**
  * @brief A generic class for respresenting a landscape restoration plan.
  *
@@ -463,12 +465,21 @@ public:
     }
 
     /**
-     * @brief Comptes the total cost of the restoration plan, i.e. sum of
+     * @brief Computes the total cost of the restoration plan, i.e. sum of
      * options costs
      * @return double
      */
     double totalCost() const noexcept {
         return std::accumulate(_costs.begin(), _costs.end(), 0.0);
+    }
+
+    /**
+     * @brief range view for iterating over options ids.
+     */
+    auto options() const {
+        auto view =
+            ranges::iota_view<int, int>(0, static_cast<int>(getNbOptions()));
+        return view;
     }
 };
 
