@@ -70,12 +70,11 @@ int main() {
               << std::endl;
 
     // Helper::printLandscapeGraphviz(landscape, "test.dot");
-    Helper::printInstanceGraphviz(landscape, plan, "instance_test.dot");
 
     Solvers::Glutton_ECA_Dec naive_solver;
     naive_solver.setParallel(true);
     Solution naive_solution =
-        naive_solver.solve(landscape, plan, plan.totalCost() * 0.4);
+        naive_solver.solve(landscape, plan, plan.totalCost() * 0.3);
     std::cout << "naive solution ECA: "
               << Parallel_ECA().eval(
                      Helper::decore_landscape(landscape, plan, naive_solution))
@@ -93,6 +92,9 @@ int main() {
             new_plan.addArc(new_option, a, restored_prob);
         }
     }
+
+
+    Helper::printInstanceGraphviz(landscape, new_plan, "instance_test.dot");
 
     // StdMutableLandscapeParser::get().write(landscape, "", "bug");
     // StdRestorationPlanParser plan_parser(landscape);

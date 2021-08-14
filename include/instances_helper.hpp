@@ -332,6 +332,7 @@ Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2) {
             landscape.addNode((cost == 1 ? 1 : 0), Point(X, Y));
         nodes[N2_id] = u;
         node_prob[u] = prob(cost);
+        troncon_option[u] = -1;
 
         if(cost != 800) continue;
         RestorationPlan<MutableLandscape>::Option & option =
@@ -352,7 +353,6 @@ Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2) {
 
         RestorationPlan<MutableLandscape>::Option option_u = troncon_option[u];
         RestorationPlan<MutableLandscape>::Option option_v = troncon_option[v];
-        if(option_u < 0 && option_v < 0) continue;
         if(option_u > 0 && option_v > 0 && option_u != option_v) {
             const MutableLandscape::Node w = landscape.addNode(
                 0, (landscape.getCoords(u) + landscape.getCoords(v)) / 2);
@@ -383,6 +383,8 @@ Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2) {
 
         const MutableLandscape::Arc uv = landscape.addArc(u, v, probability);
         const MutableLandscape::Arc vu = landscape.addArc(v, u, probability);
+
+        if(option_u < 0 && option_v < 0) continue;
 
         RestorationPlan<MutableLandscape>::Option option =
             std::max(option_u, option_v);
