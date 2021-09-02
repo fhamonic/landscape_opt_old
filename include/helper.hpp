@@ -205,6 +205,41 @@ std::unique_ptr<typename LS::Graph::ArcMap<double>> corridorCentralityMap(
     return centralityMap;
 }
 
+/**
+ * @brief Computes the value of the ECA index of the specified landscape
+ * graph.
+ *
+ * @time \f$O(n \cdot (m + n) \log n)\f$ where \f$n\f$ is the number of
+ * nodes and \f$m\f$ the number of arcs
+ * @space \f$O(m)\f$ where \f$m\f$ is the number of arcs
+ */
+template <typename GR, typename QM, typename PM>
+std::vector<std::pair<typename GR::Node, double>> computeDistancePairs(
+    const GR & graph, const QM & qualityMap, const PM & probabilityMap,
+                             const typename GR::Node & s) {
+    using Node = typename GR::Node;
+
+    std::vector<std::pair<Node, double>> result;
+    result.reserve(lemon::countNodes());
+    lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(graph,
+                                                          probabilityMap);
+    if(qualityMap[s] == 0) continue;
+    dijkstra.init(s);
+    while(!dijkstra.emptyQueue())
+        result.emplace_back(dijkstra.processNextNode());
+    return result;
+}
+
+template <typename LS>
+auto computeDistancePairs(const LS & landscape,
+                             const typename LS::GR::Node & s) {
+    auto result = computeDistancePairs(landscape.getNetwork(),
+                                          landscape.getQualityMap(),
+                                          landscape.getProbabilityMap(), s);
+    return result;
+}
+
+
 template <typename LS>
 DecoredLandscape<LS> decore_landscape(const LS & landscape,
                                       const RestorationPlan<LS> & plan,
