@@ -46,7 +46,6 @@ int main() {
 
     const Graph & graph = landscape.getNetwork();
 
-    const int node_count = lemon::countNodes(graph);
 
     for(NodeIt s(graph); s != lemon::INVALID; ++s) {
         int last_partition = 0;
@@ -61,13 +60,16 @@ int main() {
                        p.second;
             });
 
+        const int node_count = sorted_pairs.size();
+
         for(const auto & [t, p_st] : sorted_pairs) {
             if(p_st == 0) break;
             const int current_partition = prob_to_partition(p_st);
             if(current_partition > last_partition) {
-                percent_node_accs[last_partition](static_cast<double>(node_count_sum) / node_count * 100);
-                percent_contribution_accs[last_partition](contribution_sum / contribution_max * 100);
-
+                percent_node_accs[last_partition](
+                    static_cast<double>(node_count_sum) / node_count * 100);
+                percent_contribution_accs[last_partition](
+                    contribution_sum / contribution_max * 100);
                 last_partition = current_partition;
             }
 

@@ -216,7 +216,7 @@ std::unique_ptr<typename LS::Graph::ArcMap<double>> corridorCentralityMap(
 template <typename GR, typename QM, typename PM>
 std::vector<std::pair<typename GR::Node, double>> computeDistancePairs(
     const GR & graph, const QM & qualityMap, const PM & probabilityMap,
-                             const typename GR::Node s) {
+    const typename GR::Node s) {
     using Node = typename GR::Node;
 
     std::vector<std::pair<Node, double>> result;
@@ -225,21 +225,25 @@ std::vector<std::pair<typename GR::Node, double>> computeDistancePairs(
                                                           probabilityMap);
     if(qualityMap[s] != 0) {
         dijkstra.init(s);
-        while(!dijkstra.emptyQueue())
+        while(!dijkstra.emptyQueue()) {
             result.emplace_back(dijkstra.processNextNode());
+            if(result.back().second == 0.0) {
+                result.pop_back();
+                break;
+            }
+        }
     }
     return result;
 }
 
 template <typename LS>
-std::vector<std::pair<typename LS::Node, double>> computeDistancePairs(const LS & landscape,
-                             const typename LS::Node s) {
-    auto result = computeDistancePairs(landscape.getNetwork(),
-                                          landscape.getQualityMap(),
-                                          landscape.getProbabilityMap(), s);
+std::vector<std::pair<typename LS::Node, double>> computeDistancePairs(
+    const LS & landscape, const typename LS::Node s) {
+    auto result =
+        computeDistancePairs(landscape.getNetwork(), landscape.getQualityMap(),
+                             landscape.getProbabilityMap(), s);
     return result;
 }
-
 
 template <typename LS>
 DecoredLandscape<LS> decore_landscape(const LS & landscape,
