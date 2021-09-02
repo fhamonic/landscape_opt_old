@@ -3,6 +3,8 @@
 
 #include <algorithms/simpler_dijkstra.hpp>
 
+#include "my_bin_heap.hpp"
+
 namespace lemon {
 /**
  * @brief Multiplicative operation traits for the Dijkstra algorithm class.
@@ -46,7 +48,7 @@ struct DijkstraMultiplicativeTraits {
     }
 
     using Heap =
-        BinHeap<typename LEN::Value, HeapCrossRef, std::greater<Value>>;
+        MyBinHeap<typename LEN::Value, HeapCrossRef, std::greater<Value>>;
     static Heap * createHeap(HeapCrossRef & r) { return new Heap(r); }
 
     using PredMap = typename Digraph::template NodeMap<typename Digraph::Arc>;

@@ -4,10 +4,10 @@
 #include "indices/concept/connectivity_index.hpp"
 #include "algorithms/multiplicative_dijkstra.hpp"
 
-class ECA : public concepts::ConnectivityIndex {
+class PartitionnedECA : public concepts::ConnectivityIndex {
 public:
-    ECA() = default;
-    ~ECA() = default;
+    PartitionnedECA() = default;
+    ~PartitionnedECA() = default;
 
     /**
      * @brief Computes the value of the ECA index of the specified landscape
@@ -18,7 +18,7 @@ public:
      * @space \f$O(m)\f$ where \f$m\f$ is the number of arcs
      */
     template <typename GR, typename QM, typename PM>
-    double eval(const GR & graph, const QM & qualityMap,
+    std::vector<typename GR::Node, double> eval(const GR & graph, const QM & qualityMap,
                 const PM & probabilityMap) {
         lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(graph,
                                                               probabilityMap);
@@ -27,7 +27,7 @@ public:
             if(qualityMap[s] == 0) continue;
             dijkstra.init(s);
             while(!dijkstra.emptyQueue()) {
-                std::pair<typename GR::Node, double> pair =
+                const std::pair<typename GR::Node, double> pair =
                     dijkstra.processNextNode();
                 typename GR::Node t = pair.first;
                 const double p_st = pair.second;

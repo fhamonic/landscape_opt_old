@@ -5,28 +5,12 @@
 #include <execution>
 
 #include "indices/concept/connectivity_index.hpp"
-
 #include "algorithms/multiplicative_dijkstra.hpp"
-
-#include "lemon/bits/map_extender.h"
-
-#include "landscape/decored_landscape.hpp"
-#include "solvers/concept/solution.hpp"
 
 class Parallel_ECA : public concepts::ConnectivityIndex {
 public:
     Parallel_ECA(){};
     ~Parallel_ECA(){};
-
-    static double P_func(const double d, const double alpha) {
-        assert(d >= 0);
-        return std::exp(-d / alpha);
-    }
-
-    static double inv_P_func(const double p, const double alpha) {
-        assert(p >= 0 && p <= 1);
-        return -alpha * std::log(p);
-    }
 
     /**
      * @brief Computes the value of the Parallel_ECA index of the specified

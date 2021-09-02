@@ -71,21 +71,23 @@ int main() {
 
     // Helper::printLandscapeGraphviz(landscape, "test.dot");
 
-    Solvers::Glutton_ECA_Dec naive_solver;
-    naive_solver.setParallel(true);
-    Solution naive_solution =
-        naive_solver.solve(landscape, plan, plan.totalCost() * 0.3);
-    std::cout << "naive solution ECA: "
+    Solvers::Glutton_ECA_Dec glutton_dec_solver;
+    glutton_dec_solver.setParallel(true);
+    Solution budget_solution =
+        glutton_dec_solver.solve(landscape, plan, plan.totalCost() * 0.3);
+    std::cout << "budget solution ECA: "
               << Parallel_ECA().eval(
-                     Helper::decore_landscape(landscape, plan, naive_solution))
+                     Helper::decore_landscape(landscape, plan, budget_solution))
               << std::endl;
-    std::cout << "in " << naive_solution.getComputeTimeMs() << "ms"
+    std::cout << "in " << budget_solution.getComputeTimeMs() << "ms"
               << std::endl;
+
+    return EXIT_SUCCESS;
 
     RestorationPlan<MutableLandscape> new_plan(landscape);
     auto arc_options = plan.computeArcOptionsMap();
     for(auto option : plan.options()) {
-        if(naive_solution[option] == 0) continue;
+        if(budget_solution[option] == 0) continue;
         RestorationPlan<MutableLandscape>::Option new_option =
             new_plan.addOption(plan.getCost(option));
         for(const auto & [a, restored_prob] : arc_options[option]) {
@@ -93,13 +95,22 @@ int main() {
         }
     }
 
-
     Helper::printInstanceGraphviz(landscape, new_plan, "instance_test.dot");
 
     // StdMutableLandscapeParser::get().write(landscape, "", "bug");
     // StdRestorationPlanParser plan_parser(landscape);
     // plan_parser.write(plan, "", "bug");
     // return EXIT_SUCCESS;
+
+    Solvers::Glutton_ECA_Inc glutton_inc_solver;
+    Solution naive_solution =
+        glutton_inc_solver.solve(landscape, new_plan, plan.totalCost() * 0.1);
+    std::cout << "naive solution ECA: "
+              << Parallel_ECA().eval(Helper::decore_landscape(
+                     landscape, new_plan, naive_solution))
+              << std::endl;
+    std::cout << "in " << naive_solution.getComputeTimeMs() << "ms"
+              << std::endl;
 
     Solvers::PL_ECA_3 solver;
     solver.setLogLevel(2);

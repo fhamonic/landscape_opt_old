@@ -1,6 +1,10 @@
 #ifndef SIMPLER_DIJKSTRA_H
 #define SIMPLER_DIJKSTRA_H
 
+#include <lemon/dheap.h>
+#include <lemon/fib_heap.h>
+#include <lemon/quad_heap.h>
+
 #include <lemon/dijkstra.h>
 
 namespace lemon {
@@ -66,27 +70,38 @@ public:
     bool emptyQueue() const { return _heap->empty(); }
 
     std::pair<typename GR::Node, double> processNextNode() {
-        Node v = _heap->top();
-        Value oldvalue = _heap->prio();
+        // Node v = _heap->top();
+        // Value oldvalue = _heap->prio();
+        // _heap->pop();
+        // for(OutArcIt e(*G, v); e != INVALID; ++e) {
+        //     Node w = G->target(e);
+        //     const auto s = _heap->state(w);
+        //     if(s == Heap::IN_HEAP) {
+        //         Value newvalue = OperationTraits::plus(oldvalue, (*_length)[e]);
+        //         if(OperationTraits::less(newvalue, (*_heap)[w]))
+        //             _heap->decrease(w, newvalue);
+        //         continue;
+        //     }
+        //     if(s == Heap::POST_HEAP) continue;
+        //     _heap->push(w, OperationTraits::plus(oldvalue, (*_length)[e]));
+        // }
+        // return std::make_pair(v, oldvalue);
+        
+        const auto p = _heap->p_top();
         _heap->pop();
-        for(OutArcIt e(*G, v); e != INVALID; ++e) {
+        for(OutArcIt e(*G, p.first); e != INVALID; ++e) {
             Node w = G->target(e);
-            switch(_heap->state(w)) {
-                case Heap::PRE_HEAP:
-                    _heap->push(w,
-                                OperationTraits::plus(oldvalue, (*_length)[e]));
-                    break;
-                case Heap::IN_HEAP: {
-                    Value newvalue =
-                        OperationTraits::plus(oldvalue, (*_length)[e]);
-                    if(OperationTraits::less(newvalue, (*_heap)[w]))
-                        _heap->decrease(w, newvalue);
-                } break;
-                case Heap::POST_HEAP:
-                    break;
+            const auto s = _heap->state(w);
+            if(s == Heap::IN_HEAP) {
+                Value newvalue = OperationTraits::plus(p.second, (*_length)[e]);
+                if(OperationTraits::less(newvalue, (*_heap)[w]))
+                    _heap->decrease(w, newvalue);
+                continue;
             }
+            if(s == Heap::POST_HEAP) continue;
+            _heap->push(w, OperationTraits::plus(p.second, (*_length)[e]));
         }
-        return std::make_pair(v, oldvalue);
+        return p;
     }
 };
 }  // namespace lemon
