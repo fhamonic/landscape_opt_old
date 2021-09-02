@@ -28,7 +28,7 @@ int main() {
              << "average_percentage_of_contribution "
              << "median_percentage_of_contribution " << std::endl;
 
-    constexpr int nb_partitions = 10;
+    constexpr int nb_partitions = 40;
     std::array<Accumulator, nb_partitions> percent_node_accs;
     std::array<Accumulator, nb_partitions> percent_contribution_accs;
 
@@ -53,10 +53,10 @@ int main() {
         int node_count_sum = 0;
         double contribution_sum = 0;
 
-        auto sorted_pairs = Helper::computeDistancePairs(landscape, static_cast<Node>(s));
+        auto sorted_pairs = Helper::computeDistancePairs(landscape, s);
         const double contribution_max = std::transform_reduce(
             sorted_pairs.begin(), sorted_pairs.end(), 0.0, std::plus<double>(),
-            [](const auto & p) {
+            [&](const auto & p) {
                 return landscape.getQuality(s) * landscape.getQuality(p.first) *
                        p.second;
             });

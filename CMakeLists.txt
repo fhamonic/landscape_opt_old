@@ -106,3 +106,10 @@ add_executable(contraction_test test/contraction_test.cpp)
 target_include_directories(contraction_test PUBLIC include)
 target_include_directories(contraction_test PUBLIC thirdparty)
 target_link_libraries(contraction_test PUBLIC landscape_opt)
+
+add_executable(eca_contribution_analysis exec/eca_contribution_analysis.cpp)
+target_include_directories(eca_contribution_analysis PUBLIC include)
+target_include_directories(eca_contribution_analysis PUBLIC thirdparty)
+target_link_libraries(eca_contribution_analysis PUBLIC landscape_opt)
+
+

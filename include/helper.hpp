@@ -216,23 +216,24 @@ std::unique_ptr<typename LS::Graph::ArcMap<double>> corridorCentralityMap(
 template <typename GR, typename QM, typename PM>
 std::vector<std::pair<typename GR::Node, double>> computeDistancePairs(
     const GR & graph, const QM & qualityMap, const PM & probabilityMap,
-                             const typename GR::Node & s) {
+                             const typename GR::Node s) {
     using Node = typename GR::Node;
 
     std::vector<std::pair<Node, double>> result;
-    result.reserve(lemon::countNodes());
+    result.reserve(lemon::countNodes(graph));
     lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(graph,
                                                           probabilityMap);
-    if(qualityMap[s] == 0) continue;
-    dijkstra.init(s);
-    while(!dijkstra.emptyQueue())
-        result.emplace_back(dijkstra.processNextNode());
+    if(qualityMap[s] != 0) {
+        dijkstra.init(s);
+        while(!dijkstra.emptyQueue())
+            result.emplace_back(dijkstra.processNextNode());
+    }
     return result;
 }
 
 template <typename LS>
-auto computeDistancePairs(const LS & landscape,
-                             const typename LS::GR::Node & s) {
+std::vector<std::pair<typename LS::Node, double>> computeDistancePairs(const LS & landscape,
+                             const typename LS::Node s) {
     auto result = computeDistancePairs(landscape.getNetwork(),
                                           landscape.getQualityMap(),
                                           landscape.getProbabilityMap(), s);
