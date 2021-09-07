@@ -28,11 +28,12 @@ int main() {
              << "average_percentage_of_contribution "
              << "median_percentage_of_contribution " << std::endl;
 
-    constexpr int nb_partitions = 40;
+    constexpr int nb_partitions = 1000;
     std::array<Accumulator, nb_partitions> percent_node_accs;
     std::array<Accumulator, nb_partitions> percent_contribution_accs;
 
     auto prob_to_partition = [&](double prob) {
+        if(prob == 0) return nb_partitions - 1;
         return static_cast<int>((nb_partitions) * (1 - prob));
     };
 
@@ -46,13 +47,12 @@ int main() {
 
     const Graph & graph = landscape.getNetwork();
 
-
     for(NodeIt s(graph); s != lemon::INVALID; ++s) {
         int last_partition = 0;
         int node_count_sum = 0;
         double contribution_sum = 0;
 
-        auto sorted_pairs = Helper::computeDistancePairs(landscape, s);
+        const auto sorted_pairs = Helper::computeDistancePairs(landscape, s);
         const double contribution_max = std::transform_reduce(
             sorted_pairs.begin(), sorted_pairs.end(), 0.0, std::plus<double>(),
             [&](const auto & p) {
@@ -60,17 +60,16 @@ int main() {
                        p.second;
             });
 
-        const int node_count = sorted_pairs.size();
-
         for(const auto & [t, p_st] : sorted_pairs) {
-            if(p_st == 0) break;
             const int current_partition = prob_to_partition(p_st);
             if(current_partition > last_partition) {
-                percent_node_accs[last_partition](
-                    static_cast<double>(node_count_sum) / node_count * 100);
-                percent_contribution_accs[last_partition](
-                    contribution_sum / contribution_max * 100);
-                last_partition = current_partition;
+                for(; last_partition < current_partition; ++last_partition) {
+                    percent_node_accs[last_partition](
+                        static_cast<double>(node_count_sum) /
+                        sorted_pairs.size() * 100);
+                    percent_contribution_accs[last_partition](
+                        contribution_sum / contribution_max * 100);
+                }
             }
 
             ++node_count_sum;

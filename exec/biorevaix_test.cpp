@@ -36,7 +36,14 @@
 
 #include "boost/range/algorithm/count_if.hpp"
 
+#include "tbb/global_control.h"
+
 int main() {
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 5);
+
+
+
+
     Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
     Instance instance = trivial_reformulate(std::move(raw_instance));
 
