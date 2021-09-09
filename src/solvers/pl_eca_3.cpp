@@ -1,7 +1,7 @@
 #include "solvers/pl_eca_3.hpp"
 
-#include <coin/CglFlowCover.hpp>
-#include <coin/CglMixedIntegerRounding2.hpp>
+#include "CglFlowCover.hpp"
+#include "CglMixedIntegerRounding2.hpp"
 #include "gurobi_c.h"
 
 namespace Solvers::PL_ECA_3_Vars {

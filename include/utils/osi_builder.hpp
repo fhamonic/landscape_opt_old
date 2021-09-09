@@ -14,13 +14,13 @@
 #include <numeric>
 #include <vector>
 
-#include "coin/OsiClpSolverInterface.hpp"
-// #include "coin/OsiGrbSolverInterface.hpp"
+#include "OsiClpSolverInterface.hpp"
+// #include "OsiGrbSolverInterface.hpp"
 
-#include "coin/CbcModel.hpp"  // deprecated
-#include "coin/CbcSolver.hpp"
+#include "CbcModel.hpp"  // deprecated
+#include "CbcSolver.hpp"
 
-#include "coin/CoinPackedMatrix.hpp"
+#include "CoinPackedMatrix.hpp"
 
 /**
  * @brief A practical class for building OsiSolver instances

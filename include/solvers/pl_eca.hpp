@@ -7,7 +7,7 @@
 
 #include "osi_builder.hpp"
 
-#include "coin/CbcModel.hpp"
+#include "CbcModel.hpp"
 
 #define RESTORED 0
 #define DEFAULT 1
