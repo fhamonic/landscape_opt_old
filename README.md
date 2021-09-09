@@ -40,6 +40,8 @@ The project uses COIN-OR libraries such as LEMON for implementing graphs and Cbc
     cmake ..
     make
     sudo make install
+    
+pass -DCMAKE_INSTALL_PREFIX=<install path> to cmake to specify the install directory, default is /user/local
 
 ##### Cbc using coinbrew :
 ###### Ubuntu requirements
