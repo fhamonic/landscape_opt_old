@@ -182,8 +182,8 @@ std::unique_ptr<typename LS::Graph::ArcMap<double>> corridorCentralityMap(
     using PredMap = typename Graph::template NodeMap<typename Graph::Arc>;
     const Graph & graph = landscape.getNetwork();
 
-    std::unique_ptr<typename Graph::ArcMap<double>> centralityMap =
-        std::make_unique<typename Graph::ArcMap<double>>(graph, 0);
+    std::unique_ptr<typename Graph::template ArcMap<double>> centralityMap =
+        std::make_unique<typename Graph::template ArcMap<double>>(graph, 0);
 
     lemon::Dijkstra<Graph, typename LS::ProbabilityMap> dijkstra(
         graph, landscape.getProbabilityMap());
