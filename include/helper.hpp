@@ -176,7 +176,7 @@ std::unique_ptr<typename Graph::template ArcMap<int>> arcCentralityMap(
  * @return GR::ArcMap<int>*
  */
 template <typename LS>
-std::unique_ptr<typename LS::Graph::ArcMap<double>> corridorCentralityMap(
+std::unique_ptr<typename LS::Graph::template ArcMap<double>> corridorCentralityMap(
     const LS & landscape) {
     using Graph = typename LS::Graph;
     using PredMap = typename Graph::template NodeMap<typename Graph::Arc>;
