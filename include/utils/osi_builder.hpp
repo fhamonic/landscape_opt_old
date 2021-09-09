@@ -14,7 +14,6 @@
 #include <numeric>
 #include <vector>
 
-#include "coin/OsiCbcSolverInterface.hpp"  // deprecated
 #include "coin/OsiClpSolverInterface.hpp"
 // #include "coin/OsiGrbSolverInterface.hpp"
 
