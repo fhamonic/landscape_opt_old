@@ -54,6 +54,7 @@ target_link_libraries(landscape_opt CONAN_PKG::fmt)
 target_link_libraries(landscape_opt CONAN_PKG::eigen)
 target_link_libraries(landscape_opt CONAN_PKG::range-v3)
 
+target_include_directories(landscape_opt PUBLIC ${LEMON_INCLUDE_DIRS})
 target_link_libraries(landscape_opt ${LEMON_LIBRARIES})
 target_link_libraries(landscape_opt ${COIN_LIBRARIES})
 
