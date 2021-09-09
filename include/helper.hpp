@@ -142,12 +142,12 @@ double minNonZeroQuality(const LS & landscape) {
  * @return GR::ArcMap<int>*
  */
 template <typename Graph, typename LengthMap>
-std::unique_ptr<typename Graph::ArcMap<int>> arcCentralityMap(
+std::unique_ptr<typename Graph::template ArcMap<int>> arcCentralityMap(
     const Graph & graph, const LengthMap & lengthMap) {
     using PredMap = typename Graph::template NodeMap<typename Graph::Arc>;
 
-    std::unique_ptr<typename Graph::ArcMap<int>> centralityMap =
-        std::make_unique<typename Graph::ArcMap<int>>(graph, 0);
+    std::unique_ptr<typename Graph::template ArcMap<int>> centralityMap =
+        std::make_unique<typename Graph::template ArcMap<int>>(graph, 0);
 
     lemon::Dijkstra<Graph, LengthMap> dijkstra(graph, lengthMap);
 

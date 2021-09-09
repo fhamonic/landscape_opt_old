@@ -39,7 +39,7 @@
 #include "tbb/global_control.h"
 
 int main() {
-    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 5);
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 4);
 
 
 
