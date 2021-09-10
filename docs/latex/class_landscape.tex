@@ -1,0 +1,357 @@
+\hypertarget{class_landscape}{}\section{Landscape Class Reference}
+\label{class_landscape}\index{Landscape@{Landscape}}
+
+
+Class that represent an editable landscape.  
+
+
+
+
+{\ttfamily \#include $<$landscape.\+hpp$>$}
+
+
+
+Inheritance diagram for Landscape\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{class_landscape__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Landscape\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{class_landscape__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_landscape_a0a54d8aabc38c0a5aa27ccace3f91915}{Landscape} ()
+\item 
+\hyperlink{class_landscape_a44c62eb1b0f84a40f25b9a6445c8b130}{$\sim$\+Landscape} ()
+\item 
+std\+::pair$<$ Graph\+\_\+t\+::\+Node\+Map$<$ \hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} $>$ $\ast$, Graph\+\_\+t\+::\+Arc\+Map$<$ \hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} $>$ $\ast$ $>$ \hyperlink{class_landscape_a72ac309bcc23cf55888967b4da22ad6f}{copy} (const \hyperlink{class_landscape}{Landscape} \&orig\+\_\+landscape)
+\begin{DoxyCompactList}\small\item\em Makes the current landscape a copy of the one passed in parameter. \end{DoxyCompactList}\item 
+\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} \hyperlink{class_landscape_a7fbed383ff33eee7dad4be3794a5c38b}{add\+Node} (double quality, \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} coords)
+\begin{DoxyCompactList}\small\item\em Adds a new patch with specified quality and coordinates. \end{DoxyCompactList}\item 
+\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} \hyperlink{class_landscape_a838233aa09155408cd938405aa504289}{add\+Arc} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u, \hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} v, double difficulty)
+\begin{DoxyCompactList}\small\item\em Adds a new arc from u to v with specified probability. \end{DoxyCompactList}\item 
+void \hyperlink{class_landscape_a800ffffd591570d5a19a030707f51365}{remove\+Node} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u)
+\begin{DoxyCompactList}\small\item\em Removes the node u. \end{DoxyCompactList}\item 
+void \hyperlink{class_landscape_ada96d1d07c462e043133440f647211b2}{remove\+Arc} (\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} a)
+\begin{DoxyCompactList}\small\item\em Removes the arc a. \end{DoxyCompactList}\item 
+void \hyperlink{class_landscape_ae176491eae8fec5777ab8566cc8bf64f}{change\+Source} (\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} a, \hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u)
+\begin{DoxyCompactList}\small\item\em Changes the source of the arc a to be u. \end{DoxyCompactList}\item 
+void \hyperlink{class_landscape_a4bbe12577926a357f715d8e91c393ec4}{change\+Target} (\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} a, \hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} v)
+\begin{DoxyCompactList}\small\item\em Changes the source of the arc a to be v. \end{DoxyCompactList}\item 
+void \hyperlink{class_landscape_aac673fb693ff152251109c07f60f3672}{set\+Quality} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u, double quality)
+\begin{DoxyCompactList}\small\item\em Set the quality of the node u. \end{DoxyCompactList}\item 
+void \hyperlink{class_landscape_a4c8df159a4754013dd381bfff23d133d}{set\+Coords} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u, \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} coords)
+\begin{DoxyCompactList}\small\item\em Set the coordinates of the node u. \end{DoxyCompactList}\item 
+void \hyperlink{class_landscape_abf8fb4b7e4185c9f876aa3afc39d1331}{set\+Probability} (\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} a, double probability)
+\begin{DoxyCompactList}\small\item\em Set the probability of the arc a. \end{DoxyCompactList}\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}{Graph} \& \hyperlink{class_landscape_a5f372f74530914d9128a036bbdaf7800}{get\+Network} () const
+\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Quality\+Map} \& \hyperlink{class_landscape_a77f947fdc6a8c8875d7d383eb5ce7817}{get\+Quality\+Map} () const
+\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map} \& \hyperlink{class_landscape_ab6e4efb27be3f1870ce42656a5534d68}{get\+Coords\+Map} () const
+\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Probability\+Map} \& \hyperlink{class_landscape_a771053b32bbcb6a3fa5204b8bdb53a6d}{get\+Probability\+Map} () const
+\item 
+const double \& \hyperlink{class_landscape_a15c6c9bf708e4ceb3a9118157f99659a}{get\+Quality} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u) const
+\item 
+const \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} \& \hyperlink{class_landscape_a99f206e722c06b938fe1f2e105de310d}{get\+Coords} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u) const
+\item 
+const double \& \hyperlink{class_landscape_ac251ee7350a51502a1006333894082c3}{get\+Probability} (\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} a) const
+\item 
+double \& \hyperlink{class_landscape_af6fdabb5a81dc4cf75d7baaf6d98ee31}{get\+Quality\+Ref} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u)
+\item 
+\hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} \& \hyperlink{class_landscape_a5c7fb81e36d91b0300815962e1677d5e}{get\+Coords\+Ref} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u)
+\item 
+double \& \hyperlink{class_landscape_a1d8000badf88704d19ce276743e67a25}{get\+Probability\+Ref} (\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} a)
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Class that represent an editable landscape. 
+
+This class represent an editable landscape. That is a graph whose nodes weigths are quality and coordinates, and arcs weigths are probabilities to success crossing. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_landscape_a0a54d8aabc38c0a5aa27ccace3f91915}\label{class_landscape_a0a54d8aabc38c0a5aa27ccace3f91915}} 
+\index{Landscape@{Landscape}!Landscape@{Landscape}}
+\index{Landscape@{Landscape}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{Landscape()}{Landscape()}}
+{\footnotesize\ttfamily Landscape\+::\+Landscape (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_landscape_a44c62eb1b0f84a40f25b9a6445c8b130}\label{class_landscape_a44c62eb1b0f84a40f25b9a6445c8b130}} 
+\index{Landscape@{Landscape}!````~Landscape@{$\sim$\+Landscape}}
+\index{````~Landscape@{$\sim$\+Landscape}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{$\sim$\+Landscape()}{~Landscape()}}
+{\footnotesize\ttfamily Landscape\+::$\sim$\+Landscape (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_landscape_a838233aa09155408cd938405aa504289}\label{class_landscape_a838233aa09155408cd938405aa504289}} 
+\index{Landscape@{Landscape}!add\+Arc@{add\+Arc}}
+\index{add\+Arc@{add\+Arc}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{add\+Arc()}{addArc()}}
+{\footnotesize\ttfamily \hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Landscape\+::\+Arc} Landscape\+::add\+Arc (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u,  }\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{v,  }\item[{double}]{difficulty }\end{DoxyParamCaption})}
+
+
+
+Adds a new arc from u to v with specified probability. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em u} & \\
+\hline
+{\em v} & \\
+\hline
+{\em difficulty} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the created graph Arc 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_landscape_a7fbed383ff33eee7dad4be3794a5c38b}\label{class_landscape_a7fbed383ff33eee7dad4be3794a5c38b}} 
+\index{Landscape@{Landscape}!add\+Node@{add\+Node}}
+\index{add\+Node@{add\+Node}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{add\+Node()}{addNode()}}
+{\footnotesize\ttfamily \hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Landscape\+::\+Node} Landscape\+::add\+Node (\begin{DoxyParamCaption}\item[{double}]{quality,  }\item[{\hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point}}]{coords }\end{DoxyParamCaption})}
+
+
+
+Adds a new patch with specified quality and coordinates. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em quality} & \\
+\hline
+{\em coords} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the created graph Node 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_landscape_ae176491eae8fec5777ab8566cc8bf64f}\label{class_landscape_ae176491eae8fec5777ab8566cc8bf64f}} 
+\index{Landscape@{Landscape}!change\+Source@{change\+Source}}
+\index{change\+Source@{change\+Source}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{change\+Source()}{changeSource()}}
+{\footnotesize\ttfamily void Landscape\+::change\+Source (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}]{a,  }\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption})}
+
+
+
+Changes the source of the arc a to be u. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & \\
+\hline
+{\em u} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_landscape_a4bbe12577926a357f715d8e91c393ec4}\label{class_landscape_a4bbe12577926a357f715d8e91c393ec4}} 
+\index{Landscape@{Landscape}!change\+Target@{change\+Target}}
+\index{change\+Target@{change\+Target}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{change\+Target()}{changeTarget()}}
+{\footnotesize\ttfamily void Landscape\+::change\+Target (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}]{a,  }\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{v }\end{DoxyParamCaption})}
+
+
+
+Changes the source of the arc a to be v. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & \\
+\hline
+{\em v} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_landscape_a72ac309bcc23cf55888967b4da22ad6f}\label{class_landscape_a72ac309bcc23cf55888967b4da22ad6f}} 
+\index{Landscape@{Landscape}!copy@{copy}}
+\index{copy@{copy}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{copy()}{copy()}}
+{\footnotesize\ttfamily std\+::pair$<$ Graph\+\_\+t\+::\+Node\+Map$<$ Graph\+\_\+t\+::\+Node $>$ $\ast$, Graph\+\_\+t\+::\+Arc\+Map$<$ Graph\+\_\+t\+::\+Arc $>$ $\ast$ $>$ Landscape\+::copy (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{orig\+\_\+landscape }\end{DoxyParamCaption})}
+
+
+
+Makes the current landscape a copy of the one passed in parameter. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em orig\+\_\+landscape} & \+: the landscape to copy \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a pair of references maps from original landscape elements to the copied ones 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_landscape_a99f206e722c06b938fe1f2e105de310d}\label{class_landscape_a99f206e722c06b938fe1f2e105de310d}} 
+\index{Landscape@{Landscape}!get\+Coords@{get\+Coords}}
+\index{get\+Coords@{get\+Coords}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Coords()}{getCoords()}}
+{\footnotesize\ttfamily const \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} \& Landscape\+::get\+Coords (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_landscape_ab6e4efb27be3f1870ce42656a5534d68}\label{class_landscape_ab6e4efb27be3f1870ce42656a5534d68}} 
+\index{Landscape@{Landscape}!get\+Coords\+Map@{get\+Coords\+Map}}
+\index{get\+Coords\+Map@{get\+Coords\+Map}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Coords\+Map()}{getCoordsMap()}}
+{\footnotesize\ttfamily const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Landscape\+::\+Coords\+Map} \& Landscape\+::get\+Coords\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_a5005b0254f3c5aa0ed8505386fca92b3}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_landscape_a5c7fb81e36d91b0300815962e1677d5e}\label{class_landscape_a5c7fb81e36d91b0300815962e1677d5e}} 
+\index{Landscape@{Landscape}!get\+Coords\+Ref@{get\+Coords\+Ref}}
+\index{get\+Coords\+Ref@{get\+Coords\+Ref}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Coords\+Ref()}{getCoordsRef()}}
+{\footnotesize\ttfamily \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} \& Landscape\+::get\+Coords\+Ref (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_landscape_a5f372f74530914d9128a036bbdaf7800}\label{class_landscape_a5f372f74530914d9128a036bbdaf7800}} 
+\index{Landscape@{Landscape}!get\+Network@{get\+Network}}
+\index{get\+Network@{get\+Network}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Network()}{getNetwork()}}
+{\footnotesize\ttfamily const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \& Landscape\+::get\+Network (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_a7ed478b62e37cad9a22bed3adedf07c5}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_landscape_ac251ee7350a51502a1006333894082c3}\label{class_landscape_ac251ee7350a51502a1006333894082c3}} 
+\index{Landscape@{Landscape}!get\+Probability@{get\+Probability}}
+\index{get\+Probability@{get\+Probability}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability()}{getProbability()}}
+{\footnotesize\ttfamily const double \& Landscape\+::get\+Probability (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}]{a }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_landscape_a771053b32bbcb6a3fa5204b8bdb53a6d}\label{class_landscape_a771053b32bbcb6a3fa5204b8bdb53a6d}} 
+\index{Landscape@{Landscape}!get\+Probability\+Map@{get\+Probability\+Map}}
+\index{get\+Probability\+Map@{get\+Probability\+Map}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability\+Map()}{getProbabilityMap()}}
+{\footnotesize\ttfamily const \hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Landscape\+::\+Probability\+Map} \& Landscape\+::get\+Probability\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_a4ecbe83965a5266a3a2fa14e201c5871}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_landscape_a1d8000badf88704d19ce276743e67a25}\label{class_landscape_a1d8000badf88704d19ce276743e67a25}} 
+\index{Landscape@{Landscape}!get\+Probability\+Ref@{get\+Probability\+Ref}}
+\index{get\+Probability\+Ref@{get\+Probability\+Ref}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability\+Ref()}{getProbabilityRef()}}
+{\footnotesize\ttfamily double \& Landscape\+::get\+Probability\+Ref (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}]{a }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_landscape_a15c6c9bf708e4ceb3a9118157f99659a}\label{class_landscape_a15c6c9bf708e4ceb3a9118157f99659a}} 
+\index{Landscape@{Landscape}!get\+Quality@{get\+Quality}}
+\index{get\+Quality@{get\+Quality}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality()}{getQuality()}}
+{\footnotesize\ttfamily const double \& Landscape\+::get\+Quality (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_landscape_a77f947fdc6a8c8875d7d383eb5ce7817}\label{class_landscape_a77f947fdc6a8c8875d7d383eb5ce7817}} 
+\index{Landscape@{Landscape}!get\+Quality\+Map@{get\+Quality\+Map}}
+\index{get\+Quality\+Map@{get\+Quality\+Map}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality\+Map()}{getQualityMap()}}
+{\footnotesize\ttfamily const \hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Landscape\+::\+Quality\+Map} \& Landscape\+::get\+Quality\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_ab0ff4aa5ac8d95d9207e32582e3e95f2}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_landscape_af6fdabb5a81dc4cf75d7baaf6d98ee31}\label{class_landscape_af6fdabb5a81dc4cf75d7baaf6d98ee31}} 
+\index{Landscape@{Landscape}!get\+Quality\+Ref@{get\+Quality\+Ref}}
+\index{get\+Quality\+Ref@{get\+Quality\+Ref}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality\+Ref()}{getQualityRef()}}
+{\footnotesize\ttfamily double \& Landscape\+::get\+Quality\+Ref (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_landscape_ada96d1d07c462e043133440f647211b2}\label{class_landscape_ada96d1d07c462e043133440f647211b2}} 
+\index{Landscape@{Landscape}!remove\+Arc@{remove\+Arc}}
+\index{remove\+Arc@{remove\+Arc}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{remove\+Arc()}{removeArc()}}
+{\footnotesize\ttfamily void Landscape\+::remove\+Arc (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}]{a }\end{DoxyParamCaption})}
+
+
+
+Removes the arc a. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_landscape_a800ffffd591570d5a19a030707f51365}\label{class_landscape_a800ffffd591570d5a19a030707f51365}} 
+\index{Landscape@{Landscape}!remove\+Node@{remove\+Node}}
+\index{remove\+Node@{remove\+Node}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{remove\+Node()}{removeNode()}}
+{\footnotesize\ttfamily void Landscape\+::remove\+Node (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption})}
+
+
+
+Removes the node u. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em u} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_landscape_a4c8df159a4754013dd381bfff23d133d}\label{class_landscape_a4c8df159a4754013dd381bfff23d133d}} 
+\index{Landscape@{Landscape}!set\+Coords@{set\+Coords}}
+\index{set\+Coords@{set\+Coords}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{set\+Coords()}{setCoords()}}
+{\footnotesize\ttfamily void Landscape\+::set\+Coords (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u,  }\item[{\hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point}}]{coords }\end{DoxyParamCaption})}
+
+
+
+Set the coordinates of the node u. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em u} & \\
+\hline
+{\em coords} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_landscape_abf8fb4b7e4185c9f876aa3afc39d1331}\label{class_landscape_abf8fb4b7e4185c9f876aa3afc39d1331}} 
+\index{Landscape@{Landscape}!set\+Probability@{set\+Probability}}
+\index{set\+Probability@{set\+Probability}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{set\+Probability()}{setProbability()}}
+{\footnotesize\ttfamily void Landscape\+::set\+Probability (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}]{a,  }\item[{double}]{probability }\end{DoxyParamCaption})}
+
+
+
+Set the probability of the arc a. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & \\
+\hline
+{\em difficulty} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_landscape_aac673fb693ff152251109c07f60f3672}\label{class_landscape_aac673fb693ff152251109c07f60f3672}} 
+\index{Landscape@{Landscape}!set\+Quality@{set\+Quality}}
+\index{set\+Quality@{set\+Quality}!Landscape@{Landscape}}
+\subsubsection{\texorpdfstring{set\+Quality()}{setQuality()}}
+{\footnotesize\ttfamily void Landscape\+::set\+Quality (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u,  }\item[{double}]{quality }\end{DoxyParamCaption})}
+
+
+
+Set the quality of the node u. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em u} & \\
+\hline
+{\em quality} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/landscape/\hyperlink{landscape_8hpp}{landscape.\+hpp}\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/landscape/\hyperlink{landscape_8cpp}{landscape.\+cpp}\end{DoxyCompactItemize}

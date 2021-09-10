@@ -1,0 +1,169 @@
+\hypertarget{structlemon_1_1_dijkstra_multiplicative_traits}{}\section{lemon\+:\+:Dijkstra\+Multiplicative\+Traits$<$ GR, L\+EN $>$ Struct Template Reference}
+\label{structlemon_1_1_dijkstra_multiplicative_traits}\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits$<$ G\+R, L\+E\+N $>$@{lemon\+::\+Dijkstra\+Multiplicative\+Traits$<$ G\+R, L\+E\+N $>$}}
+
+
+Multiplicative traits class of Dijkstra class.  
+
+
+
+
+{\ttfamily \#include $<$multiplicative\+\_\+dijkstra.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef GR \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph}
+\item 
+typedef L\+EN \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a71b3ebdd887bad38c0a80bdee34204b7}{Length\+Map}
+\item 
+typedef L\+E\+N\+::\+Value \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}{Value}
+\item 
+typedef \hyperlink{structlemon_1_1_dijkstra_multiplicative_operation_traits}{Dijkstra\+Multiplicative\+Operation\+Traits}$<$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}{Value} $>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_affb2683da11abbf82ff4e5004046c53d}{Operation\+Traits}
+\item 
+typedef Digraph\+::template Node\+Map$<$ int $>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref}
+\item 
+typedef Bin\+Heap$<$ typename L\+E\+N\+::\+Value, \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref}, std\+::greater$<$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}{Value} $>$ $>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_ac1f01fa6da75e3af4ca1baabc6be06b8}{Heap}
+\item 
+typedef Digraph\+::template Node\+Map$<$ typename Digraph\+::\+Arc $>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_aa69cc345580a8a6619b0add76aae29e0}{Pred\+Map}
+\item 
+typedef Null\+Map$<$ typename Digraph\+::\+Node, bool $>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a48325a83c92b35041eac397cf1728375}{Processed\+Map}
+\item 
+typedef Digraph\+::template Node\+Map$<$ typename L\+E\+N\+::\+Value $>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a2bc3b74c3467b4762e2ac57ea68ef78e}{Dist\+Map}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref} $\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_aeb8014da9f6368243c538a6a2841d08c}{create\+Heap\+Cross\+Ref} (const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&g)
+\item 
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_ac1f01fa6da75e3af4ca1baabc6be06b8}{Heap} $\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a395fcb4c11535249168133c009bbf8e4}{create\+Heap} (\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref} \&r)
+\item 
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_aa69cc345580a8a6619b0add76aae29e0}{Pred\+Map} $\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a898d963d49216f0f90870442fbce38d5}{create\+Pred\+Map} (const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&g)
+\item 
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a48325a83c92b35041eac397cf1728375}{Processed\+Map} $\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a7ecae716219efe0cafab361a597f90e3}{create\+Processed\+Map} (const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&)
+\item 
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a2bc3b74c3467b4762e2ac57ea68ef78e}{Dist\+Map} $\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_acd6a683858eba3181c8c51a28b5fa68d}{create\+Dist\+Map} (const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&g)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename GR, typename L\+EN$>$\newline
+struct lemon\+::\+Dijkstra\+Multiplicative\+Traits$<$ G\+R, L\+E\+N $>$}
+
+Multiplicative traits class of Dijkstra class. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em GR} & The type of the digraph. \\
+\hline
+{\em L\+EN} & The type of the length map. \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}\label{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Digraph@{Digraph}}
+\index{Digraph@{Digraph}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Digraph}{Digraph}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef GR \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a2bc3b74c3467b4762e2ac57ea68ef78e}\label{structlemon_1_1_dijkstra_multiplicative_traits_a2bc3b74c3467b4762e2ac57ea68ef78e}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Dist\+Map@{Dist\+Map}}
+\index{Dist\+Map@{Dist\+Map}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Dist\+Map}{DistMap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Digraph\+::template Node\+Map$<$typename L\+E\+N\+::\+Value$>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a2bc3b74c3467b4762e2ac57ea68ef78e}{Dist\+Map}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_ac1f01fa6da75e3af4ca1baabc6be06b8}\label{structlemon_1_1_dijkstra_multiplicative_traits_ac1f01fa6da75e3af4ca1baabc6be06b8}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Heap@{Heap}}
+\index{Heap@{Heap}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Heap}{Heap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Bin\+Heap$<$typename L\+E\+N\+::\+Value, \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref}, std\+::greater$<$\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}{Value}$>$ $>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_ac1f01fa6da75e3af4ca1baabc6be06b8}{Heap}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}\label{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Heap\+Cross\+Ref@{Heap\+Cross\+Ref}}
+\index{Heap\+Cross\+Ref@{Heap\+Cross\+Ref}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Heap\+Cross\+Ref}{HeapCrossRef}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Digraph\+::template Node\+Map$<$int$>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a71b3ebdd887bad38c0a80bdee34204b7}\label{structlemon_1_1_dijkstra_multiplicative_traits_a71b3ebdd887bad38c0a80bdee34204b7}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Length\+Map@{Length\+Map}}
+\index{Length\+Map@{Length\+Map}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Length\+Map}{LengthMap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef L\+EN \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a71b3ebdd887bad38c0a80bdee34204b7}{Length\+Map}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_affb2683da11abbf82ff4e5004046c53d}\label{structlemon_1_1_dijkstra_multiplicative_traits_affb2683da11abbf82ff4e5004046c53d}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Operation\+Traits@{Operation\+Traits}}
+\index{Operation\+Traits@{Operation\+Traits}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Operation\+Traits}{OperationTraits}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef \hyperlink{structlemon_1_1_dijkstra_multiplicative_operation_traits}{Dijkstra\+Multiplicative\+Operation\+Traits}$<$\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}{Value}$>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_affb2683da11abbf82ff4e5004046c53d}{Operation\+Traits}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_aa69cc345580a8a6619b0add76aae29e0}\label{structlemon_1_1_dijkstra_multiplicative_traits_aa69cc345580a8a6619b0add76aae29e0}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Pred\+Map@{Pred\+Map}}
+\index{Pred\+Map@{Pred\+Map}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Pred\+Map}{PredMap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Digraph\+::template Node\+Map$<$typename Digraph\+::\+Arc$>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_aa69cc345580a8a6619b0add76aae29e0}{Pred\+Map}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a48325a83c92b35041eac397cf1728375}\label{structlemon_1_1_dijkstra_multiplicative_traits_a48325a83c92b35041eac397cf1728375}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Processed\+Map@{Processed\+Map}}
+\index{Processed\+Map@{Processed\+Map}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Processed\+Map}{ProcessedMap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Null\+Map$<$typename Digraph\+::\+Node,bool$>$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a48325a83c92b35041eac397cf1728375}{Processed\+Map}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}\label{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!Value@{Value}}
+\index{Value@{Value}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef L\+E\+N\+::\+Value \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6e84de41f8b2d8c17974487766c465cf}{Value}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_acd6a683858eba3181c8c51a28b5fa68d}\label{structlemon_1_1_dijkstra_multiplicative_traits_acd6a683858eba3181c8c51a28b5fa68d}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!create\+Dist\+Map@{create\+Dist\+Map}}
+\index{create\+Dist\+Map@{create\+Dist\+Map}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Dist\+Map()}{createDistMap()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a2bc3b74c3467b4762e2ac57ea68ef78e}{Dist\+Map}$\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Dist\+Map (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a395fcb4c11535249168133c009bbf8e4}\label{structlemon_1_1_dijkstra_multiplicative_traits_a395fcb4c11535249168133c009bbf8e4}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!create\+Heap@{create\+Heap}}
+\index{create\+Heap@{create\+Heap}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Heap()}{createHeap()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_ac1f01fa6da75e3af4ca1baabc6be06b8}{Heap}$\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Heap (\begin{DoxyParamCaption}\item[{\hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref} \&}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_aeb8014da9f6368243c538a6a2841d08c}\label{structlemon_1_1_dijkstra_multiplicative_traits_aeb8014da9f6368243c538a6a2841d08c}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!create\+Heap\+Cross\+Ref@{create\+Heap\+Cross\+Ref}}
+\index{create\+Heap\+Cross\+Ref@{create\+Heap\+Cross\+Ref}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Heap\+Cross\+Ref()}{createHeapCrossRef()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a6cf2d1691e812bc74967eb6a96bb2110}{Heap\+Cross\+Ref}$\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Heap\+Cross\+Ref (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a898d963d49216f0f90870442fbce38d5}\label{structlemon_1_1_dijkstra_multiplicative_traits_a898d963d49216f0f90870442fbce38d5}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!create\+Pred\+Map@{create\+Pred\+Map}}
+\index{create\+Pred\+Map@{create\+Pred\+Map}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Pred\+Map()}{createPredMap()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_aa69cc345580a8a6619b0add76aae29e0}{Pred\+Map}$\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Pred\+Map (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_dijkstra_multiplicative_traits_a7ecae716219efe0cafab361a597f90e3}\label{structlemon_1_1_dijkstra_multiplicative_traits_a7ecae716219efe0cafab361a597f90e3}} 
+\index{lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}!create\+Processed\+Map@{create\+Processed\+Map}}
+\index{create\+Processed\+Map@{create\+Processed\+Map}!lemon\+::\+Dijkstra\+Multiplicative\+Traits@{lemon\+::\+Dijkstra\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Processed\+Map()}{createProcessedMap()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a48325a83c92b35041eac397cf1728375}{Processed\+Map}$\ast$ \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{lemon\+::\+Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Processed\+Map (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits_a3ad6d100e3d5d097aaaac8e5733ce3a3}{Digraph} \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/algorithms/\hyperlink{multiplicative__dijkstra_8h}{multiplicative\+\_\+dijkstra.\+h}\end{DoxyCompactItemize}

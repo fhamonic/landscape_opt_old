@@ -1,0 +1,58 @@
+\hypertarget{helper_8hpp}{}\section{/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/helper.hpp File Reference}
+\label{helper_8hpp}\index{/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/helper.\+hpp@{/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/helper.\+hpp}}
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}landscape/landscape.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}landscape/decored\+\_\+landscape.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Eigen/\+Dense\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}lemon/dijkstra.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}solvers/concept/solver.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}csv.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}lemon/graph\+\_\+to\+\_\+eps.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}lemon/dim2.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}indices/eca.\+hpp\char`\"{}}\newline
+Include dependency graph for helper.\+hpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{helper_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{helper_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespace_helper}{Helper}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename GR , typename QM , typename DM , typename CM $>$ }\\double \hyperlink{namespace_helper_ac8afc6aaaf4247e34fdc83469b06af6e}{Helper\+::find\+Node\+Scale} (const \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, DM, CM $>$ \&landscape)
+\begin{DoxyCompactList}\small\item\em Finds the maximum node scaling for which no nodes overlaps. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename GR , typename LM $>$ }\\Graph\+\_\+t\+::\+Arc\+Map$<$ int $>$ $\ast$ \hyperlink{namespace_helper_a41dff70c57f7082754959faf43d693a4}{Helper\+::arc\+Centrality\+Map} (const GR \&graph, const LM \&length\+Map)
+\begin{DoxyCompactList}\small\item\em Compute the centrality of each arc, i.\+e the number of shortest paths that contain it. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_helper_a3cc49f3178d4ab02f9253076fe399df7}{Helper\+::print\+Solution} (const \hyperlink{class_landscape}{Landscape} \&landscape, std\+::string name, \hyperlink{classconcepts_1_1_solver}{concepts\+::\+Solver} \&solver, double B, \hyperlink{class_solution}{Solution} $\ast$solution)
+\item 
+void \hyperlink{namespace_helper_a2e40eca9f4613caf5319d76356fc6b44}{Helper\+::copy\+Plan} (\hyperlink{class_restoration_plan}{Restoration\+Plan} \&contracted\+\_\+plan, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, const Graph\+\_\+t\+::\+Node\+Map$<$ Graph\+\_\+t\+::\+Node $>$ \&nodes\+Ref, const Graph\+\_\+t\+::\+Arc\+Map$<$ Graph\+\_\+t\+::\+Arc $>$ \&arcs\+Ref)
+\item 
+std\+::pair$<$ Graph\+\_\+t\+::\+Node, Graph\+\_\+t\+::\+Node $>$ \hyperlink{namespace_helper_ad2822186832ad10787811db7d44d60cd}{Helper\+::neerest\+Nodes} (const \hyperlink{class_landscape}{Landscape} \&landscape)
+\item 
+void \hyperlink{namespace_helper_a96cce3e519db1c92a36ccb954ebfb855}{Helper\+::assert\+\_\+well\+\_\+formed} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+\href{mailto:francois.hamonic@gmail.com}{\tt francois.\+hamonic@gmail.\+com} 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+1 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+2020-\/05-\/08 
+\end{DoxyDate}

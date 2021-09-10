@@ -1,0 +1,251 @@
+\hypertarget{class_decored_landscape}{}\section{Decored\+Landscape Class Reference}
+\label{class_decored_landscape}\index{Decored\+Landscape@{Decored\+Landscape}}
+
+
+Class that represent an decored landscape.  
+
+
+
+
+{\ttfamily \#include $<$decored\+\_\+landscape.\+hpp$>$}
+
+
+
+Inheritance diagram for Decored\+Landscape\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{class_decored_landscape__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Decored\+Landscape\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=226pt]{class_decored_landscape__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_decored_landscape_ae7ba2eb4a09b153b238f22fcb33b5260}{Decored\+Landscape} (const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \&original\+\_\+graph, const Graph\+\_\+t\+::\+Node\+Map$<$ double $>$ \&original\+\_\+quality\+Map, const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&original\+\_\+probability\+Map, const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map} \&coords\+Map)
+\item 
+\hyperlink{class_decored_landscape_a501bfb6656d735d8a564ea4c0aa6ccfd}{Decored\+Landscape} (const \hyperlink{class_landscape}{Landscape} \&landscape)
+\item 
+\hyperlink{class_decored_landscape_a5fcaa5685a1296f29b382fcde0f6ee0e}{$\sim$\+Decored\+Landscape} ()
+\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}{Graph} \& \hyperlink{class_decored_landscape_ae0cf946d7f221b0b7cbf89a645806d74}{get\+Network} () const
+\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Quality\+Map} \& \hyperlink{class_decored_landscape_a0493646916af886d3d0404760c3d5e4e}{get\+Quality\+Map} () const
+\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map} \& \hyperlink{class_decored_landscape_a66994174c58cad04d5fa75cb24ef2772}{get\+Coords\+Map} () const
+\item 
+const \hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Probability\+Map} \& \hyperlink{class_decored_landscape_afdc878affae92d7c671f1e0f87223ee0}{get\+Probability\+Map} () const
+\item 
+const double \& \hyperlink{class_decored_landscape_a5bfb2c9f5ef7e7c760d8804d0ffd9d9b}{get\+Quality} (Graph\+\_\+t\+::\+Node u) const
+\item 
+const \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} \& \hyperlink{class_decored_landscape_a45685d1bf37d032f1793f885eaf4e80c}{get\+Coords} (Graph\+\_\+t\+::\+Node u) const
+\item 
+const double \& \hyperlink{class_decored_landscape_a09b5ea325960556e0a834a53a7b53000}{get\+Probability} (Graph\+\_\+t\+::\+Arc a) const
+\item 
+double \& \hyperlink{class_decored_landscape_a2c6557a008e3b8a6d93bf307a71a1b33}{get\+Quality\+Ref} (Graph\+\_\+t\+::\+Node u)
+\item 
+double \& \hyperlink{class_decored_landscape_a16bd4da5d77b804cecb864c11770a344}{get\+Probability\+Ref} (Graph\+\_\+t\+::\+Arc a)
+\item 
+void \hyperlink{class_decored_landscape_a76d4269a5c48601b0a31dbf91b3cbafe}{set\+Quality} (Graph\+\_\+t\+::\+Node u, double v)
+\item 
+void \hyperlink{class_decored_landscape_a53063f0f592b1cd00c3456fd40722c53}{set\+Probability} (Graph\+\_\+t\+::\+Arc e, double v)
+\item 
+const double \& \hyperlink{class_decored_landscape_a136c0034f2953fd59332d73b6eb17b19}{get\+Original\+Quality} (Graph\+\_\+t\+::\+Node u) const
+\begin{DoxyCompactList}\small\item\em Get the original quality of specified node. \end{DoxyCompactList}\item 
+const double \& \hyperlink{class_decored_landscape_af45ece8a6787d42c0d60c90de913b9f5}{get\+Original\+Probability} (Graph\+\_\+t\+::\+Arc a) const
+\begin{DoxyCompactList}\small\item\em Get the original difficulty of specified arc. \end{DoxyCompactList}\item 
+void \hyperlink{class_decored_landscape_a9acf573f999cbf3e96fb567a89d02a1b}{reset} ()
+\begin{DoxyCompactList}\small\item\em Resets the weights of the landscape to its original ones. \end{DoxyCompactList}\item 
+void \hyperlink{class_decored_landscape_a4613b09e1b8d817095dd486f9c1224b8}{apply} (const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$option, double coef=1.\+0)
+\begin{DoxyCompactList}\small\item\em Decorates the landscape by applying the specified resotoration option. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Class that represent an decored landscape. 
+
+This class represent a decored landscape. That is a modification of the weights of a reference landscape. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_decored_landscape_ae7ba2eb4a09b153b238f22fcb33b5260}\label{class_decored_landscape_ae7ba2eb4a09b153b238f22fcb33b5260}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!Decored\+Landscape@{Decored\+Landscape}}
+\index{Decored\+Landscape@{Decored\+Landscape}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{Decored\+Landscape()}{DecoredLandscape()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily Decored\+Landscape\+::\+Decored\+Landscape (\begin{DoxyParamCaption}\item[{const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \&}]{original\+\_\+graph,  }\item[{const Graph\+\_\+t\+::\+Node\+Map$<$ double $>$ \&}]{original\+\_\+quality\+Map,  }\item[{const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&}]{original\+\_\+probability\+Map,  }\item[{const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map} \&}]{coords\+Map }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_decored_landscape_a501bfb6656d735d8a564ea4c0aa6ccfd}\label{class_decored_landscape_a501bfb6656d735d8a564ea4c0aa6ccfd}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!Decored\+Landscape@{Decored\+Landscape}}
+\index{Decored\+Landscape@{Decored\+Landscape}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{Decored\+Landscape()}{DecoredLandscape()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily Decored\+Landscape\+::\+Decored\+Landscape (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_decored_landscape_a5fcaa5685a1296f29b382fcde0f6ee0e}\label{class_decored_landscape_a5fcaa5685a1296f29b382fcde0f6ee0e}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!````~Decored\+Landscape@{$\sim$\+Decored\+Landscape}}
+\index{````~Decored\+Landscape@{$\sim$\+Decored\+Landscape}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{$\sim$\+Decored\+Landscape()}{~DecoredLandscape()}}
+{\footnotesize\ttfamily Decored\+Landscape\+::$\sim$\+Decored\+Landscape (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_decored_landscape_a4613b09e1b8d817095dd486f9c1224b8}\label{class_decored_landscape_a4613b09e1b8d817095dd486f9c1224b8}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!apply@{apply}}
+\index{apply@{apply}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{apply()}{apply()}}
+{\footnotesize\ttfamily void Decored\+Landscape\+::apply (\begin{DoxyParamCaption}\item[{const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$}]{option,  }\item[{double}]{coef = {\ttfamily 1.0} }\end{DoxyParamCaption})}
+
+
+
+Decorates the landscape by applying the specified resotoration option. 
+
+Enhances the propoerties of the elements concerned by the specified restoration option according to a coefficient.
+
+
+\begin{DoxyParams}{Parameters}
+{\em option} & \\
+\hline
+{\em coef} & \+: \$\mbox{[}0,1\mbox{]}\$, the portion of option to consider \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_decored_landscape_a45685d1bf37d032f1793f885eaf4e80c}\label{class_decored_landscape_a45685d1bf37d032f1793f885eaf4e80c}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Coords@{get\+Coords}}
+\index{get\+Coords@{get\+Coords}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Coords()}{getCoords()}}
+{\footnotesize\ttfamily const \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} \& Decored\+Landscape\+::get\+Coords (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{u }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_decored_landscape_a66994174c58cad04d5fa75cb24ef2772}\label{class_decored_landscape_a66994174c58cad04d5fa75cb24ef2772}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Coords\+Map@{get\+Coords\+Map}}
+\index{get\+Coords\+Map@{get\+Coords\+Map}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Coords\+Map()}{getCoordsMap()}}
+{\footnotesize\ttfamily const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Decored\+Landscape\+::\+Coords\+Map} \& Decored\+Landscape\+::get\+Coords\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_a5005b0254f3c5aa0ed8505386fca92b3}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_decored_landscape_ae0cf946d7f221b0b7cbf89a645806d74}\label{class_decored_landscape_ae0cf946d7f221b0b7cbf89a645806d74}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Network@{get\+Network}}
+\index{get\+Network@{get\+Network}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Network()}{getNetwork()}}
+{\footnotesize\ttfamily const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \& Decored\+Landscape\+::get\+Network (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_a7ed478b62e37cad9a22bed3adedf07c5}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_decored_landscape_af45ece8a6787d42c0d60c90de913b9f5}\label{class_decored_landscape_af45ece8a6787d42c0d60c90de913b9f5}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Original\+Probability@{get\+Original\+Probability}}
+\index{get\+Original\+Probability@{get\+Original\+Probability}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Original\+Probability()}{getOriginalProbability()}}
+{\footnotesize\ttfamily const double \& Decored\+Landscape\+::get\+Original\+Probability (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const}
+
+
+
+Get the original difficulty of specified arc. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em u} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+const double\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_decored_landscape_a136c0034f2953fd59332d73b6eb17b19}\label{class_decored_landscape_a136c0034f2953fd59332d73b6eb17b19}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Original\+Quality@{get\+Original\+Quality}}
+\index{get\+Original\+Quality@{get\+Original\+Quality}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Original\+Quality()}{getOriginalQuality()}}
+{\footnotesize\ttfamily const double \& Decored\+Landscape\+::get\+Original\+Quality (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{u }\end{DoxyParamCaption}) const}
+
+
+
+Get the original quality of specified node. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em u} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+const double\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_decored_landscape_a09b5ea325960556e0a834a53a7b53000}\label{class_decored_landscape_a09b5ea325960556e0a834a53a7b53000}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Probability@{get\+Probability}}
+\index{get\+Probability@{get\+Probability}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability()}{getProbability()}}
+{\footnotesize\ttfamily const double \& Decored\+Landscape\+::get\+Probability (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_decored_landscape_afdc878affae92d7c671f1e0f87223ee0}\label{class_decored_landscape_afdc878affae92d7c671f1e0f87223ee0}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Probability\+Map@{get\+Probability\+Map}}
+\index{get\+Probability\+Map@{get\+Probability\+Map}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability\+Map()}{getProbabilityMap()}}
+{\footnotesize\ttfamily const \hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Decored\+Landscape\+::\+Probability\+Map} \& Decored\+Landscape\+::get\+Probability\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_a4ecbe83965a5266a3a2fa14e201c5871}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_decored_landscape_a16bd4da5d77b804cecb864c11770a344}\label{class_decored_landscape_a16bd4da5d77b804cecb864c11770a344}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Probability\+Ref@{get\+Probability\+Ref}}
+\index{get\+Probability\+Ref@{get\+Probability\+Ref}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability\+Ref()}{getProbabilityRef()}}
+{\footnotesize\ttfamily double \& Decored\+Landscape\+::get\+Probability\+Ref (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_decored_landscape_a5bfb2c9f5ef7e7c760d8804d0ffd9d9b}\label{class_decored_landscape_a5bfb2c9f5ef7e7c760d8804d0ffd9d9b}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Quality@{get\+Quality}}
+\index{get\+Quality@{get\+Quality}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality()}{getQuality()}}
+{\footnotesize\ttfamily const double \& Decored\+Landscape\+::get\+Quality (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{u }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_decored_landscape_a0493646916af886d3d0404760c3d5e4e}\label{class_decored_landscape_a0493646916af886d3d0404760c3d5e4e}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Quality\+Map@{get\+Quality\+Map}}
+\index{get\+Quality\+Map@{get\+Quality\+Map}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality\+Map()}{getQualityMap()}}
+{\footnotesize\ttfamily const \hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Decored\+Landscape\+::\+Quality\+Map} \& Decored\+Landscape\+::get\+Quality\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{classconcepts_1_1_abstract_landscape_ab0ff4aa5ac8d95d9207e32582e3e95f2}{concepts\+::\+Abstract\+Landscape$<$ Graph\+\_\+t $>$}.
+
+\mbox{\Hypertarget{class_decored_landscape_a2c6557a008e3b8a6d93bf307a71a1b33}\label{class_decored_landscape_a2c6557a008e3b8a6d93bf307a71a1b33}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!get\+Quality\+Ref@{get\+Quality\+Ref}}
+\index{get\+Quality\+Ref@{get\+Quality\+Ref}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality\+Ref()}{getQualityRef()}}
+{\footnotesize\ttfamily double \& Decored\+Landscape\+::get\+Quality\+Ref (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{u }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_decored_landscape_a9acf573f999cbf3e96fb567a89d02a1b}\label{class_decored_landscape_a9acf573f999cbf3e96fb567a89d02a1b}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!reset@{reset}}
+\index{reset@{reset}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void Decored\+Landscape\+::reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Resets the weights of the landscape to its original ones. 
+
+\mbox{\Hypertarget{class_decored_landscape_a53063f0f592b1cd00c3456fd40722c53}\label{class_decored_landscape_a53063f0f592b1cd00c3456fd40722c53}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!set\+Probability@{set\+Probability}}
+\index{set\+Probability@{set\+Probability}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{set\+Probability()}{setProbability()}}
+{\footnotesize\ttfamily void Decored\+Landscape\+::set\+Probability (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{e,  }\item[{double}]{v }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_decored_landscape_a76d4269a5c48601b0a31dbf91b3cbafe}\label{class_decored_landscape_a76d4269a5c48601b0a31dbf91b3cbafe}} 
+\index{Decored\+Landscape@{Decored\+Landscape}!set\+Quality@{set\+Quality}}
+\index{set\+Quality@{set\+Quality}!Decored\+Landscape@{Decored\+Landscape}}
+\subsubsection{\texorpdfstring{set\+Quality()}{setQuality()}}
+{\footnotesize\ttfamily void Decored\+Landscape\+::set\+Quality (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{u,  }\item[{double}]{v }\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/landscape/\hyperlink{decored__landscape_8hpp}{decored\+\_\+landscape.\+hpp}\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/landscape/\hyperlink{decored__landscape_8cpp}{decored\+\_\+landscape.\+cpp}\end{DoxyCompactItemize}

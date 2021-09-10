@@ -1,0 +1,177 @@
+\hypertarget{classconcepts_1_1_abstract_landscape}{}\section{concepts\+:\+:Abstract\+Landscape$<$ GR, QM, PM, CM $>$ Class Template Reference}
+\label{classconcepts_1_1_abstract_landscape}\index{concepts\+::\+Abstract\+Landscape$<$ G\+R, Q\+M, P\+M, C\+M $>$@{concepts\+::\+Abstract\+Landscape$<$ G\+R, Q\+M, P\+M, C\+M $>$}}
+
+
+{\ttfamily \#include $<$abstract\+\_\+landscape.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef GR \hyperlink{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}{Graph}
+\item 
+typedef G\+R\+::\+Node \hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}
+\item 
+typedef G\+R\+::\+Arc \hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}
+\item 
+typedef QM \hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Quality\+Map}
+\item 
+typedef PM \hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Probability\+Map}
+\item 
+typedef CM \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classconcepts_1_1_abstract_landscape_a1ef1ebd4c1a2c8fa7db1015c2f3a5ad2}{Abstract\+Landscape} ()
+\item 
+virtual \hyperlink{classconcepts_1_1_abstract_landscape_a1aa9716037a8210d16987793224ce305}{$\sim$\+Abstract\+Landscape} ()
+\item 
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}{Graph} \& \hyperlink{classconcepts_1_1_abstract_landscape_a7ed478b62e37cad9a22bed3adedf07c5}{get\+Network} () const =0
+\item 
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Quality\+Map} \& \hyperlink{classconcepts_1_1_abstract_landscape_ab0ff4aa5ac8d95d9207e32582e3e95f2}{get\+Quality\+Map} () const =0
+\item 
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map} \& \hyperlink{classconcepts_1_1_abstract_landscape_a5005b0254f3c5aa0ed8505386fca92b3}{get\+Coords\+Map} () const =0
+\item 
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Probability\+Map} \& \hyperlink{classconcepts_1_1_abstract_landscape_a4ecbe83965a5266a3a2fa14e201c5871}{get\+Probability\+Map} () const =0
+\item 
+virtual const double \& \hyperlink{classconcepts_1_1_abstract_landscape_a7cab5e0f48eda3a95df9bee95a5a6358}{get\+Quality} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u) const =0
+\item 
+virtual const \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point} \& \hyperlink{classconcepts_1_1_abstract_landscape_a7d0a8d666d3c712899e34cbf6f322027}{get\+Coords} (\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node} u) const =0
+\item 
+virtual const double \& \hyperlink{classconcepts_1_1_abstract_landscape_af1e6dc428cff6f339cf1377c4487c781}{get\+Probability} (\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc} a) const =0
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}\label{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!Arc@{Arc}}
+\index{Arc@{Arc}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{Arc}{Arc}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+typedef G\+R\+::\+Arc \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}\label{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!Coords\+Map@{Coords\+Map}}
+\index{Coords\+Map@{Coords\+Map}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{Coords\+Map}{CoordsMap}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+typedef CM \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::\hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}\label{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!Graph@{Graph}}
+\index{Graph@{Graph}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{Graph}{Graph}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+typedef GR \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::\hyperlink{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}{Graph}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}\label{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!Node@{Node}}
+\index{Node@{Node}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{Node}{Node}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+typedef G\+R\+::\+Node \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}\label{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!Probability\+Map@{Probability\+Map}}
+\index{Probability\+Map@{Probability\+Map}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{Probability\+Map}{ProbabilityMap}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+typedef PM \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::\hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Probability\+Map}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}\label{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!Quality\+Map@{Quality\+Map}}
+\index{Quality\+Map@{Quality\+Map}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{Quality\+Map}{QualityMap}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+typedef QM \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::\hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Quality\+Map}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a1ef1ebd4c1a2c8fa7db1015c2f3a5ad2}\label{classconcepts_1_1_abstract_landscape_a1ef1ebd4c1a2c8fa7db1015c2f3a5ad2}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!Abstract\+Landscape@{Abstract\+Landscape}}
+\index{Abstract\+Landscape@{Abstract\+Landscape}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{Abstract\+Landscape()}{AbstractLandscape()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+\hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::\hyperlink{classconcepts_1_1_abstract_landscape}{Abstract\+Landscape} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a1aa9716037a8210d16987793224ce305}\label{classconcepts_1_1_abstract_landscape_a1aa9716037a8210d16987793224ce305}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!````~Abstract\+Landscape@{$\sim$\+Abstract\+Landscape}}
+\index{````~Abstract\+Landscape@{$\sim$\+Abstract\+Landscape}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{$\sim$\+Abstract\+Landscape()}{~AbstractLandscape()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::$\sim$\hyperlink{classconcepts_1_1_abstract_landscape}{Abstract\+Landscape} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a7d0a8d666d3c712899e34cbf6f322027}\label{classconcepts_1_1_abstract_landscape_a7d0a8d666d3c712899e34cbf6f322027}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!get\+Coords@{get\+Coords}}
+\index{get\+Coords@{get\+Coords}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Coords()}{getCoords()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual const \hyperlink{abstract__landscape_8hpp_a9c14bcba65b035519a9c98f1eb1babbe}{Point}\& \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::get\+Coords (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a5005b0254f3c5aa0ed8505386fca92b3}\label{classconcepts_1_1_abstract_landscape_a5005b0254f3c5aa0ed8505386fca92b3}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!get\+Coords\+Map@{get\+Coords\+Map}}
+\index{get\+Coords\+Map@{get\+Coords\+Map}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Coords\+Map()}{getCoordsMap()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_a8432d7dff7edc5a5cbc524592b411f8a}{Coords\+Map}\& \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::get\+Coords\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \hyperlink{class_landscape_ab6e4efb27be3f1870ce42656a5534d68}{Landscape}, and \hyperlink{class_decored_landscape_a66994174c58cad04d5fa75cb24ef2772}{Decored\+Landscape}.
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a7ed478b62e37cad9a22bed3adedf07c5}\label{classconcepts_1_1_abstract_landscape_a7ed478b62e37cad9a22bed3adedf07c5}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!get\+Network@{get\+Network}}
+\index{get\+Network@{get\+Network}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Network()}{getNetwork()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_ab1988ca4ff36329c45af21e76046903d}{Graph}\& \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::get\+Network (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \hyperlink{class_landscape_a5f372f74530914d9128a036bbdaf7800}{Landscape}, and \hyperlink{class_decored_landscape_ae0cf946d7f221b0b7cbf89a645806d74}{Decored\+Landscape}.
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_af1e6dc428cff6f339cf1377c4487c781}\label{classconcepts_1_1_abstract_landscape_af1e6dc428cff6f339cf1377c4487c781}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!get\+Probability@{get\+Probability}}
+\index{get\+Probability@{get\+Probability}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability()}{getProbability()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual const double\& \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::get\+Probability (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a0966623f028fe50ac9a3ae114dcf2672}{Arc}}]{a }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a4ecbe83965a5266a3a2fa14e201c5871}\label{classconcepts_1_1_abstract_landscape_a4ecbe83965a5266a3a2fa14e201c5871}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!get\+Probability\+Map@{get\+Probability\+Map}}
+\index{get\+Probability\+Map@{get\+Probability\+Map}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Probability\+Map()}{getProbabilityMap()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_ae90ffb759facff21b29e646539352182}{Probability\+Map}\& \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::get\+Probability\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \hyperlink{class_landscape_a771053b32bbcb6a3fa5204b8bdb53a6d}{Landscape}, and \hyperlink{class_decored_landscape_afdc878affae92d7c671f1e0f87223ee0}{Decored\+Landscape}.
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_a7cab5e0f48eda3a95df9bee95a5a6358}\label{classconcepts_1_1_abstract_landscape_a7cab5e0f48eda3a95df9bee95a5a6358}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!get\+Quality@{get\+Quality}}
+\index{get\+Quality@{get\+Quality}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality()}{getQuality()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual const double\& \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::get\+Quality (\begin{DoxyParamCaption}\item[{\hyperlink{classconcepts_1_1_abstract_landscape_a7c2f90fb9f42302f1af84a59f4df4b91}{Node}}]{u }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+\mbox{\Hypertarget{classconcepts_1_1_abstract_landscape_ab0ff4aa5ac8d95d9207e32582e3e95f2}\label{classconcepts_1_1_abstract_landscape_ab0ff4aa5ac8d95d9207e32582e3e95f2}} 
+\index{concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}!get\+Quality\+Map@{get\+Quality\+Map}}
+\index{get\+Quality\+Map@{get\+Quality\+Map}!concepts\+::\+Abstract\+Landscape@{concepts\+::\+Abstract\+Landscape}}
+\subsubsection{\texorpdfstring{get\+Quality\+Map()}{getQualityMap()}}
+{\footnotesize\ttfamily template$<$class GR, typename QM = typename G\+R\+::template Node\+Map$<$double$>$, typename PM = typename G\+R\+::template Arc\+Map$<$double$>$, typename CM = typename G\+R\+::template Node\+Map$<$\+Point$>$$>$ \\
+virtual const \hyperlink{classconcepts_1_1_abstract_landscape_aab540b896ac9b7a7a5783f2a78f304ad}{Quality\+Map}\& \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$\+::get\+Quality\+Map (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \hyperlink{class_landscape_a77f947fdc6a8c8875d7d383eb5ce7817}{Landscape}, and \hyperlink{class_decored_landscape_a0493646916af886d3d0404760c3d5e4e}{Decored\+Landscape}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/landscape/concept/\hyperlink{abstract__landscape_8hpp}{abstract\+\_\+landscape.\+hpp}\end{DoxyCompactItemize}

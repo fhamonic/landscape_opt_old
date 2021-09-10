@@ -1,0 +1,140 @@
+\hypertarget{structlemon_1_1_identify_default_traits}{}\section{lemon\+:\+:Identify\+Default\+Traits$<$ GR, L\+EN $>$ Struct Template Reference}
+\label{structlemon_1_1_identify_default_traits}\index{lemon\+::\+Identify\+Default\+Traits$<$ G\+R, L\+E\+N $>$@{lemon\+::\+Identify\+Default\+Traits$<$ G\+R, L\+E\+N $>$}}
+
+
+{\ttfamily \#include $<$identify\+\_\+strong\+\_\+arcs.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef GR \hyperlink{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}{Digraph}
+\item 
+typedef L\+EN \hyperlink{structlemon_1_1_identify_default_traits_a1edc74d982d4d9b918cffcf2ba6b5ec7}{Length\+Map}
+\item 
+typedef L\+E\+N\+::\+Value \hyperlink{structlemon_1_1_identify_default_traits_ae44641190d3358bbe94ff53a18c36193}{Value}
+\item 
+typedef \hyperlink{classlemon_1_1_labeled_value}{Labeled\+Value}$<$ \hyperlink{structlemon_1_1_identify_default_traits_ae44641190d3358bbe94ff53a18c36193}{Value} $>$ \hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist}
+\item 
+typedef Dijkstra\+Default\+Operation\+Traits$<$ \hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist} $>$ \hyperlink{structlemon_1_1_identify_default_traits_acde989e160acfe85bc44e3e0a1c257fe}{Operation\+Traits}
+\item 
+typedef Digraph\+::template Node\+Map$<$ int $>$ \hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref}
+\item 
+typedef Bin\+Heap$<$ \hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist}, \hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref}, std\+::less$<$ \hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist} $>$ $>$ \hyperlink{structlemon_1_1_identify_default_traits_abb89b2848e63f4cb0712ca701db72aa4}{Heap}
+\item 
+typedef Digraph\+::\+Node \hyperlink{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}{Node}
+\item 
+typedef std\+::vector$<$ \hyperlink{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}{Node} $>$ \hyperlink{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}{Node\+List}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref} $\ast$ \hyperlink{structlemon_1_1_identify_default_traits_a17ee2bd5691be1d00565f999fec63d47}{create\+Heap\+Cross\+Ref} (const \hyperlink{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}{Digraph} \&g)
+\item 
+static \hyperlink{structlemon_1_1_identify_default_traits_abb89b2848e63f4cb0712ca701db72aa4}{Heap} $\ast$ \hyperlink{structlemon_1_1_identify_default_traits_a28654afa585a6b293ebd0afaf78b4411}{create\+Heap} (\hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref} \&r)
+\item 
+static \hyperlink{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}{Node\+List} $\ast$ \hyperlink{structlemon_1_1_identify_default_traits_a3c15b93174b21ed7afca1f2c20aac7bc}{create\+Node\+List} (const \hyperlink{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}{Digraph} \&)
+\item 
+static void \hyperlink{structlemon_1_1_identify_default_traits_aa127d5835d6adf71c52ef3806d8d3e2d}{add\+Node} (\hyperlink{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}{Node\+List} \&n, \hyperlink{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}{Node} u)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}\label{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Digraph@{Digraph}}
+\index{Digraph@{Digraph}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Digraph}{Digraph}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef GR \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}{Digraph}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_abb89b2848e63f4cb0712ca701db72aa4}\label{structlemon_1_1_identify_default_traits_abb89b2848e63f4cb0712ca701db72aa4}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Heap@{Heap}}
+\index{Heap@{Heap}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Heap}{Heap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Bin\+Heap$<$\hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist}, \hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref}, std\+::less$<$\hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist}$>$ $>$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_abb89b2848e63f4cb0712ca701db72aa4}{Heap}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}\label{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Heap\+Cross\+Ref@{Heap\+Cross\+Ref}}
+\index{Heap\+Cross\+Ref@{Heap\+Cross\+Ref}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Heap\+Cross\+Ref}{HeapCrossRef}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Digraph\+::template Node\+Map$<$int$>$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}\label{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Labeled\+Dist@{Labeled\+Dist}}
+\index{Labeled\+Dist@{Labeled\+Dist}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Labeled\+Dist}{LabeledDist}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef \hyperlink{classlemon_1_1_labeled_value}{Labeled\+Value}$<$\hyperlink{structlemon_1_1_identify_default_traits_ae44641190d3358bbe94ff53a18c36193}{Value}$>$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a1edc74d982d4d9b918cffcf2ba6b5ec7}\label{structlemon_1_1_identify_default_traits_a1edc74d982d4d9b918cffcf2ba6b5ec7}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Length\+Map@{Length\+Map}}
+\index{Length\+Map@{Length\+Map}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Length\+Map}{LengthMap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef L\+EN \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_a1edc74d982d4d9b918cffcf2ba6b5ec7}{Length\+Map}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}\label{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Node@{Node}}
+\index{Node@{Node}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Node}{Node}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Digraph\+::\+Node \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}{Node}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}\label{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Node\+List@{Node\+List}}
+\index{Node\+List@{Node\+List}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Node\+List}{NodeList}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef std\+::vector$<$\hyperlink{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}{Node}$>$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}{Node\+List}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_acde989e160acfe85bc44e3e0a1c257fe}\label{structlemon_1_1_identify_default_traits_acde989e160acfe85bc44e3e0a1c257fe}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Operation\+Traits@{Operation\+Traits}}
+\index{Operation\+Traits@{Operation\+Traits}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Operation\+Traits}{OperationTraits}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Dijkstra\+Default\+Operation\+Traits$<$\hyperlink{structlemon_1_1_identify_default_traits_a6f612abe02956f7a3c607e882d7e8d87}{Labeled\+Dist}$>$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_acde989e160acfe85bc44e3e0a1c257fe}{Operation\+Traits}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_ae44641190d3358bbe94ff53a18c36193}\label{structlemon_1_1_identify_default_traits_ae44641190d3358bbe94ff53a18c36193}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!Value@{Value}}
+\index{Value@{Value}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef L\+E\+N\+::\+Value \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_default_traits_ae44641190d3358bbe94ff53a18c36193}{Value}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_aa127d5835d6adf71c52ef3806d8d3e2d}\label{structlemon_1_1_identify_default_traits_aa127d5835d6adf71c52ef3806d8d3e2d}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!add\+Node@{add\+Node}}
+\index{add\+Node@{add\+Node}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{add\+Node()}{addNode()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static void \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::add\+Node (\begin{DoxyParamCaption}\item[{\hyperlink{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}{Node\+List} \&}]{n,  }\item[{\hyperlink{structlemon_1_1_identify_default_traits_a8cd1d66e1f5de579d028a3b18561ea5a}{Node}}]{u }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a28654afa585a6b293ebd0afaf78b4411}\label{structlemon_1_1_identify_default_traits_a28654afa585a6b293ebd0afaf78b4411}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!create\+Heap@{create\+Heap}}
+\index{create\+Heap@{create\+Heap}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{create\+Heap()}{createHeap()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_identify_default_traits_abb89b2848e63f4cb0712ca701db72aa4}{Heap}$\ast$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::create\+Heap (\begin{DoxyParamCaption}\item[{\hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref} \&}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a17ee2bd5691be1d00565f999fec63d47}\label{structlemon_1_1_identify_default_traits_a17ee2bd5691be1d00565f999fec63d47}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!create\+Heap\+Cross\+Ref@{create\+Heap\+Cross\+Ref}}
+\index{create\+Heap\+Cross\+Ref@{create\+Heap\+Cross\+Ref}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{create\+Heap\+Cross\+Ref()}{createHeapCrossRef()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_identify_default_traits_a05e9c5d0e980eb5f75a09449fc7d597f}{Heap\+Cross\+Ref}$\ast$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::create\+Heap\+Cross\+Ref (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}{Digraph} \&}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_default_traits_a3c15b93174b21ed7afca1f2c20aac7bc}\label{structlemon_1_1_identify_default_traits_a3c15b93174b21ed7afca1f2c20aac7bc}} 
+\index{lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}!create\+Node\+List@{create\+Node\+List}}
+\index{create\+Node\+List@{create\+Node\+List}!lemon\+::\+Identify\+Default\+Traits@{lemon\+::\+Identify\+Default\+Traits}}
+\subsubsection{\texorpdfstring{create\+Node\+List()}{createNodeList()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_identify_default_traits_ac7ceaa832e1553cd7fda8d3edc14023e}{Node\+List}$\ast$ \hyperlink{structlemon_1_1_identify_default_traits}{lemon\+::\+Identify\+Default\+Traits}$<$ GR, L\+EN $>$\+::create\+Node\+List (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_identify_default_traits_a5fddb27be8d17b86b2c4f94e72b8a8da}{Digraph} \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/algorithms/\hyperlink{identify__strong__arcs_8h}{identify\+\_\+strong\+\_\+arcs.\+h}\end{DoxyCompactItemize}

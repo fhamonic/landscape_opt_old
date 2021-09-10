@@ -1,0 +1,95 @@
+\hypertarget{class_contraction_precomputation}{}\section{Contraction\+Precomputation Class Reference}
+\label{class_contraction_precomputation}\index{Contraction\+Precomputation@{Contraction\+Precomputation}}
+
+
+{\ttfamily \#include $<$contraction\+\_\+precomputation.\+hpp$>$}
+
+
+
+Inheritance diagram for Contraction\+Precomputation\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=215pt]{class_contraction_precomputation__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_contraction_precomputation_ab4ae0b053d4cb51b2d2c4d07027ee2b7}{erase\+\_\+non\+\_\+connected} (\hyperlink{class_landscape}{Landscape} \&landscape, Graph\+\_\+t\+::\+Node t) const
+\item 
+void \hyperlink{class_contraction_precomputation_a6cbc9c5ee6d4ec9a5092d6e624922396}{contract\+\_\+arc} (\hyperlink{class_landscape}{Landscape} \&contracted\+\_\+landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, Graph\+\_\+t\+::\+Arc a) const
+\item 
+void \hyperlink{class_contraction_precomputation_a6ea4ee46a1805ced601de847969cab61}{model\+\_\+quality\+\_\+gains} (\hyperlink{class_landscape}{Landscape} \&landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&options\+\_\+nodes) const
+\item 
+void \hyperlink{class_contraction_precomputation_a6749c81605043e4398c80b49293b44c6}{retrive\+\_\+quality\+\_\+gains} (\hyperlink{class_landscape}{Landscape} \&landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, const std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&options\+\_\+nodes) const
+\item 
+virtual Graph\+\_\+t\+::\+Node\+Map$<$ \hyperlink{class_contraction_result}{Contraction\+Result} $>$ $\ast$ \hyperlink{class_contraction_precomputation_a205ee98224bfa783a7ab27d3a986468b}{precompute} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan) const =0
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_contraction_precomputation_a6cbc9c5ee6d4ec9a5092d6e624922396}\label{class_contraction_precomputation_a6cbc9c5ee6d4ec9a5092d6e624922396}} 
+\index{Contraction\+Precomputation@{Contraction\+Precomputation}!contract\+\_\+arc@{contract\+\_\+arc}}
+\index{contract\+\_\+arc@{contract\+\_\+arc}!Contraction\+Precomputation@{Contraction\+Precomputation}}
+\subsubsection{\texorpdfstring{contract\+\_\+arc()}{contract\_arc()}}
+{\footnotesize\ttfamily void Contraction\+Precomputation\+::contract\+\_\+arc (\begin{DoxyParamCaption}\item[{\hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{\hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan,  }\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const}
+
+Contracts specified uv arc preserving graph ids
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000002}{Time Complexity}]$O(deg(u))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000002}{Space Complexity}]$O(deg(u))$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_contraction_precomputation_ab4ae0b053d4cb51b2d2c4d07027ee2b7}\label{class_contraction_precomputation_ab4ae0b053d4cb51b2d2c4d07027ee2b7}} 
+\index{Contraction\+Precomputation@{Contraction\+Precomputation}!erase\+\_\+non\+\_\+connected@{erase\+\_\+non\+\_\+connected}}
+\index{erase\+\_\+non\+\_\+connected@{erase\+\_\+non\+\_\+connected}!Contraction\+Precomputation@{Contraction\+Precomputation}}
+\subsubsection{\texorpdfstring{erase\+\_\+non\+\_\+connected()}{erase\_non\_connected()}}
+{\footnotesize\ttfamily void Contraction\+Precomputation\+::erase\+\_\+non\+\_\+connected (\begin{DoxyParamCaption}\item[{\hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{Graph\+\_\+t\+::\+Node}]{t }\end{DoxyParamCaption}) const}
+
+Erase the nodes from wich there is not path to t
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000001}{Time Complexity}]$O(V)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000001}{Space Complexity}]$O(V)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_contraction_precomputation_a6ea4ee46a1805ced601de847969cab61}\label{class_contraction_precomputation_a6ea4ee46a1805ced601de847969cab61}} 
+\index{Contraction\+Precomputation@{Contraction\+Precomputation}!model\+\_\+quality\+\_\+gains@{model\+\_\+quality\+\_\+gains}}
+\index{model\+\_\+quality\+\_\+gains@{model\+\_\+quality\+\_\+gains}!Contraction\+Precomputation@{Contraction\+Precomputation}}
+\subsubsection{\texorpdfstring{model\+\_\+quality\+\_\+gains()}{model\_quality\_gains()}}
+{\footnotesize\ttfamily void Contraction\+Precomputation\+::model\+\_\+quality\+\_\+gains (\begin{DoxyParamCaption}\item[{\hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{\hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan,  }\item[{std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&}]{options\+\_\+nodes }\end{DoxyParamCaption}) const}
+
+Model quality gains options by appending nodes in the \hyperlink{class_landscape}{Landscape} and saves the arcs created in the vector passed by reference.
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000003}{Time Complexity}]$O(\#options)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000003}{Space Complexity}]$O(\#options)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_contraction_precomputation_a205ee98224bfa783a7ab27d3a986468b}\label{class_contraction_precomputation_a205ee98224bfa783a7ab27d3a986468b}} 
+\index{Contraction\+Precomputation@{Contraction\+Precomputation}!precompute@{precompute}}
+\index{precompute@{precompute}!Contraction\+Precomputation@{Contraction\+Precomputation}}
+\subsubsection{\texorpdfstring{precompute()}{precompute()}}
+{\footnotesize\ttfamily virtual Graph\+\_\+t\+::\+Node\+Map$<$\hyperlink{class_contraction_result}{Contraction\+Result}$>$$\ast$ Contraction\+Precomputation\+::precompute (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \hyperlink{class_my_contraction_algorithm_a4583c564e68d337bd9dcef315093bbe6}{My\+Contraction\+Algorithm}.
+
+\mbox{\Hypertarget{class_contraction_precomputation_a6749c81605043e4398c80b49293b44c6}\label{class_contraction_precomputation_a6749c81605043e4398c80b49293b44c6}} 
+\index{Contraction\+Precomputation@{Contraction\+Precomputation}!retrive\+\_\+quality\+\_\+gains@{retrive\+\_\+quality\+\_\+gains}}
+\index{retrive\+\_\+quality\+\_\+gains@{retrive\+\_\+quality\+\_\+gains}!Contraction\+Precomputation@{Contraction\+Precomputation}}
+\subsubsection{\texorpdfstring{retrive\+\_\+quality\+\_\+gains()}{retrive\_quality\_gains()}}
+{\footnotesize\ttfamily void Contraction\+Precomputation\+::retrive\+\_\+quality\+\_\+gains (\begin{DoxyParamCaption}\item[{\hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{\hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan,  }\item[{const std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&}]{options\+\_\+nodes }\end{DoxyParamCaption}) const}
+
+Retrives quality gains options by deleting previously added nodes in the \hyperlink{class_landscape}{Landscape} and reconstruct the corresponding option.
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000004}{Time Complexity}]$O(\#options)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000004}{Space Complexity}]$O(\#options)$ \end{DoxyRefDesc}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/precomputation/concept/\hyperlink{contraction__precomputation_8hpp}{contraction\+\_\+precomputation.\+hpp}\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/precomputation/concept/\hyperlink{contraction__precomputation_8cpp}{contraction\+\_\+precomputation.\+cpp}\end{DoxyCompactItemize}

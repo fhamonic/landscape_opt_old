@@ -1,0 +1,55 @@
+\hypertarget{pl__eca__2_8cpp}{}\section{/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/solvers/pl\+\_\+eca\+\_\+2.cpp File Reference}
+\label{pl__eca__2_8cpp}\index{/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/solvers/pl\+\_\+eca\+\_\+2.\+cpp@{/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/solvers/pl\+\_\+eca\+\_\+2.\+cpp}}
+{\ttfamily \#include \char`\"{}solvers/pl\+\_\+eca\+\_\+2.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}coin/\+Cgl\+Flow\+Cover.\+hpp\char`\"{}}\newline
+Include dependency graph for pl\+\_\+eca\+\_\+2.\+cpp\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{pl__eca__2_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_x_var}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars\+::\+X\+Var}
+\item 
+class \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_restored_x_var}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars\+::\+Restored\+X\+Var}
+\item 
+class \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_f_var}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars\+::\+F\+Var}
+\item 
+class \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_restored_f_var}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars\+::\+Restored\+F\+Var}
+\item 
+class \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_y_var}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars\+::\+Y\+Var}
+\item 
+class \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_variables}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars\+::\+Variables}
+\end{DoxyCompactItemize}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespace_solvers_1_1_p_l___e_c_a__2___vars}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{namespace_solvers_1_1_p_l___e_c_a__2___vars_abff464b2e6b972cc535acc5883b9aef1}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2\+\_\+\+Vars\+::name\+\_\+variables} (\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \&solver, const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_variables}{Variables} \&vars)
+\item 
+void \hyperlink{pl__eca__2_8cpp_a3031f4d85033288f0b9bf20fc08fee67}{insert\+\_\+variables} (\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \&solver\+\_\+builder, \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_variables}{Variables} \&vars)
+\item 
+void \hyperlink{pl__eca__2_8cpp_a049812ea88bf2fdc43cf8b0beeecefb6}{fill\+\_\+solver} (\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \&solver\+\_\+builder, const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, const double B, \hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_variables}{Variables} \&vars, bool relaxed)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{pl__eca__2_8cpp_a049812ea88bf2fdc43cf8b0beeecefb6}\label{pl__eca__2_8cpp_a049812ea88bf2fdc43cf8b0beeecefb6}} 
+\index{pl\+\_\+eca\+\_\+2.\+cpp@{pl\+\_\+eca\+\_\+2.\+cpp}!fill\+\_\+solver@{fill\+\_\+solver}}
+\index{fill\+\_\+solver@{fill\+\_\+solver}!pl\+\_\+eca\+\_\+2.\+cpp@{pl\+\_\+eca\+\_\+2.\+cpp}}
+\subsubsection{\texorpdfstring{fill\+\_\+solver()}{fill\_solver()}}
+{\footnotesize\ttfamily void fill\+\_\+solver (\begin{DoxyParamCaption}\item[{\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \&}]{solver\+\_\+builder,  }\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan,  }\item[{const double}]{B,  }\item[{\hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_variables}{Variables} \&}]{vars,  }\item[{bool}]{relaxed }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{pl__eca__2_8cpp_a3031f4d85033288f0b9bf20fc08fee67}\label{pl__eca__2_8cpp_a3031f4d85033288f0b9bf20fc08fee67}} 
+\index{pl\+\_\+eca\+\_\+2.\+cpp@{pl\+\_\+eca\+\_\+2.\+cpp}!insert\+\_\+variables@{insert\+\_\+variables}}
+\index{insert\+\_\+variables@{insert\+\_\+variables}!pl\+\_\+eca\+\_\+2.\+cpp@{pl\+\_\+eca\+\_\+2.\+cpp}}
+\subsubsection{\texorpdfstring{insert\+\_\+variables()}{insert\_variables()}}
+{\footnotesize\ttfamily void insert\+\_\+variables (\begin{DoxyParamCaption}\item[{\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \&}]{solver\+\_\+builder,  }\item[{\hyperlink{class_solvers_1_1_p_l___e_c_a__2___vars_1_1_variables}{Variables} \&}]{vars }\end{DoxyParamCaption})}
+

@@ -1,0 +1,104 @@
+\hypertarget{namespace_helper}{}\section{Helper Namespace Reference}
+\label{namespace_helper}\index{Helper@{Helper}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename GR , typename QM , typename DM , typename CM $>$ }\\double \hyperlink{namespace_helper_ac8afc6aaaf4247e34fdc83469b06af6e}{find\+Node\+Scale} (const \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, DM, CM $>$ \&landscape)
+\begin{DoxyCompactList}\small\item\em Finds the maximum node scaling for which no nodes overlaps. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename GR , typename LM $>$ }\\Graph\+\_\+t\+::\+Arc\+Map$<$ int $>$ $\ast$ \hyperlink{namespace_helper_a41dff70c57f7082754959faf43d693a4}{arc\+Centrality\+Map} (const GR \&graph, const LM \&length\+Map)
+\begin{DoxyCompactList}\small\item\em Compute the centrality of each arc, i.\+e the number of shortest paths that contain it. \end{DoxyCompactList}\item 
+void \hyperlink{namespace_helper_a3cc49f3178d4ab02f9253076fe399df7}{print\+Solution} (const \hyperlink{class_landscape}{Landscape} \&landscape, std\+::string name, \hyperlink{classconcepts_1_1_solver}{concepts\+::\+Solver} \&solver, double B, \hyperlink{class_solution}{Solution} $\ast$solution)
+\item 
+void \hyperlink{namespace_helper_a2e40eca9f4613caf5319d76356fc6b44}{copy\+Plan} (\hyperlink{class_restoration_plan}{Restoration\+Plan} \&contracted\+\_\+plan, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, const Graph\+\_\+t\+::\+Node\+Map$<$ Graph\+\_\+t\+::\+Node $>$ \&nodes\+Ref, const Graph\+\_\+t\+::\+Arc\+Map$<$ Graph\+\_\+t\+::\+Arc $>$ \&arcs\+Ref)
+\item 
+std\+::pair$<$ Graph\+\_\+t\+::\+Node, Graph\+\_\+t\+::\+Node $>$ \hyperlink{namespace_helper_ad2822186832ad10787811db7d44d60cd}{neerest\+Nodes} (const \hyperlink{class_landscape}{Landscape} \&landscape)
+\item 
+void \hyperlink{namespace_helper_a96cce3e519db1c92a36ccb954ebfb855}{assert\+\_\+well\+\_\+formed} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{namespace_helper_a41dff70c57f7082754959faf43d693a4}\label{namespace_helper_a41dff70c57f7082754959faf43d693a4}} 
+\index{Helper@{Helper}!arc\+Centrality\+Map@{arc\+Centrality\+Map}}
+\index{arc\+Centrality\+Map@{arc\+Centrality\+Map}!Helper@{Helper}}
+\subsubsection{\texorpdfstring{arc\+Centrality\+Map()}{arcCentralityMap()}}
+{\footnotesize\ttfamily template$<$typename GR , typename LM $>$ \\
+Graph\+\_\+t\+::\+Arc\+Map$<$int$>$$\ast$ Helper\+::arc\+Centrality\+Map (\begin{DoxyParamCaption}\item[{const GR \&}]{graph,  }\item[{const LM \&}]{length\+Map }\end{DoxyParamCaption})}
+
+
+
+Compute the centrality of each arc, i.\+e the number of shortest paths that contain it. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em GR} & \\
+\hline
+{\em LM} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em graph} & \\
+\hline
+{\em length\+Map} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Graph\+\_\+t\+::\+Arc\+Map$<$int$>$$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespace_helper_a96cce3e519db1c92a36ccb954ebfb855}\label{namespace_helper_a96cce3e519db1c92a36ccb954ebfb855}} 
+\index{Helper@{Helper}!assert\+\_\+well\+\_\+formed@{assert\+\_\+well\+\_\+formed}}
+\index{assert\+\_\+well\+\_\+formed@{assert\+\_\+well\+\_\+formed}!Helper@{Helper}}
+\subsubsection{\texorpdfstring{assert\+\_\+well\+\_\+formed()}{assert\_well\_formed()}}
+{\footnotesize\ttfamily void Helper\+::assert\+\_\+well\+\_\+formed (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_helper_a2e40eca9f4613caf5319d76356fc6b44}\label{namespace_helper_a2e40eca9f4613caf5319d76356fc6b44}} 
+\index{Helper@{Helper}!copy\+Plan@{copy\+Plan}}
+\index{copy\+Plan@{copy\+Plan}!Helper@{Helper}}
+\subsubsection{\texorpdfstring{copy\+Plan()}{copyPlan()}}
+{\footnotesize\ttfamily void Helper\+::copy\+Plan (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{contracted\+\_\+plan,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan,  }\item[{const Graph\+\_\+t\+::\+Node\+Map$<$ Graph\+\_\+t\+::\+Node $>$ \&}]{nodes\+Ref,  }\item[{const Graph\+\_\+t\+::\+Arc\+Map$<$ Graph\+\_\+t\+::\+Arc $>$ \&}]{arcs\+Ref }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_helper_ac8afc6aaaf4247e34fdc83469b06af6e}\label{namespace_helper_ac8afc6aaaf4247e34fdc83469b06af6e}} 
+\index{Helper@{Helper}!find\+Node\+Scale@{find\+Node\+Scale}}
+\index{find\+Node\+Scale@{find\+Node\+Scale}!Helper@{Helper}}
+\subsubsection{\texorpdfstring{find\+Node\+Scale()}{findNodeScale()}}
+{\footnotesize\ttfamily template$<$typename GR , typename QM , typename DM , typename CM $>$ \\
+double Helper\+::find\+Node\+Scale (\begin{DoxyParamCaption}\item[{const \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, DM, CM $>$ \&}]{landscape }\end{DoxyParamCaption})}
+
+
+
+Finds the maximum node scaling for which no nodes overlaps. 
+
+Finds the maximum scaling coeficient of nodes radius for which their is no overlaps in their graphical representation. Runs in \$\+O(n$^\wedge$2)\$, where \$n\$ is the number of nodes.
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em GR} & \\
+\hline
+{\em QM} & \\
+\hline
+{\em DM} & \\
+\hline
+{\em CM} & \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em landscape} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double 
+\end{DoxyReturn}
+\mbox{\Hypertarget{namespace_helper_ad2822186832ad10787811db7d44d60cd}\label{namespace_helper_ad2822186832ad10787811db7d44d60cd}} 
+\index{Helper@{Helper}!neerest\+Nodes@{neerest\+Nodes}}
+\index{neerest\+Nodes@{neerest\+Nodes}!Helper@{Helper}}
+\subsubsection{\texorpdfstring{neerest\+Nodes()}{neerestNodes()}}
+{\footnotesize\ttfamily std\+::pair$<$ Graph\+\_\+t\+::\+Node, Graph\+\_\+t\+::\+Node $>$ Helper\+::neerest\+Nodes (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{namespace_helper_a3cc49f3178d4ab02f9253076fe399df7}\label{namespace_helper_a3cc49f3178d4ab02f9253076fe399df7}} 
+\index{Helper@{Helper}!print\+Solution@{print\+Solution}}
+\index{print\+Solution@{print\+Solution}!Helper@{Helper}}
+\subsubsection{\texorpdfstring{print\+Solution()}{printSolution()}}
+{\footnotesize\ttfamily void Helper\+::print\+Solution (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{std\+::string}]{name,  }\item[{\hyperlink{classconcepts_1_1_solver}{concepts\+::\+Solver} \&}]{solver,  }\item[{double}]{B,  }\item[{\hyperlink{class_solution}{Solution} $\ast$}]{solution }\end{DoxyParamCaption})}
+

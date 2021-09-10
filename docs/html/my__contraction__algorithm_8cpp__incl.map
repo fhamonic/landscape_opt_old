@@ -1,0 +1,16 @@
+<map id="/home/plaiseek/Projects/landscape_opt_cpp/src/precomputation/my_contraction_algorithm.cpp" name="/home/plaiseek/Projects/landscape_opt_cpp/src/precomputation/my_contraction_algorithm.cpp">
+<area shape="rect" id="node2" href="$my__contraction__algorithm_8hpp.html" title="precomputation/my_contraction\l_algorithm.hpp" alt="" coords="1127,124,1331,165"/>
+<area shape="rect" id="node34" href="$identify__strong__arcs_8h.html" title="Dijkstra algorithm. " alt="" coords="1719,213,1847,255"/>
+<area shape="rect" id="node3" href="$contraction__precomputation_8hpp.html" title="precomputation/concept\l/contraction_precomputation.hpp" alt="" coords="867,213,1077,255"/>
+<area shape="rect" id="node24" href="$helper_8hpp.html" title="helper.hpp" alt="" coords="691,303,773,329"/>
+<area shape="rect" id="node5" href="$landscape_8hpp.html" title="Landscape class declaration. " alt="" coords="773,631,942,657"/>
+<area shape="rect" id="node13" href="$restoration__plan_8hpp.html" title="solvers/concept/restoration\l_plan.hpp" alt="" coords="363,541,541,583"/>
+<area shape="rect" id="node16" href="$eca_8hpp.html" title="indices/eca.hpp" alt="" coords="950,377,1063,404"/>
+<area shape="rect" id="node10" href="$abstract__landscape_8hpp.html" title="landscape/concept/abstract\l_landscape.hpp" alt="" coords="961,705,1143,747"/>
+<area shape="rect" id="node17" href="$connectivity__index_8hpp.html" title="indices/concept/connectivity\l_index.hpp" alt="" coords="1068,541,1255,583"/>
+<area shape="rect" id="node18" href="$multiplicative__dijkstra_8h.html" title="algorithms/multiplicative\l_dijkstra.h" alt="" coords="1431,452,1593,493"/>
+<area shape="rect" id="node21" href="$solution_8hpp.html" title="solvers/concept/solution.hpp" alt="" coords="566,459,754,486"/>
+<area shape="rect" id="node23" href="$decored__landscape_8hpp.html" title="DecoredLandscape class declaration. " alt="" coords="879,459,1102,486"/>
+<area shape="rect" id="node26" href="$solver_8hpp.html" title="solvers/concept/solver.hpp" alt="" coords="137,377,316,404"/>
+<area shape="rect" id="node28" href="$chrono_8hpp.html" title="Chrono class declaration. " alt="" coords="93,459,208,486"/>
+</map>

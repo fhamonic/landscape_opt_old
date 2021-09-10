@@ -1,0 +1,99 @@
+
+\begin{DoxyRefList}
+\item[\label{time__time000002}%
+\Hypertarget{time__time000002}%
+Member \hyperlink{class_contraction_precomputation_a6cbc9c5ee6d4ec9a5092d6e624922396}{Contraction\+Precomputation\+:\+:contract\+\_\+arc} (\hyperlink{class_landscape}{Landscape} \&contracted\+\_\+landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, Graph\+\_\+t\+::\+Arc a) const]$O(deg(u))$  
+\item[\label{time__time000001}%
+\Hypertarget{time__time000001}%
+Member \hyperlink{class_contraction_precomputation_ab4ae0b053d4cb51b2d2c4d07027ee2b7}{Contraction\+Precomputation\+:\+:erase\+\_\+non\+\_\+connected} (\hyperlink{class_landscape}{Landscape} \&landscape, Graph\+\_\+t\+::\+Node t) const]$O(V)$  
+\item[\label{time__time000003}%
+\Hypertarget{time__time000003}%
+Member \hyperlink{class_contraction_precomputation_a6ea4ee46a1805ced601de847969cab61}{Contraction\+Precomputation\+:\+:model\+\_\+quality\+\_\+gains} (\hyperlink{class_landscape}{Landscape} \&landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&options\+\_\+nodes) const]$O(\#options)$  
+\item[\label{time__time000004}%
+\Hypertarget{time__time000004}%
+Member \hyperlink{class_contraction_precomputation_a6749c81605043e4398c80b49293b44c6}{Contraction\+Precomputation\+:\+:retrive\+\_\+quality\+\_\+gains} (\hyperlink{class_landscape}{Landscape} \&landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, const std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&options\+\_\+nodes) const]$O(\#options)$  
+\item[\label{time__time000005}%
+\Hypertarget{time__time000005}%
+Member \hyperlink{class_e_c_a_af8127c6291b457b8c7033f23d1656767}{E\+CA\+:\+:eval} (const concepts\+::\+Abstract\+Landscape$<$ G\+R, Q\+M, P\+M, C\+M $>$ \&landscape, const typename G\+R\+::template Node\+Map$<$ bool $>$ \&node\+Filter)]$O(n \cdot (m + n) \log n)$ where $n$ is the number of nodes and $m$ the number of arcs  
+\item[\label{time__time000006}%
+\Hypertarget{time__time000006}%
+Member \hyperlink{class_e_c_a_ab6556319590259a816cf176e933746d7}{E\+CA\+:\+:eval} (const concepts\+::\+Abstract\+Landscape$<$ G\+R, Q\+M, P\+M, C\+M $>$ \&landscape)]$O(n \cdot (m + n) \log n)$ where $n$ is the number of nodes and $m$ the number of arcs  
+\item[\label{time__time000014}%
+\Hypertarget{time__time000014}%
+Member \hyperlink{class_restoration_plan2_a37dd2e978ecb5e36fa2c35e5025cf729}{Restoration\+Plan2\+:\+:add\+Arc} (Option i, Graph\+\_\+t\+::\+Arc a, double restored\+\_\+probability)]$O(\log \#arcs(i) + \log \#options(a))$  
+\item[\label{time__time000013}%
+\Hypertarget{time__time000013}%
+Member \hyperlink{class_restoration_plan2_a0a5a2740cdea0ec03ffa9c5d1d94a202}{Restoration\+Plan2\+:\+:add\+Node} (Option i, Graph\+\_\+t\+::\+Node v, double quality\+\_\+gain)]$O(\log \#nodes(i) + \log \#options(v))$  
+\item[\label{time__time000023}%
+\Hypertarget{time__time000023}%
+Member \hyperlink{class_restoration_plan2_a7461e5c0cd622f9e6adbf38f34753a07}{Restoration\+Plan2\+:\+:add\+Option} (double c)]$O(1)$  
+\item[\label{time__time000009}%
+\Hypertarget{time__time000009}%
+Member \hyperlink{class_restoration_plan2_acf5e11d698c3306efeafaa5ca5d6f3ed}{Restoration\+Plan2\+:\+:contains} (Option i, Graph\+\_\+t\+::\+Node v) const]$O(\log \#nodes(i))$  
+\item[\label{time__time000010}%
+\Hypertarget{time__time000010}%
+Member \hyperlink{class_restoration_plan2_a1884daec27de69af8302b961aee1b232}{Restoration\+Plan2\+:\+:contains} (Option i, Graph\+\_\+t\+::\+Arc a) const]$O(\log \#arcs(i))$  
+\item[\label{time__time000011}%
+\Hypertarget{time__time000011}%
+Member \hyperlink{class_restoration_plan2_a753668d5ba34ea1e088aee85218543b7}{Restoration\+Plan2\+:\+:contains} (Graph\+\_\+t\+::\+Node v) const]$O(1)$  
+\item[\label{time__time000012}%
+\Hypertarget{time__time000012}%
+Member \hyperlink{class_restoration_plan2_acac88b4dcb361cf6ca3061457ff05bfa}{Restoration\+Plan2\+:\+:contains} (Graph\+\_\+t\+::\+Arc a) const]$O(1)$  
+\item[\label{time__time000031}%
+\Hypertarget{time__time000031}%
+Member \hyperlink{class_restoration_plan2_a51e5a2f223e0cbd8763f0ff60c8a4599}{Restoration\+Plan2\+:\+:erase\+Invalid\+Arcs} ()]$O(\sum_{i \in options} \#arcs(i))$  
+\item[\label{time__time000032}%
+\Hypertarget{time__time000032}%
+Member \hyperlink{class_restoration_plan2_aeb925e92d2141fe96979538f087c277a}{Restoration\+Plan2\+:\+:erase\+Invalid\+Elements} ()]$O(\sum_{i \in options} \#nodes(i) + \#arcs(i))$  
+\item[\label{time__time000030}%
+\Hypertarget{time__time000030}%
+Member \hyperlink{class_restoration_plan2_a5258c8409176279c8bab604400722b25}{Restoration\+Plan2\+:\+:erase\+Invalid\+Nodes} ()]$O(\sum_{i \in options} \#nodes(i))$  
+\item[\label{time__time000025}%
+\Hypertarget{time__time000025}%
+Member \hyperlink{class_restoration_plan2_abac73d19450c44e9a96ab8ef680af044}{Restoration\+Plan2\+:\+:get\+Cost} (Option i) const]$O(1)$  
+\item[\label{time__time000008}%
+\Hypertarget{time__time000008}%
+Member \hyperlink{class_restoration_plan2_a91230a516340063f605ab295ae7f31d3}{Restoration\+Plan2\+:\+:get\+Nb\+Arcs} (Option i) const]$O(1)$  
+\item[\label{time__time000007}%
+\Hypertarget{time__time000007}%
+Member \hyperlink{class_restoration_plan2_a300dbff4b8071a136682b5350bb916a2}{Restoration\+Plan2\+:\+:get\+Nb\+Nodes} (Option i) const]$O(1)$  
+\item[\label{time__time000027}%
+\Hypertarget{time__time000027}%
+Member \hyperlink{class_restoration_plan2_a0c69c9a149143042a88408abefe8f005}{Restoration\+Plan2\+:\+:get\+Nb\+Options} () const]$O(1)$  
+\item[\label{time__time000029}%
+\Hypertarget{time__time000029}%
+Member \hyperlink{class_restoration_plan2_a04acf02934f7b06d3540c2bc68de73d0}{Restoration\+Plan2\+:\+:get\+Options} (Graph\+\_\+t\+::\+Arc a) const]$O(1)$  
+\item[\label{time__time000028}%
+\Hypertarget{time__time000028}%
+Member \hyperlink{class_restoration_plan2_ad5677cfb92c07bdfa6c3414940ae6401}{Restoration\+Plan2\+:\+:get\+Options} (Graph\+\_\+t\+::\+Node v) const]$O(1)$  
+\item[\label{time__time000019}%
+\Hypertarget{time__time000019}%
+Member \hyperlink{class_restoration_plan2_a55e84c9117d460224ea5e30f77e13b16}{Restoration\+Plan2\+:\+:get\+Quality\+Gain} (Option i, Graph\+\_\+t\+::\+Node v) const]$O(\log \#options(v))$  
+\item[\label{time__time000020}%
+\Hypertarget{time__time000020}%
+Member \hyperlink{class_restoration_plan2_a22980a28d0904266602a16542fa75110}{Restoration\+Plan2\+:\+:get\+Restored\+Probability} (Option i, Graph\+\_\+t\+::\+Arc a) const]$O(\log \#options(a))$  
+\item[\label{time__time000022}%
+\Hypertarget{time__time000022}%
+Member \hyperlink{class_restoration_plan2_a8967a613c2f9cbabb2418217abfe8e74}{Restoration\+Plan2\+:\+:id} (Option i, Graph\+\_\+t\+::\+Arc a) const]$O(\log \#arcs(i))$  
+\item[\label{time__time000021}%
+\Hypertarget{time__time000021}%
+Member \hyperlink{class_restoration_plan2_ab57f10bed72f50c27438e6dc06f57ca6}{Restoration\+Plan2\+:\+:id} (Option i, Graph\+\_\+t\+::\+Node v) const]$O(\log \#nodes(i))$  
+\item[\label{time__time000026}%
+\Hypertarget{time__time000026}%
+Member \hyperlink{class_restoration_plan2_af4810bc9bb239488322ab53b72c30a44}{Restoration\+Plan2\+:\+:is\+Empty} (Option i) const]$O(1)$  
+\item[\label{time__time000018}%
+\Hypertarget{time__time000018}%
+Member \hyperlink{class_restoration_plan2_aacd1be30356c999259bb98c2869bbb95}{Restoration\+Plan2\+:\+:remove\+Arc} (Graph\+\_\+t\+::\+Arc a)]$O(\sum_{i \in options(a)} \log \#nodes(i))$  
+\item[\label{time__time000016}%
+\Hypertarget{time__time000016}%
+Member \hyperlink{class_restoration_plan2_a20f26b0167d527be6d60614b4cba4dbf}{Restoration\+Plan2\+:\+:remove\+Arc} (Option i, Graph\+\_\+t\+::\+Arc a)]$O(\log \#arcs(i) + \log \#options(a))$  
+\item[\label{time__time000017}%
+\Hypertarget{time__time000017}%
+Member \hyperlink{class_restoration_plan2_acd618be603d5562d48c0ece65210750f}{Restoration\+Plan2\+:\+:remove\+Node} (Graph\+\_\+t\+::\+Node v)]$O(\sum_{i \in options(v)} \log \#nodes(i))$  
+\item[\label{time__time000015}%
+\Hypertarget{time__time000015}%
+Member \hyperlink{class_restoration_plan2_a845fbee26cdfc01d689c7c24f55f0c31}{Restoration\+Plan2\+:\+:remove\+Node} (Option i, Graph\+\_\+t\+::\+Node v)]$O(\log \#nodes(i) + \log \#options(v))$  
+\item[\label{time__time000024}%
+\Hypertarget{time__time000024}%
+Member \hyperlink{class_restoration_plan2_aea25e41ec7132080a756a57cde477c65}{Restoration\+Plan2\+:\+:set\+Cost} (Option i, double cost)]$O(1)$ 
+\end{DoxyRefList}

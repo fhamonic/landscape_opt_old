@@ -1,0 +1,178 @@
+\hypertarget{class_restoration_plan}{}\section{Restoration\+Plan Class Reference}
+\label{class_restoration_plan}\index{Restoration\+Plan@{Restoration\+Plan}}
+
+
+{\ttfamily \#include $<$restoration\+\_\+plan.\+hpp$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_restoration_plan_1_1_option}{Option}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_restoration_plan_aef8ef06f5f745bbdd598c1df66c42ca8}{Restoration\+Plan} (const \hyperlink{class_landscape}{Landscape} \&l)
+\item 
+\hyperlink{class_restoration_plan_ac34ea5df284566db818bebf4de22c5e7}{$\sim$\+Restoration\+Plan} ()
+\item 
+const \hyperlink{class_landscape}{Landscape} \& \hyperlink{class_restoration_plan_a4bbbe2c593bd9d3de466cf3ea78bf310}{get\+Landscape} () const
+\item 
+\hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$ \hyperlink{class_restoration_plan_a4f3ae1b64679d1b191077043c5cdedb7}{add\+Option} ()
+\item 
+int \hyperlink{class_restoration_plan_a7c8b52ba6e6a18b25cad055a6cd3086b}{index\+Of\+Option} (\hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$option)
+\item 
+bool \hyperlink{class_restoration_plan_a9f076ad104176e469a5e1e8aecf72614}{contains\+Option} (\hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$option) const
+\item 
+void \hyperlink{class_restoration_plan_a69958ecdd37533b64b601f6c2f190875}{remove\+Option} (int index)
+\item 
+void \hyperlink{class_restoration_plan_a7ea1f7c7dcee6357b0bd3a2d868a13b9}{remove\+Option} (\hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$option)
+\item 
+void \hyperlink{class_restoration_plan_a8be9afd54fef1a4bcd2746c8d8dca3d9}{remove\+Empty\+Options} ()
+\item 
+const std\+::vector$<$ \hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$ $>$ \& \hyperlink{class_restoration_plan_aeeca484cdb23f784a0a40256db6327a5}{options} () const
+\item 
+int \hyperlink{class_restoration_plan_a7c4e4b567a22267fb6a1c7eb8617c0fa}{get\+Nb\+Options} () const
+\item 
+void \hyperlink{class_restoration_plan_a59da0a26384e50e4615bcffa926b2d69}{remove} (Graph\+\_\+t\+::\+Node v)
+\item 
+void \hyperlink{class_restoration_plan_ae75f389f03e4fcb76b691ab383452142}{remove} (Graph\+\_\+t\+::\+Arc a)
+\item 
+const std\+::list$<$ \hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$ $>$ \& \hyperlink{class_restoration_plan_a0c27b60675feb66f08f142d2d090ea7a}{get\+Options} (Graph\+\_\+t\+::\+Node v) const
+\item 
+const std\+::list$<$ \hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$ $>$ \& \hyperlink{class_restoration_plan_afd0c1f1d3c4a8d951a72500bfe9fa31a}{get\+Options} (Graph\+\_\+t\+::\+Arc a) const
+\item 
+bool \hyperlink{class_restoration_plan_a719e93c4b00658a3932dd0abf2bdacf1}{contains} (Graph\+\_\+t\+::\+Node v) const
+\item 
+bool \hyperlink{class_restoration_plan_a6ec10a970b2f6cac43a4dbb66232e457}{contains} (Graph\+\_\+t\+::\+Arc a) const
+\item 
+void \hyperlink{class_restoration_plan_ab5733bd94e4808886168fe1688636499}{clean\+Invalid\+Elements} ()
+\item 
+void \hyperlink{class_restoration_plan_ad00a959043a8eb29204700762ce7ae41}{print} () const
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_restoration_plan_aef8ef06f5f745bbdd598c1df66c42ca8}\label{class_restoration_plan_aef8ef06f5f745bbdd598c1df66c42ca8}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!Restoration\+Plan@{Restoration\+Plan}}
+\index{Restoration\+Plan@{Restoration\+Plan}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{Restoration\+Plan()}{RestorationPlan()}}
+{\footnotesize\ttfamily Restoration\+Plan\+::\+Restoration\+Plan (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{l }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_ac34ea5df284566db818bebf4de22c5e7}\label{class_restoration_plan_ac34ea5df284566db818bebf4de22c5e7}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!````~Restoration\+Plan@{$\sim$\+Restoration\+Plan}}
+\index{````~Restoration\+Plan@{$\sim$\+Restoration\+Plan}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{$\sim$\+Restoration\+Plan()}{~RestorationPlan()}}
+{\footnotesize\ttfamily Restoration\+Plan\+::$\sim$\+Restoration\+Plan (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_restoration_plan_a4f3ae1b64679d1b191077043c5cdedb7}\label{class_restoration_plan_a4f3ae1b64679d1b191077043c5cdedb7}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!add\+Option@{add\+Option}}
+\index{add\+Option@{add\+Option}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{add\+Option()}{addOption()}}
+{\footnotesize\ttfamily \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$ Restoration\+Plan\+::add\+Option (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_ab5733bd94e4808886168fe1688636499}\label{class_restoration_plan_ab5733bd94e4808886168fe1688636499}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!clean\+Invalid\+Elements@{clean\+Invalid\+Elements}}
+\index{clean\+Invalid\+Elements@{clean\+Invalid\+Elements}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{clean\+Invalid\+Elements()}{cleanInvalidElements()}}
+{\footnotesize\ttfamily void Restoration\+Plan\+::clean\+Invalid\+Elements (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_a719e93c4b00658a3932dd0abf2bdacf1}\label{class_restoration_plan_a719e93c4b00658a3932dd0abf2bdacf1}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!contains@{contains}}
+\index{contains@{contains}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily bool Restoration\+Plan\+::contains (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_a6ec10a970b2f6cac43a4dbb66232e457}\label{class_restoration_plan_a6ec10a970b2f6cac43a4dbb66232e457}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!contains@{contains}}
+\index{contains@{contains}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily bool Restoration\+Plan\+::contains (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_a9f076ad104176e469a5e1e8aecf72614}\label{class_restoration_plan_a9f076ad104176e469a5e1e8aecf72614}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!contains\+Option@{contains\+Option}}
+\index{contains\+Option@{contains\+Option}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{contains\+Option()}{containsOption()}}
+{\footnotesize\ttfamily bool Restoration\+Plan\+::contains\+Option (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan_1_1_option}{Option} $\ast$}]{option }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_a4bbbe2c593bd9d3de466cf3ea78bf310}\label{class_restoration_plan_a4bbbe2c593bd9d3de466cf3ea78bf310}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!get\+Landscape@{get\+Landscape}}
+\index{get\+Landscape@{get\+Landscape}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{get\+Landscape()}{getLandscape()}}
+{\footnotesize\ttfamily const \hyperlink{class_landscape}{Landscape} \& Restoration\+Plan\+::get\+Landscape (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_a7c4e4b567a22267fb6a1c7eb8617c0fa}\label{class_restoration_plan_a7c4e4b567a22267fb6a1c7eb8617c0fa}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!get\+Nb\+Options@{get\+Nb\+Options}}
+\index{get\+Nb\+Options@{get\+Nb\+Options}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{get\+Nb\+Options()}{getNbOptions()}}
+{\footnotesize\ttfamily int Restoration\+Plan\+::get\+Nb\+Options (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_a0c27b60675feb66f08f142d2d090ea7a}\label{class_restoration_plan_a0c27b60675feb66f08f142d2d090ea7a}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!get\+Options@{get\+Options}}
+\index{get\+Options@{get\+Options}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{get\+Options()}{getOptions()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily const std\+::list$<$ \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$ $>$ \& Restoration\+Plan\+::get\+Options (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_afd0c1f1d3c4a8d951a72500bfe9fa31a}\label{class_restoration_plan_afd0c1f1d3c4a8d951a72500bfe9fa31a}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!get\+Options@{get\+Options}}
+\index{get\+Options@{get\+Options}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{get\+Options()}{getOptions()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily const std\+::list$<$ \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$ $>$ \& Restoration\+Plan\+::get\+Options (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_a7c8b52ba6e6a18b25cad055a6cd3086b}\label{class_restoration_plan_a7c8b52ba6e6a18b25cad055a6cd3086b}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!index\+Of\+Option@{index\+Of\+Option}}
+\index{index\+Of\+Option@{index\+Of\+Option}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{index\+Of\+Option()}{indexOfOption()}}
+{\footnotesize\ttfamily int Restoration\+Plan\+::index\+Of\+Option (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$}]{option }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_aeeca484cdb23f784a0a40256db6327a5}\label{class_restoration_plan_aeeca484cdb23f784a0a40256db6327a5}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!options@{options}}
+\index{options@{options}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{options()}{options()}}
+{\footnotesize\ttfamily const std\+::vector$<$ \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$ $>$ \& Restoration\+Plan\+::options (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_ad00a959043a8eb29204700762ce7ae41}\label{class_restoration_plan_ad00a959043a8eb29204700762ce7ae41}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!print@{print}}
+\index{print@{print}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{print()}{print()}}
+{\footnotesize\ttfamily void Restoration\+Plan\+::print (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_restoration_plan_a59da0a26384e50e4615bcffa926b2d69}\label{class_restoration_plan_a59da0a26384e50e4615bcffa926b2d69}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!remove@{remove}}
+\index{remove@{remove}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{remove()}{remove()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan\+::remove (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_ae75f389f03e4fcb76b691ab383452142}\label{class_restoration_plan_ae75f389f03e4fcb76b691ab383452142}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!remove@{remove}}
+\index{remove@{remove}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{remove()}{remove()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan\+::remove (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_a8be9afd54fef1a4bcd2746c8d8dca3d9}\label{class_restoration_plan_a8be9afd54fef1a4bcd2746c8d8dca3d9}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!remove\+Empty\+Options@{remove\+Empty\+Options}}
+\index{remove\+Empty\+Options@{remove\+Empty\+Options}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{remove\+Empty\+Options()}{removeEmptyOptions()}}
+{\footnotesize\ttfamily void Restoration\+Plan\+::remove\+Empty\+Options (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_a69958ecdd37533b64b601f6c2f190875}\label{class_restoration_plan_a69958ecdd37533b64b601f6c2f190875}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!remove\+Option@{remove\+Option}}
+\index{remove\+Option@{remove\+Option}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{remove\+Option()}{removeOption()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan\+::remove\+Option (\begin{DoxyParamCaption}\item[{int}]{index }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_restoration_plan_a7ea1f7c7dcee6357b0bd3a2d868a13b9}\label{class_restoration_plan_a7ea1f7c7dcee6357b0bd3a2d868a13b9}} 
+\index{Restoration\+Plan@{Restoration\+Plan}!remove\+Option@{remove\+Option}}
+\index{remove\+Option@{remove\+Option}!Restoration\+Plan@{Restoration\+Plan}}
+\subsubsection{\texorpdfstring{remove\+Option()}{removeOption()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan\+::remove\+Option (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$}]{option }\end{DoxyParamCaption})}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/solvers/concept/\hyperlink{restoration__plan_8hpp}{restoration\+\_\+plan.\+hpp}\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/solvers/concept/\hyperlink{restoration__plan_8cpp}{restoration\+\_\+plan.\+cpp}\end{DoxyCompactItemize}

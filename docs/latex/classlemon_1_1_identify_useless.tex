@@ -1,0 +1,197 @@
+\hypertarget{classlemon_1_1_identify_useless}{}\section{lemon\+:\+:Identify\+Useless$<$ GR, L\+EN, TR $>$ Class Template Reference}
+\label{classlemon_1_1_identify_useless}\index{lemon\+::\+Identify\+Useless$<$ G\+R, L\+E\+N, T\+R $>$@{lemon\+::\+Identify\+Useless$<$ G\+R, L\+E\+N, T\+R $>$}}
+
+
+{\ttfamily \#include $<$identify\+\_\+strong\+\_\+arcs.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef T\+R\+::\+Digraph \hyperlink{classlemon_1_1_identify_useless_a68c5b16f64c42ef8d89c3d4c467aad06}{Digraph}
+\item 
+typedef T\+R\+::\+Value \hyperlink{classlemon_1_1_identify_useless_af6901305bc21b76ae676c554b4acb672}{Value}
+\item 
+typedef T\+R\+::\+Labeled\+Dist \hyperlink{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}{Labeled\+Dist}
+\item 
+typedef T\+R\+::\+Length\+Map \hyperlink{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}{Length\+Map}
+\item 
+typedef T\+R\+::\+Heap\+Cross\+Ref \hyperlink{classlemon_1_1_identify_useless_a8028f36ab31388d786049d08dfce2453}{Heap\+Cross\+Ref}
+\item 
+typedef T\+R\+::\+Heap \hyperlink{classlemon_1_1_identify_useless_af836320346e1d014d8bfe6d9e17400ac}{Heap}
+\item 
+typedef T\+R\+::\+Node\+List \hyperlink{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}{Node\+List}
+\item 
+typedef T\+R\+::\+Operation\+Traits \hyperlink{classlemon_1_1_identify_useless_ad9bc590b20f0a2dc6f9bd28eea1f6ba4}{Operation\+Traits}
+\item 
+typedef TR \hyperlink{classlemon_1_1_identify_useless_a966f0494a37669191b1ce31fc9362e91}{Traits}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classlemon_1_1_identify_useless_a6bf14db861b7ed6ad63c75a0f7ff399b}{Identify\+Useless} (const \hyperlink{classlemon_1_1_identify_useless_a68c5b16f64c42ef8d89c3d4c467aad06}{Digraph} \&g, const \hyperlink{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}{Length\+Map} \&worst\+\_\+length, const \hyperlink{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}{Length\+Map} \&best\+\_\+length)
+\item 
+\hyperlink{classlemon_1_1_identify_useless_ae172f96d5b16abb8cb808e1dcb883d6c}{$\sim$\+Identify\+Useless} ()
+\item 
+\hyperlink{classlemon_1_1_identify_useless}{Identify\+Useless} \& \hyperlink{classlemon_1_1_identify_useless_a3986528d341d1b86fb81ac2545977101}{labeled\+Nodes\+List} (\hyperlink{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}{Node\+List} \&n)
+\item 
+const \hyperlink{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}{Node\+List} \& \hyperlink{classlemon_1_1_identify_useless_a2e8edf47e8d037ec5c2c6e5aa9fac5a2}{get\+Labeled\+Nodes\+List} ()
+\item 
+void \hyperlink{classlemon_1_1_identify_useless_a82c7b862cee2c0b46f48587f8af40a41}{init} (Arc uv)
+\item 
+void \hyperlink{classlemon_1_1_identify_useless_a20aba1b1f5f33c63804b5d4803c29c4f}{update\+Usefull} (\hyperlink{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}{Labeled\+Dist} \&oldvalue, Arc \&e)
+\item 
+void \hyperlink{classlemon_1_1_identify_useless_a380457839c6c0fae6f627a49671ed683}{update\+Useless} (\hyperlink{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}{Labeled\+Dist} \&oldvalue, Arc \&e)
+\item 
+void \hyperlink{classlemon_1_1_identify_useless_abb11e995306aa60344184e068b88468f}{process\+First\+Node} (Arc \&uv)
+\item 
+void \hyperlink{classlemon_1_1_identify_useless_ac85abcff75b0d1cb745e3972b35d7ec6}{process\+Next\+Node} ()
+\item 
+void \hyperlink{classlemon_1_1_identify_useless_aee17692788038ba6058f5dc4b74ae3af}{run} (Arc uv)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a68c5b16f64c42ef8d89c3d4c467aad06}\label{classlemon_1_1_identify_useless_a68c5b16f64c42ef8d89c3d4c467aad06}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Digraph@{Digraph}}
+\index{Digraph@{Digraph}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Digraph}{Digraph}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Digraph \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_a68c5b16f64c42ef8d89c3d4c467aad06}{Digraph}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_af836320346e1d014d8bfe6d9e17400ac}\label{classlemon_1_1_identify_useless_af836320346e1d014d8bfe6d9e17400ac}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Heap@{Heap}}
+\index{Heap@{Heap}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Heap}{Heap}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Heap \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_af836320346e1d014d8bfe6d9e17400ac}{Heap}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a8028f36ab31388d786049d08dfce2453}\label{classlemon_1_1_identify_useless_a8028f36ab31388d786049d08dfce2453}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Heap\+Cross\+Ref@{Heap\+Cross\+Ref}}
+\index{Heap\+Cross\+Ref@{Heap\+Cross\+Ref}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Heap\+Cross\+Ref}{HeapCrossRef}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Heap\+Cross\+Ref \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_a8028f36ab31388d786049d08dfce2453}{Heap\+Cross\+Ref}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}\label{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Labeled\+Dist@{Labeled\+Dist}}
+\index{Labeled\+Dist@{Labeled\+Dist}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Labeled\+Dist}{LabeledDist}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Labeled\+Dist \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}{Labeled\+Dist}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}\label{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Length\+Map@{Length\+Map}}
+\index{Length\+Map@{Length\+Map}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Length\+Map}{LengthMap}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Length\+Map \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}{Length\+Map}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}\label{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Node\+List@{Node\+List}}
+\index{Node\+List@{Node\+List}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Node\+List}{NodeList}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Node\+List \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}{Node\+List}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_ad9bc590b20f0a2dc6f9bd28eea1f6ba4}\label{classlemon_1_1_identify_useless_ad9bc590b20f0a2dc6f9bd28eea1f6ba4}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Operation\+Traits@{Operation\+Traits}}
+\index{Operation\+Traits@{Operation\+Traits}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Operation\+Traits}{OperationTraits}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Operation\+Traits \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_ad9bc590b20f0a2dc6f9bd28eea1f6ba4}{Operation\+Traits}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a966f0494a37669191b1ce31fc9362e91}\label{classlemon_1_1_identify_useless_a966f0494a37669191b1ce31fc9362e91}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Traits@{Traits}}
+\index{Traits@{Traits}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Traits}{Traits}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef TR \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_a966f0494a37669191b1ce31fc9362e91}{Traits}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_af6901305bc21b76ae676c554b4acb672}\label{classlemon_1_1_identify_useless_af6901305bc21b76ae676c554b4acb672}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Value@{Value}}
+\index{Value@{Value}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Value \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless_af6901305bc21b76ae676c554b4acb672}{Value}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a6bf14db861b7ed6ad63c75a0f7ff399b}\label{classlemon_1_1_identify_useless_a6bf14db861b7ed6ad63c75a0f7ff399b}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!Identify\+Useless@{Identify\+Useless}}
+\index{Identify\+Useless@{Identify\+Useless}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{Identify\+Useless()}{IdentifyUseless()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_useless}{Identify\+Useless} (\begin{DoxyParamCaption}\item[{const \hyperlink{classlemon_1_1_identify_useless_a68c5b16f64c42ef8d89c3d4c467aad06}{Digraph} \&}]{g,  }\item[{const \hyperlink{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}{Length\+Map} \&}]{worst\+\_\+length,  }\item[{const \hyperlink{classlemon_1_1_identify_useless_a47fb50fbfa981adae466fc6e71436fee}{Length\+Map} \&}]{best\+\_\+length }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_ae172f96d5b16abb8cb808e1dcb883d6c}\label{classlemon_1_1_identify_useless_ae172f96d5b16abb8cb808e1dcb883d6c}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!````~Identify\+Useless@{$\sim$\+Identify\+Useless}}
+\index{````~Identify\+Useless@{$\sim$\+Identify\+Useless}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{$\sim$\+Identify\+Useless()}{~IdentifyUseless()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::$\sim$\hyperlink{classlemon_1_1_identify_useless}{Identify\+Useless} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a2e8edf47e8d037ec5c2c6e5aa9fac5a2}\label{classlemon_1_1_identify_useless_a2e8edf47e8d037ec5c2c6e5aa9fac5a2}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!get\+Labeled\+Nodes\+List@{get\+Labeled\+Nodes\+List}}
+\index{get\+Labeled\+Nodes\+List@{get\+Labeled\+Nodes\+List}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{get\+Labeled\+Nodes\+List()}{getLabeledNodesList()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+const \hyperlink{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}{Node\+List}\& \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::get\+Labeled\+Nodes\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a82c7b862cee2c0b46f48587f8af40a41}\label{classlemon_1_1_identify_useless_a82c7b862cee2c0b46f48587f8af40a41}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!init@{init}}
+\index{init@{init}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::init (\begin{DoxyParamCaption}\item[{Arc}]{uv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a3986528d341d1b86fb81ac2545977101}\label{classlemon_1_1_identify_useless_a3986528d341d1b86fb81ac2545977101}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!labeled\+Nodes\+List@{labeled\+Nodes\+List}}
+\index{labeled\+Nodes\+List@{labeled\+Nodes\+List}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{labeled\+Nodes\+List()}{labeledNodesList()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_identify_useless}{Identify\+Useless}\& \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::labeled\+Nodes\+List (\begin{DoxyParamCaption}\item[{\hyperlink{classlemon_1_1_identify_useless_a9de719ca7cb13d499ff99c728d4ec16e}{Node\+List} \&}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_abb11e995306aa60344184e068b88468f}\label{classlemon_1_1_identify_useless_abb11e995306aa60344184e068b88468f}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!process\+First\+Node@{process\+First\+Node}}
+\index{process\+First\+Node@{process\+First\+Node}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{process\+First\+Node()}{processFirstNode()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::process\+First\+Node (\begin{DoxyParamCaption}\item[{Arc \&}]{uv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_ac85abcff75b0d1cb745e3972b35d7ec6}\label{classlemon_1_1_identify_useless_ac85abcff75b0d1cb745e3972b35d7ec6}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!process\+Next\+Node@{process\+Next\+Node}}
+\index{process\+Next\+Node@{process\+Next\+Node}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{process\+Next\+Node()}{processNextNode()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::process\+Next\+Node (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_aee17692788038ba6058f5dc4b74ae3af}\label{classlemon_1_1_identify_useless_aee17692788038ba6058f5dc4b74ae3af}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!run@{run}}
+\index{run@{run}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::run (\begin{DoxyParamCaption}\item[{Arc}]{uv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a20aba1b1f5f33c63804b5d4803c29c4f}\label{classlemon_1_1_identify_useless_a20aba1b1f5f33c63804b5d4803c29c4f}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!update\+Usefull@{update\+Usefull}}
+\index{update\+Usefull@{update\+Usefull}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{update\+Usefull()}{updateUsefull()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::update\+Usefull (\begin{DoxyParamCaption}\item[{\hyperlink{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}{Labeled\+Dist} \&}]{oldvalue,  }\item[{Arc \&}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_useless_a380457839c6c0fae6f627a49671ed683}\label{classlemon_1_1_identify_useless_a380457839c6c0fae6f627a49671ed683}} 
+\index{lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}!update\+Useless@{update\+Useless}}
+\index{update\+Useless@{update\+Useless}!lemon\+::\+Identify\+Useless@{lemon\+::\+Identify\+Useless}}
+\subsubsection{\texorpdfstring{update\+Useless()}{updateUseless()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_useless}{lemon\+::\+Identify\+Useless}$<$ GR, L\+EN, TR $>$\+::update\+Useless (\begin{DoxyParamCaption}\item[{\hyperlink{classlemon_1_1_identify_useless_ad44b00c430e4b58280c0399b4a02de4d}{Labeled\+Dist} \&}]{oldvalue,  }\item[{Arc \&}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/algorithms/\hyperlink{identify__strong__arcs_8h}{identify\+\_\+strong\+\_\+arcs.\+h}\end{DoxyCompactItemize}

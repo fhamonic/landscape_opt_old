@@ -1,0 +1,108 @@
+\hypertarget{classconcepts_1_1_solver}{}\section{concepts\+:\+:Solver Class Reference}
+\label{classconcepts_1_1_solver}\index{concepts\+::\+Solver@{concepts\+::\+Solver}}
+
+
+{\ttfamily \#include $<$solver.\+hpp$>$}
+
+
+
+Inheritance diagram for concepts\+:\+:Solver\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{classconcepts_1_1_solver__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classconcepts_1_1_solver_1_1_double_param}{Double\+Param}
+\item 
+class \hyperlink{classconcepts_1_1_solver_1_1_int_param}{Int\+Param}
+\item 
+class \hyperlink{classconcepts_1_1_solver_1_1_param}{Param}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual \hyperlink{classconcepts_1_1_solver_a550134cf412d2c1c1b8c6eed1a477090}{$\sim$\+Solver} ()
+\item 
+bool \hyperlink{classconcepts_1_1_solver_a2158cd44bcaa736d828a1dcb49058db0}{set\+Param} (std\+::string \hyperlink{classconcepts_1_1_solver_ab995568318a506446228f45cab2fcce7}{name}, const char $\ast$arg)
+\item 
+std\+::list$<$ std\+::string $>$ $\ast$ \hyperlink{classconcepts_1_1_solver_a65cee6a06fd6c1439f3c17fb7e7fb42c}{get\+Param\+List} () const
+\item 
+virtual \hyperlink{class_solution}{Solution} $\ast$ \hyperlink{classconcepts_1_1_solver_af323ad29df1e7b87facd7dc007568c80}{solve} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, const double B) const =0
+\item 
+virtual const std\+::string \hyperlink{classconcepts_1_1_solver_ab995568318a506446228f45cab2fcce7}{name} () const =0
+\item 
+std\+::string \hyperlink{classconcepts_1_1_solver_a3f9ca298d2c2ccaa4e1c8337866b8021}{to\+String} () const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::map$<$ std\+::string, \hyperlink{classconcepts_1_1_solver_1_1_param}{Param} $\ast$ $>$ \hyperlink{classconcepts_1_1_solver_a6b85828f79e693cba963f2fc98f7edd2}{params}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classconcepts_1_1_solver_a550134cf412d2c1c1b8c6eed1a477090}\label{classconcepts_1_1_solver_a550134cf412d2c1c1b8c6eed1a477090}} 
+\index{concepts\+::\+Solver@{concepts\+::\+Solver}!````~Solver@{$\sim$\+Solver}}
+\index{````~Solver@{$\sim$\+Solver}!concepts\+::\+Solver@{concepts\+::\+Solver}}
+\subsubsection{\texorpdfstring{$\sim$\+Solver()}{~Solver()}}
+{\footnotesize\ttfamily virtual concepts\+::\+Solver\+::$\sim$\+Solver (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classconcepts_1_1_solver_a65cee6a06fd6c1439f3c17fb7e7fb42c}\label{classconcepts_1_1_solver_a65cee6a06fd6c1439f3c17fb7e7fb42c}} 
+\index{concepts\+::\+Solver@{concepts\+::\+Solver}!get\+Param\+List@{get\+Param\+List}}
+\index{get\+Param\+List@{get\+Param\+List}!concepts\+::\+Solver@{concepts\+::\+Solver}}
+\subsubsection{\texorpdfstring{get\+Param\+List()}{getParamList()}}
+{\footnotesize\ttfamily std\+::list$<$std\+::string$>$$\ast$ concepts\+::\+Solver\+::get\+Param\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classconcepts_1_1_solver_ab995568318a506446228f45cab2fcce7}\label{classconcepts_1_1_solver_ab995568318a506446228f45cab2fcce7}} 
+\index{concepts\+::\+Solver@{concepts\+::\+Solver}!name@{name}}
+\index{name@{name}!concepts\+::\+Solver@{concepts\+::\+Solver}}
+\subsubsection{\texorpdfstring{name()}{name()}}
+{\footnotesize\ttfamily virtual const std\+::string concepts\+::\+Solver\+::name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \hyperlink{class_p_l___e_c_a___solver_a4cbbcbfd62d91dacb448470456ac57c7}{P\+L\+\_\+\+E\+C\+A\+\_\+\+Solver}, \hyperlink{class_solvers_1_1_p_l___e_c_a__3_ac265db86ca64eb34ba5370e905686a21}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+3}, \hyperlink{class_solvers_1_1_p_l___e_c_a__2_ab9879a904a2545d929bd2956f23fa1aa}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2}, \hyperlink{class_solvers_1_1_randomized___rounding___e_c_a_aa9ae623007f23dbd73d367649021c8a9}{Solvers\+::\+Randomized\+\_\+\+Rounding\+\_\+\+E\+CA}, \hyperlink{class_solvers_1_1_naive___e_c_a___dec_a171d5188c9901c251c57efdc9c8b954b}{Solvers\+::\+Naive\+\_\+\+E\+C\+A\+\_\+\+Dec}, \hyperlink{class_solvers_1_1_naive___e_c_a___inc_ace6070af722e226fcd2f9b746cc12944}{Solvers\+::\+Naive\+\_\+\+E\+C\+A\+\_\+\+Inc}, \hyperlink{class_solvers_1_1_glutton___e_c_a___dec_a2990dbcfecba9673d4bbae331aee1a04}{Solvers\+::\+Glutton\+\_\+\+E\+C\+A\+\_\+\+Dec}, \hyperlink{class_solvers_1_1_glutton___e_c_a___inc_afda6b975b3a066aa76711730e5fa2f48}{Solvers\+::\+Glutton\+\_\+\+E\+C\+A\+\_\+\+Inc}, and \hyperlink{class_solvers_1_1_bogo_a496539bab5a74757fe6d50e78e0a641f}{Solvers\+::\+Bogo}.
+
+\mbox{\Hypertarget{classconcepts_1_1_solver_a2158cd44bcaa736d828a1dcb49058db0}\label{classconcepts_1_1_solver_a2158cd44bcaa736d828a1dcb49058db0}} 
+\index{concepts\+::\+Solver@{concepts\+::\+Solver}!set\+Param@{set\+Param}}
+\index{set\+Param@{set\+Param}!concepts\+::\+Solver@{concepts\+::\+Solver}}
+\subsubsection{\texorpdfstring{set\+Param()}{setParam()}}
+{\footnotesize\ttfamily bool concepts\+::\+Solver\+::set\+Param (\begin{DoxyParamCaption}\item[{std\+::string}]{name,  }\item[{const char $\ast$}]{arg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classconcepts_1_1_solver_af323ad29df1e7b87facd7dc007568c80}\label{classconcepts_1_1_solver_af323ad29df1e7b87facd7dc007568c80}} 
+\index{concepts\+::\+Solver@{concepts\+::\+Solver}!solve@{solve}}
+\index{solve@{solve}!concepts\+::\+Solver@{concepts\+::\+Solver}}
+\subsubsection{\texorpdfstring{solve()}{solve()}}
+{\footnotesize\ttfamily virtual \hyperlink{class_solution}{Solution}$\ast$ concepts\+::\+Solver\+::solve (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan,  }\item[{const double}]{B }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \hyperlink{class_p_l___e_c_a___solver_a7fe728bb23be76b4aa51e669b73ee10d}{P\+L\+\_\+\+E\+C\+A\+\_\+\+Solver}, \hyperlink{class_solvers_1_1_p_l___e_c_a__3_ae296efd0061d2fbf478732bc9c280202}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+3}, \hyperlink{class_solvers_1_1_p_l___e_c_a__2_a07601fa43e0c530e7a66b1532a9e96a6}{Solvers\+::\+P\+L\+\_\+\+E\+C\+A\+\_\+2}, \hyperlink{class_solvers_1_1_randomized___rounding___e_c_a_a2b2c1f0da1e047a5add3fd1bb5e6f0e8}{Solvers\+::\+Randomized\+\_\+\+Rounding\+\_\+\+E\+CA}, \hyperlink{class_solvers_1_1_naive___e_c_a___dec_a51e13c5f7dac3c937f1a006c8b651657}{Solvers\+::\+Naive\+\_\+\+E\+C\+A\+\_\+\+Dec}, \hyperlink{class_solvers_1_1_naive___e_c_a___inc_af0830eeb54be59ae2f363a32f38cee0c}{Solvers\+::\+Naive\+\_\+\+E\+C\+A\+\_\+\+Inc}, \hyperlink{class_solvers_1_1_glutton___e_c_a___dec_a6b7078518779722dfaed6b1b1a9ba502}{Solvers\+::\+Glutton\+\_\+\+E\+C\+A\+\_\+\+Dec}, \hyperlink{class_solvers_1_1_glutton___e_c_a___inc_a12c872bf34761d875649f3e029dbc952}{Solvers\+::\+Glutton\+\_\+\+E\+C\+A\+\_\+\+Inc}, and \hyperlink{class_solvers_1_1_bogo_a094c019a0efda929bd2369d2a47256f6}{Solvers\+::\+Bogo}.
+
+\mbox{\Hypertarget{classconcepts_1_1_solver_a3f9ca298d2c2ccaa4e1c8337866b8021}\label{classconcepts_1_1_solver_a3f9ca298d2c2ccaa4e1c8337866b8021}} 
+\index{concepts\+::\+Solver@{concepts\+::\+Solver}!to\+String@{to\+String}}
+\index{to\+String@{to\+String}!concepts\+::\+Solver@{concepts\+::\+Solver}}
+\subsubsection{\texorpdfstring{to\+String()}{toString()}}
+{\footnotesize\ttfamily std\+::string concepts\+::\+Solver\+::to\+String (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classconcepts_1_1_solver_a6b85828f79e693cba963f2fc98f7edd2}\label{classconcepts_1_1_solver_a6b85828f79e693cba963f2fc98f7edd2}} 
+\index{concepts\+::\+Solver@{concepts\+::\+Solver}!params@{params}}
+\index{params@{params}!concepts\+::\+Solver@{concepts\+::\+Solver}}
+\subsubsection{\texorpdfstring{params}{params}}
+{\footnotesize\ttfamily std\+::map$<$std\+::string, \hyperlink{classconcepts_1_1_solver_1_1_param}{Param}$\ast$$>$ concepts\+::\+Solver\+::params\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/solvers/concept/\hyperlink{solver_8hpp}{solver.\+hpp}\end{DoxyCompactItemize}

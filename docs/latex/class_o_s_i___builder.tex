@@ -1,0 +1,252 @@
+\hypertarget{class_o_s_i___builder}{}\section{O\+S\+I\+\_\+\+Builder Class Reference}
+\label{class_o_s_i___builder}\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+
+
+A practical class for building Osi\+Solver instances.  
+
+
+
+
+{\ttfamily \#include $<$osi\+\_\+builder.\+hpp$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_o_s_i___builder_1_1_var_type}{Var\+Type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_o_s_i___builder_ab1b7372acb9c318a8a3d9c3061b3c71b}{O\+S\+I\+\_\+\+Builder} ()
+\item 
+\hyperlink{class_o_s_i___builder_a1dd195dbdb3b7fec119563f671c66ebd}{$\sim$\+O\+S\+I\+\_\+\+Builder} ()
+\item 
+int \hyperlink{class_o_s_i___builder_a23dc928bffaf8828450e6843f63f8fe4}{get\+Nb\+Vars} () const
+\item 
+int \hyperlink{class_o_s_i___builder_a8e7944db07ca3585577acf16847f5bd4}{get\+Nb\+Constraints} () const
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_a2d3a565b98d8ebf4223929527de84652}{add\+Var\+Type} (\hyperlink{class_o_s_i___builder_1_1_var_type}{Var\+Type} $\ast$var\+\_\+type)
+\item 
+void \hyperlink{class_o_s_i___builder_a28598ca3fd95a548245070ffecaf8294}{init} ()
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_aaae1174492586d9ffe4b2cfec17823d7}{set\+Objective} (int var\+\_\+id, double coef)
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_a8def1d148b0bb00d9ac4f454a5497e17}{set\+Bounds} (int var\+\_\+id, double lb, double ub)
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_adb96cad71e8d4ab93888969730fe5ad8}{buff\+Entry} (int var\+\_\+id, double coef)
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_a3f6998733dd18dd9bfa94c1db0988e40}{pop\+Entry\+Buffer} ()
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_a0a58121e43e6b2cc4336e4ad23805585}{clear\+Entry\+Buffer} ()
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_a123c8cb445a247c6a8cb3e8271553e77}{push\+Row\+Without\+Clearing} (double lb, double ub)
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_a4aca356d3d67593e7c60f4304979ec7b}{push\+Row} (double lb, double ub)
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_acb409a7ad7615d995af3f1c5e56417e7}{set\+Col\+Name} (int var\+\_\+id, std\+::string name)
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_abb4c8d13d5a3639ff22d9ec10960878c}{set\+Continuous} (int var\+\_\+id)
+\item 
+\hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& \hyperlink{class_o_s_i___builder_ab5da16db7740e228da63e4b58ab2069e}{set\+Integer} (int var\+\_\+id)
+\item 
+{\footnotesize template$<$class Osi\+Solver $>$ }\\Osi\+Solver $\ast$ \hyperlink{class_o_s_i___builder_a25b48f1859bad98a9c1545d789e3310c}{build\+Solver} (int sense, bool relaxed=false)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static int \hyperlink{class_o_s_i___builder_a332430c1559d3f57e556fed565d09d55}{nb\+\_\+pairs} (int n)
+\item 
+static int \hyperlink{class_o_s_i___builder_a073d6abeb8bd32a32d67ca1685e06b12}{nb\+\_\+couples} (int n)
+\item 
+static int \hyperlink{class_o_s_i___builder_adf04717a67167471083eec6815ebadcf}{compose\+\_\+pair} (int i, int j)
+\item 
+static std\+::pair$<$ int, int $>$ \hyperlink{class_o_s_i___builder_aa876adecee1af9bb840d434de1e78980}{retrieve\+\_\+pair} (int id)
+\item 
+static int \hyperlink{class_o_s_i___builder_a20bf8723af96f5a4f6b97a88526ae8bc}{compose\+\_\+couple} (int i, int j)
+\item 
+static std\+::pair$<$ int, int $>$ \hyperlink{class_o_s_i___builder_a47117c9ae73021710fd1ed695bb5d9e5}{retrieve\+\_\+couple} (int id)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const int \hyperlink{class_o_s_i___builder_a3af4e2722a30807c440a3a243a3732f8}{M\+IN} = 1
+\item 
+static const int \hyperlink{class_o_s_i___builder_accf4032198acbf182e0d86af1c002c6e}{M\+AX} = -\/1
+\item 
+static constexpr double \hyperlink{class_o_s_i___builder_ada1254828d2dd95d33cc28418270f88d}{I\+N\+F\+TY} = std\+::numeric\+\_\+limits$<$double$>$\+::max()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A practical class for building Osi\+Solver instances. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_o_s_i___builder_ab1b7372acb9c318a8a3d9c3061b3c71b}\label{class_o_s_i___builder_ab1b7372acb9c318a8a3d9c3061b3c71b}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{O\+S\+I\+\_\+\+Builder()}{OSI\_Builder()}}
+{\footnotesize\ttfamily O\+S\+I\+\_\+\+Builder\+::\+O\+S\+I\+\_\+\+Builder (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a1dd195dbdb3b7fec119563f671c66ebd}\label{class_o_s_i___builder_a1dd195dbdb3b7fec119563f671c66ebd}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!````~O\+S\+I\+\_\+\+Builder@{$\sim$\+O\+S\+I\+\_\+\+Builder}}
+\index{````~O\+S\+I\+\_\+\+Builder@{$\sim$\+O\+S\+I\+\_\+\+Builder}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{$\sim$\+O\+S\+I\+\_\+\+Builder()}{~OSI\_Builder()}}
+{\footnotesize\ttfamily O\+S\+I\+\_\+\+Builder\+::$\sim$\+O\+S\+I\+\_\+\+Builder (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_o_s_i___builder_a2d3a565b98d8ebf4223929527de84652}\label{class_o_s_i___builder_a2d3a565b98d8ebf4223929527de84652}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!add\+Var\+Type@{add\+Var\+Type}}
+\index{add\+Var\+Type@{add\+Var\+Type}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{add\+Var\+Type()}{addVarType()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::add\+Var\+Type (\begin{DoxyParamCaption}\item[{\hyperlink{class_o_s_i___builder_1_1_var_type}{Var\+Type} $\ast$}]{var\+\_\+type }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_adb96cad71e8d4ab93888969730fe5ad8}\label{class_o_s_i___builder_adb96cad71e8d4ab93888969730fe5ad8}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!buff\+Entry@{buff\+Entry}}
+\index{buff\+Entry@{buff\+Entry}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{buff\+Entry()}{buffEntry()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::buff\+Entry (\begin{DoxyParamCaption}\item[{int}]{var\+\_\+id,  }\item[{double}]{coef }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a25b48f1859bad98a9c1545d789e3310c}\label{class_o_s_i___builder_a25b48f1859bad98a9c1545d789e3310c}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!build\+Solver@{build\+Solver}}
+\index{build\+Solver@{build\+Solver}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{build\+Solver()}{buildSolver()}}
+{\footnotesize\ttfamily template$<$class Osi\+Solver $>$ \\
+Osi\+Solver$\ast$ O\+S\+I\+\_\+\+Builder\+::build\+Solver (\begin{DoxyParamCaption}\item[{int}]{sense,  }\item[{bool}]{relaxed = {\ttfamily false} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a0a58121e43e6b2cc4336e4ad23805585}\label{class_o_s_i___builder_a0a58121e43e6b2cc4336e4ad23805585}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!clear\+Entry\+Buffer@{clear\+Entry\+Buffer}}
+\index{clear\+Entry\+Buffer@{clear\+Entry\+Buffer}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{clear\+Entry\+Buffer()}{clearEntryBuffer()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::clear\+Entry\+Buffer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a20bf8723af96f5a4f6b97a88526ae8bc}\label{class_o_s_i___builder_a20bf8723af96f5a4f6b97a88526ae8bc}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!compose\+\_\+couple@{compose\+\_\+couple}}
+\index{compose\+\_\+couple@{compose\+\_\+couple}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{compose\+\_\+couple()}{compose\_couple()}}
+{\footnotesize\ttfamily static int O\+S\+I\+\_\+\+Builder\+::compose\+\_\+couple (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_adf04717a67167471083eec6815ebadcf}\label{class_o_s_i___builder_adf04717a67167471083eec6815ebadcf}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!compose\+\_\+pair@{compose\+\_\+pair}}
+\index{compose\+\_\+pair@{compose\+\_\+pair}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{compose\+\_\+pair()}{compose\_pair()}}
+{\footnotesize\ttfamily static int O\+S\+I\+\_\+\+Builder\+::compose\+\_\+pair (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a8e7944db07ca3585577acf16847f5bd4}\label{class_o_s_i___builder_a8e7944db07ca3585577acf16847f5bd4}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!get\+Nb\+Constraints@{get\+Nb\+Constraints}}
+\index{get\+Nb\+Constraints@{get\+Nb\+Constraints}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{get\+Nb\+Constraints()}{getNbConstraints()}}
+{\footnotesize\ttfamily int O\+S\+I\+\_\+\+Builder\+::get\+Nb\+Constraints (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a23dc928bffaf8828450e6843f63f8fe4}\label{class_o_s_i___builder_a23dc928bffaf8828450e6843f63f8fe4}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!get\+Nb\+Vars@{get\+Nb\+Vars}}
+\index{get\+Nb\+Vars@{get\+Nb\+Vars}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{get\+Nb\+Vars()}{getNbVars()}}
+{\footnotesize\ttfamily int O\+S\+I\+\_\+\+Builder\+::get\+Nb\+Vars (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a28598ca3fd95a548245070ffecaf8294}\label{class_o_s_i___builder_a28598ca3fd95a548245070ffecaf8294}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!init@{init}}
+\index{init@{init}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily void O\+S\+I\+\_\+\+Builder\+::init (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a073d6abeb8bd32a32d67ca1685e06b12}\label{class_o_s_i___builder_a073d6abeb8bd32a32d67ca1685e06b12}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!nb\+\_\+couples@{nb\+\_\+couples}}
+\index{nb\+\_\+couples@{nb\+\_\+couples}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{nb\+\_\+couples()}{nb\_couples()}}
+{\footnotesize\ttfamily static int O\+S\+I\+\_\+\+Builder\+::nb\+\_\+couples (\begin{DoxyParamCaption}\item[{int}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a332430c1559d3f57e556fed565d09d55}\label{class_o_s_i___builder_a332430c1559d3f57e556fed565d09d55}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!nb\+\_\+pairs@{nb\+\_\+pairs}}
+\index{nb\+\_\+pairs@{nb\+\_\+pairs}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{nb\+\_\+pairs()}{nb\_pairs()}}
+{\footnotesize\ttfamily static int O\+S\+I\+\_\+\+Builder\+::nb\+\_\+pairs (\begin{DoxyParamCaption}\item[{int}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a3f6998733dd18dd9bfa94c1db0988e40}\label{class_o_s_i___builder_a3f6998733dd18dd9bfa94c1db0988e40}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!pop\+Entry\+Buffer@{pop\+Entry\+Buffer}}
+\index{pop\+Entry\+Buffer@{pop\+Entry\+Buffer}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{pop\+Entry\+Buffer()}{popEntryBuffer()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::pop\+Entry\+Buffer (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a4aca356d3d67593e7c60f4304979ec7b}\label{class_o_s_i___builder_a4aca356d3d67593e7c60f4304979ec7b}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!push\+Row@{push\+Row}}
+\index{push\+Row@{push\+Row}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{push\+Row()}{pushRow()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::push\+Row (\begin{DoxyParamCaption}\item[{double}]{lb,  }\item[{double}]{ub }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a123c8cb445a247c6a8cb3e8271553e77}\label{class_o_s_i___builder_a123c8cb445a247c6a8cb3e8271553e77}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!push\+Row\+Without\+Clearing@{push\+Row\+Without\+Clearing}}
+\index{push\+Row\+Without\+Clearing@{push\+Row\+Without\+Clearing}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{push\+Row\+Without\+Clearing()}{pushRowWithoutClearing()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::push\+Row\+Without\+Clearing (\begin{DoxyParamCaption}\item[{double}]{lb,  }\item[{double}]{ub }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a47117c9ae73021710fd1ed695bb5d9e5}\label{class_o_s_i___builder_a47117c9ae73021710fd1ed695bb5d9e5}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!retrieve\+\_\+couple@{retrieve\+\_\+couple}}
+\index{retrieve\+\_\+couple@{retrieve\+\_\+couple}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{retrieve\+\_\+couple()}{retrieve\_couple()}}
+{\footnotesize\ttfamily static std\+::pair$<$int,int$>$ O\+S\+I\+\_\+\+Builder\+::retrieve\+\_\+couple (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_aa876adecee1af9bb840d434de1e78980}\label{class_o_s_i___builder_aa876adecee1af9bb840d434de1e78980}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!retrieve\+\_\+pair@{retrieve\+\_\+pair}}
+\index{retrieve\+\_\+pair@{retrieve\+\_\+pair}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{retrieve\+\_\+pair()}{retrieve\_pair()}}
+{\footnotesize\ttfamily static std\+::pair$<$int,int$>$ O\+S\+I\+\_\+\+Builder\+::retrieve\+\_\+pair (\begin{DoxyParamCaption}\item[{int}]{id }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a8def1d148b0bb00d9ac4f454a5497e17}\label{class_o_s_i___builder_a8def1d148b0bb00d9ac4f454a5497e17}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!set\+Bounds@{set\+Bounds}}
+\index{set\+Bounds@{set\+Bounds}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{set\+Bounds()}{setBounds()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::set\+Bounds (\begin{DoxyParamCaption}\item[{int}]{var\+\_\+id,  }\item[{double}]{lb,  }\item[{double}]{ub }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_acb409a7ad7615d995af3f1c5e56417e7}\label{class_o_s_i___builder_acb409a7ad7615d995af3f1c5e56417e7}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!set\+Col\+Name@{set\+Col\+Name}}
+\index{set\+Col\+Name@{set\+Col\+Name}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{set\+Col\+Name()}{setColName()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::set\+Col\+Name (\begin{DoxyParamCaption}\item[{int}]{var\+\_\+id,  }\item[{std\+::string}]{name }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_abb4c8d13d5a3639ff22d9ec10960878c}\label{class_o_s_i___builder_abb4c8d13d5a3639ff22d9ec10960878c}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!set\+Continuous@{set\+Continuous}}
+\index{set\+Continuous@{set\+Continuous}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{set\+Continuous()}{setContinuous()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::set\+Continuous (\begin{DoxyParamCaption}\item[{int}]{var\+\_\+id }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_ab5da16db7740e228da63e4b58ab2069e}\label{class_o_s_i___builder_ab5da16db7740e228da63e4b58ab2069e}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!set\+Integer@{set\+Integer}}
+\index{set\+Integer@{set\+Integer}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{set\+Integer()}{setInteger()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::set\+Integer (\begin{DoxyParamCaption}\item[{int}]{var\+\_\+id }\end{DoxyParamCaption})}
+
+\mbox{\Hypertarget{class_o_s_i___builder_aaae1174492586d9ffe4b2cfec17823d7}\label{class_o_s_i___builder_aaae1174492586d9ffe4b2cfec17823d7}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!set\+Objective@{set\+Objective}}
+\index{set\+Objective@{set\+Objective}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{set\+Objective()}{setObjective()}}
+{\footnotesize\ttfamily \hyperlink{class_o_s_i___builder}{O\+S\+I\+\_\+\+Builder} \& O\+S\+I\+\_\+\+Builder\+::set\+Objective (\begin{DoxyParamCaption}\item[{int}]{var\+\_\+id,  }\item[{double}]{coef }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_o_s_i___builder_ada1254828d2dd95d33cc28418270f88d}\label{class_o_s_i___builder_ada1254828d2dd95d33cc28418270f88d}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!I\+N\+F\+TY@{I\+N\+F\+TY}}
+\index{I\+N\+F\+TY@{I\+N\+F\+TY}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{I\+N\+F\+TY}{INFTY}}
+{\footnotesize\ttfamily constexpr double O\+S\+I\+\_\+\+Builder\+::\+I\+N\+F\+TY = std\+::numeric\+\_\+limits$<$double$>$\+::max()\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_accf4032198acbf182e0d86af1c002c6e}\label{class_o_s_i___builder_accf4032198acbf182e0d86af1c002c6e}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!M\+AX@{M\+AX}}
+\index{M\+AX@{M\+AX}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{M\+AX}{MAX}}
+{\footnotesize\ttfamily const int O\+S\+I\+\_\+\+Builder\+::\+M\+AX = -\/1\hspace{0.3cm}{\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_o_s_i___builder_a3af4e2722a30807c440a3a243a3732f8}\label{class_o_s_i___builder_a3af4e2722a30807c440a3a243a3732f8}} 
+\index{O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}!M\+IN@{M\+IN}}
+\index{M\+IN@{M\+IN}!O\+S\+I\+\_\+\+Builder@{O\+S\+I\+\_\+\+Builder}}
+\subsubsection{\texorpdfstring{M\+IN}{MIN}}
+{\footnotesize\ttfamily const int O\+S\+I\+\_\+\+Builder\+::\+M\+IN = 1\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/utils/\hyperlink{osi__builder_8hpp}{osi\+\_\+builder.\+hpp}\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/utils/\hyperlink{osi__builder_8cpp}{osi\+\_\+builder.\+cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,99 @@
+
+\begin{DoxyRefList}
+\item[\label{space__space000002}%
+\Hypertarget{space__space000002}%
+Member \hyperlink{class_contraction_precomputation_a6cbc9c5ee6d4ec9a5092d6e624922396}{Contraction\+Precomputation\+:\+:contract\+\_\+arc} (\hyperlink{class_landscape}{Landscape} \&contracted\+\_\+landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, Graph\+\_\+t\+::\+Arc a) const]$O(deg(u))$  
+\item[\label{space__space000001}%
+\Hypertarget{space__space000001}%
+Member \hyperlink{class_contraction_precomputation_ab4ae0b053d4cb51b2d2c4d07027ee2b7}{Contraction\+Precomputation\+:\+:erase\+\_\+non\+\_\+connected} (\hyperlink{class_landscape}{Landscape} \&landscape, Graph\+\_\+t\+::\+Node t) const]$O(V)$  
+\item[\label{space__space000003}%
+\Hypertarget{space__space000003}%
+Member \hyperlink{class_contraction_precomputation_a6ea4ee46a1805ced601de847969cab61}{Contraction\+Precomputation\+:\+:model\+\_\+quality\+\_\+gains} (\hyperlink{class_landscape}{Landscape} \&landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&options\+\_\+nodes) const]$O(\#options)$  
+\item[\label{space__space000004}%
+\Hypertarget{space__space000004}%
+Member \hyperlink{class_contraction_precomputation_a6749c81605043e4398c80b49293b44c6}{Contraction\+Precomputation\+:\+:retrive\+\_\+quality\+\_\+gains} (\hyperlink{class_landscape}{Landscape} \&landscape, \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, const std\+::vector$<$ std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$$>$ \&options\+\_\+nodes) const]$O(\#options)$  
+\item[\label{space__space000005}%
+\Hypertarget{space__space000005}%
+Member \hyperlink{class_e_c_a_af8127c6291b457b8c7033f23d1656767}{E\+CA\+:\+:eval} (const concepts\+::\+Abstract\+Landscape$<$ G\+R, Q\+M, P\+M, C\+M $>$ \&landscape, const typename G\+R\+::template Node\+Map$<$ bool $>$ \&node\+Filter)]$O(m)$ where $m$ is the number of arcs  
+\item[\label{space__space000006}%
+\Hypertarget{space__space000006}%
+Member \hyperlink{class_e_c_a_ab6556319590259a816cf176e933746d7}{E\+CA\+:\+:eval} (const concepts\+::\+Abstract\+Landscape$<$ G\+R, Q\+M, P\+M, C\+M $>$ \&landscape)]$O(m)$ running and $O(1)$ returning where $m$ is the number of arcs  
+\item[\label{space__space000014}%
+\Hypertarget{space__space000014}%
+Member \hyperlink{class_restoration_plan2_a37dd2e978ecb5e36fa2c35e5025cf729}{Restoration\+Plan2\+:\+:add\+Arc} (Option i, Graph\+\_\+t\+::\+Arc a, double restored\+\_\+probability)]$O(1)$  
+\item[\label{space__space000013}%
+\Hypertarget{space__space000013}%
+Member \hyperlink{class_restoration_plan2_a0a5a2740cdea0ec03ffa9c5d1d94a202}{Restoration\+Plan2\+:\+:add\+Node} (Option i, Graph\+\_\+t\+::\+Node v, double quality\+\_\+gain)]$O(1)$  
+\item[\label{space__space000023}%
+\Hypertarget{space__space000023}%
+Member \hyperlink{class_restoration_plan2_a7461e5c0cd622f9e6adbf38f34753a07}{Restoration\+Plan2\+:\+:add\+Option} (double c)]$O(1)$  
+\item[\label{space__space000009}%
+\Hypertarget{space__space000009}%
+Member \hyperlink{class_restoration_plan2_acf5e11d698c3306efeafaa5ca5d6f3ed}{Restoration\+Plan2\+:\+:contains} (Option i, Graph\+\_\+t\+::\+Node v) const]$O(1)$  
+\item[\label{space__space000010}%
+\Hypertarget{space__space000010}%
+Member \hyperlink{class_restoration_plan2_a1884daec27de69af8302b961aee1b232}{Restoration\+Plan2\+:\+:contains} (Option i, Graph\+\_\+t\+::\+Arc a) const]$O(1)$  
+\item[\label{space__space000011}%
+\Hypertarget{space__space000011}%
+Member \hyperlink{class_restoration_plan2_a753668d5ba34ea1e088aee85218543b7}{Restoration\+Plan2\+:\+:contains} (Graph\+\_\+t\+::\+Node v) const]$O(1)$  
+\item[\label{space__space000012}%
+\Hypertarget{space__space000012}%
+Member \hyperlink{class_restoration_plan2_acac88b4dcb361cf6ca3061457ff05bfa}{Restoration\+Plan2\+:\+:contains} (Graph\+\_\+t\+::\+Arc a) const]$O(1)$  
+\item[\label{space__space000031}%
+\Hypertarget{space__space000031}%
+Member \hyperlink{class_restoration_plan2_a51e5a2f223e0cbd8763f0ff60c8a4599}{Restoration\+Plan2\+:\+:erase\+Invalid\+Arcs} ()]$O(\#invalid\_arcs)$  
+\item[\label{space__space000032}%
+\Hypertarget{space__space000032}%
+Member \hyperlink{class_restoration_plan2_aeb925e92d2141fe96979538f087c277a}{Restoration\+Plan2\+:\+:erase\+Invalid\+Elements} ()]$O(\#invalid\_nodes + \#invalid\_arcs)$  
+\item[\label{space__space000030}%
+\Hypertarget{space__space000030}%
+Member \hyperlink{class_restoration_plan2_a5258c8409176279c8bab604400722b25}{Restoration\+Plan2\+:\+:erase\+Invalid\+Nodes} ()]$O(\#invalid\_nodes)$  
+\item[\label{space__space000025}%
+\Hypertarget{space__space000025}%
+Member \hyperlink{class_restoration_plan2_abac73d19450c44e9a96ab8ef680af044}{Restoration\+Plan2\+:\+:get\+Cost} (Option i) const]$O(1)$  
+\item[\label{space__space000008}%
+\Hypertarget{space__space000008}%
+Member \hyperlink{class_restoration_plan2_a91230a516340063f605ab295ae7f31d3}{Restoration\+Plan2\+:\+:get\+Nb\+Arcs} (Option i) const]$O(1)$  
+\item[\label{space__space000007}%
+\Hypertarget{space__space000007}%
+Member \hyperlink{class_restoration_plan2_a300dbff4b8071a136682b5350bb916a2}{Restoration\+Plan2\+:\+:get\+Nb\+Nodes} (Option i) const]$O(1)$  
+\item[\label{space__space000027}%
+\Hypertarget{space__space000027}%
+Member \hyperlink{class_restoration_plan2_a0c69c9a149143042a88408abefe8f005}{Restoration\+Plan2\+:\+:get\+Nb\+Options} () const]$O(1)$  
+\item[\label{space__space000029}%
+\Hypertarget{space__space000029}%
+Member \hyperlink{class_restoration_plan2_a04acf02934f7b06d3540c2bc68de73d0}{Restoration\+Plan2\+:\+:get\+Options} (Graph\+\_\+t\+::\+Arc a) const]$O(1)$  
+\item[\label{space__space000028}%
+\Hypertarget{space__space000028}%
+Member \hyperlink{class_restoration_plan2_ad5677cfb92c07bdfa6c3414940ae6401}{Restoration\+Plan2\+:\+:get\+Options} (Graph\+\_\+t\+::\+Node v) const]$O(1)$  
+\item[\label{space__space000019}%
+\Hypertarget{space__space000019}%
+Member \hyperlink{class_restoration_plan2_a55e84c9117d460224ea5e30f77e13b16}{Restoration\+Plan2\+:\+:get\+Quality\+Gain} (Option i, Graph\+\_\+t\+::\+Node v) const]$O(1)$  
+\item[\label{space__space000020}%
+\Hypertarget{space__space000020}%
+Member \hyperlink{class_restoration_plan2_a22980a28d0904266602a16542fa75110}{Restoration\+Plan2\+:\+:get\+Restored\+Probability} (Option i, Graph\+\_\+t\+::\+Arc a) const]$O(1)$  
+\item[\label{space__space000022}%
+\Hypertarget{space__space000022}%
+Member \hyperlink{class_restoration_plan2_a8967a613c2f9cbabb2418217abfe8e74}{Restoration\+Plan2\+:\+:id} (Option i, Graph\+\_\+t\+::\+Arc a) const]$O(1)$  
+\item[\label{space__space000021}%
+\Hypertarget{space__space000021}%
+Member \hyperlink{class_restoration_plan2_ab57f10bed72f50c27438e6dc06f57ca6}{Restoration\+Plan2\+:\+:id} (Option i, Graph\+\_\+t\+::\+Node v) const]$O(1)$  
+\item[\label{space__space000026}%
+\Hypertarget{space__space000026}%
+Member \hyperlink{class_restoration_plan2_af4810bc9bb239488322ab53b72c30a44}{Restoration\+Plan2\+:\+:is\+Empty} (Option i) const]$O(1)$  
+\item[\label{space__space000018}%
+\Hypertarget{space__space000018}%
+Member \hyperlink{class_restoration_plan2_aacd1be30356c999259bb98c2869bbb95}{Restoration\+Plan2\+:\+:remove\+Arc} (Graph\+\_\+t\+::\+Arc a)]$O(1)$  
+\item[\label{space__space000016}%
+\Hypertarget{space__space000016}%
+Member \hyperlink{class_restoration_plan2_a20f26b0167d527be6d60614b4cba4dbf}{Restoration\+Plan2\+:\+:remove\+Arc} (Option i, Graph\+\_\+t\+::\+Arc a)]$O(1)$  
+\item[\label{space__space000017}%
+\Hypertarget{space__space000017}%
+Member \hyperlink{class_restoration_plan2_acd618be603d5562d48c0ece65210750f}{Restoration\+Plan2\+:\+:remove\+Node} (Graph\+\_\+t\+::\+Node v)]$O(1)$  
+\item[\label{space__space000015}%
+\Hypertarget{space__space000015}%
+Member \hyperlink{class_restoration_plan2_a845fbee26cdfc01d689c7c24f55f0c31}{Restoration\+Plan2\+:\+:remove\+Node} (Option i, Graph\+\_\+t\+::\+Node v)]$O(1)$  
+\item[\label{space__space000024}%
+\Hypertarget{space__space000024}%
+Member \hyperlink{class_restoration_plan2_aea25e41ec7132080a756a57cde477c65}{Restoration\+Plan2\+:\+:set\+Cost} (Option i, double cost)]$O(1)$ 
+\end{DoxyRefList}

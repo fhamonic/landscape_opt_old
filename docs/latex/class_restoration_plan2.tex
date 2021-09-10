@@ -1,0 +1,670 @@
+\hypertarget{class_restoration_plan2}{}\section{Restoration\+Plan2 Class Reference}
+\label{class_restoration_plan2}\index{Restoration\+Plan2@{Restoration\+Plan2}}
+
+
+A class for respresenting a restoration plan.  
+
+
+
+
+{\ttfamily \#include $<$restoration\+\_\+plan\+\_\+2.\+hpp$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef int \hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_restoration_plan2_a9f7a6a7f8421ba8f94601cb00c8effc4}{Restoration\+Plan2} (const \hyperlink{class_landscape}{Landscape} \&l)
+\item 
+\hyperlink{class_restoration_plan2_ae0f4cdb50c5e051f054a7662b1de91d3}{$\sim$\+Restoration\+Plan2} ()
+\item 
+const \hyperlink{class_landscape}{Landscape} \& \hyperlink{class_restoration_plan2_a15d5303518cb31378111c8da175dc659}{get\+Landscape} () const
+\item 
+int \hyperlink{class_restoration_plan2_a300dbff4b8071a136682b5350bb916a2}{get\+Nb\+Nodes} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i) const
+\begin{DoxyCompactList}\small\item\em Get the number of nodes concerned by option {\bfseries i} \end{DoxyCompactList}\item 
+int \hyperlink{class_restoration_plan2_a91230a516340063f605ab295ae7f31d3}{get\+Nb\+Arcs} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i) const
+\begin{DoxyCompactList}\small\item\em Get the number of arcs concerned by option {\bfseries i} \end{DoxyCompactList}\item 
+bool \hyperlink{class_restoration_plan2_acf5e11d698c3306efeafaa5ca5d6f3ed}{contains} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Node v) const
+\begin{DoxyCompactList}\small\item\em Return true if the option {\bfseries i} concerns node {\bfseries v} \end{DoxyCompactList}\item 
+bool \hyperlink{class_restoration_plan2_a1884daec27de69af8302b961aee1b232}{contains} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Arc a) const
+\begin{DoxyCompactList}\small\item\em Return true if the option {\bfseries i} concerns arc {\bfseries a} \end{DoxyCompactList}\item 
+bool \hyperlink{class_restoration_plan2_a753668d5ba34ea1e088aee85218543b7}{contains} (Graph\+\_\+t\+::\+Node v) const
+\begin{DoxyCompactList}\small\item\em Test if there is an option concerning the node {\bfseries v} \end{DoxyCompactList}\item 
+bool \hyperlink{class_restoration_plan2_acac88b4dcb361cf6ca3061457ff05bfa}{contains} (Graph\+\_\+t\+::\+Arc a) const
+\begin{DoxyCompactList}\small\item\em Test if there is an option concerning the arc {\bfseries a} \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_a0a5a2740cdea0ec03ffa9c5d1d94a202}{add\+Node} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Node v, double quality\+\_\+gain)
+\begin{DoxyCompactList}\small\item\em Add the node {\bfseries v} to the option {\bfseries i} \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_a37dd2e978ecb5e36fa2c35e5025cf729}{add\+Arc} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Arc a, double restored\+\_\+probability)
+\begin{DoxyCompactList}\small\item\em Add the arc {\bfseries a} to the option {\bfseries i} \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_a845fbee26cdfc01d689c7c24f55f0c31}{remove\+Node} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Node v)
+\begin{DoxyCompactList}\small\item\em Remove the node {\bfseries v} from the option {\bfseries i} \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_a20f26b0167d527be6d60614b4cba4dbf}{remove\+Arc} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Arc a)
+\begin{DoxyCompactList}\small\item\em Remove the arc {\bfseries a} from the option {\bfseries i} \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_acd618be603d5562d48c0ece65210750f}{remove\+Node} (Graph\+\_\+t\+::\+Node v)
+\begin{DoxyCompactList}\small\item\em Remove the node {\bfseries v} from every option. \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_aacd1be30356c999259bb98c2869bbb95}{remove\+Arc} (Graph\+\_\+t\+::\+Arc a)
+\begin{DoxyCompactList}\small\item\em Remove the arc {\bfseries a} from every option. \end{DoxyCompactList}\item 
+double \hyperlink{class_restoration_plan2_a55e84c9117d460224ea5e30f77e13b16}{get\+Quality\+Gain} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Node v) const
+\begin{DoxyCompactList}\small\item\em Get the Quality\+Gain of node {\bfseries v} in the option {\bfseries i} \end{DoxyCompactList}\item 
+double \hyperlink{class_restoration_plan2_a22980a28d0904266602a16542fa75110}{get\+Restored\+Probability} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Arc a) const
+\begin{DoxyCompactList}\small\item\em Get the Restored\+Probability of arc {\bfseries a} in the option {\bfseries i} \end{DoxyCompactList}\item 
+double \hyperlink{class_restoration_plan2_ab57f10bed72f50c27438e6dc06f57ca6}{id} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Node v) const
+\begin{DoxyCompactList}\small\item\em Get the id of the node {\bfseries v} in the option {\bfseries i} \end{DoxyCompactList}\item 
+double \hyperlink{class_restoration_plan2_a8967a613c2f9cbabb2418217abfe8e74}{id} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, Graph\+\_\+t\+::\+Arc a) const
+\begin{DoxyCompactList}\small\item\em Get the id of the arc {\bfseries a} in the option {\bfseries i} \end{DoxyCompactList}\item 
+\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} \hyperlink{class_restoration_plan2_a7461e5c0cd622f9e6adbf38f34753a07}{add\+Option} (double c)
+\begin{DoxyCompactList}\small\item\em add an option of cost {\bfseries c} and returns its id \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_aea25e41ec7132080a756a57cde477c65}{set\+Cost} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i, double cost)
+\begin{DoxyCompactList}\small\item\em Set the cost of option {\bfseries i} \end{DoxyCompactList}\item 
+double \hyperlink{class_restoration_plan2_abac73d19450c44e9a96ab8ef680af044}{get\+Cost} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i) const
+\begin{DoxyCompactList}\small\item\em Get the cost of option {\bfseries i} \end{DoxyCompactList}\item 
+bool \hyperlink{class_restoration_plan2_af4810bc9bb239488322ab53b72c30a44}{is\+Empty} (\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} i) const
+\begin{DoxyCompactList}\small\item\em Test if option {\bfseries i} is empty. \end{DoxyCompactList}\item 
+int \hyperlink{class_restoration_plan2_a0c69c9a149143042a88408abefe8f005}{get\+Nb\+Options} () const
+\begin{DoxyCompactList}\small\item\em Get the number of options. \end{DoxyCompactList}\item 
+const std\+::map$<$ \hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}, double $>$ \& \hyperlink{class_restoration_plan2_ad5677cfb92c07bdfa6c3414940ae6401}{get\+Options} (Graph\+\_\+t\+::\+Node v) const
+\begin{DoxyCompactList}\small\item\em Returns the map of options concerning the node {\bfseries v} \end{DoxyCompactList}\item 
+const std\+::map$<$ \hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}, double $>$ \& \hyperlink{class_restoration_plan2_a04acf02934f7b06d3540c2bc68de73d0}{get\+Options} (Graph\+\_\+t\+::\+Arc a) const
+\begin{DoxyCompactList}\small\item\em Returns the map of options concerning the arc {\bfseries a} \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_a5258c8409176279c8bab604400722b25}{erase\+Invalid\+Nodes} ()
+\begin{DoxyCompactList}\small\item\em Erase invalid nodes from the restoration plan. \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_a51e5a2f223e0cbd8763f0ff60c8a4599}{erase\+Invalid\+Arcs} ()
+\begin{DoxyCompactList}\small\item\em Erase invalid nodes from the restoration plan. \end{DoxyCompactList}\item 
+void \hyperlink{class_restoration_plan2_aeb925e92d2141fe96979538f087c277a}{erase\+Invalid\+Elements} ()
+\begin{DoxyCompactList}\small\item\em Erase invalid nodes and arcs from the restoration plan. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A class for respresenting a restoration plan. 
+
+This class is essentially a sparse matrix implementation with both row major and column major structures to ensure linear time iteration. 
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}\label{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!Option@{Option}}
+\index{Option@{Option}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{Option}{Option}}
+{\footnotesize\ttfamily typedef int \hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Restoration\+Plan2\+::\+Option}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_restoration_plan2_a9f7a6a7f8421ba8f94601cb00c8effc4}\label{class_restoration_plan2_a9f7a6a7f8421ba8f94601cb00c8effc4}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!Restoration\+Plan2@{Restoration\+Plan2}}
+\index{Restoration\+Plan2@{Restoration\+Plan2}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{Restoration\+Plan2()}{RestorationPlan2()}}
+{\footnotesize\ttfamily Restoration\+Plan2\+::\+Restoration\+Plan2 (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{l }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_restoration_plan2_ae0f4cdb50c5e051f054a7662b1de91d3}\label{class_restoration_plan2_ae0f4cdb50c5e051f054a7662b1de91d3}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!````~Restoration\+Plan2@{$\sim$\+Restoration\+Plan2}}
+\index{````~Restoration\+Plan2@{$\sim$\+Restoration\+Plan2}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{$\sim$\+Restoration\+Plan2()}{~RestorationPlan2()}}
+{\footnotesize\ttfamily Restoration\+Plan2\+::$\sim$\+Restoration\+Plan2 (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_restoration_plan2_a37dd2e978ecb5e36fa2c35e5025cf729}\label{class_restoration_plan2_a37dd2e978ecb5e36fa2c35e5025cf729}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!add\+Arc@{add\+Arc}}
+\index{add\+Arc@{add\+Arc}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{add\+Arc()}{addArc()}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::add\+Arc (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Arc}]{a,  }\item[{double}]{restored\+\_\+probability }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add the arc {\bfseries a} to the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em a} & -\/ Arc \\
+\hline
+{\em restored\+\_\+probability} & -\/ restored probability of {\bfseries a} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000014}{Time Complexity}]$O(\log \#arcs(i) + \log \#options(a))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000014}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a0a5a2740cdea0ec03ffa9c5d1d94a202}\label{class_restoration_plan2_a0a5a2740cdea0ec03ffa9c5d1d94a202}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!add\+Node@{add\+Node}}
+\index{add\+Node@{add\+Node}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{add\+Node()}{addNode()}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::add\+Node (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Node}]{v,  }\item[{double}]{quality\+\_\+gain }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Add the node {\bfseries v} to the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em v} & -\/ Node \\
+\hline
+{\em quality\+\_\+gain} & -\/ quality gain on {\bfseries v} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000013}{Time Complexity}]$O(\log \#nodes(i) + \log \#options(v))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000013}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a7461e5c0cd622f9e6adbf38f34753a07}\label{class_restoration_plan2_a7461e5c0cd622f9e6adbf38f34753a07}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!add\+Option@{add\+Option}}
+\index{add\+Option@{add\+Option}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{add\+Option()}{addOption()}}
+{\footnotesize\ttfamily \hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option} Restoration\+Plan2\+::add\+Option (\begin{DoxyParamCaption}\item[{double}]{c }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+add an option of cost {\bfseries c} and returns its id 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & -\/ cost \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Option 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000023}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000023}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_acf5e11d698c3306efeafaa5ca5d6f3ed}\label{class_restoration_plan2_acf5e11d698c3306efeafaa5ca5d6f3ed}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!contains@{contains}}
+\index{contains@{contains}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily bool Restoration\+Plan2\+::contains (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Return true if the option {\bfseries i} concerns node {\bfseries v} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em v} & -\/ Node \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool true if the option {\bfseries i} concerns node {\bfseries v} false otherwise 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000009}{Time Complexity}]$O(\log \#nodes(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000009}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a1884daec27de69af8302b961aee1b232}\label{class_restoration_plan2_a1884daec27de69af8302b961aee1b232}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!contains@{contains}}
+\index{contains@{contains}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily bool Restoration\+Plan2\+::contains (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Return true if the option {\bfseries i} concerns arc {\bfseries a} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em a} & -\/ Arc \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool true if the option {\bfseries i} concerns arc {\bfseries a} false otherwise 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000010}{Time Complexity}]$O(\log \#arcs(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000010}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a753668d5ba34ea1e088aee85218543b7}\label{class_restoration_plan2_a753668d5ba34ea1e088aee85218543b7}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!contains@{contains}}
+\index{contains@{contains}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily bool Restoration\+Plan2\+::contains (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Test if there is an option concerning the node {\bfseries v} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & -\/ Node \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool true if the option {\bfseries i} concerns node {\bfseries v} false otherwise 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000011}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000011}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_acac88b4dcb361cf6ca3061457ff05bfa}\label{class_restoration_plan2_acac88b4dcb361cf6ca3061457ff05bfa}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!contains@{contains}}
+\index{contains@{contains}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{contains()}{contains()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily bool Restoration\+Plan2\+::contains (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Test if there is an option concerning the arc {\bfseries a} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & -\/ Arc \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool true if the option {\bfseries i} concerns arc {\bfseries a} false otherwise 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000012}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000012}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a51e5a2f223e0cbd8763f0ff60c8a4599}\label{class_restoration_plan2_a51e5a2f223e0cbd8763f0ff60c8a4599}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!erase\+Invalid\+Arcs@{erase\+Invalid\+Arcs}}
+\index{erase\+Invalid\+Arcs@{erase\+Invalid\+Arcs}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{erase\+Invalid\+Arcs()}{eraseInvalidArcs()}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::erase\+Invalid\+Arcs (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Erase invalid nodes from the restoration plan. 
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000031}{Time Complexity}]$O(\sum_{i \in options} \#arcs(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000031}{Space Complexity}]$O(\#invalid\_arcs)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_aeb925e92d2141fe96979538f087c277a}\label{class_restoration_plan2_aeb925e92d2141fe96979538f087c277a}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!erase\+Invalid\+Elements@{erase\+Invalid\+Elements}}
+\index{erase\+Invalid\+Elements@{erase\+Invalid\+Elements}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{erase\+Invalid\+Elements()}{eraseInvalidElements()}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::erase\+Invalid\+Elements (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Erase invalid nodes and arcs from the restoration plan. 
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000032}{Time Complexity}]$O(\sum_{i \in options} \#nodes(i) + \#arcs(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000032}{Space Complexity}]$O(\#invalid\_nodes + \#invalid\_arcs)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a5258c8409176279c8bab604400722b25}\label{class_restoration_plan2_a5258c8409176279c8bab604400722b25}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!erase\+Invalid\+Nodes@{erase\+Invalid\+Nodes}}
+\index{erase\+Invalid\+Nodes@{erase\+Invalid\+Nodes}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{erase\+Invalid\+Nodes()}{eraseInvalidNodes()}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::erase\+Invalid\+Nodes (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Erase invalid nodes from the restoration plan. 
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000030}{Time Complexity}]$O(\sum_{i \in options} \#nodes(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000030}{Space Complexity}]$O(\#invalid\_nodes)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_abac73d19450c44e9a96ab8ef680af044}\label{class_restoration_plan2_abac73d19450c44e9a96ab8ef680af044}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Cost@{get\+Cost}}
+\index{get\+Cost@{get\+Cost}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Cost()}{getCost()}}
+{\footnotesize\ttfamily double Restoration\+Plan2\+::get\+Cost (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the cost of option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000025}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000025}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a15d5303518cb31378111c8da175dc659}\label{class_restoration_plan2_a15d5303518cb31378111c8da175dc659}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Landscape@{get\+Landscape}}
+\index{get\+Landscape@{get\+Landscape}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Landscape()}{getLandscape()}}
+{\footnotesize\ttfamily const \hyperlink{class_landscape}{Landscape}\& Restoration\+Plan2\+::get\+Landscape (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_restoration_plan2_a91230a516340063f605ab295ae7f31d3}\label{class_restoration_plan2_a91230a516340063f605ab295ae7f31d3}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Nb\+Arcs@{get\+Nb\+Arcs}}
+\index{get\+Nb\+Arcs@{get\+Nb\+Arcs}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Nb\+Arcs()}{getNbArcs()}}
+{\footnotesize\ttfamily int Restoration\+Plan2\+::get\+Nb\+Arcs (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the number of arcs concerned by option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000008}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000008}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a300dbff4b8071a136682b5350bb916a2}\label{class_restoration_plan2_a300dbff4b8071a136682b5350bb916a2}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Nb\+Nodes@{get\+Nb\+Nodes}}
+\index{get\+Nb\+Nodes@{get\+Nb\+Nodes}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Nb\+Nodes()}{getNbNodes()}}
+{\footnotesize\ttfamily int Restoration\+Plan2\+::get\+Nb\+Nodes (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the number of nodes concerned by option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000007}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000007}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a0c69c9a149143042a88408abefe8f005}\label{class_restoration_plan2_a0c69c9a149143042a88408abefe8f005}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Nb\+Options@{get\+Nb\+Options}}
+\index{get\+Nb\+Options@{get\+Nb\+Options}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Nb\+Options()}{getNbOptions()}}
+{\footnotesize\ttfamily int Restoration\+Plan2\+::get\+Nb\+Options (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the number of options. 
+
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000027}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000027}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_ad5677cfb92c07bdfa6c3414940ae6401}\label{class_restoration_plan2_ad5677cfb92c07bdfa6c3414940ae6401}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Options@{get\+Options}}
+\index{get\+Options@{get\+Options}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Options()}{getOptions()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily const std\+::map$<$\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}, double$>$\& Restoration\+Plan2\+::get\+Options (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the map of options concerning the node {\bfseries v} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & -\/ Node \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000028}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000028}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a04acf02934f7b06d3540c2bc68de73d0}\label{class_restoration_plan2_a04acf02934f7b06d3540c2bc68de73d0}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Options@{get\+Options}}
+\index{get\+Options@{get\+Options}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Options()}{getOptions()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily const std\+::map$<$\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}, double$>$\& Restoration\+Plan2\+::get\+Options (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Returns the map of options concerning the arc {\bfseries a} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & -\/ Arc \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000029}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000029}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a55e84c9117d460224ea5e30f77e13b16}\label{class_restoration_plan2_a55e84c9117d460224ea5e30f77e13b16}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Quality\+Gain@{get\+Quality\+Gain}}
+\index{get\+Quality\+Gain@{get\+Quality\+Gain}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Quality\+Gain()}{getQualityGain()}}
+{\footnotesize\ttfamily double Restoration\+Plan2\+::get\+Quality\+Gain (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the Quality\+Gain of node {\bfseries v} in the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em v} & -\/ Node \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000019}{Time Complexity}]$O(\log \#options(v))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000019}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a22980a28d0904266602a16542fa75110}\label{class_restoration_plan2_a22980a28d0904266602a16542fa75110}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!get\+Restored\+Probability@{get\+Restored\+Probability}}
+\index{get\+Restored\+Probability@{get\+Restored\+Probability}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{get\+Restored\+Probability()}{getRestoredProbability()}}
+{\footnotesize\ttfamily double Restoration\+Plan2\+::get\+Restored\+Probability (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the Restored\+Probability of arc {\bfseries a} in the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em a} & -\/ Arc \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000020}{Time Complexity}]$O(\log \#options(a))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000020}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_ab57f10bed72f50c27438e6dc06f57ca6}\label{class_restoration_plan2_ab57f10bed72f50c27438e6dc06f57ca6}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!id@{id}}
+\index{id@{id}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{id()}{id()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily double Restoration\+Plan2\+::id (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the id of the node {\bfseries v} in the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em v} & -\/ Node \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000021}{Time Complexity}]$O(\log \#nodes(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000021}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a8967a613c2f9cbabb2418217abfe8e74}\label{class_restoration_plan2_a8967a613c2f9cbabb2418217abfe8e74}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!id@{id}}
+\index{id@{id}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{id()}{id()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily double Restoration\+Plan2\+::id (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get the id of the arc {\bfseries a} in the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em a} & -\/ Arc \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+double 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000022}{Time Complexity}]$O(\log \#arcs(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000022}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_af4810bc9bb239488322ab53b72c30a44}\label{class_restoration_plan2_af4810bc9bb239488322ab53b72c30a44}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!is\+Empty@{is\+Empty}}
+\index{is\+Empty@{is\+Empty}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{is\+Empty()}{isEmpty()}}
+{\footnotesize\ttfamily bool Restoration\+Plan2\+::is\+Empty (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Test if option {\bfseries i} is empty. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if option {\bfseries i} is empty 
+
+false otherwise 
+\end{DoxyReturn}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000026}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000026}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a20f26b0167d527be6d60614b4cba4dbf}\label{class_restoration_plan2_a20f26b0167d527be6d60614b4cba4dbf}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!remove\+Arc@{remove\+Arc}}
+\index{remove\+Arc@{remove\+Arc}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{remove\+Arc()}{removeArc()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::remove\+Arc (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Remove the arc {\bfseries a} from the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em a} & -\/ Arc \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000016}{Time Complexity}]$O(\log \#arcs(i) + \log \#options(a))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000016}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_aacd1be30356c999259bb98c2869bbb95}\label{class_restoration_plan2_aacd1be30356c999259bb98c2869bbb95}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!remove\+Arc@{remove\+Arc}}
+\index{remove\+Arc@{remove\+Arc}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{remove\+Arc()}{removeArc()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::remove\+Arc (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Arc}]{a }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Remove the arc {\bfseries a} from every option. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em a} & -\/ Arc \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000018}{Time Complexity}]$O(\sum_{i \in options(a)} \log \#nodes(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000018}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_a845fbee26cdfc01d689c7c24f55f0c31}\label{class_restoration_plan2_a845fbee26cdfc01d689c7c24f55f0c31}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!remove\+Node@{remove\+Node}}
+\index{remove\+Node@{remove\+Node}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{remove\+Node()}{removeNode()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::remove\+Node (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Remove the node {\bfseries v} from the option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em v} & -\/ Node \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000015}{Time Complexity}]$O(\log \#nodes(i) + \log \#options(v))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000015}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_acd618be603d5562d48c0ece65210750f}\label{class_restoration_plan2_acd618be603d5562d48c0ece65210750f}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!remove\+Node@{remove\+Node}}
+\index{remove\+Node@{remove\+Node}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{remove\+Node()}{removeNode()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::remove\+Node (\begin{DoxyParamCaption}\item[{Graph\+\_\+t\+::\+Node}]{v }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Remove the node {\bfseries v} from every option. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & -\/ Node \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000017}{Time Complexity}]$O(\sum_{i \in options(v)} \log \#nodes(i))$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000017}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_restoration_plan2_aea25e41ec7132080a756a57cde477c65}\label{class_restoration_plan2_aea25e41ec7132080a756a57cde477c65}} 
+\index{Restoration\+Plan2@{Restoration\+Plan2}!set\+Cost@{set\+Cost}}
+\index{set\+Cost@{set\+Cost}!Restoration\+Plan2@{Restoration\+Plan2}}
+\subsubsection{\texorpdfstring{set\+Cost()}{setCost()}}
+{\footnotesize\ttfamily void Restoration\+Plan2\+::set\+Cost (\begin{DoxyParamCaption}\item[{\hyperlink{class_restoration_plan2_aff164a2726831342bf87af5e11df1064}{Option}}]{i,  }\item[{double}]{cost }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Set the cost of option {\bfseries i} 
+
+
+\begin{DoxyParams}{Parameters}
+{\em i} & -\/ Option \\
+\hline
+{\em c} & -\/ cost \\
+\hline
+\end{DoxyParams}
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000024}{Time Complexity}]$O(1)$ \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000024}{Space Complexity}]$O(1)$ \end{DoxyRefDesc}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/solvers/concept/\hyperlink{restoration__plan__2_8hpp}{restoration\+\_\+plan\+\_\+2.\+hpp}\end{DoxyCompactItemize}

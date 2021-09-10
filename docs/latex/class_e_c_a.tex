@@ -1,0 +1,117 @@
+\hypertarget{class_e_c_a}{}\section{E\+CA Class Reference}
+\label{class_e_c_a}\index{E\+CA@{E\+CA}}
+
+
+{\ttfamily \#include $<$eca.\+hpp$>$}
+
+
+
+Inheritance diagram for E\+CA\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=221pt]{class_e_c_a__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for E\+CA\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=282pt]{class_e_c_a__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_e_c_a_acc7762273f9df84a3457c8c9b4e58a31}{$\sim$\+E\+CA} ()
+\item 
+double \hyperlink{class_e_c_a_ae4d2665232d2ff83b3f04f812c45c172}{eval\+\_\+solution} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_solution}{Solution} \&solution) const
+\item 
+{\footnotesize template$<$typename GR , typename QM , typename PM , typename CM $>$ }\\double \hyperlink{class_e_c_a_af8127c6291b457b8c7033f23d1656767}{eval} (const \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$ \&landscape, const typename G\+R\+::template Node\+Map$<$ bool $>$ \&node\+Filter)
+\begin{DoxyCompactList}\small\item\em Computes the value of the \hyperlink{class_e_c_a}{E\+CA} index of the specified landscape. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename GR , typename QM , typename PM , typename CM $>$ }\\double \hyperlink{class_e_c_a_ab6556319590259a816cf176e933746d7}{eval} (const \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$ \&landscape)
+\begin{DoxyCompactList}\small\item\em Computes the value of the \hyperlink{class_e_c_a}{E\+CA} index of the specified landscape. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{class_e_c_a}{E\+CA} \& \hyperlink{class_e_c_a_ac7d3fd1b819ca2200c0eb6817d464323}{get} () noexcept
+\item 
+static double \hyperlink{class_e_c_a_ad9a7a487c43cecdaea971ffba0098474}{P\+\_\+func} (const double d, const double alpha)
+\item 
+static double \hyperlink{class_e_c_a_ae39dbd10fc9c65479cbf6b7b09339590}{inv\+\_\+\+P\+\_\+func} (const double p, const double alpha)
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_e_c_a_acc7762273f9df84a3457c8c9b4e58a31}\label{class_e_c_a_acc7762273f9df84a3457c8c9b4e58a31}} 
+\index{E\+CA@{E\+CA}!````~E\+CA@{$\sim$\+E\+CA}}
+\index{````~E\+CA@{$\sim$\+E\+CA}!E\+CA@{E\+CA}}
+\subsubsection{\texorpdfstring{$\sim$\+E\+C\+A()}{~ECA()}}
+{\footnotesize\ttfamily E\+C\+A\+::$\sim$\+E\+CA (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_e_c_a_af8127c6291b457b8c7033f23d1656767}\label{class_e_c_a_af8127c6291b457b8c7033f23d1656767}} 
+\index{E\+CA@{E\+CA}!eval@{eval}}
+\index{eval@{eval}!E\+CA@{E\+CA}}
+\subsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$typename GR , typename QM , typename PM , typename CM $>$ \\
+double E\+C\+A\+::eval (\begin{DoxyParamCaption}\item[{const \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$ \&}]{landscape,  }\item[{const typename G\+R\+::template Node\+Map$<$ bool $>$ \&}]{node\+Filter }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Computes the value of the \hyperlink{class_e_c_a}{E\+CA} index of the specified landscape. 
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000005}{Time Complexity}]$O(n \cdot (m + n) \log n)$ where $n$ is the number of nodes and $m$ the number of arcs \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000005}{Space Complexity}]$O(m)$ where $m$ is the number of arcs \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_e_c_a_ab6556319590259a816cf176e933746d7}\label{class_e_c_a_ab6556319590259a816cf176e933746d7}} 
+\index{E\+CA@{E\+CA}!eval@{eval}}
+\index{eval@{eval}!E\+CA@{E\+CA}}
+\subsubsection{\texorpdfstring{eval()}{eval()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$typename GR , typename QM , typename PM , typename CM $>$ \\
+double E\+C\+A\+::eval (\begin{DoxyParamCaption}\item[{const \hyperlink{classconcepts_1_1_abstract_landscape}{concepts\+::\+Abstract\+Landscape}$<$ GR, QM, PM, CM $>$ \&}]{landscape }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Computes the value of the \hyperlink{class_e_c_a}{E\+CA} index of the specified landscape. 
+
+\begin{DoxyRefDesc}{Time Complexity}
+\item[\hyperlink{time__time000006}{Time Complexity}]$O(n \cdot (m + n) \log n)$ where $n$ is the number of nodes and $m$ the number of arcs \end{DoxyRefDesc}
+\begin{DoxyRefDesc}{Space Complexity}
+\item[\hyperlink{space__space000006}{Space Complexity}]$O(m)$ running and $O(1)$ returning where $m$ is the number of arcs \end{DoxyRefDesc}
+\mbox{\Hypertarget{class_e_c_a_ae4d2665232d2ff83b3f04f812c45c172}\label{class_e_c_a_ae4d2665232d2ff83b3f04f812c45c172}} 
+\index{E\+CA@{E\+CA}!eval\+\_\+solution@{eval\+\_\+solution}}
+\index{eval\+\_\+solution@{eval\+\_\+solution}!E\+CA@{E\+CA}}
+\subsubsection{\texorpdfstring{eval\+\_\+solution()}{eval\_solution()}}
+{\footnotesize\ttfamily double E\+C\+A\+::eval\+\_\+solution (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_solution}{Solution} \&}]{solution }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_e_c_a_ac7d3fd1b819ca2200c0eb6817d464323}\label{class_e_c_a_ac7d3fd1b819ca2200c0eb6817d464323}} 
+\index{E\+CA@{E\+CA}!get@{get}}
+\index{get@{get}!E\+CA@{E\+CA}}
+\subsubsection{\texorpdfstring{get()}{get()}}
+{\footnotesize\ttfamily static \hyperlink{class_e_c_a}{E\+CA}\& E\+C\+A\+::get (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}, {\ttfamily [noexcept]}}
+
+\mbox{\Hypertarget{class_e_c_a_ae39dbd10fc9c65479cbf6b7b09339590}\label{class_e_c_a_ae39dbd10fc9c65479cbf6b7b09339590}} 
+\index{E\+CA@{E\+CA}!inv\+\_\+\+P\+\_\+func@{inv\+\_\+\+P\+\_\+func}}
+\index{inv\+\_\+\+P\+\_\+func@{inv\+\_\+\+P\+\_\+func}!E\+CA@{E\+CA}}
+\subsubsection{\texorpdfstring{inv\+\_\+\+P\+\_\+func()}{inv\_P\_func()}}
+{\footnotesize\ttfamily static double E\+C\+A\+::inv\+\_\+\+P\+\_\+func (\begin{DoxyParamCaption}\item[{const double}]{p,  }\item[{const double}]{alpha }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{class_e_c_a_ad9a7a487c43cecdaea971ffba0098474}\label{class_e_c_a_ad9a7a487c43cecdaea971ffba0098474}} 
+\index{E\+CA@{E\+CA}!P\+\_\+func@{P\+\_\+func}}
+\index{P\+\_\+func@{P\+\_\+func}!E\+CA@{E\+CA}}
+\subsubsection{\texorpdfstring{P\+\_\+func()}{P\_func()}}
+{\footnotesize\ttfamily static double E\+C\+A\+::\+P\+\_\+func (\begin{DoxyParamCaption}\item[{const double}]{d,  }\item[{const double}]{alpha }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/indices/\hyperlink{eca_8hpp}{eca.\+hpp}\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/indices/\hyperlink{eca_8cpp}{eca.\+cpp}\end{DoxyCompactItemize}

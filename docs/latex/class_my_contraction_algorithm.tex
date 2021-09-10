@@ -1,0 +1,72 @@
+\hypertarget{class_my_contraction_algorithm}{}\section{My\+Contraction\+Algorithm Class Reference}
+\label{class_my_contraction_algorithm}\index{My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}}
+
+
+{\ttfamily \#include $<$my\+\_\+contraction\+\_\+algorithm.\+hpp$>$}
+
+
+
+Inheritance diagram for My\+Contraction\+Algorithm\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=215pt]{class_my_contraction_algorithm__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for My\+Contraction\+Algorithm\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=215pt]{class_my_contraction_algorithm__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_my_contraction_algorithm_a27a3be7ca9335a48ad08101c045bb883}{get\+Strongs} (const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \&graph, const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&l\+\_\+min, const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&l\+\_\+max, Graph\+\_\+t\+::\+Arc uv, std\+::vector$<$ Graph\+\_\+t\+::\+Node $>$ \&strong\+\_\+nodes) const
+\item 
+void \hyperlink{class_my_contraction_algorithm_a7163cb16dd44d41e7a1974ed9f367e8a}{get\+Non\+Weaks} (const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \&graph, const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&l\+\_\+min, const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&l\+\_\+max, Graph\+\_\+t\+::\+Arc uv, std\+::vector$<$ Graph\+\_\+t\+::\+Node $>$ \&non\+\_\+weak\+\_\+nodes) const
+\item 
+\hyperlink{class_contraction_result}{Contraction\+Result} \hyperlink{class_my_contraction_algorithm_ab2d761789cb18c240f5a610a9770ef29}{contract} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan, Graph\+\_\+t\+::\+Node t, const std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$ \&contractables\+\_\+arcs, const std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$ \&orig\+\_\+deletables\+\_\+arcs) const
+\item 
+Graph\+\_\+t\+::\+Node\+Map$<$ \hyperlink{class_contraction_result}{Contraction\+Result} $>$ $\ast$ \hyperlink{class_my_contraction_algorithm_a4583c564e68d337bd9dcef315093bbe6}{precompute} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan) const
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_my_contraction_algorithm_ab2d761789cb18c240f5a610a9770ef29}\label{class_my_contraction_algorithm_ab2d761789cb18c240f5a610a9770ef29}} 
+\index{My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}!contract@{contract}}
+\index{contract@{contract}!My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}}
+\subsubsection{\texorpdfstring{contract()}{contract()}}
+{\footnotesize\ttfamily \hyperlink{class_contraction_result}{Contraction\+Result} My\+Contraction\+Algorithm\+::contract (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan,  }\item[{Graph\+\_\+t\+::\+Node}]{t,  }\item[{const std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$ \&}]{contractables\+\_\+arcs,  }\item[{const std\+::vector$<$ Graph\+\_\+t\+::\+Arc $>$ \&}]{orig\+\_\+deletables\+\_\+arcs }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_my_contraction_algorithm_a7163cb16dd44d41e7a1974ed9f367e8a}\label{class_my_contraction_algorithm_a7163cb16dd44d41e7a1974ed9f367e8a}} 
+\index{My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}!get\+Non\+Weaks@{get\+Non\+Weaks}}
+\index{get\+Non\+Weaks@{get\+Non\+Weaks}!My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}}
+\subsubsection{\texorpdfstring{get\+Non\+Weaks()}{getNonWeaks()}}
+{\footnotesize\ttfamily void My\+Contraction\+Algorithm\+::get\+Non\+Weaks (\begin{DoxyParamCaption}\item[{const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \&}]{graph,  }\item[{const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&}]{l\+\_\+min,  }\item[{const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&}]{l\+\_\+max,  }\item[{Graph\+\_\+t\+::\+Arc}]{uv,  }\item[{std\+::vector$<$ Graph\+\_\+t\+::\+Node $>$ \&}]{non\+\_\+weak\+\_\+nodes }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_my_contraction_algorithm_a27a3be7ca9335a48ad08101c045bb883}\label{class_my_contraction_algorithm_a27a3be7ca9335a48ad08101c045bb883}} 
+\index{My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}!get\+Strongs@{get\+Strongs}}
+\index{get\+Strongs@{get\+Strongs}!My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}}
+\subsubsection{\texorpdfstring{get\+Strongs()}{getStrongs()}}
+{\footnotesize\ttfamily void My\+Contraction\+Algorithm\+::get\+Strongs (\begin{DoxyParamCaption}\item[{const \hyperlink{pl__reff_8cpp_a65aea14f39d53b24df9910d54216d620}{Graph\+\_\+t} \&}]{graph,  }\item[{const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&}]{l\+\_\+min,  }\item[{const Graph\+\_\+t\+::\+Arc\+Map$<$ double $>$ \&}]{l\+\_\+max,  }\item[{Graph\+\_\+t\+::\+Arc}]{uv,  }\item[{std\+::vector$<$ Graph\+\_\+t\+::\+Node $>$ \&}]{strong\+\_\+nodes }\end{DoxyParamCaption}) const}
+
+\mbox{\Hypertarget{class_my_contraction_algorithm_a4583c564e68d337bd9dcef315093bbe6}\label{class_my_contraction_algorithm_a4583c564e68d337bd9dcef315093bbe6}} 
+\index{My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}!precompute@{precompute}}
+\index{precompute@{precompute}!My\+Contraction\+Algorithm@{My\+Contraction\+Algorithm}}
+\subsubsection{\texorpdfstring{precompute()}{precompute()}}
+{\footnotesize\ttfamily Graph\+\_\+t\+::\+Node\+Map$<$ \hyperlink{class_contraction_result}{Contraction\+Result} $>$ $\ast$ My\+Contraction\+Algorithm\+::precompute (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \hyperlink{class_contraction_precomputation_a205ee98224bfa783a7ab27d3a986468b}{Contraction\+Precomputation}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/precomputation/\hyperlink{my__contraction__algorithm_8hpp}{my\+\_\+contraction\+\_\+algorithm.\+hpp}\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/src/precomputation/\hyperlink{my__contraction__algorithm_8cpp}{my\+\_\+contraction\+\_\+algorithm.\+cpp}\end{DoxyCompactItemize}

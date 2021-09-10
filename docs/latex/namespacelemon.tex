@@ -1,0 +1,85 @@
+\hypertarget{namespacelemon}{}\section{lemon Namespace Reference}
+\label{namespacelemon}\index{lemon@{lemon}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structlemon_1_1_dijkstra_multiplicative_operation_traits}{Dijkstra\+Multiplicative\+Operation\+Traits}
+\begin{DoxyCompactList}\small\item\em Multiplicative operation traits for the Dijkstra algorithm class. \end{DoxyCompactList}\item 
+struct \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{Dijkstra\+Multiplicative\+Traits}
+\begin{DoxyCompactList}\small\item\em Multiplicative traits class of Dijkstra class. \end{DoxyCompactList}\item 
+struct \hyperlink{structlemon_1_1_identify_default_traits}{Identify\+Default\+Traits}
+\item 
+struct \hyperlink{structlemon_1_1_identify_multiplicative_traits}{Identify\+Multiplicative\+Traits}
+\item 
+class \hyperlink{classlemon_1_1_identify_strong}{Identify\+Strong}
+\item 
+class \hyperlink{classlemon_1_1_identify_useless}{Identify\+Useless}
+\item 
+class \hyperlink{classlemon_1_1_labeled_value}{Labeled\+Value}
+\item 
+class \hyperlink{classlemon_1_1_simpler_dijkstra}{Simpler\+Dijkstra}
+\begin{DoxyCompactList}\small\item\em A minimalist Dijkstra algorithm class based on Dijkstra. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ }\\using \hyperlink{namespacelemon_ad1a4144cc98e6319e6e0c6144223631e}{Multiplicative\+Identify\+Strong} = \hyperlink{classlemon_1_1_identify_strong}{Identify\+Strong}$<$ GR, L\+EN, \hyperlink{structlemon_1_1_identify_multiplicative_traits}{Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$ $>$
+\item 
+{\footnotesize template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ }\\using \hyperlink{namespacelemon_a228c186b3cf4726455a5f4930d89b9cd}{Multiplicative\+Identify\+Useless} = \hyperlink{classlemon_1_1_identify_useless}{Identify\+Useless}$<$ GR, L\+EN, \hyperlink{structlemon_1_1_identify_multiplicative_traits}{Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$ $>$
+\item 
+{\footnotesize template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ }\\using \hyperlink{namespacelemon_a08ac5476d368240ee966058c30364c62}{Multiplicative\+Dijkstra} = Dijkstra$<$ GR, L\+EN, \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$ $>$
+\begin{DoxyCompactList}\small\item\em Template alias for \char`\"{}\+Dijkstra$<$\+G\+R,\+L\+E\+N,\+Dijkstra\+Multiplicative\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$\char`\"{}. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ }\\using \hyperlink{namespacelemon_af6f169c21619a4d51dcf5f33c3d5b1cb}{Multiplicative\+Simpler\+Dijkstra} = \hyperlink{classlemon_1_1_simpler_dijkstra}{Simpler\+Dijkstra}$<$ GR, L\+EN, \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{Dijkstra\+Multiplicative\+Traits}$<$ GR, L\+EN $>$ $>$
+\begin{DoxyCompactList}\small\item\em Template alias for \char`\"{}\+Simpler\+Dijkstra$<$\+G\+R,\+L\+E\+N,\+Dijkstra\+Multiplicative\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$\char`\"{}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\mbox{\Hypertarget{namespacelemon_a08ac5476d368240ee966058c30364c62}\label{namespacelemon_a08ac5476d368240ee966058c30364c62}} 
+\index{lemon@{lemon}!Multiplicative\+Dijkstra@{Multiplicative\+Dijkstra}}
+\index{Multiplicative\+Dijkstra@{Multiplicative\+Dijkstra}!lemon@{lemon}}
+\subsubsection{\texorpdfstring{Multiplicative\+Dijkstra}{MultiplicativeDijkstra}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ \\
+using \hyperlink{namespacelemon_a08ac5476d368240ee966058c30364c62}{lemon\+::\+Multiplicative\+Dijkstra} = typedef Dijkstra$<$GR, L\+EN, \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{Dijkstra\+Multiplicative\+Traits}$<$GR, L\+EN$>$ $>$}
+
+
+
+Template alias for \char`\"{}\+Dijkstra$<$\+G\+R,\+L\+E\+N,\+Dijkstra\+Multiplicative\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$\char`\"{}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em GR} & \\
+\hline
+{\em L\+EN} & \\
+\hline
+\end{DoxyTemplParams}
+\mbox{\Hypertarget{namespacelemon_ad1a4144cc98e6319e6e0c6144223631e}\label{namespacelemon_ad1a4144cc98e6319e6e0c6144223631e}} 
+\index{lemon@{lemon}!Multiplicative\+Identify\+Strong@{Multiplicative\+Identify\+Strong}}
+\index{Multiplicative\+Identify\+Strong@{Multiplicative\+Identify\+Strong}!lemon@{lemon}}
+\subsubsection{\texorpdfstring{Multiplicative\+Identify\+Strong}{MultiplicativeIdentifyStrong}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ \\
+using \hyperlink{namespacelemon_ad1a4144cc98e6319e6e0c6144223631e}{lemon\+::\+Multiplicative\+Identify\+Strong} = typedef \hyperlink{classlemon_1_1_identify_strong}{Identify\+Strong}$<$GR, L\+EN, \hyperlink{structlemon_1_1_identify_multiplicative_traits}{Identify\+Multiplicative\+Traits}$<$GR, L\+EN$>$ $>$}
+
+\mbox{\Hypertarget{namespacelemon_a228c186b3cf4726455a5f4930d89b9cd}\label{namespacelemon_a228c186b3cf4726455a5f4930d89b9cd}} 
+\index{lemon@{lemon}!Multiplicative\+Identify\+Useless@{Multiplicative\+Identify\+Useless}}
+\index{Multiplicative\+Identify\+Useless@{Multiplicative\+Identify\+Useless}!lemon@{lemon}}
+\subsubsection{\texorpdfstring{Multiplicative\+Identify\+Useless}{MultiplicativeIdentifyUseless}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ \\
+using \hyperlink{namespacelemon_a228c186b3cf4726455a5f4930d89b9cd}{lemon\+::\+Multiplicative\+Identify\+Useless} = typedef \hyperlink{classlemon_1_1_identify_useless}{Identify\+Useless}$<$GR, L\+EN, \hyperlink{structlemon_1_1_identify_multiplicative_traits}{Identify\+Multiplicative\+Traits}$<$GR, L\+EN$>$ $>$}
+
+\mbox{\Hypertarget{namespacelemon_af6f169c21619a4d51dcf5f33c3d5b1cb}\label{namespacelemon_af6f169c21619a4d51dcf5f33c3d5b1cb}} 
+\index{lemon@{lemon}!Multiplicative\+Simpler\+Dijkstra@{Multiplicative\+Simpler\+Dijkstra}}
+\index{Multiplicative\+Simpler\+Dijkstra@{Multiplicative\+Simpler\+Dijkstra}!lemon@{lemon}}
+\subsubsection{\texorpdfstring{Multiplicative\+Simpler\+Dijkstra}{MultiplicativeSimplerDijkstra}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$double$>$$>$ \\
+using \hyperlink{namespacelemon_af6f169c21619a4d51dcf5f33c3d5b1cb}{lemon\+::\+Multiplicative\+Simpler\+Dijkstra} = typedef \hyperlink{classlemon_1_1_simpler_dijkstra}{Simpler\+Dijkstra}$<$GR, L\+EN, \hyperlink{structlemon_1_1_dijkstra_multiplicative_traits}{Dijkstra\+Multiplicative\+Traits}$<$GR, L\+EN$>$ $>$}
+
+
+
+Template alias for \char`\"{}\+Simpler\+Dijkstra$<$\+G\+R,\+L\+E\+N,\+Dijkstra\+Multiplicative\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$\char`\"{}. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em GR} & \\
+\hline
+{\em L\+EN} & \\
+\hline
+\end{DoxyTemplParams}

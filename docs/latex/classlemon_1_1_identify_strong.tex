@@ -1,0 +1,197 @@
+\hypertarget{classlemon_1_1_identify_strong}{}\section{lemon\+:\+:Identify\+Strong$<$ GR, L\+EN, TR $>$ Class Template Reference}
+\label{classlemon_1_1_identify_strong}\index{lemon\+::\+Identify\+Strong$<$ G\+R, L\+E\+N, T\+R $>$@{lemon\+::\+Identify\+Strong$<$ G\+R, L\+E\+N, T\+R $>$}}
+
+
+{\ttfamily \#include $<$identify\+\_\+strong\+\_\+arcs.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef T\+R\+::\+Digraph \hyperlink{classlemon_1_1_identify_strong_a8cf9250557b236f81e713bf32a048d49}{Digraph}
+\item 
+typedef T\+R\+::\+Value \hyperlink{classlemon_1_1_identify_strong_a4f6932769928658e75abf819f960e6f1}{Value}
+\item 
+typedef T\+R\+::\+Labeled\+Dist \hyperlink{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}{Labeled\+Dist}
+\item 
+typedef T\+R\+::\+Length\+Map \hyperlink{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}{Length\+Map}
+\item 
+typedef T\+R\+::\+Heap\+Cross\+Ref \hyperlink{classlemon_1_1_identify_strong_a40dee7c87759955383fb3feb316435d1}{Heap\+Cross\+Ref}
+\item 
+typedef T\+R\+::\+Heap \hyperlink{classlemon_1_1_identify_strong_a3ba858c53d76a3df469bdd55e294cd35}{Heap}
+\item 
+typedef T\+R\+::\+Node\+List \hyperlink{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}{Node\+List}
+\item 
+typedef T\+R\+::\+Operation\+Traits \hyperlink{classlemon_1_1_identify_strong_a269ce377a01e3c77e1faf0f392751daa}{Operation\+Traits}
+\item 
+typedef TR \hyperlink{classlemon_1_1_identify_strong_a5cac33fc931f82c461d98ca0c16461b7}{Traits}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classlemon_1_1_identify_strong_a670f102e66ed601fb20c195a9111f636}{Identify\+Strong} (const \hyperlink{classlemon_1_1_identify_strong_a8cf9250557b236f81e713bf32a048d49}{Digraph} \&g, const \hyperlink{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}{Length\+Map} \&worst\+\_\+length, const \hyperlink{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}{Length\+Map} \&best\+\_\+length)
+\item 
+\hyperlink{classlemon_1_1_identify_strong_aada7f022421e480afa01553ccd3ef246}{$\sim$\+Identify\+Strong} ()
+\item 
+\hyperlink{classlemon_1_1_identify_strong}{Identify\+Strong} \& \hyperlink{classlemon_1_1_identify_strong_abcd4713c4aba7b526e8238b345f37061}{labeled\+Nodes\+List} (\hyperlink{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}{Node\+List} \&n)
+\item 
+const \hyperlink{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}{Node\+List} \& \hyperlink{classlemon_1_1_identify_strong_a1d520289257e1b92d98e924c256aee24}{get\+Labeled\+Nodes\+List} ()
+\item 
+void \hyperlink{classlemon_1_1_identify_strong_af427f870411047d02b3896e766e50356}{init} (Arc uv)
+\item 
+void \hyperlink{classlemon_1_1_identify_strong_ae2780dc0b6fbf60925fd85489b9878ae}{update\+Strong} (\hyperlink{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}{Labeled\+Dist} \&oldvalue, Arc \&e)
+\item 
+void \hyperlink{classlemon_1_1_identify_strong_a5ddb1c6472742727d7119c912193c768}{update\+Non\+Strong} (\hyperlink{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}{Labeled\+Dist} \&oldvalue, Arc \&e)
+\item 
+void \hyperlink{classlemon_1_1_identify_strong_aec245a25bd467a28ed5660aafc60550b}{process\+First\+Node} (Arc \&uv)
+\item 
+void \hyperlink{classlemon_1_1_identify_strong_aaf7dd46356fb66261d5d48c3f840978e}{process\+Next\+Node} ()
+\item 
+void \hyperlink{classlemon_1_1_identify_strong_ae54664c75b5d3be960806bfe5bb3db98}{run} (Arc uv)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a8cf9250557b236f81e713bf32a048d49}\label{classlemon_1_1_identify_strong_a8cf9250557b236f81e713bf32a048d49}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Digraph@{Digraph}}
+\index{Digraph@{Digraph}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Digraph}{Digraph}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Digraph \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a8cf9250557b236f81e713bf32a048d49}{Digraph}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a3ba858c53d76a3df469bdd55e294cd35}\label{classlemon_1_1_identify_strong_a3ba858c53d76a3df469bdd55e294cd35}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Heap@{Heap}}
+\index{Heap@{Heap}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Heap}{Heap}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Heap \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a3ba858c53d76a3df469bdd55e294cd35}{Heap}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a40dee7c87759955383fb3feb316435d1}\label{classlemon_1_1_identify_strong_a40dee7c87759955383fb3feb316435d1}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Heap\+Cross\+Ref@{Heap\+Cross\+Ref}}
+\index{Heap\+Cross\+Ref@{Heap\+Cross\+Ref}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Heap\+Cross\+Ref}{HeapCrossRef}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Heap\+Cross\+Ref \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a40dee7c87759955383fb3feb316435d1}{Heap\+Cross\+Ref}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}\label{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Labeled\+Dist@{Labeled\+Dist}}
+\index{Labeled\+Dist@{Labeled\+Dist}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Labeled\+Dist}{LabeledDist}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Labeled\+Dist \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}{Labeled\+Dist}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}\label{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Length\+Map@{Length\+Map}}
+\index{Length\+Map@{Length\+Map}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Length\+Map}{LengthMap}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Length\+Map \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}{Length\+Map}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}\label{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Node\+List@{Node\+List}}
+\index{Node\+List@{Node\+List}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Node\+List}{NodeList}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Node\+List \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}{Node\+List}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a269ce377a01e3c77e1faf0f392751daa}\label{classlemon_1_1_identify_strong_a269ce377a01e3c77e1faf0f392751daa}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Operation\+Traits@{Operation\+Traits}}
+\index{Operation\+Traits@{Operation\+Traits}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Operation\+Traits}{OperationTraits}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Operation\+Traits \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a269ce377a01e3c77e1faf0f392751daa}{Operation\+Traits}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a5cac33fc931f82c461d98ca0c16461b7}\label{classlemon_1_1_identify_strong_a5cac33fc931f82c461d98ca0c16461b7}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Traits@{Traits}}
+\index{Traits@{Traits}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Traits}{Traits}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef TR \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a5cac33fc931f82c461d98ca0c16461b7}{Traits}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a4f6932769928658e75abf819f960e6f1}\label{classlemon_1_1_identify_strong_a4f6932769928658e75abf819f960e6f1}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Value@{Value}}
+\index{Value@{Value}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Value \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong_a4f6932769928658e75abf819f960e6f1}{Value}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a670f102e66ed601fb20c195a9111f636}\label{classlemon_1_1_identify_strong_a670f102e66ed601fb20c195a9111f636}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!Identify\+Strong@{Identify\+Strong}}
+\index{Identify\+Strong@{Identify\+Strong}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{Identify\+Strong()}{IdentifyStrong()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_identify_strong}{Identify\+Strong} (\begin{DoxyParamCaption}\item[{const \hyperlink{classlemon_1_1_identify_strong_a8cf9250557b236f81e713bf32a048d49}{Digraph} \&}]{g,  }\item[{const \hyperlink{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}{Length\+Map} \&}]{worst\+\_\+length,  }\item[{const \hyperlink{classlemon_1_1_identify_strong_ac2cd2d54ff91cc726fec23ff1534bd0c}{Length\+Map} \&}]{best\+\_\+length }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_aada7f022421e480afa01553ccd3ef246}\label{classlemon_1_1_identify_strong_aada7f022421e480afa01553ccd3ef246}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!````~Identify\+Strong@{$\sim$\+Identify\+Strong}}
+\index{````~Identify\+Strong@{$\sim$\+Identify\+Strong}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{$\sim$\+Identify\+Strong()}{~IdentifyStrong()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::$\sim$\hyperlink{classlemon_1_1_identify_strong}{Identify\+Strong} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a1d520289257e1b92d98e924c256aee24}\label{classlemon_1_1_identify_strong_a1d520289257e1b92d98e924c256aee24}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!get\+Labeled\+Nodes\+List@{get\+Labeled\+Nodes\+List}}
+\index{get\+Labeled\+Nodes\+List@{get\+Labeled\+Nodes\+List}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{get\+Labeled\+Nodes\+List()}{getLabeledNodesList()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+const \hyperlink{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}{Node\+List}\& \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::get\+Labeled\+Nodes\+List (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_af427f870411047d02b3896e766e50356}\label{classlemon_1_1_identify_strong_af427f870411047d02b3896e766e50356}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!init@{init}}
+\index{init@{init}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::init (\begin{DoxyParamCaption}\item[{Arc}]{uv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_abcd4713c4aba7b526e8238b345f37061}\label{classlemon_1_1_identify_strong_abcd4713c4aba7b526e8238b345f37061}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!labeled\+Nodes\+List@{labeled\+Nodes\+List}}
+\index{labeled\+Nodes\+List@{labeled\+Nodes\+List}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{labeled\+Nodes\+List()}{labeledNodesList()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_identify_strong}{Identify\+Strong}\& \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::labeled\+Nodes\+List (\begin{DoxyParamCaption}\item[{\hyperlink{classlemon_1_1_identify_strong_a9c68da1def7665b299ca1896f9bdd59d}{Node\+List} \&}]{n }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_aec245a25bd467a28ed5660aafc60550b}\label{classlemon_1_1_identify_strong_aec245a25bd467a28ed5660aafc60550b}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!process\+First\+Node@{process\+First\+Node}}
+\index{process\+First\+Node@{process\+First\+Node}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{process\+First\+Node()}{processFirstNode()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::process\+First\+Node (\begin{DoxyParamCaption}\item[{Arc \&}]{uv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_aaf7dd46356fb66261d5d48c3f840978e}\label{classlemon_1_1_identify_strong_aaf7dd46356fb66261d5d48c3f840978e}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!process\+Next\+Node@{process\+Next\+Node}}
+\index{process\+Next\+Node@{process\+Next\+Node}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{process\+Next\+Node()}{processNextNode()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::process\+Next\+Node (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_ae54664c75b5d3be960806bfe5bb3db98}\label{classlemon_1_1_identify_strong_ae54664c75b5d3be960806bfe5bb3db98}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!run@{run}}
+\index{run@{run}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::run (\begin{DoxyParamCaption}\item[{Arc}]{uv }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_a5ddb1c6472742727d7119c912193c768}\label{classlemon_1_1_identify_strong_a5ddb1c6472742727d7119c912193c768}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!update\+Non\+Strong@{update\+Non\+Strong}}
+\index{update\+Non\+Strong@{update\+Non\+Strong}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{update\+Non\+Strong()}{updateNonStrong()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::update\+Non\+Strong (\begin{DoxyParamCaption}\item[{\hyperlink{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}{Labeled\+Dist} \&}]{oldvalue,  }\item[{Arc \&}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_identify_strong_ae2780dc0b6fbf60925fd85489b9878ae}\label{classlemon_1_1_identify_strong_ae2780dc0b6fbf60925fd85489b9878ae}} 
+\index{lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}!update\+Strong@{update\+Strong}}
+\index{update\+Strong@{update\+Strong}!lemon\+::\+Identify\+Strong@{lemon\+::\+Identify\+Strong}}
+\subsubsection{\texorpdfstring{update\+Strong()}{updateStrong()}}
+{\footnotesize\ttfamily template$<$typename GR  = List\+Digraph, typename L\+EN  = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR  = Identify\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_identify_strong}{lemon\+::\+Identify\+Strong}$<$ GR, L\+EN, TR $>$\+::update\+Strong (\begin{DoxyParamCaption}\item[{\hyperlink{classlemon_1_1_identify_strong_a6b5339bd594571c5085ef41d9ddeafa0}{Labeled\+Dist} \&}]{oldvalue,  }\item[{Arc \&}]{e }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/algorithms/\hyperlink{identify__strong__arcs_8h}{identify\+\_\+strong\+\_\+arcs.\+h}\end{DoxyCompactItemize}

@@ -20,5 +20,5 @@ clean:
 	@rm -rf $(BUILD_DIR)
 
 doc:
-	doxywizard $$PWD/doc/Doxyfile
-	xdg-open doc/html/index.html 
+	doxywizard $$PWD/docs/Doxyfile
+	xdg-open docs/html/index.html 

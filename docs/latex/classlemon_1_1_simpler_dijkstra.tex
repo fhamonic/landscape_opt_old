@@ -1,0 +1,156 @@
+\hypertarget{classlemon_1_1_simpler_dijkstra}{}\section{lemon\+:\+:Simpler\+Dijkstra$<$ GR, L\+EN, TR $>$ Class Template Reference}
+\label{classlemon_1_1_simpler_dijkstra}\index{lemon\+::\+Simpler\+Dijkstra$<$ G\+R, L\+E\+N, T\+R $>$@{lemon\+::\+Simpler\+Dijkstra$<$ G\+R, L\+E\+N, T\+R $>$}}
+
+
+A minimalist Dijkstra algorithm class based on Dijkstra.  
+
+
+
+
+{\ttfamily \#include $<$multiplicative\+\_\+dijkstra.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef T\+R\+::\+Digraph \hyperlink{classlemon_1_1_simpler_dijkstra_ac19103e2c76d2258f7507dd5921d814d}{Digraph}
+\item 
+typedef T\+R\+::\+Value \hyperlink{classlemon_1_1_simpler_dijkstra_adbbec2bbc5762ccc02fee8089e30836a}{Value}
+\item 
+typedef T\+R\+::\+Length\+Map \hyperlink{classlemon_1_1_simpler_dijkstra_adfe5498ef0a7699daf396dd6c4b7dfb6}{Length\+Map}
+\item 
+typedef T\+R\+::\+Heap\+Cross\+Ref \hyperlink{classlemon_1_1_simpler_dijkstra_ae4c36812930d6292b4154e26b76ea10f}{Heap\+Cross\+Ref}
+\item 
+typedef T\+R\+::\+Heap \hyperlink{classlemon_1_1_simpler_dijkstra_aafddddfbd1c0c9c054fffa959a2a1a3f}{Heap}
+\item 
+typedef T\+R\+::\+Operation\+Traits \hyperlink{classlemon_1_1_simpler_dijkstra_a324250f3aac580ddcc57cb2a84d5e9cd}{Operation\+Traits}
+\item 
+typedef TR \hyperlink{classlemon_1_1_simpler_dijkstra_aba2e25936434ef18b495a05a4b785220}{Traits}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classlemon_1_1_simpler_dijkstra_aafa6d31f7d5de94342454613f321aff8}{Simpler\+Dijkstra} (const \hyperlink{classlemon_1_1_simpler_dijkstra_ac19103e2c76d2258f7507dd5921d814d}{Digraph} \&g, const \hyperlink{classlemon_1_1_simpler_dijkstra_adfe5498ef0a7699daf396dd6c4b7dfb6}{Length\+Map} \&length)
+\item 
+\hyperlink{classlemon_1_1_simpler_dijkstra_a4f5e5b5fdbdc7bcb61c41cbf6caf4c9f}{$\sim$\+Simpler\+Dijkstra} ()
+\item 
+void \hyperlink{classlemon_1_1_simpler_dijkstra_a714103f8b8c32f17211bdd0dae12fe4e}{init} (Node s)
+\item 
+bool \hyperlink{classlemon_1_1_simpler_dijkstra_a5f76dcaec68bd9b4e9df63a32565ebcc}{empty\+Queue} () const
+\item 
+std\+::pair$<$ typename G\+R\+::\+Node, double $>$ \hyperlink{classlemon_1_1_simpler_dijkstra_a84a7dcefca1d2a82a6af236dc082d77a}{process\+Next\+Node} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$\newline
+class lemon\+::\+Simpler\+Dijkstra$<$ G\+R, L\+E\+N, T\+R $>$}
+
+A minimalist Dijkstra algorithm class based on Dijkstra. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em GR} & The type of the digraph the algorithm runs on. \\
+\hline
+{\em L\+EN} & readable arc map that specifies the lengths of the arcs. \\
+\hline
+{\em TR} & The traits class that defines various types used by the algorithm. By default, it is Dijkstra\+Default\+Traits$<$GR, L\+EN$>$ \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_ac19103e2c76d2258f7507dd5921d814d}\label{classlemon_1_1_simpler_dijkstra_ac19103e2c76d2258f7507dd5921d814d}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Digraph@{Digraph}}
+\index{Digraph@{Digraph}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Digraph}{Digraph}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Digraph \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra_ac19103e2c76d2258f7507dd5921d814d}{Digraph}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_aafddddfbd1c0c9c054fffa959a2a1a3f}\label{classlemon_1_1_simpler_dijkstra_aafddddfbd1c0c9c054fffa959a2a1a3f}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Heap@{Heap}}
+\index{Heap@{Heap}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Heap}{Heap}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Heap \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra_aafddddfbd1c0c9c054fffa959a2a1a3f}{Heap}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_ae4c36812930d6292b4154e26b76ea10f}\label{classlemon_1_1_simpler_dijkstra_ae4c36812930d6292b4154e26b76ea10f}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Heap\+Cross\+Ref@{Heap\+Cross\+Ref}}
+\index{Heap\+Cross\+Ref@{Heap\+Cross\+Ref}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Heap\+Cross\+Ref}{HeapCrossRef}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Heap\+Cross\+Ref \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra_ae4c36812930d6292b4154e26b76ea10f}{Heap\+Cross\+Ref}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_adfe5498ef0a7699daf396dd6c4b7dfb6}\label{classlemon_1_1_simpler_dijkstra_adfe5498ef0a7699daf396dd6c4b7dfb6}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Length\+Map@{Length\+Map}}
+\index{Length\+Map@{Length\+Map}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Length\+Map}{LengthMap}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Length\+Map \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra_adfe5498ef0a7699daf396dd6c4b7dfb6}{Length\+Map}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_a324250f3aac580ddcc57cb2a84d5e9cd}\label{classlemon_1_1_simpler_dijkstra_a324250f3aac580ddcc57cb2a84d5e9cd}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Operation\+Traits@{Operation\+Traits}}
+\index{Operation\+Traits@{Operation\+Traits}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Operation\+Traits}{OperationTraits}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Operation\+Traits \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra_a324250f3aac580ddcc57cb2a84d5e9cd}{Operation\+Traits}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_aba2e25936434ef18b495a05a4b785220}\label{classlemon_1_1_simpler_dijkstra_aba2e25936434ef18b495a05a4b785220}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Traits@{Traits}}
+\index{Traits@{Traits}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Traits}{Traits}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef TR \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra_aba2e25936434ef18b495a05a4b785220}{Traits}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_adbbec2bbc5762ccc02fee8089e30836a}\label{classlemon_1_1_simpler_dijkstra_adbbec2bbc5762ccc02fee8089e30836a}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Value@{Value}}
+\index{Value@{Value}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+typedef T\+R\+::\+Value \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra_adbbec2bbc5762ccc02fee8089e30836a}{Value}}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_aafa6d31f7d5de94342454613f321aff8}\label{classlemon_1_1_simpler_dijkstra_aafa6d31f7d5de94342454613f321aff8}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!Simpler\+Dijkstra@{Simpler\+Dijkstra}}
+\index{Simpler\+Dijkstra@{Simpler\+Dijkstra}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{Simpler\+Dijkstra()}{SimplerDijkstra()}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::\hyperlink{classlemon_1_1_simpler_dijkstra}{Simpler\+Dijkstra} (\begin{DoxyParamCaption}\item[{const \hyperlink{classlemon_1_1_simpler_dijkstra_ac19103e2c76d2258f7507dd5921d814d}{Digraph} \&}]{g,  }\item[{const \hyperlink{classlemon_1_1_simpler_dijkstra_adfe5498ef0a7699daf396dd6c4b7dfb6}{Length\+Map} \&}]{length }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_a4f5e5b5fdbdc7bcb61c41cbf6caf4c9f}\label{classlemon_1_1_simpler_dijkstra_a4f5e5b5fdbdc7bcb61c41cbf6caf4c9f}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!````~Simpler\+Dijkstra@{$\sim$\+Simpler\+Dijkstra}}
+\index{````~Simpler\+Dijkstra@{$\sim$\+Simpler\+Dijkstra}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{$\sim$\+Simpler\+Dijkstra()}{~SimplerDijkstra()}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+\hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::$\sim$\hyperlink{classlemon_1_1_simpler_dijkstra}{Simpler\+Dijkstra} (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_a5f76dcaec68bd9b4e9df63a32565ebcc}\label{classlemon_1_1_simpler_dijkstra_a5f76dcaec68bd9b4e9df63a32565ebcc}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!empty\+Queue@{empty\+Queue}}
+\index{empty\+Queue@{empty\+Queue}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{empty\+Queue()}{emptyQueue()}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+bool \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::empty\+Queue (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_a714103f8b8c32f17211bdd0dae12fe4e}\label{classlemon_1_1_simpler_dijkstra_a714103f8b8c32f17211bdd0dae12fe4e}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!init@{init}}
+\index{init@{init}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{init()}{init()}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+void \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::init (\begin{DoxyParamCaption}\item[{Node}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{classlemon_1_1_simpler_dijkstra_a84a7dcefca1d2a82a6af236dc082d77a}\label{classlemon_1_1_simpler_dijkstra_a84a7dcefca1d2a82a6af236dc082d77a}} 
+\index{lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}!process\+Next\+Node@{process\+Next\+Node}}
+\index{process\+Next\+Node@{process\+Next\+Node}!lemon\+::\+Simpler\+Dijkstra@{lemon\+::\+Simpler\+Dijkstra}}
+\subsubsection{\texorpdfstring{process\+Next\+Node()}{processNextNode()}}
+{\footnotesize\ttfamily template$<$typename GR = List\+Digraph, typename L\+EN = typename G\+R\+::template Arc\+Map$<$int$>$, typename TR = Dijkstra\+Default\+Traits$<$\+G\+R,\+L\+E\+N$>$$>$ \\
+std\+::pair$<$typename G\+R\+::\+Node, double$>$ \hyperlink{classlemon_1_1_simpler_dijkstra}{lemon\+::\+Simpler\+Dijkstra}$<$ GR, L\+EN, TR $>$\+::process\+Next\+Node (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/algorithms/\hyperlink{multiplicative__dijkstra_8h}{multiplicative\+\_\+dijkstra.\+h}\end{DoxyCompactItemize}

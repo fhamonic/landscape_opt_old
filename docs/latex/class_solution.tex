@@ -1,0 +1,138 @@
+\hypertarget{class_solution}{}\section{Solution Class Reference}
+\label{class_solution}\index{Solution@{Solution}}
+
+
+{\ttfamily \#include $<$solution.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_solution_ab52c6ac6bed551f63788a5da6af7becc}{Solution} (const \hyperlink{class_landscape}{Landscape} \&landscape, const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&plan)
+\item 
+\hyperlink{class_solution_a5d245f7409aacf6ace5e965b7879a580}{$\sim$\+Solution} ()
+\item 
+const \hyperlink{class_restoration_plan}{Restoration\+Plan} \& \hyperlink{class_solution_a95446a3f6110054a0085a22bee9ce64e}{get\+Plan} () const
+\item 
+bool \hyperlink{class_solution_af4e5cc99508f729e1866e0c30c7472a0}{contains} (const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$option) const
+\item 
+void \hyperlink{class_solution_ac29d6eca7b0755057b82c95610b763c8}{set} (const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$option, double coef)
+\item 
+void \hyperlink{class_solution_ab9df5a4126b96e12dcb998cb0c5fc37a}{add} (const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$option)
+\item 
+void \hyperlink{class_solution_a4388ef028db3bc8e6fd6a6be0478cedc}{remove} (const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$option)
+\item 
+const std\+::map$<$ const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$, double $>$ \& \hyperlink{class_solution_a4b97ae617451a4e255179ac1e80eb45e}{get\+Option\+Coefs} () const
+\item 
+void \hyperlink{class_solution_a24101fa88cf1e685abd9652148e4f1fb}{set\+Compute\+Time\+Ms} (int time\+\_\+ms)
+\item 
+int \hyperlink{class_solution_a7b42da29828c80b924884729cdcd9b43}{get\+Compute\+Time\+Ms} () const
+\item 
+double \hyperlink{class_solution_ad4f76bea091ec66302df270168e68feb}{get\+Cost} () const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{class_solution_ada3534c6614de6c21ed6406ead921ca2}{nb\+\_\+vars}
+\item 
+int \hyperlink{class_solution_a12d788f2b7fa64050d2e3c0e3f4464f3}{nb\+\_\+constraints}
+\item 
+double \hyperlink{class_solution_a261a9de1b33f8ec6219a88073aea29e9}{obj}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_solution_ab52c6ac6bed551f63788a5da6af7becc}\label{class_solution_ab52c6ac6bed551f63788a5da6af7becc}} 
+\index{Solution@{Solution}!Solution@{Solution}}
+\index{Solution@{Solution}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{Solution()}{Solution()}}
+{\footnotesize\ttfamily Solution\+::\+Solution (\begin{DoxyParamCaption}\item[{const \hyperlink{class_landscape}{Landscape} \&}]{landscape,  }\item[{const \hyperlink{class_restoration_plan}{Restoration\+Plan} \&}]{plan }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_a5d245f7409aacf6ace5e965b7879a580}\label{class_solution_a5d245f7409aacf6ace5e965b7879a580}} 
+\index{Solution@{Solution}!````~Solution@{$\sim$\+Solution}}
+\index{````~Solution@{$\sim$\+Solution}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{$\sim$\+Solution()}{~Solution()}}
+{\footnotesize\ttfamily Solution\+::$\sim$\+Solution (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_solution_ab9df5a4126b96e12dcb998cb0c5fc37a}\label{class_solution_ab9df5a4126b96e12dcb998cb0c5fc37a}} 
+\index{Solution@{Solution}!add@{add}}
+\index{add@{add}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily void Solution\+::add (\begin{DoxyParamCaption}\item[{const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$}]{option }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_af4e5cc99508f729e1866e0c30c7472a0}\label{class_solution_af4e5cc99508f729e1866e0c30c7472a0}} 
+\index{Solution@{Solution}!contains@{contains}}
+\index{contains@{contains}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{contains()}{contains()}}
+{\footnotesize\ttfamily bool Solution\+::contains (\begin{DoxyParamCaption}\item[{const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$}]{option }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_a7b42da29828c80b924884729cdcd9b43}\label{class_solution_a7b42da29828c80b924884729cdcd9b43}} 
+\index{Solution@{Solution}!get\+Compute\+Time\+Ms@{get\+Compute\+Time\+Ms}}
+\index{get\+Compute\+Time\+Ms@{get\+Compute\+Time\+Ms}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{get\+Compute\+Time\+Ms()}{getComputeTimeMs()}}
+{\footnotesize\ttfamily int Solution\+::get\+Compute\+Time\+Ms (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_ad4f76bea091ec66302df270168e68feb}\label{class_solution_ad4f76bea091ec66302df270168e68feb}} 
+\index{Solution@{Solution}!get\+Cost@{get\+Cost}}
+\index{get\+Cost@{get\+Cost}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{get\+Cost()}{getCost()}}
+{\footnotesize\ttfamily double Solution\+::get\+Cost (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_a4b97ae617451a4e255179ac1e80eb45e}\label{class_solution_a4b97ae617451a4e255179ac1e80eb45e}} 
+\index{Solution@{Solution}!get\+Option\+Coefs@{get\+Option\+Coefs}}
+\index{get\+Option\+Coefs@{get\+Option\+Coefs}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{get\+Option\+Coefs()}{getOptionCoefs()}}
+{\footnotesize\ttfamily const std\+::map$<$const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option}$\ast$, double$>$\& Solution\+::get\+Option\+Coefs (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_a95446a3f6110054a0085a22bee9ce64e}\label{class_solution_a95446a3f6110054a0085a22bee9ce64e}} 
+\index{Solution@{Solution}!get\+Plan@{get\+Plan}}
+\index{get\+Plan@{get\+Plan}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{get\+Plan()}{getPlan()}}
+{\footnotesize\ttfamily const \hyperlink{class_restoration_plan}{Restoration\+Plan}\& Solution\+::get\+Plan (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_a4388ef028db3bc8e6fd6a6be0478cedc}\label{class_solution_a4388ef028db3bc8e6fd6a6be0478cedc}} 
+\index{Solution@{Solution}!remove@{remove}}
+\index{remove@{remove}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{remove()}{remove()}}
+{\footnotesize\ttfamily void Solution\+::remove (\begin{DoxyParamCaption}\item[{const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$}]{option }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_ac29d6eca7b0755057b82c95610b763c8}\label{class_solution_ac29d6eca7b0755057b82c95610b763c8}} 
+\index{Solution@{Solution}!set@{set}}
+\index{set@{set}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{set()}{set()}}
+{\footnotesize\ttfamily void Solution\+::set (\begin{DoxyParamCaption}\item[{const \hyperlink{class_restoration_plan_1_1_option}{Restoration\+Plan\+::\+Option} $\ast$}]{option,  }\item[{double}]{coef }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+\mbox{\Hypertarget{class_solution_a24101fa88cf1e685abd9652148e4f1fb}\label{class_solution_a24101fa88cf1e685abd9652148e4f1fb}} 
+\index{Solution@{Solution}!set\+Compute\+Time\+Ms@{set\+Compute\+Time\+Ms}}
+\index{set\+Compute\+Time\+Ms@{set\+Compute\+Time\+Ms}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{set\+Compute\+Time\+Ms()}{setComputeTimeMs()}}
+{\footnotesize\ttfamily void Solution\+::set\+Compute\+Time\+Ms (\begin{DoxyParamCaption}\item[{int}]{time\+\_\+ms }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_solution_a12d788f2b7fa64050d2e3c0e3f4464f3}\label{class_solution_a12d788f2b7fa64050d2e3c0e3f4464f3}} 
+\index{Solution@{Solution}!nb\+\_\+constraints@{nb\+\_\+constraints}}
+\index{nb\+\_\+constraints@{nb\+\_\+constraints}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{nb\+\_\+constraints}{nb\_constraints}}
+{\footnotesize\ttfamily int Solution\+::nb\+\_\+constraints}
+
+\mbox{\Hypertarget{class_solution_ada3534c6614de6c21ed6406ead921ca2}\label{class_solution_ada3534c6614de6c21ed6406ead921ca2}} 
+\index{Solution@{Solution}!nb\+\_\+vars@{nb\+\_\+vars}}
+\index{nb\+\_\+vars@{nb\+\_\+vars}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{nb\+\_\+vars}{nb\_vars}}
+{\footnotesize\ttfamily int Solution\+::nb\+\_\+vars}
+
+\mbox{\Hypertarget{class_solution_a261a9de1b33f8ec6219a88073aea29e9}\label{class_solution_a261a9de1b33f8ec6219a88073aea29e9}} 
+\index{Solution@{Solution}!obj@{obj}}
+\index{obj@{obj}!Solution@{Solution}}
+\subsubsection{\texorpdfstring{obj}{obj}}
+{\footnotesize\ttfamily double Solution\+::obj}
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/solvers/concept/\hyperlink{solution_8hpp}{solution.\+hpp}\end{DoxyCompactItemize}

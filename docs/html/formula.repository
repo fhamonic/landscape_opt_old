@@ -1,0 +1,58 @@
+\form#0:$ O(n \cdot (m + n) \log n) $
+\form#1:$ n $
+\form#2:$ m $
+\form#3:$ O(m) $
+\form#4:$ O(1) $
+\form#5:$i$
+\form#6:$O(\log n)$
+\form#7:$ O(\log n) $
+\form#8:$v$
+\form#9:$ O(\log \#nodes(i)) $
+\form#10:$a$
+\form#11:$ O(\log \#arcs(i)) $
+\form#12:$ O(\log \#nodes(i) + \log \#options(v)) $
+\form#13:$ O(\log \#arcs(i) + \log \#options(a)) $
+\form#14:$ O(\#options(v) \log \#nodes(i)) $
+\form#15:$ O(\#options(a) \log \#arcs(i)) $
+\form#16:$ O(\log \#options(v)) $
+\form#17:$ O(\log \#options(a)) $
+\form#18:$c$
+\form#19:$ O(\#options * \#nodes) $
+\form#20:$ O(\#invalid_nodes) $
+\form#21:$ O(options * arcs) $
+\form#22:$ O(invalid\_arcs) $
+\form#23:$ O(\#options * (\#nodes + \#arcs)) $
+\form#24:$ O(\#invalid_nodes + \#invalid_arcs) $
+\form#25:$ O(\#invalid\_nodes) $
+\form#26:$ O(\#invalid\_nodes + \#invalid\_arcs) $
+\form#27:$O(\log \#nodes(i) + \log \#options(v))$
+\form#28:$O(1)$
+\form#29:$O(\log \#arcs(i) + \log \#options(a))$
+\form#30:$O(\log \#nodes(i))$
+\form#31:$O(\log \#arcs(i))$
+\form#32:$O(\#options(v) \log \#nodes(i))$
+\form#33:$O(\#options(a) \log \#arcs(i))$
+\form#34:$O(\log \#options(v))$
+\form#35:$O(\log \#options(a))$
+\form#36:$O(\#options * \#nodes)$
+\form#37:$O(\#invalid\_nodes)$
+\form#38:$O(options * arcs)$
+\form#39:$O(invalid\_arcs)$
+\form#40:$O(\#options * (\#nodes + \#arcs))$
+\form#41:$O(\#invalid\_nodes + \#invalid\_arcs)$
+\form#42:$O(V)$
+\form#43:$O(deg u)$
+\form#44:$O(\#options)$
+\form#45:$O(\#options * \#arcs)$
+\form#46:$O(\#invalid\_arcs)$
+\form#47:$O(deg(u))$
+\form#48:$O(n \cdot (m + n) \log n)$
+\form#49:$n$
+\form#50:$m$
+\form#51:$O(m)$
+\form#52:$O(\sum\limits_{i \in options} \#nodes(i))$
+\form#53:$O(\sum_{i \in options} \#nodes(i))$
+\form#54:$O(\sum_{i \in options(v)} \log \#nodes(i))$
+\form#55:$O(\sum_{i \in options(a)} \log \#nodes(i))$
+\form#56:$O(\sum_{i \in options} \#arcs(i))$
+\form#57:$O(\sum_{i \in options} \#nodes(i) + \#arcs(i))$

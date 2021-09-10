@@ -1,0 +1,12 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classconcepts_1_1_solver.html" title="concepts::Solver" alt="" coords="5,208,125,235"/>
+<area shape="rect" id="node2" href="$class_p_l___e_c_a___solver.html" title="PL_ECA_Solver" alt="" coords="206,5,323,32"/>
+<area shape="rect" id="node3" href="$class_solvers_1_1_bogo.html" title="Solvers::Bogo" alt="" coords="213,56,317,83"/>
+<area shape="rect" id="node4" href="$class_solvers_1_1_glutton___e_c_a___dec.html" title="Solvers::Glutton_ECA_Dec" alt="" coords="173,107,356,133"/>
+<area shape="rect" id="node5" href="$class_solvers_1_1_glutton___e_c_a___inc.html" title="Solvers::Glutton_ECA_Inc" alt="" coords="177,157,353,184"/>
+<area shape="rect" id="node6" href="$class_solvers_1_1_naive___e_c_a___dec.html" title="Solvers::Naive_ECA_Dec" alt="" coords="177,208,352,235"/>
+<area shape="rect" id="node7" href="$class_solvers_1_1_naive___e_c_a___inc.html" title="Solvers::Naive_ECA_Inc" alt="" coords="181,259,349,285"/>
+<area shape="rect" id="node8" href="$class_solvers_1_1_p_l___e_c_a__2.html" title="Solvers::PL_ECA_2" alt="" coords="195,309,334,336"/>
+<area shape="rect" id="node9" href="$class_solvers_1_1_p_l___e_c_a__3.html" title="Solvers::PL_ECA_3" alt="" coords="195,360,334,387"/>
+<area shape="rect" id="node10" href="$class_solvers_1_1_randomized___rounding___e_c_a.html" title="Solvers::Randomized\l_Rounding_ECA" alt="" coords="191,411,338,453"/>
+</map>

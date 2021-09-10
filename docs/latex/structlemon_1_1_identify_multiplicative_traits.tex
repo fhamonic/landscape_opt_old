@@ -1,0 +1,140 @@
+\hypertarget{structlemon_1_1_identify_multiplicative_traits}{}\section{lemon\+:\+:Identify\+Multiplicative\+Traits$<$ GR, L\+EN $>$ Struct Template Reference}
+\label{structlemon_1_1_identify_multiplicative_traits}\index{lemon\+::\+Identify\+Multiplicative\+Traits$<$ G\+R, L\+E\+N $>$@{lemon\+::\+Identify\+Multiplicative\+Traits$<$ G\+R, L\+E\+N $>$}}
+
+
+{\ttfamily \#include $<$identify\+\_\+strong\+\_\+arcs.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef GR \hyperlink{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}{Digraph}
+\item 
+typedef L\+EN \hyperlink{structlemon_1_1_identify_multiplicative_traits_a134355b88655b1c297264296d2c70d3a}{Length\+Map}
+\item 
+typedef L\+E\+N\+::\+Value \hyperlink{structlemon_1_1_identify_multiplicative_traits_ae44c59a817f36ac3d7c024fc75d5ae50}{Value}
+\item 
+typedef \hyperlink{classlemon_1_1_labeled_value}{Labeled\+Value}$<$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_ae44c59a817f36ac3d7c024fc75d5ae50}{Value} $>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist}
+\item 
+typedef \hyperlink{structlemon_1_1_dijkstra_multiplicative_operation_traits}{Dijkstra\+Multiplicative\+Operation\+Traits}$<$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist} $>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_ac66ce4af1205a7cd0564ad8d1ecf7a4a}{Operation\+Traits}
+\item 
+typedef Digraph\+::template Node\+Map$<$ int $>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref}
+\item 
+typedef Bin\+Heap$<$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist}, \hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref}, std\+::greater$<$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist} $>$ $>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_aa42c8b081b4e4783190eabd4ac03154f}{Heap}
+\item 
+typedef Digraph\+::\+Node \hyperlink{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}{Node}
+\item 
+typedef std\+::vector$<$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}{Node} $>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}{Node\+List}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref} $\ast$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_aeee352c508bf38e1994c9f22052c0be8}{create\+Heap\+Cross\+Ref} (const \hyperlink{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}{Digraph} \&g)
+\item 
+static \hyperlink{structlemon_1_1_identify_multiplicative_traits_aa42c8b081b4e4783190eabd4ac03154f}{Heap} $\ast$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_af8070d2658718ee55c51790c25196235}{create\+Heap} (\hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref} \&r)
+\item 
+static \hyperlink{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}{Node\+List} $\ast$ \hyperlink{structlemon_1_1_identify_multiplicative_traits_a4a44286cb2877fb94d45d8ed0752c407}{create\+Node\+List} (const \hyperlink{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}{Digraph} \&)
+\item 
+static void \hyperlink{structlemon_1_1_identify_multiplicative_traits_afb385c6c785e4fd909345d8c37fe57a7}{add\+Node} (\hyperlink{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}{Node\+List} \&n, \hyperlink{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}{Node} u)
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}\label{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Digraph@{Digraph}}
+\index{Digraph@{Digraph}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Digraph}{Digraph}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef GR \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}{Digraph}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_aa42c8b081b4e4783190eabd4ac03154f}\label{structlemon_1_1_identify_multiplicative_traits_aa42c8b081b4e4783190eabd4ac03154f}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Heap@{Heap}}
+\index{Heap@{Heap}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Heap}{Heap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Bin\+Heap$<$\hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist}, \hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref}, std\+::greater$<$\hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist}$>$ $>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_aa42c8b081b4e4783190eabd4ac03154f}{Heap}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}\label{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Heap\+Cross\+Ref@{Heap\+Cross\+Ref}}
+\index{Heap\+Cross\+Ref@{Heap\+Cross\+Ref}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Heap\+Cross\+Ref}{HeapCrossRef}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Digraph\+::template Node\+Map$<$int$>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}\label{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Labeled\+Dist@{Labeled\+Dist}}
+\index{Labeled\+Dist@{Labeled\+Dist}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Labeled\+Dist}{LabeledDist}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef \hyperlink{classlemon_1_1_labeled_value}{Labeled\+Value}$<$\hyperlink{structlemon_1_1_identify_multiplicative_traits_ae44c59a817f36ac3d7c024fc75d5ae50}{Value}$>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_a134355b88655b1c297264296d2c70d3a}\label{structlemon_1_1_identify_multiplicative_traits_a134355b88655b1c297264296d2c70d3a}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Length\+Map@{Length\+Map}}
+\index{Length\+Map@{Length\+Map}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Length\+Map}{LengthMap}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef L\+EN \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_a134355b88655b1c297264296d2c70d3a}{Length\+Map}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}\label{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Node@{Node}}
+\index{Node@{Node}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Node}{Node}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef Digraph\+::\+Node \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}{Node}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}\label{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Node\+List@{Node\+List}}
+\index{Node\+List@{Node\+List}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Node\+List}{NodeList}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef std\+::vector$<$\hyperlink{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}{Node}$>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}{Node\+List}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_ac66ce4af1205a7cd0564ad8d1ecf7a4a}\label{structlemon_1_1_identify_multiplicative_traits_ac66ce4af1205a7cd0564ad8d1ecf7a4a}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Operation\+Traits@{Operation\+Traits}}
+\index{Operation\+Traits@{Operation\+Traits}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Operation\+Traits}{OperationTraits}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef \hyperlink{structlemon_1_1_dijkstra_multiplicative_operation_traits}{Dijkstra\+Multiplicative\+Operation\+Traits}$<$\hyperlink{structlemon_1_1_identify_multiplicative_traits_a91b3da314fe157ce5c2674e3608d4cde}{Labeled\+Dist}$>$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_ac66ce4af1205a7cd0564ad8d1ecf7a4a}{Operation\+Traits}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_ae44c59a817f36ac3d7c024fc75d5ae50}\label{structlemon_1_1_identify_multiplicative_traits_ae44c59a817f36ac3d7c024fc75d5ae50}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!Value@{Value}}
+\index{Value@{Value}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{Value}{Value}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+typedef L\+E\+N\+::\+Value \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::\hyperlink{structlemon_1_1_identify_multiplicative_traits_ae44c59a817f36ac3d7c024fc75d5ae50}{Value}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_afb385c6c785e4fd909345d8c37fe57a7}\label{structlemon_1_1_identify_multiplicative_traits_afb385c6c785e4fd909345d8c37fe57a7}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!add\+Node@{add\+Node}}
+\index{add\+Node@{add\+Node}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{add\+Node()}{addNode()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static void \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::add\+Node (\begin{DoxyParamCaption}\item[{\hyperlink{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}{Node\+List} \&}]{n,  }\item[{\hyperlink{structlemon_1_1_identify_multiplicative_traits_a391c4d6be09a511224b23628fbc9c223}{Node}}]{u }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_af8070d2658718ee55c51790c25196235}\label{structlemon_1_1_identify_multiplicative_traits_af8070d2658718ee55c51790c25196235}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!create\+Heap@{create\+Heap}}
+\index{create\+Heap@{create\+Heap}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Heap()}{createHeap()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_identify_multiplicative_traits_aa42c8b081b4e4783190eabd4ac03154f}{Heap}$\ast$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Heap (\begin{DoxyParamCaption}\item[{\hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref} \&}]{r }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_aeee352c508bf38e1994c9f22052c0be8}\label{structlemon_1_1_identify_multiplicative_traits_aeee352c508bf38e1994c9f22052c0be8}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!create\+Heap\+Cross\+Ref@{create\+Heap\+Cross\+Ref}}
+\index{create\+Heap\+Cross\+Ref@{create\+Heap\+Cross\+Ref}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Heap\+Cross\+Ref()}{createHeapCrossRef()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_identify_multiplicative_traits_ae84c68f24215f7f666f26ca3125a284d}{Heap\+Cross\+Ref}$\ast$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Heap\+Cross\+Ref (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}{Digraph} \&}]{g }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+\mbox{\Hypertarget{structlemon_1_1_identify_multiplicative_traits_a4a44286cb2877fb94d45d8ed0752c407}\label{structlemon_1_1_identify_multiplicative_traits_a4a44286cb2877fb94d45d8ed0752c407}} 
+\index{lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}!create\+Node\+List@{create\+Node\+List}}
+\index{create\+Node\+List@{create\+Node\+List}!lemon\+::\+Identify\+Multiplicative\+Traits@{lemon\+::\+Identify\+Multiplicative\+Traits}}
+\subsubsection{\texorpdfstring{create\+Node\+List()}{createNodeList()}}
+{\footnotesize\ttfamily template$<$typename GR , typename L\+EN $>$ \\
+static \hyperlink{structlemon_1_1_identify_multiplicative_traits_a686335471dfcb3c0b7baef1764679a66}{Node\+List}$\ast$ \hyperlink{structlemon_1_1_identify_multiplicative_traits}{lemon\+::\+Identify\+Multiplicative\+Traits}$<$ GR, L\+EN $>$\+::create\+Node\+List (\begin{DoxyParamCaption}\item[{const \hyperlink{structlemon_1_1_identify_multiplicative_traits_a586c2b69092471f155318915c7e5bdd0}{Digraph} \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+/home/plaiseek/\+Projects/landscape\+\_\+opt\+\_\+cpp/include/algorithms/\hyperlink{identify__strong__arcs_8h}{identify\+\_\+strong\+\_\+arcs.\+h}\end{DoxyCompactItemize}
