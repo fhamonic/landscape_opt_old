@@ -16,6 +16,10 @@ $(BUILD_DIR):
 	conan install .. && \
 	cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release -DWARNINGS=ON -DHARDCORE_WARNINGS=OFF -DCOMPILE_FOR_NATIVE=OFF -DCOMPILE_WITH_LTO=OFF -DWITH_GUROBI=ON ..
 
+test: all
+	@cd $(BUILD_DIR) && \
+	ctest
+
 clean:
 	@rm -rf $(BUILD_DIR)
 

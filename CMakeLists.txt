@@ -74,6 +74,15 @@ target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_FOR_NATIVE}
 target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_WITH_LTO}
                                  -flto)
 
+# ################## TEST target ####################
+enable_testing()
+
+add_executable(test_test test/test.cpp)
+target_link_libraries(test_test CONAN_PKG::gtest)
+
+include(GoogleTest)
+gtest_discover_tests(test_test)
+
 # ################## EXEC target ####################
 add_executable(solve exec/solve.cpp)
 target_include_directories(solve PUBLIC include)
@@ -95,11 +104,6 @@ target_include_directories(eval_eca PUBLIC include)
 target_include_directories(eval_eca PUBLIC thirdparty)
 target_link_libraries(eval_eca PUBLIC landscape_opt)
 
-add_executable(test exec/test.cpp)
-target_include_directories(test PUBLIC include)
-target_include_directories(test PUBLIC thirdparty)
-target_link_libraries(test PUBLIC landscape_opt)
-
 add_executable(biorevaix_test exec/biorevaix_test.cpp)
 target_include_directories(biorevaix_test PUBLIC include)
 target_include_directories(biorevaix_test PUBLIC thirdparty)
@@ -114,5 +118,3 @@ add_executable(eca_contribution_analysis exec/eca_contribution_analysis.cpp)
 target_include_directories(eca_contribution_analysis PUBLIC include)
 target_include_directories(eca_contribution_analysis PUBLIC thirdparty)
 target_link_libraries(eca_contribution_analysis PUBLIC landscape_opt)
-
-
