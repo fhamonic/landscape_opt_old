@@ -78,7 +78,7 @@ target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_WITH_LTO}
 enable_testing()
 
 add_executable(test_test test/test.cpp)
-target_link_libraries(test_test CONAN_PKG::boost)
+target_link_libraries(test_test CONAN_PKG::gtest)
 
 include(GoogleTest)
 gtest_discover_tests(test_test)
@@ -118,3 +118,9 @@ add_executable(eca_contribution_analysis exec/eca_contribution_analysis.cpp)
 target_include_directories(eca_contribution_analysis PUBLIC include)
 target_include_directories(eca_contribution_analysis PUBLIC thirdparty)
 target_link_libraries(eca_contribution_analysis PUBLIC landscape_opt)
+
+
+add_executable(ttest exec/ttest.cpp)
+target_include_directories(ttest PUBLIC include)
+target_include_directories(ttest PUBLIC thirdparty)
+target_link_libraries(ttest PUBLIC landscape_opt)
