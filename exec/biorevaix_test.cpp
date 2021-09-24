@@ -41,9 +41,6 @@
 int main() {
     tbb::global_control c(tbb::global_control::max_allowed_parallelism, 4);
 
-
-
-
     Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
     Instance instance = trivial_reformulate(std::move(raw_instance));
 
@@ -89,7 +86,10 @@ int main() {
     std::cout << "in " << budget_solution.getComputeTimeMs() << "ms"
               << std::endl;
 
-    return EXIT_SUCCESS;
+
+
+
+
 
     RestorationPlan<MutableLandscape> new_plan(landscape);
     auto arc_options = plan.computeArcOptionsMap();
@@ -104,10 +104,10 @@ int main() {
 
     Helper::printInstanceGraphviz(landscape, new_plan, "instance_test.dot");
 
-    // StdMutableLandscapeParser::get().write(landscape, "", "bug");
-    // StdRestorationPlanParser plan_parser(landscape);
-    // plan_parser.write(plan, "", "bug");
-    // return EXIT_SUCCESS;
+    StdMutableLandscapeParser::get().write(landscape, "", "bug");
+    StdRestorationPlanParser plan_parser(landscape);
+    plan_parser.write(plan, "", "bug");
+    return EXIT_SUCCESS;
 
     Solvers::Glutton_ECA_Inc glutton_inc_solver;
     Solution naive_solution =
