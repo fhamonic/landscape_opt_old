@@ -39,74 +39,74 @@
 #include "tbb/global_control.h"
 
 int main() {
-    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 4);
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 8);
 
     
     Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
     Instance instance = trivial_reformulate(std::move(raw_instance));
 
-    // const MutableLandscape & landscape = instance.landscape;
+    const MutableLandscape & landscape = instance.landscape;
     RestorationPlan<MutableLandscape> & plan = instance.plan;
-    // plan.initElementIDs();
+    plan.initElementIDs();
 
-    // Helper::assert_well_formed(landscape, plan);
-    // std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork())
-    //           << std::endl;
-    // std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork())
-    //           << std::endl;
+    Helper::assert_well_formed(landscape, plan);
+    std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork())
+              << std::endl;
+    std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork())
+              << std::endl;
 
-    // int count = 0;
-    // for(MutableLandscape::NodeIt u(landscape.getNetwork()); u != lemon::INVALID;
-    //     ++u)
-    //     count += (landscape.getQuality(u) > 0 ? 1 : 0);
-    // std::cout << "nb nodes positive quality:" << count << std::endl;
-    // std::cout << "nb options:" << plan.getNbOptions() << std::endl;
-    // std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements()
-    //           << std::endl;
-    // std::cout << "plan total cost:" << plan.totalCost() << std::endl;
+    int count = 0;
+    for(MutableLandscape::NodeIt u(landscape.getNetwork()); u != lemon::INVALID;
+        ++u)
+        count += (landscape.getQuality(u) > 0 ? 1 : 0);
+    std::cout << "nb nodes positive quality:" << count << std::endl;
+    std::cout << "nb options:" << plan.getNbOptions() << std::endl;
+    std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements()
+              << std::endl;
+    std::cout << "plan total cost:" << plan.totalCost() << std::endl;
 
-    // double intra_patch = 0;
-    // for(MutableLandscape::NodeIt u(landscape.getNetwork()); u != lemon::INVALID;
-    //     ++u)
-    //     intra_patch += landscape.getQuality(u) * landscape.getQuality(u);
-    // std::cout << sqrt(Parallel_ECA().eval(landscape) *
-    //                       Parallel_ECA().eval(landscape) -
-    //                   intra_patch)
-    //           << std::endl;
+    double intra_patch = 0;
+    for(MutableLandscape::NodeIt u(landscape.getNetwork()); u != lemon::INVALID;
+        ++u)
+        intra_patch += landscape.getQuality(u) * landscape.getQuality(u);
+    std::cout << sqrt(Parallel_ECA().eval(landscape) *
+                          Parallel_ECA().eval(landscape) -
+                      intra_patch)
+              << std::endl;
 
-    // Solvers::Glutton_ECA_Dec glutton_dec_solver;
-    // glutton_dec_solver.setParallel(true);
-    // Solution budget_solution =
-    //     glutton_dec_solver.solve(landscape, plan, plan.totalCost() * 0.3);
-    // std::cout << "budget solution ECA: "
-    //           << Parallel_ECA().eval(
-    //                  Helper::decore_landscape(landscape, plan, budget_solution))
-    //           << std::endl;
-    // std::cout << "in " << budget_solution.getComputeTimeMs() << "ms"
-    //           << std::endl;
+    Solvers::Glutton_ECA_Dec glutton_dec_solver;
+    glutton_dec_solver.setParallel(true);
+    Solution budget_solution =
+        glutton_dec_solver.solve(landscape, plan, plan.totalCost() * 0.3);
+    std::cout << "budget solution ECA: "
+              << Parallel_ECA().eval(
+                     Helper::decore_landscape(landscape, plan, budget_solution))
+              << std::endl;
+    std::cout << "in " << budget_solution.getComputeTimeMs() << "ms"
+              << std::endl;
 
-    // RestorationPlan<MutableLandscape> new_plan(landscape);
-    // auto arc_options = plan.computeArcOptionsMap();
-    // for(auto option : plan.options()) {
-    //     if(budget_solution[option] == 0) continue;
-    //     RestorationPlan<MutableLandscape>::Option new_option =
-    //         new_plan.addOption(plan.getCost(option));
-    //     for(const auto & [a, restored_prob] : arc_options[option]) {
-    //         new_plan.addArc(new_option, a, restored_prob);
-    //     }
-    // }
+    RestorationPlan<MutableLandscape> new_plan(landscape);
+    auto arc_options = plan.computeArcOptionsMap();
+    for(auto option : plan.options()) {
+        if(budget_solution[option] == 0) continue;
+        RestorationPlan<MutableLandscape>::Option new_option =
+            new_plan.addOption(plan.getCost(option));
+        for(const auto & [a, restored_prob] : arc_options[option]) {
+            new_plan.addArc(new_option, a, restored_prob);
+        }
+    }
 
-    // Helper::printInstanceGraphviz(landscape, new_plan, "instance_test.dot");
+    Helper::printInstanceGraphviz(landscape, new_plan, "instance_test.dot");
 
-    // StdMutableLandscapeParser::get().write(landscape, "", "bug");
-    // StdRestorationPlanParser plan_parser(landscape);
-    // plan_parser.write(plan, "", "bug");
+    StdMutableLandscapeParser::get().write(landscape, "", "bug");
+    StdRestorationPlanParser plan_parser(landscape);
+    plan_parser.write(plan, "", "bug");
     // return EXIT_SUCCESS;
 
     
-    MutableLandscape landscape = StdMutableLandscapeParser::get().parse("bug.index");
-    StdRestorationPlanParser plan_parser(landscape);
-    RestorationPlan new_plan = plan_parser.parse("bug.problem");
+    // MutableLandscape landscape = StdMutableLandscapeParser::get().parse("bug.index");
+    // StdRestorationPlanParser plan_parser(landscape);
+    // RestorationPlan new_plan = plan_parser.parse("bug.problem");
 
 
     Solvers::Glutton_ECA_Inc glutton_inc_solver;
@@ -118,6 +118,7 @@ int main() {
               << std::endl;
     std::cout << "in " << naive_solution.getComputeTimeMs() << "ms"
               << std::endl;
+
 
     Solvers::PL_ECA_3 solver;
     solver.setLogLevel(2);

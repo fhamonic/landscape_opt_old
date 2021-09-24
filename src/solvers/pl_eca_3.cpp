@@ -436,6 +436,7 @@ Solution Solvers::PL_ECA_3::solve(
     ////////////////////
     GRBsetdblparam(env, GRB_DBL_PAR_MIPGAP, 1e-8);
     GRBsetintparam(env, GRB_INT_PAR_LOGTOCONSOLE, (log_level >= 2 ? 1 : 0));
+    GRBsetintparam(env, GRB_INT_PAR_THREADS, 8);
     GRBsetdblparam(env, GRB_DBL_PAR_TIMELIMIT, timeout);
     ////////////////////
     GRBnewmodel(env, &model, "pl_eca_3", 0, NULL, NULL, NULL, NULL, NULL);
