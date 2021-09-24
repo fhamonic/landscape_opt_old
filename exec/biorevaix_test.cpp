@@ -42,11 +42,11 @@ int main() {
     tbb::global_control c(tbb::global_control::max_allowed_parallelism, 4);
 
     
-    // Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
-    // Instance instance = trivial_reformulate(std::move(raw_instance));
+    Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
+    Instance instance = trivial_reformulate(std::move(raw_instance));
 
     // const MutableLandscape & landscape = instance.landscape;
-    // RestorationPlan<MutableLandscape> & plan = instance.plan;
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
     // plan.initElementIDs();
 
     // Helper::assert_well_formed(landscape, plan);
