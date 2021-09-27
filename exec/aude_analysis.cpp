@@ -43,7 +43,7 @@ int main() {
 
     for(double median : median_dists) {
         for(double restored_prob : restored_probs) {
-            Instance instance = make_instance_aude(median, restored_prob);
+            Instance instance = make_instance_quebec(median, restored_prob);
             const MutableLandscape & landscape = instance.landscape;
             const RestorationPlan<MutableLandscape> & plan = instance.plan;
 

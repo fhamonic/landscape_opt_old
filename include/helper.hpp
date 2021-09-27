@@ -268,6 +268,26 @@ DecoredLandscape<LS> decore_landscape(const LS & landscape,
     return decored_landscape;
 }
 
+
+template <typename LS>
+DecoredLandscape<LS> decore_landscape(const LS & landscape,
+                                      const RestorationPlan<LS> & plan) {
+    using Graph = typename LS::Graph;
+    const Graph & graph = landscape.getNetwork();
+    DecoredLandscape<LS> decored_landscape(landscape);
+
+    for(typename Graph::NodeIt u(graph); u != lemon::INVALID; ++u)
+        for(const auto & e : plan[u])
+            decored_landscape.getQualityRef(u) += e.quality_gain;
+    for(typename Graph::ArcIt a(graph); a != lemon::INVALID; ++a)
+        for(const auto & e : plan[a])
+            decored_landscape.getProbabilityRef(a) = std::max(
+                decored_landscape.getProbability(a),
+                e.restored_probability);
+
+    return decored_landscape;
+}
+
 void printSolution(const MutableLandscape & landscape,
                    const RestorationPlan<MutableLandscape> & plan,
                    std::string name, concepts::Solver & solver, double B,
