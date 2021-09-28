@@ -31,6 +31,7 @@ int main() {
     data_log << std::fixed << std::setprecision(6);
     data_log << "median_dist "
              << "90_eca_node_cover "
+             << "90_eca_node_cover_restored "
              << "restored_probs "
              << "base_ECA "
              << "delta_ECA " << std::endl;
@@ -50,17 +51,21 @@ int main() {
             // Helper::printInstanceGraphviz(landscape, plan,
             //                       "aude.dot");
 
+            auto restored_landscape = Helper::decore_landscape(landscape, plan);
+
             const double eca_90_node_cover =
                 Helper::averageRatioOfNodesInECARealization(0.90, landscape);
+            const double eca_90_node_cover_restored =
+                Helper::averageRatioOfNodesInECARealization(0.90,
+                                                            restored_landscape);
 
             const double base_ECA = ECA().eval(landscape);
-            const double restored_ECA =
-                ECA().eval(Helper::decore_landscape(landscape, plan));
+            const double restored_ECA = ECA().eval(restored_landscape);
             const double delta_ECA = restored_ECA - base_ECA;
 
-            data_log << median << " " << eca_90_node_cover << " "
-                     << restored_prob << " " << base_ECA << " " << delta_ECA
-                     << std::endl;
+            data_log << median << " " << eca_90_node_cover * 100 << " "
+                     << eca_90_node_cover_restored * 100 << " " << restored_prob
+                     << " " << base_ECA << " " << delta_ECA << std::endl;
         }
     }
 
