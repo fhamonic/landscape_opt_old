@@ -246,6 +246,43 @@ std::vector<std::pair<typename LS::Node, double>> computeDistancePairs(
 }
 
 template <typename LS>
+double averageRatioOfNodesInECARealization(double ratio_of_eca,
+                                             LS && landscape) {
+    using Graph = typename std::remove_reference<LS>::type::Graph;
+    using NodeIt = typename std::remove_reference<LS>::type::NodeIt;
+
+    const Graph & graph = landscape.getNetwork();
+
+    double average_sum = 0.0;
+    int cpt = 0;
+    for(NodeIt s(graph); s != lemon::INVALID; ++s) {
+        const auto sorted_pairs = computeDistancePairs(landscape, s);
+
+        if(sorted_pairs.empty()) continue;
+
+        const double contribution_max = std::transform_reduce(
+            sorted_pairs.begin(), sorted_pairs.end(), 0.0, std::plus<double>(),
+            [&](const auto & p) {
+                return landscape.getQuality(s) * landscape.getQuality(p.first) *
+                       p.second;
+            });
+
+        int node_count = 0;
+        double contribution_sum = 0.0;
+        for(const auto & [t, p_st] : sorted_pairs) {
+            if(contribution_sum / contribution_max >= ratio_of_eca) break;
+            ++node_count;
+            contribution_sum +=
+                landscape.getQuality(s) * landscape.getQuality(t) * p_st;
+        }
+
+        average_sum += node_count / static_cast<double>(sorted_pairs.size());
+        ++cpt;
+    }
+    return average_sum / cpt;
+}
+
+template <typename LS>
 DecoredLandscape<LS> decore_landscape(const LS & landscape,
                                       const RestorationPlan<LS> & plan,
                                       const Solution & solution) {

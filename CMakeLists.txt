@@ -84,40 +84,53 @@ include(GoogleTest)
 gtest_discover_tests(test_test)
 
 # ################## EXEC target ####################
-add_executable(solve exec/solve.cpp)
-target_include_directories(solve PUBLIC include)
-target_include_directories(solve PUBLIC thirdparty)
-target_link_libraries(solve PUBLIC landscape_opt)
+
+
+add_executable(aude_analysis exec/aude_analysis.cpp)
+target_include_directories(aude_analysis PUBLIC include)
+target_include_directories(aude_analysis PUBLIC thirdparty)
+target_link_libraries(aude_analysis PUBLIC landscape_opt)
 
 add_executable(quebec_analysis exec/quebec_analysis.cpp)
 target_include_directories(quebec_analysis PUBLIC include)
 target_include_directories(quebec_analysis PUBLIC thirdparty)
 target_link_libraries(quebec_analysis PUBLIC landscape_opt)
 
-add_executable(marseille_analysis exec/marseille_analysis.cpp)
-target_include_directories(marseille_analysis PUBLIC include)
-target_include_directories(marseille_analysis PUBLIC thirdparty)
-target_link_libraries(marseille_analysis PUBLIC landscape_opt)
 
-add_executable(eval_eca exec/eval_eca.cpp)
-target_include_directories(eval_eca PUBLIC include)
-target_include_directories(eval_eca PUBLIC thirdparty)
-target_link_libraries(eval_eca PUBLIC landscape_opt)
+# add_executable(solve exec/solve.cpp)
+# target_include_directories(solve PUBLIC include)
+# target_include_directories(solve PUBLIC thirdparty)
+# target_link_libraries(solve PUBLIC landscape_opt)
 
-add_executable(biorevaix_test exec/biorevaix_test.cpp)
-target_include_directories(biorevaix_test PUBLIC include)
-target_include_directories(biorevaix_test PUBLIC thirdparty)
-target_link_libraries(biorevaix_test PUBLIC landscape_opt)
+# add_executable(quebec_analysis exec/quebec_analysis.cpp)
+# target_include_directories(quebec_analysis PUBLIC include)
+# target_include_directories(quebec_analysis PUBLIC thirdparty)
+# target_link_libraries(quebec_analysis PUBLIC landscape_opt)
 
-add_executable(contraction_test test/contraction_test.cpp)
-target_include_directories(contraction_test PUBLIC include)
-target_include_directories(contraction_test PUBLIC thirdparty)
-target_link_libraries(contraction_test PUBLIC landscape_opt)
+# add_executable(marseille_analysis exec/marseille_analysis.cpp)
+# target_include_directories(marseille_analysis PUBLIC include)
+# target_include_directories(marseille_analysis PUBLIC thirdparty)
+# target_link_libraries(marseille_analysis PUBLIC landscape_opt)
 
-add_executable(eca_contribution_analysis exec/eca_contribution_analysis.cpp)
-target_include_directories(eca_contribution_analysis PUBLIC include)
-target_include_directories(eca_contribution_analysis PUBLIC thirdparty)
-target_link_libraries(eca_contribution_analysis PUBLIC landscape_opt)
+# add_executable(eval_eca exec/eval_eca.cpp)
+# target_include_directories(eval_eca PUBLIC include)
+# target_include_directories(eval_eca PUBLIC thirdparty)
+# target_link_libraries(eval_eca PUBLIC landscape_opt)
+
+# add_executable(biorevaix_test exec/biorevaix_test.cpp)
+# target_include_directories(biorevaix_test PUBLIC include)
+# target_include_directories(biorevaix_test PUBLIC thirdparty)
+# target_link_libraries(biorevaix_test PUBLIC landscape_opt)
+
+# add_executable(contraction_test test/contraction_test.cpp)
+# target_include_directories(contraction_test PUBLIC include)
+# target_include_directories(contraction_test PUBLIC thirdparty)
+# target_link_libraries(contraction_test PUBLIC landscape_opt)
+
+# add_executable(eca_contribution_analysis exec/eca_contribution_analysis.cpp)
+# target_include_directories(eca_contribution_analysis PUBLIC include)
+# target_include_directories(eca_contribution_analysis PUBLIC thirdparty)
+# target_link_libraries(eca_contribution_analysis PUBLIC landscape_opt)
 
 
 add_executable(ttest exec/ttest.cpp)

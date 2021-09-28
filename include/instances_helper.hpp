@@ -39,6 +39,140 @@ void addCostNoise(Instance & instance, double deviation_ratio = 0.2,
         instance.plan.setCost(i, noise(instance.plan.getCost(i)));
 }
 
+Instance make_instance_aude(const double median,
+                            const double fish_ladder_prob) {
+    Instance instance;
+
+    MutableLandscape & landscape = instance.landscape;
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
+
+    std::array<MutableLandscape::Node, 45> nodes;
+    MutableLandscape::Graph::NodeMap<double> troncons_lengths(graph);
+    // MutableLandscape::Graph::NodeMap<int> depth_id(graph);
+
+    auto p = [median](const double d) {
+        return std::exp(d / median * std::log(0.5));
+    };
+
+    io::CSVReader<4> patches("../landscape_opt_datas/Aude/aude.patches");
+    patches.read_header(io::ignore_extra_column, "id", "length", "x", "y");
+    int id;
+    double length, X, Y;
+    while(patches.read_row(id, length, X, Y)) {
+        MutableLandscape::Node u = landscape.addNode(length, Point(X, Y));
+        nodes[id] = u;
+        troncons_lengths[u] = length;
+    }
+
+    io::CSVReader<3> links("../landscape_opt_datas/Aude/aude.links");
+    links.read_header(io::ignore_extra_column, "source_id", "target_id", "dam");
+    int source_id, target_id, dam;
+    while(links.read_row(source_id, target_id, dam)) {
+        MutableLandscape::Node u = nodes[source_id];
+        MutableLandscape::Node v = nodes[target_id];
+
+        const double prob = p((troncons_lengths[u] + troncons_lengths[v]) / 2);
+
+        if(!dam) {
+            MutableLandscape::Arc a =
+                landscape.addArc(nodes[source_id], nodes[target_id], prob);
+            continue;
+        }
+        MutableLandscape::Arc a =
+            landscape.addArc(nodes[source_id], nodes[target_id], 0);
+        RestorationPlan<MutableLandscape>::Option option = plan.addOption(1);
+        plan.addArc(option, a, fish_ladder_prob * prob);
+    }
+
+    return instance;
+}
+
+Instance make_instance_quebec(double pow, double thresold, double median,
+                              double decreased_prob,
+                              Point orig = Point(240548, 4986893),
+                              Point dim = Point(32360, 20000)) {
+    Instance instance;
+
+    MutableLandscape & landscape = instance.landscape;
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
+
+    auto p = [median, pow](const double d) {
+        return std::exp(std::pow(d, pow) / std::pow(median, pow) *
+                        std::log(0.5));
+    };
+
+    std::vector<MutableLandscape::Node> node_correspondance;
+    using ThreatData = struct {
+        MutableLandscape::Node node;
+        double area;
+    };
+    std::vector<ThreatData> threaten_list;
+
+    io::CSVReader<4> patches(
+        "../landscape_opt_datas/quebec_leam_v3/raw/sommets_leam_v3.csv");
+    patches.read_header(io::ignore_extra_column, "area", "xcoord", "ycoord",
+                        "count2050");
+    double area, xcoord, ycoord, count2050;
+    while(patches.read_row(area, xcoord, ycoord, count2050)) {
+        node_correspondance.push_back(lemon::INVALID);
+        if(xcoord < orig.x) continue;
+        if(xcoord >= orig.x + dim.x) continue;
+        if(ycoord < orig.y) continue;
+        if(ycoord >= orig.y + dim.y) continue;
+
+        MutableLandscape::Node u =
+            landscape.addNode(count2050, Point(xcoord, ycoord));
+        node_correspondance[node_correspondance.size() - 1] = u;
+
+        if(area == count2050) continue;
+        if(area > 0 && count2050 == 0) {
+            threaten_list.push_back(ThreatData{u, area});
+            continue;
+        }
+
+        const double area_loss = area - count2050;
+        RestorationPlan<MutableLandscape>::Option option =
+            plan.addOption(area_loss);
+        plan.addNode(option, u, area_loss);
+    }
+
+    io::CSVReader<3> links(
+        "../landscape_opt_datas/quebec_leam_v3/raw/aretes_leam_v3.csv");
+    links.read_header(io::ignore_extra_column, "from", "to", "Dist");
+    int from, to;
+    double Dist;
+    while(links.read_row(from, to, Dist)) {
+        MutableLandscape::Node u = node_correspondance[from - 1];
+        MutableLandscape::Node v = node_correspondance[to - 1];
+        if(u == lemon::INVALID || v == lemon::INVALID) continue;
+        double probability = p(Dist);
+        if(probability < thresold) continue;
+        landscape.addArc(u, v, probability);
+        landscape.addArc(v, u, probability);
+    }
+
+    for(ThreatData data : threaten_list) {
+        MutableLandscape::Node v1 = data.node;
+        RestorationPlan<MutableLandscape>::Option option =
+            plan.addOption(data.area);
+        MutableLandscape::Node v2 =
+            landscape.addNode(0, landscape.getCoords(v1) + Point(0.001, 0.001));
+
+        for(MutableLandscape::Graph::OutArcIt a(graph, v1), next_a = a;
+            a != lemon::INVALID; a = next_a) {
+            ++next_a;
+            landscape.changeSource(a, v2);
+        }
+        MutableLandscape::Arc v1v2 = landscape.addArc(v1, v2, decreased_prob);
+        plan.addArc(option, v1v2, 1);
+        plan.addNode(option, v2, data.area);
+    }
+
+    return instance;
+}
+
 Instance make_instance_marseillec(double pow, double thresold, double median,
                                   int nb_friches = 100) {
     Instance instance;
@@ -119,88 +253,6 @@ Instance make_instance_marseillec(double pow, double thresold, double median,
             landscape.changeSource(a, v2);
         }
         MutableLandscape::Arc v1v2 = landscape.addArc(v1, v2, 0);
-        plan.addArc(option, v1v2, 1);
-        plan.addNode(option, v2, data.area);
-    }
-
-    return instance;
-}
-
-Instance make_instance_quebec(double pow, double thresold, double median,
-                              Point orig = Point(240548, 4986893),
-                              Point dim = Point(32360, 20000)) {
-    Instance instance;
-
-    MutableLandscape & landscape = instance.landscape;
-    const MutableLandscape::Graph & graph = landscape.getNetwork();
-    RestorationPlan<MutableLandscape> & plan = instance.plan;
-
-    auto p = [median, pow](const double d) {
-        return std::exp(std::pow(d, pow) / std::pow(median, pow) *
-                        std::log(0.5));
-    };
-
-    std::vector<MutableLandscape::Node> node_correspondance;
-    using ThreatData = struct {
-        MutableLandscape::Node node;
-        double area;
-    };
-    std::vector<ThreatData> threaten_list;
-
-    io::CSVReader<4> patches("data/quebec_leam_v3/raw/sommets_leam_v3.csv");
-    patches.read_header(io::ignore_extra_column, "area", "xcoord", "ycoord",
-                        "count2050");
-    double area, xcoord, ycoord, count2050;
-    while(patches.read_row(area, xcoord, ycoord, count2050)) {
-        node_correspondance.push_back(lemon::INVALID);
-        if(xcoord < orig.x) continue;
-        if(xcoord >= orig.x + dim.x) continue;
-        if(ycoord < orig.y) continue;
-        if(ycoord >= orig.y + dim.y) continue;
-
-        MutableLandscape::Node u =
-            landscape.addNode(count2050, Point(xcoord, ycoord));
-        node_correspondance[node_correspondance.size() - 1] = u;
-
-        if(area == count2050) continue;
-        if(area > 0 && count2050 == 0) {
-            threaten_list.push_back(ThreatData{u, area});
-            continue;
-        }
-
-        const double area_loss = area - count2050;
-        RestorationPlan<MutableLandscape>::Option option =
-            plan.addOption(area_loss);
-        plan.addNode(option, u, area_loss);
-    }
-
-    io::CSVReader<3> links("data/quebec_leam_v3/raw/aretes_leam_v3.csv");
-    links.read_header(io::ignore_extra_column, "from", "to", "Dist");
-    int from, to;
-    double Dist;
-    while(links.read_row(from, to, Dist)) {
-        MutableLandscape::Node u = node_correspondance[from - 1];
-        MutableLandscape::Node v = node_correspondance[to - 1];
-        if(u == lemon::INVALID || v == lemon::INVALID) continue;
-        double probability = p(Dist);
-        if(probability < thresold) continue;
-        landscape.addArc(u, v, probability);
-        landscape.addArc(v, u, probability);
-    }
-
-    for(ThreatData data : threaten_list) {
-        MutableLandscape::Node v1 = data.node;
-        RestorationPlan<MutableLandscape>::Option option =
-            plan.addOption(data.area);
-        MutableLandscape::Node v2 =
-            landscape.addNode(0, landscape.getCoords(v1) + Point(0.001, 0.001));
-
-        for(MutableLandscape::Graph::OutArcIt a(graph, v1), next_a = a;
-            a != lemon::INVALID; a = next_a) {
-            ++next_a;
-            landscape.changeSource(a, v2);
-        }
-        MutableLandscape::Arc v1v2 = landscape.addArc(v1, v2, 0.5);
         plan.addArc(option, v1v2, 1);
         plan.addNode(option, v2, data.area);
     }

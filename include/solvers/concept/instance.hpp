@@ -25,7 +25,7 @@ public:
 
     Instance() : plan(landscape) {}
     Instance(const Instance & instance) : plan(landscape) {
-        static_cast<void>(instance);
+        static_cast<void>(instance); // dummy copy constructor
     }
 };
 

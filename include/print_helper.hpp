@@ -238,6 +238,9 @@ private:
     double _pageWidth;
     double _pageHeight;
 
+    double _node_size_scale;
+    double _arc_size_scale;
+
 public:
     GraphToGraphviz(const Graph & g, const std::filesystem::path & p)
         : _graph(g)
@@ -248,7 +251,9 @@ public:
         , _arcSizes(g, 1)
         , _arcColors(g, 0x000000)
         , _pageWidth(8)
-        , _pageHeight(11) {}
+        , _pageHeight(11)
+        , _node_size_scale(1)
+        , _arc_size_scale(1) {}
 
     template <typename PM>
     GraphToGraphviz<Graph> & nodePos(const PM & posMap) {
@@ -261,6 +266,10 @@ public:
             _nodeSizes[u] = sizeMap[u];
         return *this;
     }
+    GraphToGraphviz<Graph> & nodeScale(const double scale) {
+        _node_size_scale = scale;
+        return *this;
+    }
     template <typename CM>
     GraphToGraphviz<Graph> & nodeColors(const CM & colorMap) {
         for(NodeIt u(_graph); u != lemon::INVALID; ++u)
@@ -271,6 +280,10 @@ public:
     GraphToGraphviz<Graph> & arcSizes(const AM & sizeMap) {
         for(ArcIt a(_graph); a != lemon::INVALID; ++a)
             _arcSizes[a] = sizeMap[a];
+        return *this;
+    }
+    GraphToGraphviz<Graph> & arcScale(const double scale) {
+        _arc_size_scale = scale;
         return *this;
     }
     template <typename CM>
@@ -299,7 +312,9 @@ public:
                                       _pageHeight / (max_y - min_y));
         auto scale_x = [&](double x) { return scale * (x - min_x); };
         auto scale_y = [&](double y) { return scale * (y - min_y); };
-        auto scale_size = [&](double s) { return scale * s; };
+        auto scale_size = [&](double s) {
+            return _node_size_scale * scale * s;
+        };
 
         std::vector<Node> colorSortedNodes;
         for(NodeIt u(_graph); u != lemon::INVALID; ++u)
@@ -330,7 +345,7 @@ public:
                                _nodeColors[u]);
                 prev_color = _nodeColors[u];
             }
-            dot_file.print("{} [area=\"{}\" pos=\"{},{}!\"]\n", _graph.id(u),
+            dot_file.print("{} [width=\"{}\" pos=\"{},{}!\"]\n", _graph.id(u),
                            scale_size(_nodeSizes[u]), scale_x(_nodePos[u].x),
                            scale_y(_nodePos[u].y));
         }
@@ -341,9 +356,9 @@ public:
                 dot_file.print("edge [color=\"#{:06x}\"]\n", _arcColors[a]);
                 prev_color = _arcColors[a];
             }
-            dot_file.print("{} -> {} [penwidth=\"{}\"]\n",
-                           _graph.id(_graph.source(a)),
-                           _graph.id(_graph.target(a)), _arcSizes[a]);
+            dot_file.print(
+                "{} -> {} [penwidth=\"{}\"]\n", _graph.id(_graph.source(a)),
+                _graph.id(_graph.target(a)), _arc_size_scale * _arcSizes[a]);
         }
 
         dot_file.print("}}");
@@ -389,26 +404,28 @@ void printInstanceGraphviz(const LS & landscape,
 
     NodeColorMap nodeColors(graph);
     for(NodeIt u(graph); u != lemon::INVALID; ++u)
-        nodeColors[u] =
-            plan.contains(u)
-                ? 0xe05050
-                : (landscape.getQuality(u) > 0 ? 0x50e050 : 0x101010);
+        nodeColors[u] = plan.contains(u) ? 0xe05050 : 0x50e050;
 
     ArcColorMap arcColors(graph);
     for(ArcIt a(graph); a != lemon::INVALID; ++a) {
-        arcColors[a] = plan.contains(a) ? 0xe05050 : 0x101010;
-        if(plan.contains(a)) {
-            Node u = graph.source(a);
-            Node v = graph.target(a);
-            nodeColors[u] = (nodeColors[u] & 0xffff00) | 0xe00000;
-            nodeColors[v] = (nodeColors[v] & 0xffff00) | 0xe00000;
+        if(!plan.contains(a)) {
+            arcColors[a] = 0x101010;
+            continue;
         }
+        arcColors[a] = 0xe05050;
+        Node u = graph.source(a);
+        Node v = graph.target(a);
+        nodeColors[u] = (nodeColors[u] & 0xffff00) | 0xe00000;
+        nodeColors[v] = (nodeColors[v] & 0xffff00) | 0xe00000;
     }
+    for(NodeIt u(graph); u != lemon::INVALID; ++u)
+        nodeColors[u] = landscape.getQuality(u) > 0 ? nodeColors[u] : 0x101010;
 
     GraphToGraphviz<Graph>(graph, path)
         .nodePos(landscape.getCoordsMap())
         .nodeSizes(landscape.getQualityMap())
         .nodeColors(nodeColors)
+        .arcScale(3)
         .arcColors(arcColors)
         .run();
 };
