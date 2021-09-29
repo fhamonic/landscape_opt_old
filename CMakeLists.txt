@@ -96,6 +96,11 @@ target_include_directories(quebec_analysis PUBLIC include)
 target_include_directories(quebec_analysis PUBLIC thirdparty)
 target_link_libraries(quebec_analysis PUBLIC landscape_opt)
 
+add_executable(biorevaix_analysis exec/biorevaix_analysis.cpp)
+target_include_directories(biorevaix_analysis PUBLIC include)
+target_include_directories(biorevaix_analysis PUBLIC thirdparty)
+target_link_libraries(biorevaix_analysis PUBLIC landscape_opt)
+
 
 # add_executable(solve exec/solve.cpp)
 # target_include_directories(solve PUBLIC include)

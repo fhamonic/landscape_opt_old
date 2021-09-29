@@ -116,6 +116,9 @@ Instance make_instance_quebec(double pow, double thresold, double median,
                         "count2050");
     double area, xcoord, ycoord, count2050;
     while(patches.read_row(area, xcoord, ycoord, count2050)) {
+
+        count2050 = 0;
+
         node_correspondance.push_back(lemon::INVALID);
         if(xcoord < orig.x) continue;
         if(xcoord >= orig.x + dim.x) continue;
@@ -173,191 +176,18 @@ Instance make_instance_quebec(double pow, double thresold, double median,
     return instance;
 }
 
-Instance make_instance_marseillec(double pow, double thresold, double median,
-                                  int nb_friches = 100) {
-    Instance instance;
-
-    MutableLandscape & landscape = instance.landscape;
-    const MutableLandscape::Graph & graph = landscape.getNetwork();
-    RestorationPlan<MutableLandscape> & plan = instance.plan;
-
-    auto d = [&landscape](MutableLandscape::Node u, MutableLandscape::Node v) {
-        return std::sqrt(
-            (landscape.getCoords(u) - landscape.getCoords(v)).normSquare());
-    };
-    auto p = [median, pow](const double d) {
-        return std::exp(std::pow(d, pow) / std::pow(median, pow) *
-                        std::log(0.5));
-    };
-
-    using FricheData = struct {
-        Point p;
-        double area;
-        double price;
-        MutableLandscape::Node node;
-    };
-    RandomChooser<FricheData> friches_chooser(9876);
-    std::vector<FricheData> friches_list;
-
-    io::CSVReader<5> patches("data/Marseille/vertices_marseillec.csv");
-    patches.read_header(io::ignore_extra_column, "category", "x", "y", "area2",
-                        "price_rel");
-    std::string category;
-    double x, y, area, price_rel;
-    while(patches.read_row(category, x, y, area, price_rel)) {
-        if(category.compare("\"massif\"") == 0) {
-            landscape.addNode(20, Point(x, y));
-            continue;
-        }
-        if(category.compare("\"parc\"") == 0) {
-            landscape.addNode(area, Point(x, y));
-            continue;
-        }
-        if(category.compare("\"friche\"") == 0) {
-            friches_chooser.add(
-                FricheData{Point(x, y), area, price_rel * area, lemon::INVALID},
-                1);
-            continue;
-        }
-        assert(false);
-    }
-    for(int i = 0; i < nb_friches; i++) {
-        if(!friches_chooser.canPick()) break;
-        FricheData data = friches_chooser.pick();
-        MutableLandscape::Node u = landscape.addNode(0, data.p);
-        data.node = u;
-        friches_list.push_back(data);
-    }
-
-    for(MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u) {
-        for(MutableLandscape::NodeIt v(graph); v != lemon::INVALID; ++v) {
-            if(v < u || u == v) continue;
-            double dist = d(u, v);
-            double probability = p(dist);
-            if(probability < thresold) continue;
-            landscape.addArc(u, v, probability);
-            landscape.addArc(v, u, probability);
-        }
-    }
-
-    for(FricheData data : friches_list) {
-        MutableLandscape::Node v1 = data.node;
-        RestorationPlan<MutableLandscape>::Option option =
-            plan.addOption(data.price);
-        MutableLandscape::Node v2 = landscape.addNode(
-            0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
-
-        for(MutableLandscape::Graph::OutArcIt a(graph, v1), next_a = a;
-            a != lemon::INVALID; a = next_a) {
-            ++next_a;
-            landscape.changeSource(a, v2);
-        }
-        MutableLandscape::Arc v1v2 = landscape.addArc(v1, v2, 0);
-        plan.addArc(option, v1v2, 1);
-        plan.addNode(option, v2, data.area);
-    }
-
-    return instance;
-}
-
-Instance make_instance_biorevaix_level_1(const double restoration_coef = 2,
-                                         const Point center = Point(897286.5,
-                                                                    6272835.5),
-                                         const double radius = 200) {
+Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2, const double distance_coef = 1) {
     Instance instance;
     MutableLandscape & landscape = instance.landscape;
     const MutableLandscape::Graph & graph = landscape.getNetwork();
     RestorationPlan<MutableLandscape> & plan = instance.plan;
 
-    auto prob = [](const double cost) {
-        return cost == 1     ? 1
-               : cost == 10  ? 0.98
-               : cost == 150 ? 0.8
-               : cost == 300 ? 0.6
-               : cost == 800 ? 0.4
-                             : 0;
-    };
-
-    std::array<MutableLandscape::Node, 688402> nodes;
-    nodes.fill(lemon::INVALID);
-    MutableLandscape::Graph::NodeMap<double> node_prob(graph, 0.0);
-    MutableLandscape::Graph::NodeMap<RestorationPlan<MutableLandscape>::Option>
-        troncon_option(graph);
-    std::array<RestorationPlan<MutableLandscape>::Option, 5195> id_tronc_option;
-    id_tronc_option.fill(-1);
-
-    const double radius_squared = radius * radius;
-    io::CSVReader<6> patches(
-        "../landscape_opt_datas/BiorevAix/raw/vertexN1_v2.csv");
-    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "area2",
-                        "cost", "id_tronc2");
-    int N_id, area2, id_tronc;
-    double X, Y, cost;
-    while(patches.read_row(N_id, X, Y, area2, cost, id_tronc)) {
-        // if(!area2) continue;
-        Point p = Point(X, Y) - center;
-        if(p.normSquare() > radius_squared) continue;
-        if(cost == 1000) continue;
-        MutableLandscape::Node u = landscape.addNode((cost == 1 ? 1 : 0), p);
-        nodes[N_id] = u;
-        node_prob[u] = prob(cost);
-        troncon_option[u] = -1;
-        if(id_tronc == 0) continue;
-        RestorationPlan<MutableLandscape>::Option & option =
-            id_tronc_option[id_tronc];
-        if(option == -1) option = plan.addOption(0);
-        troncon_option[u] = option;
-        plan.setCost(option, plan.getCost(option) + 1);
-    }
-
-    io::CSVReader<2> links("../landscape_opt_datas/BiorevAix/raw/AL_N1.csv");
-    links.read_header(io::ignore_extra_column, "from", "to");
-    int from, to;
-    while(links.read_row(from, to)) {
-        MutableLandscape::Node u = nodes[from];
-        MutableLandscape::Node v = nodes[to];
-        if(u == lemon::INVALID || v == lemon::INVALID) continue;
-        double probability = std::sqrt(node_prob[u] * node_prob[v]);
-        probability = std::max(std::min(probability, 1.0), 0.0);
-
-        if(probability == 0) continue;
-
-        MutableLandscape::Arc uv = landscape.addArc(u, v, probability);
-        MutableLandscape::Arc vu = landscape.addArc(v, u, probability);
-
-        RestorationPlan<MutableLandscape>::Option option_u = troncon_option[u];
-        RestorationPlan<MutableLandscape>::Option option_v = troncon_option[v];
-        if(option_u < 0 && option_v < 0) continue;
-        assert(option_u < 0 || option_v < 0 || option_u == option_v);
-        RestorationPlan<MutableLandscape>::Option option =
-            std::max(option_u, option_v);
-
-        double restored_prob =
-            std::pow(node_prob[u],
-                     1 / (2 * (option_u >= 0 ? restoration_coef : 1))) *
-            std::pow(node_prob[v],
-                     1 / (2 * (option_v >= 0 ? restoration_coef : 1)));
-
-        if(restored_prob <= probability) continue;
-
-        plan.addArc(option, uv, restored_prob);
-        plan.addArc(option, vu, restored_prob);
-    }
-    return instance;
-}
-
-Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2) {
-    Instance instance;
-    MutableLandscape & landscape = instance.landscape;
-    const MutableLandscape::Graph & graph = landscape.getNetwork();
-    RestorationPlan<MutableLandscape> & plan = instance.plan;
-
-    auto prob = [](const double cost) {
-        return cost == 1     ? 1
-               : cost == 10  ? 0.98
-               : cost == 150 ? 0.8
-               : cost == 300 ? 0.6
-               : cost == 800 ? 0.4
+    auto prob = [distance_coef](const double cost) {
+        return cost == 1     ? std::pow(1, distance_coef)
+               : cost == 10  ? std::pow(0.98, distance_coef)
+               : cost == 150 ? std::pow(0.8, distance_coef)
+               : cost == 300 ? std::pow(0.6, distance_coef)
+               : cost == 800 ? std::pow(0.4, distance_coef)
                              : 0;
     };
 
@@ -449,6 +279,94 @@ Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2) {
         plan.addArc(option, uv, restored_prob);
         plan.addArc(option, vu, restored_prob);
     }
+    return instance;
+}
+
+Instance make_instance_marseille(double pow, double thresold, double median,
+                                 int nb_friches = 100) {
+    Instance instance;
+
+    MutableLandscape & landscape = instance.landscape;
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
+
+    auto d = [&landscape](MutableLandscape::Node u, MutableLandscape::Node v) {
+        return std::sqrt(
+            (landscape.getCoords(u) - landscape.getCoords(v)).normSquare());
+    };
+    auto p = [median, pow](const double d) {
+        return std::exp(std::pow(d, pow) / std::pow(median, pow) *
+                        std::log(0.5));
+    };
+
+    using FricheData = struct {
+        Point p;
+        double area;
+        double price;
+        MutableLandscape::Node node;
+    };
+    RandomChooser<FricheData> friches_chooser(9876);
+    std::vector<FricheData> friches_list;
+
+    io::CSVReader<5> patches(
+        "../landscape_opt_datas/Marseille/vertices_marseillec.csv");
+    patches.read_header(io::ignore_extra_column, "category", "x", "y", "area2",
+                        "price_rel");
+    std::string category;
+    double x, y, area, price_rel;
+    while(patches.read_row(category, x, y, area, price_rel)) {
+        if(category.compare("\"massif\"") == 0) {
+            landscape.addNode(20, Point(x, y));
+            continue;
+        }
+        if(category.compare("\"parc\"") == 0) {
+            landscape.addNode(area, Point(x, y));
+            continue;
+        }
+        if(category.compare("\"friche\"") == 0) {
+            friches_chooser.add(
+                FricheData{Point(x, y), area, price_rel * area, lemon::INVALID},
+                1);
+            continue;
+        }
+        assert(false);
+    }
+    for(int i = 0; i < nb_friches; i++) {
+        if(!friches_chooser.canPick()) break;
+        FricheData data = friches_chooser.pick();
+        MutableLandscape::Node u = landscape.addNode(0, data.p);
+        data.node = u;
+        friches_list.push_back(data);
+    }
+
+    for(MutableLandscape::NodeIt u(graph); u != lemon::INVALID; ++u) {
+        for(MutableLandscape::NodeIt v(graph); v != lemon::INVALID; ++v) {
+            if(v < u || u == v) continue;
+            double dist = d(u, v);
+            double probability = p(dist);
+            if(probability < thresold) continue;
+            landscape.addArc(u, v, probability);
+            landscape.addArc(v, u, probability);
+        }
+    }
+
+    for(FricheData data : friches_list) {
+        MutableLandscape::Node v1 = data.node;
+        RestorationPlan<MutableLandscape>::Option option =
+            plan.addOption(data.price);
+        MutableLandscape::Node v2 = landscape.addNode(
+            0, landscape.getCoords(v1) + Point(0.0001, 0.0001));
+
+        for(MutableLandscape::Graph::OutArcIt a(graph, v1), next_a = a;
+            a != lemon::INVALID; a = next_a) {
+            ++next_a;
+            landscape.changeSource(a, v2);
+        }
+        MutableLandscape::Arc v1v2 = landscape.addArc(v1, v2, 0);
+        plan.addArc(option, v1v2, 1);
+        plan.addNode(option, v2, data.area);
+    }
+
     return instance;
 }
 

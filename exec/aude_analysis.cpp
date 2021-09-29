@@ -2,20 +2,8 @@
 #include <fstream>
 #include <iostream>
 
-#include "lemon/connectivity.h"
-#include "lemon/dijkstra.h"
-
-#include "lemon/graph_to_eps.h"
-
-#include "parsers/std_mutable_landscape_parser.hpp"
-#include "parsers/std_restoration_plan_parser.hpp"
-
 #include "indices/eca.hpp"
 #include "landscape/decored_landscape.hpp"
-
-#include "utils/random_chooser.hpp"
-
-#include "precomputation/my_contraction_algorithm.hpp"
 
 #include "solvers/bogo.hpp"
 #include "solvers/glutton_eca_dec.hpp"
@@ -27,14 +15,11 @@
 #include "print_helper.hpp"
 
 int main() {
-    std::ofstream data_log("output/aude_analysis.log");
+    std::ofstream data_log("output/aude_analysis.csv");
     data_log << std::fixed << std::setprecision(6);
-    data_log << "median_dist "
-             << "90_eca_node_cover "
-             << "90_eca_node_cover_restored "
-             << "restored_probs "
-             << "base_ECA "
-             << "delta_ECA " << std::endl;
+    data_log << "median_dist,90_eca_node_cover,90_eca_node_cover_restored,"
+                "restored_probs,base_ECA,delta_ECA"
+             << std::endl;
 
     std::vector<double> median_dists{100, 200, 300, 400, 500, 600};
     std::vector<double> restored_probs{0.4, 0.5, 0.6, 0.66, 0.8, 0.9, 1};
@@ -63,9 +48,9 @@ int main() {
             const double restored_ECA = ECA().eval(restored_landscape);
             const double delta_ECA = restored_ECA - base_ECA;
 
-            data_log << median << " " << eca_90_node_cover * 100 << " "
-                     << eca_90_node_cover_restored * 100 << " " << restored_prob
-                     << " " << base_ECA << " " << delta_ECA << std::endl;
+            data_log << median << ',' << eca_90_node_cover * 100 << ','
+                     << eca_90_node_cover_restored * 100 << ',' << restored_prob
+                     << ',' << base_ECA << ',' << delta_ECA << std::endl;
         }
     }
 
