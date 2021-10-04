@@ -19,7 +19,7 @@ public:
      */
     template <typename GR, typename QM, typename PM>
     double eval(const GR & graph, const QM & qualityMap,
-                const PM & probabilityMap) {
+                const PM & probabilityMap) const {
         lemon::MultiplicativeSimplerDijkstra<GR, PM> dijkstra(graph,
                                                               probabilityMap);
         double sum = 0;
@@ -46,7 +46,7 @@ public:
      * number of arcs
      */
     template <typename LS>
-    double eval(const LS & landscape) {
+    double eval(const LS & landscape) const {
         return eval(landscape.getNetwork(), landscape.getQualityMap(),
                     landscape.getProbabilityMap());
     }
