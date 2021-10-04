@@ -42,11 +42,14 @@ int main() {
     Solvers::Glutton_ECA_Dec glutton_dec;
     Solvers::PL_ECA_3 pl_eca_3;
 
-    for(double B : budget_values) {
-        Instance instance = make_instance_aude(median, restored_prob);
-        const MutableLandscape & landscape = instance.landscape;
-        const RestorationPlan<MutableLandscape> & plan = instance.plan;
+    const Instance instance = make_instance_aude(median, restored_prob);
+    const MutableLandscape & landscape = instance.landscape;
+    const RestorationPlan<MutableLandscape> & plan = instance.plan;
 
+    // Helper::printInstanceGraphviz(landscape, plan, "aude.dot");
+    // Helper::printInstance(landscape, plan, "aude.eps");
+
+    for(double B : budget_values) {
         const double base_ECA = eval(landscape);
         const double restored_ECA =
             eval(Helper::decore_landscape(landscape, plan));
@@ -58,10 +61,10 @@ int main() {
         Solution glutton_dec_solution = glutton_dec.solve(landscape, plan, B);
         Solution opt_solution = pl_eca_3.solve(landscape, plan, B);
 
-        const double naive_inc_ECA = eval(
-            Helper::decore_landscape(landscape, plan, naive_inc_solution));
-        const double naive_dec_ECA = eval(
-            Helper::decore_landscape(landscape, plan, naive_dec_solution));
+        const double naive_inc_ECA =
+            eval(Helper::decore_landscape(landscape, plan, naive_inc_solution));
+        const double naive_dec_ECA =
+            eval(Helper::decore_landscape(landscape, plan, naive_dec_solution));
         const double glutton_inc_ECA = eval(
             Helper::decore_landscape(landscape, plan, glutton_inc_solution));
         const double glutton_dec_ECA = eval(

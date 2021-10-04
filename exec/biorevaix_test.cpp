@@ -38,10 +38,7 @@
 
 #include "tbb/global_control.h"
 
-int main() {
-    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 8);
-
-    
+std::pair<MutableLandscape, RestorationPlan<MutableLandscape>> make_instance() {
     Instance raw_instance = make_instance_biorevaix_level_2_v7(6);
     Instance instance = trivial_reformulate(std::move(raw_instance));
 
@@ -96,38 +93,78 @@ int main() {
         }
     }
 
-    Helper::printInstanceGraphviz(landscape, new_plan, "instance_test.dot");
+    return std::make_pair(landscape, new_plan);
+}
 
-    StdMutableLandscapeParser::get().write(landscape, "", "bug");
-    StdRestorationPlanParser plan_parser(landscape);
-    plan_parser.write(plan, "", "bug");
-    // return EXIT_SUCCESS;
+int main() {
+    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 8);
 
-    
-    // MutableLandscape landscape = StdMutableLandscapeParser::get().parse("bug.index");
-    // StdRestorationPlanParser plan_parser(landscape);
-    // RestorationPlan new_plan = plan_parser.parse("bug.problem");
+    auto p = make_instance();
+    const MutableLandscape & landscape = p.landscape;
+    RestorationPlan<MutableLandscape> & plan = p.plan;
 
-
-    Solvers::Glutton_ECA_Inc glutton_inc_solver;
-    Solution naive_solution =
-        glutton_inc_solver.solve(landscape, new_plan, plan.totalCost() * 0.1);
-    std::cout << "naive solution ECA: "
-              << Parallel_ECA().eval(Helper::decore_landscape(
-                     landscape, new_plan, naive_solution))
-              << std::endl;
-    std::cout << "in " << naive_solution.getComputeTimeMs() << "ms"
-              << std::endl;
+    Helper::printInstanceGraphviz(landscape, plan, "biorevaix.dot");
 
 
-    Solvers::PL_ECA_3 solver;
-    solver.setLogLevel(2);
-    Solution solution =
-        solver.solve(landscape, new_plan, plan.totalCost() * 0.1);
-    std::cout << "ECA: "
-              << Parallel_ECA().eval(
-                     Helper::decore_landscape(landscape, new_plan, solution))
-              << std::endl;
+   std::vector<double> budget_percents;
+    for(int i = 0; i <= 40; ++i) budget_percents.push_back(i);
+
+    Solvers::Naive_ECA_Inc naive_inc;
+    naive_inc.setParallel(true);
+    Solvers::Naive_ECA_Dec naive_dec;
+    naive_dec.setParallel(true);
+    Solvers::Glutton_ECA_Inc glutton_inc;
+    glutton_inc.setParallel(true);
+    Solvers::Glutton_ECA_Dec glutton_dec;
+    glutton_dec.setParallel(true);
+    Solvers::PL_ECA_3 pl_eca_3;
+    pl_eca_3.setLogLevel(2);
+
+    const Instance instance = make_instance_quebec(
+        1, 0, median, 0, Point(240548, 4986893), Point(32360, 30000));
+    const MutableLandscape & landscape = instance.landscape;
+    const RestorationPlan<MutableLandscape> & plan = instance.plan;  
+
+    for(double budget_percent : budget_percents) {      
+        const double B = plan.totalCost() * budget_percent / 100;
+
+        // Helper::printInstanceGraphviz(landscape, plan, "quebec.dot");
+        // Helper::printInstance(landscape, plan, "quebec.eps");
+
+        const double base_ECA = eval(landscape);
+        const double restored_ECA =
+            eval(Helper::decore_landscape(landscape, plan));
+        const double max_delta_ECA = restored_ECA - base_ECA;
+
+        Solution naive_inc_solution = naive_inc.solve(landscape, plan, B);
+        Solution naive_dec_solution = naive_dec.solve(landscape, plan, B);
+        Solution glutton_inc_solution = glutton_inc.solve(landscape, plan, B);
+        Solution glutton_dec_solution = glutton_dec.solve(landscape, plan, B);
+        Solution opt_solution = pl_eca_3.solve(landscape, plan, B);
+
+        const double naive_inc_ECA =
+            eval(Helper::decore_landscape(landscape, plan, naive_inc_solution));
+        const double naive_dec_ECA =
+            eval(Helper::decore_landscape(landscape, plan, naive_dec_solution));
+        const double glutton_inc_ECA = eval(
+            Helper::decore_landscape(landscape, plan, glutton_inc_solution));
+        const double glutton_dec_ECA = eval(
+            Helper::decore_landscape(landscape, plan, glutton_dec_solution));
+        const double opt_ECA =
+            eval(Helper::decore_landscape(landscape, plan, opt_solution));
+
+        const double naive_inc_delta_ECA = naive_inc_ECA - base_ECA;
+        const double naive_dec_delta_ECA = naive_dec_ECA - base_ECA;
+        const double glutton_inc_delta_ECA = glutton_inc_ECA - base_ECA;
+        const double glutton_dec_delta_ECA = glutton_dec_ECA - base_ECA;
+        const double opt_delta_ECA = opt_ECA - base_ECA;
+
+        data_log << median << ',' << B << ',' << budget_percent << ','
+                 << base_ECA << ',' << max_delta_ECA << ','
+                 << naive_inc_delta_ECA << ',' << naive_dec_delta_ECA << ','
+                 << glutton_inc_delta_ECA << ',' << glutton_dec_delta_ECA << ','
+                 << opt_delta_ECA << std::endl;
+    }
 
     return EXIT_SUCCESS;
 }
