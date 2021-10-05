@@ -30,7 +30,7 @@ int main() {
                 "ECA,glutton_dec_delta_ECA,opt_delta_ECA"
              << std::endl;
 
-    const double median = 4000;
+    const double median = 3000;
 
     std::vector<double> budget_percents;
     for(int i = 0; i <= 40; ++i) budget_percents.push_back(i);
@@ -54,7 +54,7 @@ int main() {
     for(double budget_percent : budget_percents) {      
         const double B = plan.totalCost() * budget_percent / 100;
 
-        // Helper::printInstanceGraphviz(landscape, plan, "quebec.dot");
+        Helper::printInstanceGraphviz(landscape, plan, "quebec.dot");
         // Helper::printInstance(landscape, plan, "quebec.eps");
 
         const double base_ECA = eval(landscape);

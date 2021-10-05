@@ -116,9 +116,6 @@ Instance make_instance_quebec(double pow, double thresold, double median,
                         "count2050");
     double area, xcoord, ycoord, count2050;
     while(patches.read_row(area, xcoord, ycoord, count2050)) {
-
-        count2050 = 0;
-
         node_correspondance.push_back(lemon::INVALID);
         if(xcoord < orig.x) continue;
         if(xcoord >= orig.x + dim.x) continue;

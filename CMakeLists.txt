@@ -101,6 +101,11 @@ target_include_directories(biorevaix_analysis PUBLIC include)
 target_include_directories(biorevaix_analysis PUBLIC thirdparty)
 target_link_libraries(biorevaix_analysis PUBLIC landscape_opt)
 
+add_executable(marseille_analysis exec/marseille_analysis.cpp)
+target_include_directories(marseille_analysis PUBLIC include)
+target_include_directories(marseille_analysis PUBLIC thirdparty)
+target_link_libraries(marseille_analysis PUBLIC landscape_opt)
+
 
 # add_executable(solve exec/solve.cpp)
 # target_include_directories(solve PUBLIC include)

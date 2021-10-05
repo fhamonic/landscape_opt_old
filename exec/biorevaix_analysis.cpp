@@ -22,8 +22,7 @@ double eval(T && ls) {
     return std::pow(eca.eval(ls), 1);
 }
 
-std::pair<MutableLandscape, RestorationPlan<MutableLandscape>> make_instance(
-    const double dist_coef, const double restoration_coef) {
+Instance make_instance(const double dist_coef, const double restoration_coef) {
     Instance raw_instance =
         make_instance_biorevaix_level_2_v7(restoration_coef, dist_coef);
     Instance instance = trivial_reformulate(std::move(raw_instance));
@@ -53,18 +52,15 @@ std::pair<MutableLandscape, RestorationPlan<MutableLandscape>> make_instance(
     Solution budget_solution =
         glutton_dec_solver.solve(landscape, plan, plan.totalCost() * 0.3);
 
-    RestorationPlan<MutableLandscape> new_plan(landscape);
     auto arc_options = plan.computeArcOptionsMap();
     for(auto option : plan.options()) {
-        if(budget_solution[option] == 0) continue;
-        RestorationPlan<MutableLandscape>::Option new_option =
-            new_plan.addOption(plan.getCost(option));
+        if(budget_solution[option] > 0) continue;
         for(const auto & [a, restored_prob] : arc_options[option]) {
-            new_plan.addArc(new_option, a, restored_prob);
+            plan.removeArc(option, a);
         }
     }
 
-    return std::make_pair(landscape, new_plan);
+    return instance;
 }
 
 int main() {
@@ -93,9 +89,9 @@ int main() {
     const double dist_coef = 1.5;
     const double restoration_coef = 6;
 
-    auto p = make_instance(dist_coef, restoration_coef);
-    const MutableLandscape & landscape = p.first;
-    RestorationPlan<MutableLandscape> & plan = p.second;
+    Instance instance = make_instance(dist_coef, restoration_coef);
+    const MutableLandscape & landscape = instance.landscape;
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
 
     Helper::printInstanceGraphviz(landscape, plan, "biorevaix.dot");
 

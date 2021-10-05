@@ -465,7 +465,7 @@ Solution Solvers::PL_ECA_3::solve(
         std::cout << name() << ": Start solving" << std::endl;
     }
 
-    std::cout << GRBoptimize(model);
+    GRBoptimize(model);
     ////////////////////
     int status;
     GRBgetintattr(model, GRB_INT_ATTR_STATUS, &status);
