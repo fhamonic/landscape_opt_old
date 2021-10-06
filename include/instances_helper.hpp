@@ -103,20 +103,22 @@ Instance make_instance_quebec(double pow, double thresold, double median,
                         std::log(0.5));
     };
 
-    std::vector<MutableLandscape::Node> node_correspondance;
+    std::array<MutableLandscape::Node, 8247> node_correspondance;
+    node_correspondance.fill(lemon::INVALID);
+
     using ThreatData = struct {
         MutableLandscape::Node node;
         double area;
     };
     std::vector<ThreatData> threaten_list;
 
-    io::CSVReader<4> patches(
+    io::CSVReader<5> patches(
         "../landscape_opt_datas/quebec_leam_v3/raw/sommets_leam_v3.csv");
-    patches.read_header(io::ignore_extra_column, "area", "xcoord", "ycoord",
-                        "count2050");
+    patches.read_header(io::ignore_extra_column, "count", "area", "xcoord",
+                        "ycoord", "count2050");
+    int id;
     double area, xcoord, ycoord, count2050;
-    while(patches.read_row(area, xcoord, ycoord, count2050)) {
-        node_correspondance.push_back(lemon::INVALID);
+    while(patches.read_row(id, area, xcoord, ycoord, count2050)) {
         if(xcoord < orig.x) continue;
         if(xcoord >= orig.x + dim.x) continue;
         if(ycoord < orig.y) continue;
@@ -124,7 +126,7 @@ Instance make_instance_quebec(double pow, double thresold, double median,
 
         MutableLandscape::Node u =
             landscape.addNode(count2050, Point(xcoord, ycoord));
-        node_correspondance[node_correspondance.size() - 1] = u;
+        node_correspondance[id] = u;
 
         if(area == count2050) continue;
         if(area > 0 && count2050 == 0) {
@@ -144,8 +146,8 @@ Instance make_instance_quebec(double pow, double thresold, double median,
     int from, to;
     double Dist;
     while(links.read_row(from, to, Dist)) {
-        MutableLandscape::Node u = node_correspondance[from - 1];
-        MutableLandscape::Node v = node_correspondance[to - 1];
+        MutableLandscape::Node u = node_correspondance[from];
+        MutableLandscape::Node v = node_correspondance[to];
         if(u == lemon::INVALID || v == lemon::INVALID) continue;
         double probability = p(Dist);
         if(probability < thresold) continue;
@@ -157,8 +159,9 @@ Instance make_instance_quebec(double pow, double thresold, double median,
         MutableLandscape::Node v1 = data.node;
         RestorationPlan<MutableLandscape>::Option option =
             plan.addOption(data.area);
+        landscape.setCoords(v1, landscape.getCoords(v1) + Point(-200, 0));
         MutableLandscape::Node v2 =
-            landscape.addNode(0, landscape.getCoords(v1) + Point(0.001, 0.001));
+            landscape.addNode(0, landscape.getCoords(v1) + Point(200, 0));
 
         for(MutableLandscape::Graph::OutArcIt a(graph, v1), next_a = a;
             a != lemon::INVALID; a = next_a) {
@@ -173,7 +176,8 @@ Instance make_instance_quebec(double pow, double thresold, double median,
     return instance;
 }
 
-Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2, const double distance_coef = 1) {
+Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2,
+                                            const double distance_coef = 1) {
     Instance instance;
     MutableLandscape & landscape = instance.landscape;
     const MutableLandscape::Graph & graph = landscape.getNetwork();
