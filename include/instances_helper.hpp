@@ -88,7 +88,7 @@ Instance make_instance_aude(const double median,
     return instance;
 }
 
-Instance make_instance_quebec(double pow, double thresold, double median,
+Instance make_instance_quebec_leam(double pow, double thresold, double median,
                               double decreased_prob,
                               Point orig = Point(240548, 4986893),
                               Point dim = Point(32360, 20000)) {
@@ -103,7 +103,7 @@ Instance make_instance_quebec(double pow, double thresold, double median,
                         std::log(0.5));
     };
 
-    std::array<MutableLandscape::Node, 8247> node_correspondance;
+    std::array<MutableLandscape::Node, 8248> node_correspondance;
     node_correspondance.fill(lemon::INVALID);
 
     using ThreatData = struct {
@@ -171,6 +171,90 @@ Instance make_instance_quebec(double pow, double thresold, double median,
         MutableLandscape::Arc v1v2 = landscape.addArc(v1, v2, decreased_prob);
         plan.addArc(option, v1v2, 1);
         plan.addNode(option, v2, data.area);
+    }
+
+    return instance;
+}
+
+
+Instance make_instance_quebec_frog(double pow, double thresold, double median) {
+    Instance instance;
+
+    MutableLandscape & landscape = instance.landscape;
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
+
+    auto p = [median, pow](const double d) {
+        return std::exp(std::pow(d, pow) / std::pow(median, pow) *
+                        std::log(0.5));
+    };
+
+    std::array<MutableLandscape::Node, 3032> node_correspondance;
+    node_correspondance.fill(lemon::INVALID);
+
+    using ThreatData = struct {
+        MutableLandscape::Node node;
+        double area;
+    };
+    std::vector<ThreatData> threaten_list;
+
+    io::CSVReader<5> patches(
+        "../landscape_opt_datas/quebec_438_RASY/vertices_438_RASY.csv");
+    patches.read_header(io::ignore_extra_column, "name", "area", "xcoord",
+                        "ycoord", "per_menace");
+    int id;
+    double area_in_2000, xcoord, ycoord, per_menace;
+    while(patches.read_row(id, area_in_2000, xcoord, ycoord, per_menace)) {
+        area_in_2000 /= 100;
+        const double area_loss_by_2050 = area_in_2000 * per_menace;
+        const double area_in_2050 = area_in_2000 - area_loss_by_2050;
+
+        MutableLandscape::Node u =
+            landscape.addNode(area_in_2050, Point(xcoord, ycoord));
+        node_correspondance[id] = u;
+
+        if(per_menace == 0) continue;
+        if(per_menace == 1) {
+            threaten_list.push_back(ThreatData{u, area_in_2000});
+            continue;
+        }
+
+        RestorationPlan<MutableLandscape>::Option option =
+            plan.addOption(area_loss_by_2050);
+        plan.addNode(option, u, area_loss_by_2050);
+    }
+
+    io::CSVReader<3> links(
+        "../landscape_opt_datas/quebec_438_RASY/edges_438_RASY.csv");
+    links.read_header(io::ignore_extra_column, "from", "to", "Dist");
+    int from, to;
+    double Dist;
+    while(links.read_row(from, to, Dist)) {
+        MutableLandscape::Node u = node_correspondance[from];
+        MutableLandscape::Node v = node_correspondance[to];
+        if(u == lemon::INVALID || v == lemon::INVALID) continue;
+        double probability = p(Dist);
+        if(probability < thresold) continue;
+        landscape.addArc(u, v, probability);
+        landscape.addArc(v, u, probability);
+    }
+
+    for(ThreatData data : threaten_list) {
+        MutableLandscape::Node v1 = data.node;
+        RestorationPlan<MutableLandscape>::Option option =
+            plan.addOption(data.area);
+        landscape.setCoords(v1, landscape.getCoords(v1) + Point(-200, 0));
+        MutableLandscape::Node v2 =
+            landscape.addNode(0, landscape.getCoords(v1) + Point(200, 0));
+
+        for(MutableLandscape::Graph::OutArcIt a(graph, v1), next_a = a;
+            a != lemon::INVALID; a = next_a) {
+            ++next_a;
+            landscape.changeSource(a, v2);
+        }
+        MutableLandscape::Arc v1v2 = landscape.addArc(v1, v2, 0);
+        plan.addArc(option, v1v2, 1);
+        plan.addNode(option, v1, data.area);
     }
 
     return instance;
