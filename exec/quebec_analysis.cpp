@@ -41,21 +41,20 @@ int main() {
     naive_dec.setParallel(true);
     Solvers::Glutton_ECA_Inc glutton_inc;
     glutton_inc.setParallel(true).setLogLevel(3);
-    Solvers::Glutton_ECA_Dec glutton_dec;
+    Solvers::Glutton_ECA_Inc glutton_dec;
     glutton_dec.setParallel(true).setLogLevel(3);
     Solvers::PL_ECA_3 pl_eca_3;
     pl_eca_3.setLogLevel(2);
 
-    Instance instance =
-        make_instance_quebec_frog(1, 0, median);
+    Instance instance = make_instance_quebec_frog(1, 0, median);
     const MutableLandscape & landscape = instance.landscape;
     const RestorationPlan<MutableLandscape> & plan = instance.plan;
 
+    // Helper::printInstanceGraphviz(landscape, plan, "quebec.dot");
+    // Helper::printInstance(landscape, plan, "quebec.eps");
+
     for(double budget_percent : budget_percents) {
         const double B = plan.totalCost() * budget_percent / 100;
-
-        Helper::printInstanceGraphviz(landscape, plan, "quebec.dot");
-        // Helper::printInstance(landscape, plan, "quebec.eps");
 
         const double base_ECA = eval(landscape);
         const double restored_ECA =
@@ -64,16 +63,14 @@ int main() {
 
         Solution naive_inc_solution = naive_inc.solve(landscape, plan, B);
         Solution naive_dec_solution = naive_dec.solve(landscape, plan, B);
-        Solution glutton_inc_solution = glutton_inc.solve(landscape, plan,
-        B); Solution glutton_dec_solution = glutton_dec.solve(landscape,
-        plan, B); Solution opt_solution = pl_eca_3.solve(landscape, plan, B);
+        Solution glutton_inc_solution = glutton_inc.solve(landscape, plan, B);
+        Solution glutton_dec_solution = glutton_dec.solve(landscape, plan, B);
+        Solution opt_solution = pl_eca_3.solve(landscape, plan, B);
 
         const double naive_inc_ECA =
-            eval(Helper::decore_landscape(landscape, plan,
-            naive_inc_solution));
+            eval(Helper::decore_landscape(landscape, plan, naive_inc_solution));
         const double naive_dec_ECA =
-            eval(Helper::decore_landscape(landscape, plan,
-            naive_dec_solution));
+            eval(Helper::decore_landscape(landscape, plan, naive_dec_solution));
         const double glutton_inc_ECA = eval(
             Helper::decore_landscape(landscape, plan, glutton_inc_solution));
         const double glutton_dec_ECA = eval(
@@ -90,8 +87,7 @@ int main() {
         data_log << median << ',' << B << ',' << budget_percent << ','
                  << base_ECA << ',' << max_delta_ECA << ','
                  << naive_inc_delta_ECA << ',' << naive_dec_delta_ECA << ','
-                 << glutton_inc_delta_ECA << ',' << glutton_dec_delta_ECA <<
-                 ','
+                 << glutton_inc_delta_ECA << ',' << glutton_dec_delta_ECA << ','
                  << opt_delta_ECA << std::endl;
     }
 
@@ -117,7 +113,8 @@ int main() {
 // int main() {
 //     std::ofstream data_log("output/quebec_analysis.csv");
 //     data_log << std::fixed << std::setprecision(6);
-//     data_log << "median_dist,90_eca_node_cover,90_eca_node_cover_restored,base_"
+//     data_log <<
+//     "median_dist,90_eca_node_cover,90_eca_node_cover_restored,base_"
 //                 "ECA,delta_ECA"
 //              << std::endl;
 
@@ -150,7 +147,8 @@ int main() {
 //         const double delta_ECA = restored_ECA - base_ECA;
 
 //         data_log << median << ',' << eca_90_node_cover * 100 << ','
-//                  << eca_90_node_cover_restored * 100 << ',' << base_ECA << ','
+//                  << eca_90_node_cover_restored * 100 << ',' << base_ECA <<
+//                  ','
 //                  << delta_ECA << std::endl;
 //     }
 

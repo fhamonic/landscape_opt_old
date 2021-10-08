@@ -32,6 +32,7 @@ double compute_value_reversed(const LS & landscape,
     lemon::MultiplicativeSimplerDijkstra<Reversed, ProbabilityMap> dijkstra(
         reversed_g, landscape.getProbabilityMap());
     double sum = 0;
+    std::cout << original_g.id(t) << std::endl;
     dijkstra.init(t);
     while(!dijkstra.emptyQueue()) {
         std::pair<Node, double> pair = dijkstra.processNextNode();
@@ -42,23 +43,38 @@ double compute_value_reversed(const LS & landscape,
     return sum;
 }
 
+#include "print_helper.hpp"
+#include "instances_helper.hpp"
+
 int main(int argc, const char * argv[]) {
-    if(argc < 3) {
-        std::cerr << "input requiered : <landscape_file> <plan_file>"
-                  << std::endl;
-        return EXIT_FAILURE;
-    }
-    std::filesystem::path landscape_path = argv[1];
-    std::filesystem::path plan_path = argv[2];
+    // if(argc < 3) {
+    //     std::cerr << "input requiered : <landscape_file> <plan_file>"
+    //               << std::endl;
+    //     return EXIT_FAILURE;
+    // }
+    // std::filesystem::path landscape_path = argv[1];
+    // std::filesystem::path plan_path = argv[2];
+
+    // MutableLandscape landscape =
+    //     StdMutableLandscapeParser::get().parse(landscape_path);
+    // const MutableLandscape::Graph & graph = landscape.getNetwork();
+    // StdRestorationPlanParser parser(landscape);
+    // RestorationPlan<MutableLandscape> plan = parser.parse(plan_path);
 
     const int seed = 1245;
     std::cout << std::setprecision(10);
 
-    MutableLandscape landscape =
-        StdMutableLandscapeParser::get().parse(landscape_path);
+
+    // Instance instance = make_instance_aude(300, 0.8);
+    // Instance instance =
+    //     make_instance_quebec_frog(1, 0, 1500);
+    Instance instance = make_instance_biorevaix_level_2_v7(6, 1.5);
+    const MutableLandscape & landscape = instance.landscape;
     const MutableLandscape::Graph & graph = landscape.getNetwork();
-    StdRestorationPlanParser parser(landscape);
-    RestorationPlan<MutableLandscape> plan = parser.parse(plan_path);
+    const RestorationPlan<MutableLandscape> & plan = instance.plan;
+
+    Helper::printInstanceGraphviz(landscape, plan, "contraction_test.dot");
+    Helper::printInstance(landscape, plan, "contraction_test.eps");
 
     Helper::assert_well_formed(landscape, plan);
     const auto nodeOptions = plan.computeNodeOptionsMap();

@@ -294,7 +294,7 @@ Instance make_instance_biorevaix_level_2_v7(const double restoration_coef = 2,
     while(patches.read_row(N2_id, X, Y, N4_id, area2, area4, cost)) {
         if(!area2) continue;
         // if(!area4) continue;
-        // if(cost == 1000) continue;
+        if(cost == 1000) continue;
         MutableLandscape::Node u =
             landscape.addNode((cost == 1 ? 1 : 0), Point(X, Y));
         nodes[N2_id] = u;

@@ -34,7 +34,7 @@ MyContractionAlgorithm::precompute(
     Graph::NodeMap<tbb::concurrent_vector<Graph::Arc>> deletables_arcs(graph);
 
     std::vector<std::thread> threads;
-    for(std::size_t i = 0; i < std::thread::hardware_concurrency(); ++i) {
+    for(std::size_t i = 0; i < /*std::thread::hardware_concurrency()*/ 1; ++i) {
         threads.emplace_back([&](void) {
             std::vector<Graph::Node> strong_nodes;
             std::vector<Graph::Node> non_weak_nodes;
@@ -66,8 +66,8 @@ MyContractionAlgorithm::precompute(
     }
     for(auto & thread : threads) thread.join();
 
-    std::for_each(std::execution::par_unseq, target_nodes.begin(),
-                  target_nodes.end(), [&](Graph::Node u) {
+    std::for_each(/*std::execution::par_unseq*/ std::execution::unseq,
+                  target_nodes.begin(), target_nodes.end(), [&](Graph::Node u) {
                       (*results)[u] =
                           contract(landscape, plan, u, contractables_arcs[u],
                                    deletables_arcs[u]);
