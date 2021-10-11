@@ -32,7 +32,7 @@ public:
         Graph::Node contracted_t = (*refs.first)[orig_t];
 
         const Graph & contracted_graph = contracted_landscape.getNetwork();
-        remove_unconnected_nodes(contracted_landscape, contracted_t);
+        // remove_unconnected_nodes(contracted_landscape, contracted_t);
 
         for(Graph::Arc orig_a : orig_deletables_arcs) {
             Graph::Arc a = (*refs.second)[orig_a];
@@ -43,15 +43,15 @@ public:
         for(Graph::Arc orig_a : orig_contractables_arcs) {
             Graph::Arc a = (*refs.second)[orig_a];
             if(!contracted_graph.valid(a)) continue;
-            if(contracted_plan.contains(a)) {
-                contract_restorable_arc(contracted_landscape, contracted_plan,
-                                        a);
-                continue;
-            }
+            // if(contracted_plan.contains(a)) {
+            //     contract_restorable_arc(contracted_landscape, contracted_plan,
+            //                             a);
+            //     continue;
+            // }
             contract_arc(contracted_landscape, contracted_plan, a);
         }
 
-        remove_no_flow_nodes(contracted_landscape, contracted_plan);
+        // remove_no_flow_nodes(contracted_landscape, contracted_plan);
 
         return std::make_shared<ContractionResult>(
             contracted_landscape, contracted_plan, contracted_t);
