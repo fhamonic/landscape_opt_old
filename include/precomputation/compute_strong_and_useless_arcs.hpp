@@ -41,13 +41,13 @@ auto compute_strong_and_useless_arcs(const Graph & graph,
     for(std::size_t i = 0; i < /*std::thread::hardware_concurrency()*/ 1; ++i) {
         threads.emplace_back([&](void) {
             std::vector<Node> strong_nodes;
-            std::vector<Node> non_weak_nodes;
+            std::vector<Node> useless_nodes;
             lemon::IdentifyStrong<Graph, LM, TR> identifyStrong(
                 graph, upper_lengths, lower_lengths);
             lemon::IdentifyUseless<Graph, LM, TR> identifyUseless(
                 graph, upper_lengths, lower_lengths);
             identifyStrong.labeledNodesList(strong_nodes);
-            identifyUseless.labeledNodesList(non_weak_nodes);
+            identifyUseless.labeledNodesList(useless_nodes);
 
             for(std::size_t local_cpt{};
                 (local_cpt = cpt_arc.fetch_add(1, std::memory_order_relaxed)) <
@@ -59,12 +59,12 @@ auto compute_strong_and_useless_arcs(const Graph & graph,
                     if(!node_filter[u]) continue;
                     contractables_arcs[u].push_back(a);
                 }
-                for(Node u : non_weak_nodes) {
+                for(Node u : useless_nodes) {
                     if(!node_filter[u]) continue;
                     deletables_arcs[u].push_back(a);
                 }
                 strong_nodes.clear();
-                non_weak_nodes.clear();
+                useless_nodes.clear();
             }
         });
     }

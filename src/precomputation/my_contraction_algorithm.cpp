@@ -37,13 +37,13 @@ MyContractionAlgorithm::precompute(
     for(std::size_t i = 0; i < /*std::thread::hardware_concurrency()*/ 1; ++i) {
         threads.emplace_back([&](void) {
             std::vector<Graph::Node> strong_nodes;
-            std::vector<Graph::Node> non_weak_nodes;
+            std::vector<Graph::Node> useless_nodes;
             lemon::MultiplicativeIdentifyStrong<Graph, ProbabilityMap>
                 identifyStrong(graph, p_min, p_max);
             lemon::MultiplicativeIdentifyUseless<Graph, ProbabilityMap>
                 identifyUseless(graph, p_min, p_max);
             identifyStrong.labeledNodesList(strong_nodes);
-            identifyUseless.labeledNodesList(non_weak_nodes);
+            identifyUseless.labeledNodesList(useless_nodes);
 
             for(std::size_t local_cpt{};
                 (local_cpt = cpt_arc.fetch_add(1, std::memory_order_relaxed)) <
@@ -55,12 +55,12 @@ MyContractionAlgorithm::precompute(
                     if(!node_filter[u]) continue;
                     contractables_arcs[u].push_back(a);
                 }
-                for(Graph::Node u : non_weak_nodes) {
+                for(Graph::Node u : useless_nodes) {
                     if(!node_filter[u]) continue;
                     deletables_arcs[u].push_back(a);
                 }
                 strong_nodes.clear();
-                non_weak_nodes.clear();
+                useless_nodes.clear();
             }
         });
     }

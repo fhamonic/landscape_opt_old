@@ -219,7 +219,6 @@ public:
         Node u = _heap->top();
         LabeledDist oldvalue = _heap->prio();
         _heap->pop();
-        Traits::addNode(*_labeledNodesList, u);
 
         updateStrong(oldvalue.value, uv);
         for(OutArcIt a(*G, u); a != INVALID; ++a) {

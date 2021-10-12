@@ -78,6 +78,7 @@ target_compile_options_if_exists(landscape_opt PRIVATE ${COMPILE_WITH_LTO}
 enable_testing()
 
 add_executable(test_test test/test.cpp)
+target_include_directories(test_test PUBLIC include)
 target_link_libraries(test_test CONAN_PKG::gtest)
 
 include(GoogleTest)

@@ -17,6 +17,31 @@
 #include "precomputation/my_contraction_algorithm.hpp"
 
 template <typename LS>
+double node_value(const LS & landscape, typename LS::Graph::Node t) {
+    using Graph = typename LS::Graph;
+    using Node = typename LS::Node;
+    using ProbabilityMap = typename LS::ProbabilityMap;
+    using QualityMap = typename LS::QualityMap;
+
+    using Reversed = lemon::ReverseDigraph<const Graph>;
+
+    const Graph & original_g = landscape.getNetwork();
+    Reversed reversed_g(original_g);
+
+    lemon::MultiplicativeSimplerDijkstra<Reversed, ProbabilityMap> dijkstra(
+        reversed_g, landscape.getProbabilityMap());
+    double sum = 0;
+    dijkstra.init(t);
+    while(!dijkstra.emptyQueue()) {
+        std::pair<Node, double> pair = dijkstra.processNextNode();
+        Node v = pair.first;
+        const double p_tv = pair.second;
+        sum += landscape.getQuality(v) * p_tv;
+    }
+    return sum;
+}
+
+template <typename LS>
 double compute_value_reversed(const LS & landscape,
                               typename LS::Graph::Node t) {
     using Graph = typename LS::Graph;
@@ -32,7 +57,6 @@ double compute_value_reversed(const LS & landscape,
     lemon::MultiplicativeSimplerDijkstra<Reversed, ProbabilityMap> dijkstra(
         reversed_g, landscape.getProbabilityMap());
     double sum = 0;
-    std::cout << original_g.id(t) << std::endl;
     dijkstra.init(t);
     while(!dijkstra.emptyQueue()) {
         std::pair<Node, double> pair = dijkstra.processNextNode();
@@ -43,8 +67,8 @@ double compute_value_reversed(const LS & landscape,
     return sum;
 }
 
-#include "print_helper.hpp"
 #include "instances_helper.hpp"
+#include "print_helper.hpp"
 
 int main(int argc, const char * argv[]) {
     // if(argc < 3) {
@@ -64,11 +88,9 @@ int main(int argc, const char * argv[]) {
     const int seed = 1245;
     std::cout << std::setprecision(10);
 
-
     // Instance instance = make_instance_aude(300, 0.8);
-    // Instance instance =
-    //     make_instance_quebec_frog(1, 0, 1500);
-    Instance instance = make_instance_biorevaix_level_2_v7(6, 1.5);
+    Instance instance = make_instance_quebec_frog(1, 0, 1500);
+    // Instance instance = make_instance_biorevaix_level_2_v7(6, 1.5);
     const MutableLandscape & landscape = instance.landscape;
     const MutableLandscape::Graph & graph = landscape.getNetwork();
     const RestorationPlan<MutableLandscape> & plan = instance.plan;
@@ -112,10 +134,11 @@ int main(int argc, const char * argv[]) {
         const double contracted =
             compute_value_reversed(result.landscape, result.t);
 
+        std::cout << graph.id(t);
         if(fabs(base - contracted) > epsilon) {
-            std::cout << graph.id(t) << " : " << base << " != " << contracted
-                      << std::endl;
+            std::cout << " : " << base << " != " << contracted;
         }
+        std::cout << std::endl;
     }
 
     const int nb_options = plan.getNbOptions();
@@ -153,10 +176,11 @@ int main(int argc, const char * argv[]) {
             const double contracted =
                 compute_value_reversed(decored_contracted_landscape, result.t);
 
+            std::cout << graph.id(t);
             if(fabs(base - contracted) > epsilon) {
-                std::cout << graph.id(t) << " : " << base
-                          << " != " << contracted << std::endl;
+                std::cout << " : " << base << " != " << contracted;
             }
+            std::cout << std::endl;
         }
     }
 
