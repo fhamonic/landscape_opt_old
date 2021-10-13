@@ -31,23 +31,23 @@ public:
         Helper::copyPlan(contracted_plan, plan, *refs.first, *refs.second);
         Graph::Node contracted_t = (*refs.first)[orig_t];
 
-        const Graph & contracted_graph = contracted_landscape.getNetwork();
         remove_unconnected_nodes(contracted_landscape, contracted_t);
+        const Graph & contracted_graph = contracted_landscape.getNetwork();
 
-        // for(Graph::Arc orig_a : orig_deletables_arcs) {
-        //     Graph::Arc a = (*refs.second)[orig_a];
-        //     if(!contracted_graph.valid(a)) continue;
-        //     contracted_landscape.removeArc(a);
-        // }
+        for(Graph::Arc orig_a : orig_deletables_arcs) {
+            Graph::Arc a = (*refs.second)[orig_a];
+            if(!contracted_graph.valid(a)) continue;
+            contracted_landscape.removeArc(a);
+        }
 
         for(Graph::Arc orig_a : orig_contractables_arcs) {
             Graph::Arc a = (*refs.second)[orig_a];
             if(!contracted_graph.valid(a)) continue;
-            // if(contracted_plan.contains(a)) {
-            //     contract_restorable_arc(contracted_landscape, contracted_plan,
-            //                             a);
-            //     continue;
-            // }
+            if(contracted_plan.contains(a)) {
+                contract_restorable_arc(contracted_landscape, contracted_plan,
+                                        a);
+                continue;
+            }
             contract_arc(contracted_landscape, contracted_plan, a);
         }
 

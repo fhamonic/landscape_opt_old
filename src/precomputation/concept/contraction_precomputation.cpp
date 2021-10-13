@@ -41,11 +41,11 @@ void ContractionPrecomputation::contract_arc(
         b != lemon::INVALID; b = next_b) {
         ++next_b;
         landscape.changeTarget(b, v);
-        landscape.getProbabilityRef(b) *= a_probability;
+        landscape.setProbability(b, a_probability * landscape.getProbability(b));
         for(auto & e : plan[b]) e.restored_probability *= a_probability;
     }
-    landscape.getQualityRef(v) += a_probability * landscape.getQuality(u);
-    for(auto & e : plan[u])
+    landscape.setQuality(v, landscape.getQuality(v) + a_probability * landscape.getQuality(u));
+    for(const auto & e : plan[u])
         plan.addNode(e.option, v, a_probability * e.quality_gain);
     landscape.removeNode(u);
 }

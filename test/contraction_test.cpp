@@ -89,7 +89,8 @@ int main(int argc, const char * argv[]) {
     std::cout << std::setprecision(10);
 
     // Instance instance = make_instance_aude(300, 0.8);
-    Instance instance = make_instance_quebec_frog(1, 0, 1500);
+    Instance instance = make_instance_quebec_leam(1, 0, 300, 0.8);
+    // Instance instance = make_instance_quebec_frog(1, 0, 1500);
     // Instance instance = make_instance_biorevaix_level_2_v7(6, 1.5);
     const MutableLandscape & landscape = instance.landscape;
     const MutableLandscape::Graph & graph = landscape.getNetwork();
@@ -128,6 +129,7 @@ int main(int argc, const char * argv[]) {
     const int n = lemon::countNodes(graph);
     const double epsilon = 0.0001;
 
+    std::cout << "test base landscape ECA value :" << std::endl;
     for(MutableLandscape::NodeIt t(graph); t != lemon::INVALID; ++t) {
         const ContractionResult & result = *(*results)[t];
         const double base = compute_value_reversed(landscape, t);
@@ -149,6 +151,8 @@ int main(int argc, const char * argv[]) {
     gen.seed(seed + 1);
     std::uniform_int_distribution<> dis(0, nb_options);
 
+
+    std::cout << "test random restoration plan ECA value :" << std::endl;
     for(int i = 0; i < 1000; ++i) {
         std::cout << i << "/" << 1000 << std::endl;
 

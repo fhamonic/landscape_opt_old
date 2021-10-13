@@ -48,6 +48,7 @@ MyContractionAlgorithm::precompute(
             for(std::size_t local_cpt{};
                 (local_cpt = cpt_arc.fetch_add(1, std::memory_order_relaxed)) <
                 arcs.size();) {
+                    
                 Graph::Arc a = arcs[local_cpt];
                 identifyStrong.run(a);
                 identifyUseless.run(a);
@@ -59,8 +60,6 @@ MyContractionAlgorithm::precompute(
                     if(!node_filter[u]) continue;
                     deletables_arcs[u].push_back(a);
                 }
-                strong_nodes.clear();
-                useless_nodes.clear();
             }
         });
     }

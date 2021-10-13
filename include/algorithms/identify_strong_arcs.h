@@ -149,9 +149,9 @@ public:
     void init(Arc & uv) {
         create_local();
         _heap->clear();
+        _labeledNodesList->clear();
         for(NodeIt w(*G); w != INVALID; ++w)
             _heap_cross_ref->set(w, Heap::PRE_HEAP);
-
         Node u = G->source(uv);
         assert(_heap->state(u) != Heap::IN_HEAP);
         _heap->push(u, LabeledDist());
@@ -308,6 +308,7 @@ public:
     void init(Arc & uv) {
         create_local();
         _heap->clear();
+        _labeledNodesList->clear();
         for(NodeIt w(*G); w != INVALID; ++w)
             _heap_cross_ref->set(w, Heap::PRE_HEAP);
         Node u = G->source(uv);
