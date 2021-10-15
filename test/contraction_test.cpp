@@ -89,8 +89,8 @@ int main(int argc, const char * argv[]) {
     std::cout << std::setprecision(10);
 
     // Instance instance = make_instance_aude(300, 0.8);
-    Instance instance = make_instance_quebec_leam(1, 0, 300, 0.8);
-    // Instance instance = make_instance_quebec_frog(1, 0, 1500);
+    // Instance instance = make_instance_quebec_leam(1, 0, 300, 0.8);
+    Instance instance = make_instance_quebec_frog(1, 0, 1500);
     // Instance instance = make_instance_biorevaix_level_2_v7(6, 1.5);
     const MutableLandscape & landscape = instance.landscape;
     const MutableLandscape::Graph & graph = landscape.getNetwork();
@@ -136,11 +136,10 @@ int main(int argc, const char * argv[]) {
         const double contracted =
             compute_value_reversed(result.landscape, result.t);
 
-        std::cout << graph.id(t) << " : " << base;
         if(fabs(base - contracted) > epsilon) {
-            std::cout << " != " << contracted;
+            std::cout << graph.id(t) << " : " << base << " != " << contracted
+                      << std::endl;
         }
-        std::cout << std::endl;
     }
 
     const int nb_options = plan.getNbOptions();
@@ -179,11 +178,10 @@ int main(int argc, const char * argv[]) {
             const double contracted =
                 compute_value_reversed(decored_contracted_landscape, result.t);
 
-            std::cout << graph.id(t) << " : " << base;
             if(fabs(base - contracted) > epsilon) {
-                std::cout << " != " << contracted;
+                std::cout << graph.id(t) << " : " << base
+                          << " != " << contracted << std::endl;
             }
-            std::cout << std::endl;
         }
     }
 
