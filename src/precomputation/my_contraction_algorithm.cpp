@@ -14,10 +14,10 @@ MyContractionAlgorithm::precompute(
         std::make_unique<Graph::NodeMap<std::shared_ptr<ContractionResult>>>(
             graph);
 
-    const ProbabilityMap & p_min = landscape.getProbabilityMap();
+    ProbabilityMap p_min(graph);
     ProbabilityMap p_max(graph);
     for(Graph::ArcIt a(graph); a != lemon::INVALID; ++a) {
-        p_max[a] = p_min[a];
+        p_max[a] = p_min[a] = landscape.getProbability(a);
         for(const auto & e : plan[a])
             p_max[a] = std::max(p_max[a], e.restored_probability);
     }

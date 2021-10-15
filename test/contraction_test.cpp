@@ -136,9 +136,9 @@ int main(int argc, const char * argv[]) {
         const double contracted =
             compute_value_reversed(result.landscape, result.t);
 
-        std::cout << graph.id(t);
+        std::cout << graph.id(t) << " : " << base;
         if(fabs(base - contracted) > epsilon) {
-            std::cout << " : " << base << " != " << contracted;
+            std::cout << " != " << contracted;
         }
         std::cout << std::endl;
     }
@@ -150,7 +150,6 @@ int main(int argc, const char * argv[]) {
     std::default_random_engine gen;
     gen.seed(seed + 1);
     std::uniform_int_distribution<> dis(0, nb_options);
-
 
     std::cout << "test random restoration plan ECA value :" << std::endl;
     for(int i = 0; i < 1000; ++i) {
@@ -180,9 +179,9 @@ int main(int argc, const char * argv[]) {
             const double contracted =
                 compute_value_reversed(decored_contracted_landscape, result.t);
 
-            std::cout << graph.id(t);
+            std::cout << graph.id(t) << " : " << base;
             if(fabs(base - contracted) > epsilon) {
-                std::cout << " : " << base << " != " << contracted;
+                std::cout << " != " << contracted;
             }
             std::cout << std::endl;
         }

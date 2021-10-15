@@ -15,6 +15,7 @@
 
 #include "helper.hpp"
 
+
 class MyContractionAlgorithm : public ContractionPrecomputation {
 public:
     template <typename ArcList>

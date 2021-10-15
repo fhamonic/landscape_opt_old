@@ -125,7 +125,7 @@ public:
         const typename RestorationPlan<LS>::NodeEnhancements & nodeEnhancements,
         const double coef = 1.0) {
         for(const auto & [u, quality_gain] : nodeEnhancements)
-            qualityMap[u] = +coef * quality_gain;
+            qualityMap[u] += coef * quality_gain;
     }
 
     void apply(
