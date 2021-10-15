@@ -39,14 +39,15 @@ int main() {
     naive_inc.setParallel(true);
     Solvers::Naive_ECA_Dec naive_dec;
     naive_dec.setParallel(true);
-    Solvers::Glutton_ECA_Inc glutton_inc;
+    Solvers::Naive_ECA_Inc glutton_inc;
     glutton_inc.setParallel(true).setLogLevel(3);
-    Solvers::Glutton_ECA_Inc glutton_dec;
+    Solvers::Naive_ECA_Dec glutton_dec;
     glutton_dec.setParallel(true).setLogLevel(3);
     Solvers::PL_ECA_3 pl_eca_3;
     pl_eca_3.setLogLevel(2);
 
     Instance instance = make_instance_quebec_frog(1, 0, median);
+    instance.plan.initElementIDs();
     const MutableLandscape & landscape = instance.landscape;
     const RestorationPlan<MutableLandscape> & plan = instance.plan;
 
