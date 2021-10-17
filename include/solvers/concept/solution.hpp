@@ -59,8 +59,8 @@ public:
 
     double getCost() const {
         double sum = 0;
-        for(RestorationPlan<MutableLandscape>::Option i = 0;
-            i < plan.get().getNbOptions(); ++i)
+        for(const RestorationPlan<MutableLandscape>::Option i :
+            plan.get().options())
             sum += plan.get().getCost(i) * coefs[i];
         return sum;
     }

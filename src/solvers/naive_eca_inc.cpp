@@ -20,8 +20,7 @@ Solution Solvers::Naive_ECA_Inc::solve(
         ratio_options;
 
     std::vector<RestorationPlan<MutableLandscape>::Option> options;
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i)
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options())
         options.push_back(i);
 
     ratio_options.resize(options.size());

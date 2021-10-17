@@ -50,23 +50,23 @@ void ContractionPrecomputation::contract_arc(
     landscape.removeNode(u);
 }
 
-static bool restorable_arc_is_contractable(
-    const MutableLandscape & landscape,
-    const RestorationPlan<MutableLandscape> & plan, MutableLandscape::Arc a) {
-    const MutableLandscape::Graph & graph = landscape.getNetwork();
-    if(plan[a].size() > 1) return false;
-    RestorationPlan<MutableLandscape>::Option a_option =
-        plan[a].begin()->option;
-    MutableLandscape::Node u = graph.source(a);
+// static bool restorable_arc_is_contractable(
+//     const MutableLandscape & landscape,
+//     const RestorationPlan<MutableLandscape> & plan, MutableLandscape::Arc a) {
+//     const MutableLandscape::Graph & graph = landscape.getNetwork();
+//     if(plan[a].size() > 1) return false;
+//     RestorationPlan<MutableLandscape>::Option a_option =
+//         plan[a].begin()->option;
+//     MutableLandscape::Node u = graph.source(a);
 
-    for(MutableLandscape::Graph::InArcIt b(graph, u); b != lemon::INVALID;
-        ++b) {
-        if(plan[b].size() != 1) return false;
-        if(plan[b].begin()->option != a_option) return false;
-    }
-    if(!plan.contains(u)) return true;
-    return plan[u].begin()->option == a_option || plan[u].size() == 1;
-}
+//     for(MutableLandscape::Graph::InArcIt b(graph, u); b != lemon::INVALID;
+//         ++b) {
+//         if(plan[b].size() != 1) return false;
+//         if(plan[b].begin()->option != a_option) return false;
+//     }
+//     if(!plan.contains(u)) return true;
+//     return plan[u].begin()->option == a_option || plan[u].size() == 1;
+// }
 
 /**
  * Contracts specified uv arc preserving graph ids

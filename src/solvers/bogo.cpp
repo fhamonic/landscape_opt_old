@@ -11,8 +11,7 @@ Solution Solvers::Bogo::solve(const MutableLandscape & landscape,
 
     RandomChooser<RestorationPlan<MutableLandscape>::Option> option_chooser(
         seed);
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i)
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options())
         option_chooser.add(i, 1);
 
     double purschaised = 0.0;

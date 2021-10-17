@@ -15,8 +15,7 @@ Solution Solvers::Glutton_ECA_Inc::solve(
     std::vector<RestorationPlan<MutableLandscape>::Option> options;
     double purchaised = 0.0;
 
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i)
+    for(RestorationPlan<MutableLandscape>::Option i : plan.options())
         options.push_back(i);
 
     double prec_eca = ECA().eval(landscape);
@@ -33,8 +32,7 @@ Solution Solvers::Glutton_ECA_Inc::solve(
         [&landscape, &plan, &nodeOptions, &arcOptions, &prec_eca,
          &solution](RestorationPlan<MutableLandscape>::Option option) {
             DecoredLandscape<MutableLandscape> decored_landscape(landscape);
-            for(RestorationPlan<MutableLandscape>::Option i = 0;
-                i < plan.getNbOptions(); ++i) {
+            for(RestorationPlan<MutableLandscape>::Option i : plan.options()) {
                 decored_landscape.apply(nodeOptions[i], arcOptions[i],
                                         solution.getCoef(i));
             }

@@ -9,8 +9,7 @@ static Solution job(const MutableLandscape & landscape,
     const auto arcOptions = plan.computeArcOptionsMap();
 
     RandomChooser<RestorationPlan<MutableLandscape>::Option> option_chooser;
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i) {
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options()) {
         const double coef = relaxed_solution.getCoef(i);
         if(coef == 0) continue;
         option_chooser.add(i, coef);
@@ -38,8 +37,8 @@ static Solution job(const MutableLandscape & landscape,
         double eca = ECA().eval(decored_landscape);
 
         if(eca > best_eca) {
-            for(RestorationPlan<MutableLandscape>::Option i = 0;
-                i < plan.getNbOptions(); ++i)
+            for(const RestorationPlan<MutableLandscape>::Option i :
+                plan.options())
                 best_solution.set(i, 0);
             for(RestorationPlan<MutableLandscape>::Option option :
                 purschaised_options)

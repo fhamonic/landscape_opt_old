@@ -20,8 +20,7 @@ Solution Solvers::Naive_ECA_Dec::solve(
         ratio_options;
 
     double purchaised = 0.0;
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i) {
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options()) {
         purchaised += plan.getCost(i);
         solution.add(i);
         options.push_back(i);
@@ -79,19 +78,18 @@ Solution Solvers::Naive_ECA_Dec::solve(
 
     ratio_free_options.resize(free_options.size());
 
-    auto compute_inc =
-        [&landscape, &plan, &nodeOptions, &arcOptions, &solution,
-         prec_eca](RestorationPlan<MutableLandscape>::Option option) {
-            DecoredLandscape<MutableLandscape> decored_landscape(landscape);
-            for(RestorationPlan<MutableLandscape>::Option i = 0;
-                i < plan.getNbOptions(); ++i)
-                decored_landscape.apply(nodeOptions[i], arcOptions[i],
-                                        solution.getCoef(i));
-            decored_landscape.apply(nodeOptions[option], arcOptions[option]);
-            const double eca = ECA().eval(decored_landscape);
-            const double ratio = (eca - prec_eca) / plan.getCost(option);
-            return std::make_pair(ratio, option);
-        };
+    auto compute_inc = [&landscape, &plan, &nodeOptions, &arcOptions, &solution,
+                        prec_eca](
+                           RestorationPlan<MutableLandscape>::Option option) {
+        DecoredLandscape<MutableLandscape> decored_landscape(landscape);
+        for(const RestorationPlan<MutableLandscape>::Option i : plan.options())
+            decored_landscape.apply(nodeOptions[i], arcOptions[i],
+                                    solution.getCoef(i));
+        decored_landscape.apply(nodeOptions[option], arcOptions[option]);
+        const double eca = ECA().eval(decored_landscape);
+        const double ratio = (eca - prec_eca) / plan.getCost(option);
+        return std::make_pair(ratio, option);
+    };
     if(parallel)
         std::transform(std::execution::par, free_options.begin(),
                        free_options.end(), ratio_free_options.begin(),

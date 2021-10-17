@@ -34,8 +34,8 @@ void addCostNoise(Instance & instance, double deviation_ratio = 0.2,
                         value * distribution(generator));
     };
 
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < instance.plan.getNbOptions(); ++i)
+    for(const RestorationPlan<MutableLandscape>::Option i :
+        instance.plan.options())
         instance.plan.setCost(i, noise(instance.plan.getCost(i)));
 }
 
@@ -89,9 +89,9 @@ Instance make_instance_aude(const double median,
 }
 
 Instance make_instance_quebec_leam(double pow, double thresold, double median,
-                              double decreased_prob,
-                              Point orig = Point(240548, 4986893),
-                              Point dim = Point(32360, 20000)) {
+                                   double decreased_prob,
+                                   Point orig = Point(240548, 4986893),
+                                   Point dim = Point(32360, 20000)) {
     Instance instance;
 
     MutableLandscape & landscape = instance.landscape;
@@ -175,7 +175,6 @@ Instance make_instance_quebec_leam(double pow, double thresold, double median,
 
     return instance;
 }
-
 
 Instance make_instance_quebec_frog(double pow, double thresold, double median) {
     Instance instance;

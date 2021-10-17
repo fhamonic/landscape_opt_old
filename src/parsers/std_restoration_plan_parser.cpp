@@ -132,8 +132,7 @@ bool StdRestorationPlanParser::write(
     const auto nodeOptions = plan.computeNodeOptionsMap();
     const auto arcOptions = plan.computeArcOptionsMap();
 
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i) {
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options()) {
         problem_file << plan.getCost(i) << " "
                      << (nodeOptions[i].size() + arcOptions[i].size())
                      << std::endl;

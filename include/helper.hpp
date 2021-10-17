@@ -176,8 +176,8 @@ std::unique_ptr<typename Graph::template ArcMap<int>> arcCentralityMap(
  * @return GR::ArcMap<int>*
  */
 template <typename LS>
-std::unique_ptr<typename LS::Graph::template ArcMap<double>> corridorCentralityMap(
-    const LS & landscape) {
+std::unique_ptr<typename LS::Graph::template ArcMap<double>>
+corridorCentralityMap(const LS & landscape) {
     using Graph = typename LS::Graph;
     using PredMap = typename Graph::template NodeMap<typename Graph::Arc>;
     const Graph & graph = landscape.getNetwork();
@@ -247,7 +247,7 @@ std::vector<std::pair<typename LS::Node, double>> computeDistancePairs(
 
 template <typename LS>
 double averageRatioOfNodesInECARealization(double ratio_of_eca,
-                                             LS && landscape) {
+                                           LS && landscape) {
     using Graph = typename std::remove_reference<LS>::type::Graph;
     using NodeIt = typename std::remove_reference<LS>::type::NodeIt;
 
@@ -305,7 +305,6 @@ DecoredLandscape<LS> decore_landscape(const LS & landscape,
     return decored_landscape;
 }
 
-
 template <typename LS>
 DecoredLandscape<LS> decore_landscape(const LS & landscape,
                                       const RestorationPlan<LS> & plan) {
@@ -319,8 +318,7 @@ DecoredLandscape<LS> decore_landscape(const LS & landscape,
     for(typename Graph::ArcIt a(graph); a != lemon::INVALID; ++a)
         for(const auto & e : plan[a])
             decored_landscape.getProbabilityRef(a) = std::max(
-                decored_landscape.getProbability(a),
-                e.restored_probability);
+                decored_landscape.getProbability(a), e.restored_probability);
 
     return decored_landscape;
 }
@@ -339,8 +337,7 @@ void copyPlan(
     const typename LS_From::Graph::template ArcMap<typename LS_To::Arc> &
         arcsRef) {
     assert(contracted_plan.getNbOptions() == 0);
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i)
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options())
         contracted_plan.addOption(plan.getCost(i));
 
     const typename LS_From::Graph & from_graph =

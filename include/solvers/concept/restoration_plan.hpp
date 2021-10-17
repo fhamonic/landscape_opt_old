@@ -22,6 +22,7 @@
 #include <boost/range/algorithm/find_if.hpp>
 
 #include <range/v3/view/iota.hpp>
+#include <range/v3/view/transform.hpp>
 
 /**
  * @brief A generic class for respresenting a landscape restoration plan.
@@ -474,11 +475,14 @@ public:
     }
 
     /**
-     * @brief range view for iterating over options ids.
+     * @brief Return a view for iterating over the option objects
+     * @return auto
      */
     auto options() const {
-        auto view =
-            ranges::iota_view<int, int>(0, static_cast<int>(getNbOptions()));
+        // auto view = ranges::views::transform(
+        //     ranges::iota_view<int, int>(0, static_cast<int>(getNbOptions())),
+        //     [](int constr_id) { return Option(constr_id); });
+        auto view = ranges::iota_view<int, int>(0, static_cast<int>(getNbOptions()));
         return view;
     }
 };

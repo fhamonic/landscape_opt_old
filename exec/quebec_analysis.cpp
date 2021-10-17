@@ -30,8 +30,6 @@ int main() {
                 "ECA,glutton_dec_delta_ECA,opt_delta_ECA"
              << std::endl;
 
-    const double median = 1500;
-
     std::vector<double> budget_percents;
     for(int i = 1; i <= 40; ++i) budget_percents.push_back(i);
 
@@ -39,13 +37,14 @@ int main() {
     naive_inc.setParallel(true);
     Solvers::Naive_ECA_Dec naive_dec;
     naive_dec.setParallel(true);
-    Solvers::Naive_ECA_Inc glutton_inc;
-    glutton_inc.setParallel(true).setLogLevel(3);
-    Solvers::Naive_ECA_Dec glutton_dec;
+    Solvers::Glutton_ECA_Inc glutton_inc;
+    glutton_inc.setParallel(true);
+    Solvers::Glutton_ECA_Dec glutton_dec;
     glutton_dec.setParallel(true).setLogLevel(3);
     Solvers::PL_ECA_3 pl_eca_3;
     pl_eca_3.setLogLevel(2);
 
+    const double median = 300;
     Instance instance = make_instance_quebec_frog(1, 0, median);
     instance.plan.initElementIDs();
     const MutableLandscape & landscape = instance.landscape;

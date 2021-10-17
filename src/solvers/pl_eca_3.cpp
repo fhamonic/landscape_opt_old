@@ -181,8 +181,7 @@ void name_variables(OSI_Builder & solver, const MutableLandscape & landscape,
                 vars[t].restored_f.id(e),
                 "restored_f_t_" + node_str(t) + "_" + std::to_string(e.option));
     // YVar
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i)
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options())
         solver.setColName(vars.y.id(i), "y_" + std::to_string(i));
 }
 }  // namespace Solvers::PL_ECA_3_Vars
@@ -307,8 +306,7 @@ void fill_solver(OSI_Builder & solver_builder,
     }
     ////////////////////
     // sum y_i < B
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i) {
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options()) {
         const int y_i = vars.y.id(i);
         solver_builder.buffEntry(y_i, plan.getCost(i));
     }
@@ -380,8 +378,7 @@ Solution Solvers::PL_ECA_3::solve(
         delete solver;
         throw "caca";
     }
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i) {
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options()) {
         const int y_i = vars.y.id(i);
         double value = var_solution[y_i];
         solution.set(i, value);
@@ -482,8 +479,7 @@ Solution Solvers::PL_ECA_3::solve(
         std::cerr << name() << ": Fail" << std::endl;
         assert(false);
     }
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i) {
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options()) {
         const int y_i = vars.y.id(i);
         double value = var_solution[y_i];
         solution.set(i, value);
@@ -525,8 +521,7 @@ double Solvers::PL_ECA_3::eval(const MutableLandscape & landscape,
     Variables vars(landscape, plan, preprocessed_datas);
     insert_variables(solver_builder, vars, preprocessed_datas);
     fill_solver(solver_builder, landscape, plan, B, vars, preprocessed_datas);
-    for(RestorationPlan<MutableLandscape>::Option i = 0;
-        i < plan.getNbOptions(); ++i) {
+    for(const RestorationPlan<MutableLandscape>::Option i : plan.options()) {
         const int y_i = vars.y.id(i);
         double y_i_value = solution[i];
         solver_builder.setBounds(y_i, y_i_value, y_i_value);
