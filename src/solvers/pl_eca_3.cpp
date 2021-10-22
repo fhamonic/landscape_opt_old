@@ -289,7 +289,6 @@ void fill_solver(OSI_Builder & solver_builder,
                 solver_builder.pushRow(0, OSI_Builder::INFTY);
             }
         }
-
         // restored_f_t <= f_t
         // restored_f_t <= y_i * M
         for(const auto & e : plan[t]) {
