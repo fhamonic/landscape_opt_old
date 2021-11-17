@@ -29,7 +29,7 @@ public:
         start_time = std::chrono::high_resolution_clock::now();
         last_time = std::chrono::high_resolution_clock::now();
     }
-
+private:
     template <class chrono_unit>
     int time() {
         std::chrono::time_point<std::chrono::high_resolution_clock>
@@ -38,6 +38,7 @@ public:
                                                        start_time)
             .count();
     }
+public:
     int timeUs() { return time<std::chrono::microseconds>(); }
     int timeMs() { return time<std::chrono::milliseconds>(); }
     int timeS() { return time<std::chrono::seconds>(); }

@@ -32,6 +32,8 @@ Solution Solvers::Naive_ECA_Inc::solve(
         const double eca = ECA().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
 
+        std::cout << "troncon " << option << " OK" << std::endl;
+
         return std::make_pair(ratio, option);
     };
 
@@ -48,6 +50,12 @@ Solution Solvers::Naive_ECA_Inc::solve(
            std::pair<double, RestorationPlan<MutableLandscape>::Option> & e2) {
             return e1.first > e2.first;
         });
+
+
+    for(std::pair<double, RestorationPlan<MutableLandscape>::Option> e :
+    ratio_options) {
+        std::cout << "troncon " << e.second << " delta " << e.first<< std::endl;
+    }
 
     double purchaised = 0.0;
     for(std::pair<double, RestorationPlan<MutableLandscape>::Option> elem :
