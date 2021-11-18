@@ -39,9 +39,15 @@
 #include "tbb/global_control.h"
 
 Instance make_instance(const double dist_coef, const double restoration_coef) {
+    //*
     Instance raw_instance =
-        make_instance_biorevaix_level_2_all_troncons(restoration_coef, dist_coef);
-    Instance instance = trivial_reformulate(std::move(raw_instance));
+        make_instance_biorevaix_level_2_all_troncons(restoration_coef,
+    dist_coef); Instance instance =
+    trivial_reformulate(std::move(raw_instance));
+    /*/
+    Instance instance = make_instance_biorevaix_level_2_all_troncons(
+        restoration_coef, dist_coef);
+    //*/
 
     const MutableLandscape & landscape = instance.landscape;
     RestorationPlan<MutableLandscape> & plan = instance.plan;
@@ -67,8 +73,6 @@ Instance make_instance(const double dist_coef, const double restoration_coef) {
 }
 
 int main() {
-    tbb::global_control c(tbb::global_control::max_allowed_parallelism, 6);
-
     const double dist_coef = 1.5;
     const double restoration_coef = 6;
 
@@ -78,22 +82,27 @@ int main() {
 
     Chrono chrono;
 
-    const double eca = ECA().eval(landscape);
-    // const double eca = Parallel_ECA().eval(landscape);
+    // const double eca = ECA().eval(landscape);
+    const double prec_eca = Parallel_ECA().eval(landscape);
 
-    std::cout << "ECA: " << eca << " in " << chrono.timeS() << " seconds"
+    std::cout << "prec ECA: " << prec_eca << " in " << chrono.timeMS() << " ms"
               << std::endl;
 
-    // Helper::printInstanceGraphviz(landscape, plan, "biorevaix.dot");
+    const auto nodeOptions = plan.computeNodeOptionsMap();
+    const auto arcOptions = plan.computeArcOptionsMap();
 
-    // Solvers::Naive_ECA_Inc naive_inc;
-    // naive_inc.setParallel(true);
+    DecoredLandscape<MutableLandscape> decored_landscape(landscape);
+    for(auto option : plan.options()) {
+        if(option < 3222) continue;
+        decored_landscape.reset();
+        decored_landscape.apply(nodeOptions[option], arcOptions[option]);
 
-    // const double B = plan.totalCost() / 2;
+        const double eca = Parallel_ECA().eval(decored_landscape);
+        const double delta_eca = (eca - prec_eca);
+        const double ratio = delta_eca / plan.getCost(option);
 
-    // Solution naive_inc_solution = naive_inc.solve(landscape, plan, B);
-
-    // std::cout << naive_inc_solution.getComputeTimeMs() << " ms" << std::endl;
+        std::cout << "option " << option << " delta " << delta_eca << " ratio " << ratio << std::endl;
+    }
 
     return EXIT_SUCCESS;
 }

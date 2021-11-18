@@ -129,6 +129,9 @@ Instance copy_and_compact_instance(
         if(nodeOptions[i].empty() && arcOptions[i].empty()) continue;
         RestorationPlan<MutableLandscape>::Option option =
             new_plan.addOption(plan.getCost(i));
+
+        std::cout << "troncon " << i << " option " << option << std::endl;
+
         for(const auto & [u, quality_gain] : nodeOptions[i])
             new_plan.addNode(option, (*refs.first)[u], quality_gain);
         for(const auto & [a, restored_probability] : arcOptions[i])

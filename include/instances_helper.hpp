@@ -420,7 +420,9 @@ Instance make_instance_biorevaix_level_2_all_troncons(
     }
 
     std::array<RestorationPlan<MutableLandscape>::Option, 5460> troncon_option;
-    troncon_option.fill(-1);
+    for(int i=0; i<5460; ++i) {
+        troncon_option[i] = plan.addOption(0);
+    }
     io::CSVReader<2> troncons(
         "../landscape_opt_datas/BiorevAix/croisemt_troncon_hexagN2.txt");
     troncons.read_header(io::ignore_extra_column, "troncon_id", "N2_id");
@@ -428,9 +430,8 @@ Instance make_instance_biorevaix_level_2_all_troncons(
     while(troncons.read_row(troncon_id, N2_id)) {
         const MutableLandscape::Node u = nodes[N2_id];
 
-        RestorationPlan<MutableLandscape>::Option & option =
+        RestorationPlan<MutableLandscape>::Option option =
             troncon_option[troncon_id];
-        if(option == -1) option = plan.addOption(0);
 
         plan.setCost(option, plan.getCost(option) + 1);
 

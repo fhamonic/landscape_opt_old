@@ -32,8 +32,6 @@ Solution Solvers::Naive_ECA_Inc::solve(
         const double eca = ECA().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
 
-        std::cout << "troncon " << option << " OK" << std::endl;
-
         return std::make_pair(ratio, option);
     };
 

@@ -30,8 +30,6 @@ int main() {
                 "ECA,glutton_dec_delta_ECA,opt_delta_ECA"
              << std::endl;
 
-    const double median = 300;
-    const double restored_prob = 0.8;
 
     std::vector<double> budget_values;
     for(int i = 0; i <= 30; ++i) budget_values.push_back(i);
@@ -42,7 +40,10 @@ int main() {
     Solvers::Glutton_ECA_Dec glutton_dec;
     Solvers::PL_ECA_3 pl_eca_3;
 
-    const Instance instance = make_instance_aude(median, restored_prob);
+    const double median = 300;
+    const double restored_prob = 0.8;
+    Instance instance = make_instance_aude(median, restored_prob);
+    instance.plan.initArcElementIDs();
     const MutableLandscape & landscape = instance.landscape;
     const RestorationPlan<MutableLandscape> & plan = instance.plan;
 
