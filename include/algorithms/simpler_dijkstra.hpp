@@ -1,7 +1,7 @@
 #ifndef SIMPLER_DIJKSTRA_H
 #define SIMPLER_DIJKSTRA_H
 
-#include <lemon/dijkstra.h>
+#include "lemon/dijkstra.h"
 
 namespace lemon {
 /**
