@@ -1,10 +1,6 @@
 #ifndef SIMPLER_DIJKSTRA_H
 #define SIMPLER_DIJKSTRA_H
 
-#include <lemon/dheap.h>
-#include <lemon/fib_heap.h>
-#include <lemon/quad_heap.h>
-
 #include <lemon/dijkstra.h>
 
 namespace lemon {
