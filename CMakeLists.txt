@@ -144,7 +144,7 @@ target_link_libraries(contraction_test PUBLIC landscape_opt)
 # target_link_libraries(eca_contribution_analysis PUBLIC landscape_opt)
 
 
-add_executable(ttest exec/ttest.cpp)
-target_include_directories(ttest PUBLIC include)
-target_include_directories(ttest PUBLIC thirdparty)
-target_link_libraries(ttest PUBLIC landscape_opt)
+# add_executable(ttest exec/ttest.cpp)
+# target_include_directories(ttest PUBLIC include)
+# target_include_directories(ttest PUBLIC thirdparty)
+# target_link_libraries(ttest PUBLIC landscape_opt)
