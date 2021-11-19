@@ -49,12 +49,6 @@ Solution Solvers::Naive_ECA_Inc::solve(
             return e1.first > e2.first;
         });
 
-
-    for(std::pair<double, RestorationPlan<MutableLandscape>::Option> e :
-    ratio_options) {
-        std::cout << "troncon " << e.second << " delta " << e.first<< std::endl;
-    }
-
     double purchaised = 0.0;
     for(std::pair<double, RestorationPlan<MutableLandscape>::Option> elem :
         ratio_options) {

@@ -35,7 +35,7 @@ Solution Solvers::Glutton_ECA_Dec::solve(
         return (p1.first < p2.first) ? p1 : p2;
     };
     auto compute_min_option = [&landscape, &plan, &nodeOptions, &arcOptions,
-                               &prec_eca, solution](Option option) {
+                               &prec_eca, &solution](Option option) {
         DecoredLandscape<MutableLandscape> decored_landscape(landscape);
 
         for(const Option i : plan.options()) {
@@ -73,7 +73,8 @@ Solution Solvers::Glutton_ECA_Dec::solve(
         prec_eca -= worst_ratio * worst_option_cost;
 
         if(log_level > 1) {
-            std::cout << "remove option: " << worst_option_cost << std::endl;
+            std::cout << "remove option: " << worst_option << " costing "
+                      << worst_option_cost << std::endl;
             if(log_level > 2) {
                 for(auto const & [u, quality_gain] : nodeOptions[worst_option])
                     std::cout << "\tn " << graph.id(u) << std::endl;
@@ -97,7 +98,7 @@ Solution Solvers::Glutton_ECA_Dec::solve(
         return (p1.first > p2.first) ? p1 : p2;
     };
     auto compute_max_option = [&landscape, &plan, &nodeOptions, &arcOptions,
-                               &prec_eca, solution](Option option) {
+                               &prec_eca, &solution](Option option) {
         DecoredLandscape<MutableLandscape> decored_landscape(landscape);
         for(const Option i : plan.options()) {
             decored_landscape.apply(nodeOptions[i], arcOptions[i], solution[i]);
@@ -106,14 +107,24 @@ Solution Solvers::Glutton_ECA_Dec::solve(
         const double eca = ECA().eval(decored_landscape);
         const double ratio = (eca - prec_eca) / plan.getCost(option);
 
-        return std::pair<double, Option>(ratio, option);
+        std::cout << ratio << std::endl;
+
+        return std::make_pair(ratio, option);
     };
     for(;;) {
-        free_options.erase(
-            std::remove_if(
-                free_options.begin(), free_options.end(),
-                [&](Option i) { return plan.getCost(i) > B - purchaised; }),
-            free_options.end());
+        // std::cout << "il reste des options: " << free_options.size() << std::endl;
+
+        // for(auto option : free_options) {
+        //     std::cout << "option: " << option
+        //               << "\tcost:" << purchaised + plan.getCost(option) << "\tbudget:" << B
+        //               << std::endl;
+        // }
+
+        free_options.erase(std::remove_if(
+            free_options.begin(), free_options.end(),
+            [&](Option i) { return purchaised + plan.getCost(i) > B; }), free_options.end());
+
+        // std::cout << "il en reste : " << free_options.size() << std::endl;
 
         if(free_options.empty()) break;
 
@@ -129,6 +140,8 @@ Solution Solvers::Glutton_ECA_Dec::solve(
 
         const double best_ratio = best.first;
         Option best_option = best.second;
+
+        std::cout << "best option : " << best_option << std::endl;
 
         if(best_option == -1) break;
 
