@@ -40,10 +40,9 @@
 
 Instance make_instance(const double dist_coef, const double restoration_coef) {
     //*
-    Instance raw_instance =
-        make_instance_biorevaix_level_2_all_troncons(restoration_coef,
-    dist_coef); Instance instance =
-    trivial_reformulate(std::move(raw_instance));
+    Instance raw_instance = make_instance_biorevaix_level_2_all_troncons(
+        restoration_coef, dist_coef);
+    Instance instance = trivial_reformulate(std::move(raw_instance));
     /*/
     Instance instance = make_instance_biorevaix_level_2_all_troncons(
         restoration_coef, dist_coef);
@@ -73,35 +72,57 @@ Instance make_instance(const double dist_coef, const double restoration_coef) {
 }
 
 int main() {
-    const double dist_coef = 1.5;
-    const double restoration_coef = 6;
+    // const double dist_coef = 1.5;
+    // const double restoration_coef = 6;
 
-    Instance instance = make_instance(dist_coef, restoration_coef);
-    const MutableLandscape & landscape = instance.landscape;
-    RestorationPlan<MutableLandscape> & plan = instance.plan;
+    // Instance instance = make_instance(dist_coef, restoration_coef);
+    // const MutableLandscape & landscape = instance.landscape;
+    // RestorationPlan<MutableLandscape> & plan = instance.plan;
 
-    Chrono chrono;
+    // Chrono chrono;
 
-    // const double eca = ECA().eval(landscape);
-    const double prec_eca = Parallel_ECA().eval(landscape);
+    // // const double eca = ECA().eval(landscape);
+    // const double prec_eca = Parallel_ECA().eval(landscape);
 
-    std::cout << "prec ECA: " << prec_eca << " in " << chrono.timeMS() << " ms"
-              << std::endl;
+    // std::cout << "prec ECA: " << prec_eca << " in " << chrono.timeMs() << "
+    // ms"
+    //           << std::endl;
 
-    const auto nodeOptions = plan.computeNodeOptionsMap();
-    const auto arcOptions = plan.computeArcOptionsMap();
+    // const auto nodeOptions = plan.computeNodeOptionsMap();
+    // const auto arcOptions = plan.computeArcOptionsMap();
 
-    DecoredLandscape<MutableLandscape> decored_landscape(landscape);
-    for(auto option : plan.options()) {
-        if(option < 3222) continue;
-        decored_landscape.reset();
-        decored_landscape.apply(nodeOptions[option], arcOptions[option]);
+    // DecoredLandscape<MutableLandscape> decored_landscape(landscape);
+    // for(auto option : plan.options()) {
+    //     if(option < 3222) continue;
+    //     decored_landscape.reset();
+    //     decored_landscape.apply(nodeOptions[option], arcOptions[option]);
 
-        const double eca = Parallel_ECA().eval(decored_landscape);
-        const double delta_eca = (eca - prec_eca);
-        const double ratio = delta_eca / plan.getCost(option);
+    //     const double eca = Parallel_ECA().eval(decored_landscape);
+    //     const double delta_eca = (eca - prec_eca);
+    //     const double ratio = delta_eca / plan.getCost(option);
 
-        std::cout << "option " << option << " delta " << delta_eca << " ratio " << ratio << std::endl;
+    //     std::cout << "option " << option << " delta " << delta_eca << " ratio
+    //     " << ratio << std::endl;
+    // }
+
+    io::CSVReader<3> options("log");
+    options.read_header(io::ignore_extra_column, "option", "delta", "ratio");
+    io::CSVReader<2> troncons("log copy");
+    troncons.read_header(io::ignore_extra_column, "option", "troncon");
+
+    int option;
+    double delta, ratio;
+    int option_2, troncon;
+    while(options.read_row(option, delta, ratio)) {
+        troncons.read_row(option_2, troncon);
+
+        if(option != option_2) {
+            std::cout << "caca !" << std::endl;
+            break;
+        };
+        if(delta < 0.01) continue;
+
+        std::cout << std::fixed << troncon << "," << delta << "," << ratio << std::endl;
     }
 
     return EXIT_SUCCESS;

@@ -15,6 +15,7 @@ Solution Solvers::Glutton_ECA_Dec::solve(
 
     std::vector<Option> options;
     std::vector<Option> free_options;
+
     double purchaised = 0.0;
     for(const Option i : plan.options()) {
         purchaised += plan.getCost(i);
@@ -90,8 +91,6 @@ Solution Solvers::Glutton_ECA_Dec::solve(
             std::cout << "remaining : " << options.size() << std::endl;
         }
     }
-
-    purchaised = solution.getCost(); // for numeric stability issues
 
     auto max_option = [](std::pair<double, Option> p1,
                          std::pair<double, Option> p2) {
