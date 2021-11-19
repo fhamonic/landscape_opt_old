@@ -80,6 +80,7 @@ enable_testing()
 add_executable(test_test test/test.cpp)
 target_include_directories(test_test PUBLIC include)
 target_link_libraries(test_test CONAN_PKG::gtest)
+target_link_libraries(test_test PUBLIC landscape_opt)
 
 include(GoogleTest)
 gtest_discover_tests(test_test)
