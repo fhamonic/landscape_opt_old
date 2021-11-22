@@ -12,7 +12,7 @@ class PL_ECA_3 : public concepts::Solver {
 public:
     PL_ECA_3() {
         params["log"] = new IntParam(0);
-        params["timeout"] = new IntParam(3600);
+        params["timeout"] = new IntParam(36000);
         params["relaxed"] = new IntParam(0);
         params["fortest"] = new IntParam(0);
     }

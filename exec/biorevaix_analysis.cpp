@@ -86,7 +86,7 @@ int main() {
     Solvers::Glutton_ECA_Dec glutton_dec;
     glutton_dec.setParallel(true);
     Solvers::PL_ECA_3 pl_eca_3;
-    pl_eca_3.setLogLevel(2);
+    pl_eca_3.setTimeout(36000).setLogLevel(2);
 
     const double dist_coef = 1.5;
     const double restoration_coef = 6;
@@ -95,7 +95,7 @@ int main() {
     const MutableLandscape & landscape = instance.landscape;
     RestorationPlan<MutableLandscape> & plan = instance.plan;
 
-    Helper::printInstanceGraphviz(landscape, plan, "biorevaix.dot");
+    // Helper::printInstanceGraphviz(landscape, plan, "biorevaix.dot");
 
     for(double budget_percent : budget_percents) {
         const double B = plan.totalCost() * budget_percent / 100;
