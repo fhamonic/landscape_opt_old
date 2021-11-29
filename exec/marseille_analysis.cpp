@@ -25,14 +25,16 @@ double eval(T && ls) {
 int main() {
     std::ofstream data_log("output/marseille_analysis.csv");
     data_log << std::fixed << std::setprecision(6);
-    data_log << "median,budget,budget_percent,base_ECA,max_delta_"
-                "ECA,naive_inc_delta_ECA,naive_dec_delta_ECA,glutton_inc_delta_"
-                "ECA,glutton_dec_delta_ECA,opt_delta_ECA"
+    data_log << "median,budget,budget_percent,base_ECA,max_delta_ECA,bogo_avg_"
+                "delta_ECA,naive_inc_delta_ECA,naive_dec_delta_ECA,glutton_inc_"
+                "delta_ECA,glutton_dec_delta_ECA,opt_delta_ECA"
              << std::endl;
 
     std::vector<double> budget_percents;
     for(int i = 0; i <= 40; ++i) budget_percents.push_back(i);
 
+    Solvers::Bogo bogo;
+    bogo.setSeed(299792458);
     Solvers::Naive_ECA_Inc naive_inc;
     naive_inc.setParallel(true);
     Solvers::Naive_ECA_Dec naive_dec;
@@ -45,7 +47,7 @@ int main() {
     pl_eca_3.setLogLevel(2);
 
     const double median = 3000;
-    Instance instance = make_instance_marseille(1, 0, median, 100);
+    Instance instance = make_instance_marseille(1, 0.135, median, 100);
     instance.plan.initElementIDs();
     const MutableLandscape & landscape = instance.landscape;
     const RestorationPlan<MutableLandscape> & plan = instance.plan;
@@ -60,6 +62,18 @@ int main() {
         const double restored_ECA =
             eval(Helper::decore_landscape(landscape, plan));
         const double max_delta_ECA = restored_ECA - base_ECA;
+
+        double bogo_avg_ECA = 0;
+        {
+            const int nb_bogo = 100;
+            for(int i = 0; i < nb_bogo; ++i) {
+                Solution bogo_solution = bogo.solve(landscape, plan, B);
+                const double bogo_ECA = eval(
+                    Helper::decore_landscape(landscape, plan, bogo_solution));
+                bogo_avg_ECA += bogo_ECA;
+            }
+            bogo_avg_ECA /= nb_bogo;
+        }
 
         Solution naive_inc_solution = naive_inc.solve(landscape, plan, B);
         Solution naive_dec_solution = naive_dec.solve(landscape, plan, B);
@@ -78,6 +92,7 @@ int main() {
         const double opt_ECA =
             eval(Helper::decore_landscape(landscape, plan, opt_solution));
 
+        const double bogo_avg_delta_ECA = bogo_avg_ECA - base_ECA;
         const double naive_inc_delta_ECA = naive_inc_ECA - base_ECA;
         const double naive_dec_delta_ECA = naive_dec_ECA - base_ECA;
         const double glutton_inc_delta_ECA = glutton_inc_ECA - base_ECA;
@@ -86,9 +101,9 @@ int main() {
 
         data_log << median << ',' << B << ',' << budget_percent << ','
                  << base_ECA << ',' << max_delta_ECA << ','
-                 << naive_inc_delta_ECA << ',' << naive_dec_delta_ECA << ','
-                 << glutton_inc_delta_ECA << ',' << glutton_dec_delta_ECA << ','
-                 << opt_delta_ECA << std::endl;
+                 << bogo_avg_delta_ECA << ',' << naive_inc_delta_ECA << ','
+                 << naive_dec_delta_ECA << ',' << glutton_inc_delta_ECA << ','
+                 << glutton_dec_delta_ECA << ',' << opt_delta_ECA << std::endl;
     }
 
     return EXIT_SUCCESS;
@@ -143,7 +158,8 @@ int main() {
 //         const double delta_ECA = restored_ECA - base_ECA;
 
 //         data_log << median << ',' << eca_90_node_cover * 100 << ','
-//                  << eca_90_node_cover_restored * 100 << ',' << base_ECA << ','
+//                  << eca_90_node_cover_restored * 100 << ',' << base_ECA <<
+//                  ','
 //                  << delta_ECA << std::endl;
 //     }
 
