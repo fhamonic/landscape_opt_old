@@ -25,11 +25,12 @@ double eval(T && ls) {
 int main() {
     std::ofstream data_log("output/quebec_analysis.csv");
     data_log << std::fixed << std::setprecision(6);
-    data_log << "median,budget,budget_percent,base_ECA,max_delta_"
-                "ECA,bogo_avg_delta_ECA,naive_inc_delta_ECA,naive_dec_delta_"
-                "ECA,glutton_inc_delta_"
-                "ECA,glutton_dec_delta_ECA,opt_delta_ECA"
-             << std::endl;
+    data_log
+        << "median,budget,budget_percent,base_ECA,max_delta_"
+           "ECA,bogo_avg_delta_ECA,naive_inc_delta_ECA,naive_dec_delta_ECA,"
+           "glutton_inc_delta_ECA,glutton_dec_delta_ECA,opt_delta_ECA,naive_"
+           "inc_time,naive_dec_time,glutton_inc_time,glutton_dec_time,opt_time"
+        << std::endl;
 
     std::vector<double> budget_percents;
     for(int i = 1; i <= 40; ++i) budget_percents.push_back(i);
@@ -104,7 +105,12 @@ int main() {
                  << base_ECA << ',' << max_delta_ECA << ','
                  << bogo_avg_delta_ECA << ',' << naive_inc_delta_ECA << ','
                  << naive_dec_delta_ECA << ',' << glutton_inc_delta_ECA << ','
-                 << glutton_dec_delta_ECA << ',' << opt_delta_ECA << std::endl;
+                 << glutton_dec_delta_ECA << ',' << opt_delta_ECA << ','
+                 << naive_inc_solution.getComputeTimeMs() << ','
+                 << naive_dec_solution.getComputeTimeMs() << ','
+                 << glutton_inc_solution.getComputeTimeMs() << ','
+                 << glutton_dec_solution.getComputeTimeMs() << ','
+                 << opt_solution.getComputeTimeMs() << std::endl;
     }
 
     return EXIT_SUCCESS;

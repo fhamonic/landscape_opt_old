@@ -27,7 +27,8 @@ int main() {
     data_log << std::fixed << std::setprecision(6);
     data_log << "median,budget,budget_percent,base_ECA,max_delta_ECA,bogo_avg_"
                 "delta_ECA,naive_inc_delta_ECA,naive_dec_delta_ECA,glutton_inc_"
-                "delta_ECA,glutton_dec_delta_ECA,opt_delta_ECA"
+                "delta_ECA,glutton_dec_delta_ECA,opt_delta_ECA,naive_inc_time,"
+                "naive_dec_time,glutton_inc_time,glutton_dec_time,opt_time"
              << std::endl;
 
     std::vector<double> budget_percents;
@@ -103,7 +104,12 @@ int main() {
                  << base_ECA << ',' << max_delta_ECA << ','
                  << bogo_avg_delta_ECA << ',' << naive_inc_delta_ECA << ','
                  << naive_dec_delta_ECA << ',' << glutton_inc_delta_ECA << ','
-                 << glutton_dec_delta_ECA << ',' << opt_delta_ECA << std::endl;
+                 << glutton_dec_delta_ECA << ',' << opt_delta_ECA << ','
+                 << naive_inc_solution.getComputeTimeMs() << ','
+                 << naive_dec_solution.getComputeTimeMs() << ','
+                 << glutton_inc_solution.getComputeTimeMs() << ','
+                 << glutton_dec_solution.getComputeTimeMs() << ','
+                 << opt_solution.getComputeTimeMs() << std::endl;
     }
 
     return EXIT_SUCCESS;
