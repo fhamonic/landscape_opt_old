@@ -25,6 +25,9 @@ double eval(T && ls) {
 Instance make_instance(const double dist_coef, const double restoration_coef) {
     Instance raw_instance =
         make_instance_biorevaix_level_2_v7(restoration_coef, dist_coef);
+
+    Helper::printInstanceGraphviz(raw_instance.landscape, raw_instance.plan, "biorevaix_raw.dot");
+
     Instance instance = trivial_reformulate(std::move(raw_instance));
 
     const MutableLandscape & landscape = instance.landscape;
@@ -32,20 +35,20 @@ Instance make_instance(const double dist_coef, const double restoration_coef) {
     plan.initElementIDs();
 
     Helper::assert_well_formed(landscape, plan);
-    std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork())
-              << std::endl;
-    std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork())
-              << std::endl;
+    // std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork())
+    //           << std::endl;
+    // std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork())
+    //           << std::endl;
 
-    int count = 0;
-    for(MutableLandscape::NodeIt u(landscape.getNetwork()); u != lemon::INVALID;
-        ++u)
-        count += (landscape.getQuality(u) > 0 ? 1 : 0);
-    std::cout << "nb nodes positive quality:" << count << std::endl;
-    std::cout << "nb options:" << plan.getNbOptions() << std::endl;
-    std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements()
-              << std::endl;
-    std::cout << "plan total cost:" << plan.totalCost() << std::endl;
+    // int count = 0;
+    // for(MutableLandscape::NodeIt u(landscape.getNetwork()); u != lemon::INVALID;
+    //     ++u)
+    //     count += (landscape.getQuality(u) > 0 ? 1 : 0);
+    // std::cout << "nb nodes positive quality:" << count << std::endl;
+    // std::cout << "nb options:" << plan.getNbOptions() << std::endl;
+    // std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements()
+    //           << std::endl;
+    // std::cout << "plan total cost:" << plan.totalCost() << std::endl;
 
     Solvers::Glutton_ECA_Dec glutton_dec_solver;
     glutton_dec_solver.setParallel(true);
@@ -53,12 +56,29 @@ Instance make_instance(const double dist_coef, const double restoration_coef) {
         glutton_dec_solver.solve(landscape, plan, plan.totalCost() * 0.3);
 
     auto arc_options = plan.computeArcOptionsMap();
+    int nb_options = plan.getNbOptions();
     for(auto option : plan.options()) {
         if(budget_solution[option] > 0) continue;
+        --nb_options;
         for(const auto & [a, restored_prob] : arc_options[option]) {
             plan.removeArc(option, a);
         }
     }
+
+
+    std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork())
+              << std::endl;
+    std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork())
+              << std::endl;
+    int count = 0;
+    for(MutableLandscape::NodeIt u(landscape.getNetwork()); u != lemon::INVALID;
+        ++u)
+        count += (landscape.getQuality(u) > 0 ? 1 : 0);
+    std::cout << "nb nodes positive quality:" << count << std::endl;
+    std::cout << "nb options:" << nb_options << std::endl;
+    std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements()
+              << std::endl;
+    std::cout << "plan total cost:" << plan.totalCost() << std::endl;
 
     return instance;
 }
@@ -97,7 +117,7 @@ int main() {
     const MutableLandscape & landscape = instance.landscape;
     RestorationPlan<MutableLandscape> & plan = instance.plan;
 
-    // Helper::printInstanceGraphviz(landscape, plan, "biorevaix.dot");
+    Helper::printInstanceGraphviz(landscape, plan, "biorevaix_instance.dot");
 
     for(double budget_percent : budget_percents) {
         const double B = plan.totalCost() * budget_percent / 100;

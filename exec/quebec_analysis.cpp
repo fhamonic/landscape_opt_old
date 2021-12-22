@@ -54,6 +54,16 @@ int main() {
     const MutableLandscape & landscape = instance.landscape;
     const RestorationPlan<MutableLandscape> & plan = instance.plan;
 
+    std::cout << "median:" << median << std::endl;
+    std::cout << "nb nodes:" << lemon::countNodes(landscape.getNetwork())
+              << std::endl;
+    std::cout << "nb arcs:" << lemon::countArcs(landscape.getNetwork())
+              << std::endl;
+    std::cout << "nb options:" << plan.getNbOptions() << std::endl;
+    std::cout << "nb restorable arcs:" << plan.getNbArcRestorationElements()
+              << std::endl;
+    std::cout << "plan total cost:" << plan.totalCost() << std::endl;
+
     // Helper::printInstanceGraphviz(landscape, plan, "quebec.dot");
     // Helper::printInstance(landscape, plan, "quebec.eps");
 

@@ -1,9 +1,9 @@
 [requires]
-fast-cpp-csv-parser/20191004
+fast-cpp-csv-parser/cci.20200830
 tbb/2020.3
-boost/1.76.0
-fmt/8.0.0
-eigen/3.3.9
+boost/1.78.0
+fmt/8.0.1
+eigen/3.4.0
 range-v3/0.11.0
 gtest/cci.20210126
 
