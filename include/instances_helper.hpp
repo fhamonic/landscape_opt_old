@@ -69,20 +69,25 @@ Instance make_instance_aude(const double median,
     links.read_header(io::ignore_extra_column, "source_id", "target_id", "dam");
     int source_id, target_id, dam;
     while(links.read_row(source_id, target_id, dam)) {
+        if(source_id > target_id) continue;
+
         MutableLandscape::Node u = nodes[source_id];
         MutableLandscape::Node v = nodes[target_id];
 
         const double prob = p((troncons_lengths[u] + troncons_lengths[v]) / 2);
 
         if(!dam) {
-            MutableLandscape::Arc a =
-                landscape.addArc(nodes[source_id], nodes[target_id], prob);
+            landscape.addArc(nodes[source_id], nodes[target_id], prob);
+            landscape.addArc(nodes[target_id], nodes[source_id], prob);
             continue;
         }
-        MutableLandscape::Arc a =
+        MutableLandscape::Arc a1 =
             landscape.addArc(nodes[source_id], nodes[target_id], 0);
+        MutableLandscape::Arc a2 =
+            landscape.addArc(nodes[target_id], nodes[source_id], 0);
         RestorationPlan<MutableLandscape>::Option option = plan.addOption(1);
-        plan.addArc(option, a, fish_ladder_prob * prob);
+        plan.addArc(option, a1, fish_ladder_prob * prob);
+        plan.addArc(option, a2, fish_ladder_prob * prob);
     }
 
     return instance;
@@ -420,7 +425,7 @@ Instance make_instance_biorevaix_level_2_all_troncons(
     }
 
     std::array<RestorationPlan<MutableLandscape>::Option, 5460> troncon_option;
-    for(int i=0; i<5460; ++i) {
+    for(int i = 0; i < 5460; ++i) {
         troncon_option[i] = plan.addOption(0);
     }
     io::CSVReader<2> troncons(

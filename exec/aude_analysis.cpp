@@ -33,7 +33,7 @@ int main() {
         << std::endl;
 
     std::vector<double> budget_values;
-    for(int i = 0; i <= 30; ++i) budget_values.push_back(i);
+    for(int i = 0; i <= 15; ++i) budget_values.push_back(i);
 
     Solvers::Bogo bogo;
     bogo.setSeed(299792458);
