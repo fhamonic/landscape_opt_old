@@ -420,7 +420,7 @@ Instance make_instance_biorevaix_level_2_all_troncons(
     }
 
     std::array<RestorationPlan<MutableLandscape>::Option, 5460> troncon_option;
-    for(int i=0; i<5460; ++i) {
+    for(int i = 0; i < 5460; ++i) {
         troncon_option[i] = plan.addOption(0);
     }
     io::CSVReader<2> troncons(
@@ -483,11 +483,21 @@ Instance make_instance_marseille(double pow, double thresold, double median,
     double x, y, area, price_rel;
     while(patches.read_row(category, x, y, area, price_rel)) {
         if(category.compare("\"massif\"") == 0) {
-            landscape.addNode(20, Point(x, y));
+            MutableLandscape::Node u = landscape.addNode(20, Point(x, y));
+            (void)u;
+            ///////////////////////////////////////////////////////////////////
+            // std::cout << std::setprecision(10) << graph.id(u) << ",massif,"
+            //           << area << "," << x << "," << y << std::endl;
+            ///////////////////////////////////////////////////////////////////
             continue;
         }
         if(category.compare("\"parc\"") == 0) {
-            landscape.addNode(area, Point(x, y));
+            MutableLandscape::Node u = landscape.addNode(area, Point(x, y));
+            (void)u;
+            ///////////////////////////////////////////////////////////////////
+            // std::cout << graph.id(u) << ",parc," << area << "," << x << "," << y
+            //           << std::endl;
+            ///////////////////////////////////////////////////////////////////
             continue;
         }
         if(category.compare("\"friche\"") == 0) {
@@ -502,6 +512,10 @@ Instance make_instance_marseille(double pow, double thresold, double median,
         if(!friches_chooser.canPick()) break;
         FricheData data = friches_chooser.pick();
         MutableLandscape::Node u = landscape.addNode(0, data.p);
+        ///////////////////////////////////////////////////////////////////////
+        // std::cout << graph.id(u) << ",friche," << area << "," << data.p.x << ","
+        //           << data.p.y << std::endl;
+        ///////////////////////////////////////////////////////////////////////
         data.node = u;
         friches_list.push_back(data);
     }
@@ -514,6 +528,13 @@ Instance make_instance_marseille(double pow, double thresold, double median,
             if(probability < thresold) continue;
             landscape.addArc(u, v, probability);
             landscape.addArc(v, u, probability);
+            ///////////////////////////////////////////////////////////////////////
+            std::cout << graph.id(u) << "," << graph.id(v) << ","
+                      << landscape.getCoords(u).x << ","
+                      << landscape.getCoords(u).y << ","
+                      << landscape.getCoords(v).x << ","
+                      << landscape.getCoords(v).y << std::endl;
+            ///////////////////////////////////////////////////////////////////////
         }
     }
 

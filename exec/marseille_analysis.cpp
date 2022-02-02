@@ -56,8 +56,8 @@ int main() {
     for(double budget_percent : budget_percents) {
         const double B = plan.totalCost() * budget_percent / 100;
 
-        Helper::printInstanceGraphviz(landscape, plan, "marseille.dot");
-        Helper::printInstance(landscape, plan, "marseille.eps");
+        // Helper::printInstanceGraphviz(landscape, plan, "marseille.dot");
+        // Helper::printInstance(landscape, plan, "marseille.eps");
 
         const double base_ECA = eval(landscape);
         const double restored_ECA =
