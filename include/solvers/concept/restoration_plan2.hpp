@@ -1,14 +1,14 @@
 /**
- * @file restoration_plan.hpp
+ * @file restoration_plan2.hpp
  * @author François Hamonic (francois.hamonic@gmail.com)
  * @brief Restorationplan class declaration
  * @version 0.3
- * @date 2021-07-27
+ * @date 2021-12-22
  *
  * @copyright Copyright (c) 2021
  */
-#ifndef RESTORATION_PLAN_HPP
-#define RESTORATION_PLAN_HPP
+#ifndef RESTORATION_PLAN_2_HPP
+#define RESTORATION_PLAN_2_HPP
 
 #include <cassert>
 #include <list>
@@ -77,8 +77,6 @@ private:
     typename Graph::template ArcMap<ArcRestorationsList>
         _probabilityRestorationOptions;
 
-    std::vector<double> _costs;
-
 public:
     RestorationPlan(const LS & l)
         : _landscape(l)
@@ -111,56 +109,6 @@ public:
     };
 
     const LS & getLandscape() const noexcept { return _landscape; }
-
-    /**
-     * @brief add an option of cost **c** and returns its id
-     * @param c cost
-     * @return Option
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    Option addOption(double c) noexcept {
-        _costs.push_back(c);
-        return _costs.size() - 1;
-    }
-
-    /**
-     * @brief Get the number of options
-     * @return int
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    int getNbOptions() const noexcept { return _costs.size(); }
-
-    /**
-     * @brief Return true if the restoration plan contains an
-     *      option of id **i**
-     * @param i - Option
-     * @return bool
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    bool contains(Option i) const noexcept {
-        return i >= 0 && i < getNbOptions();
-    }
-
-    /**
-     * @brief Set the cost of option **i**
-     * @param i Option
-     * @param c cost
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    void setCost(Option i, double cost) noexcept { _costs[i] = cost; }
-
-    /**
-     * @brief Get the cost of option **i**
-     * @param i Option
-     * @return double
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    double getCost(Option i) const noexcept { return _costs[i]; }
 
     /**
      * Add a restoration enhancement for the node **u** within option **i**.
@@ -490,4 +438,4 @@ public:
 template <typename LS>  // requires concepts::IsLandscape<LS> //c++20
 std::ostream & operator<<(std::ostream & in, const RestorationPlan<LS> & plan);
 
-#endif  // RESTORATION_PLAN_HPP
+#endif  // RESTORATION_PLAN_2_HPP
