@@ -14,50 +14,53 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <unordered_map>
+
+#include <parallel_hashmap/phmap.h>
 
 #include "landscape/mutable_landscape.hpp"
 #include "solvers/concept/restoration_plan.hpp"
 
-class Instance {
-public:
-    using Option = int;
+using Option = int;
 
+struct InstanceCase {
+    double coef;
+    void * graph;
+
+    std::vector<double> node_quality_map;
+    std::vector<double> arc_probability_map;
+
+    std::vector<std::string> node_names;
+    phmap::node_hash_map<std::string, unsigned int> node_name_to_id_map;
+    std::vector<std::string> arc_names;
+    phmap::node_hash_map<std::string, unsigned int> arc_name_to_id_map;
+
+    std::vector<std::vector<std::pair<Option, double>>> node_options_map;
+    std::vector<std::vector<std::pair<Option, double>>> arc_options_map;
+};
+
+class Instance2 {
 private:
+    std::vector<std::string> options_names;
     std::vector<double> options_costs;
-    std::vector<std::pair<MutableLandscape, RestorationPlan<MutableLandscape>>> cases;
+    phmap::node_hash_map<std::string, Option> option_name_to_id_map;
+
+    std::vector<InstanceCase> cases;
 
 public:
-    Instance() {}
+    Instance2() = default;
 
-
-    /**
-     * @brief add an option of cost **c** and returns its id
-     * @param c cost
-     * @return Option
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    Option addOption(double c) noexcept {
-        options_costs.push_back(c);
-        return options_costs.size() - 1;
+    Option addOption(std::string identifier, double c) noexcept {
+        Option i = options_costs.size();
+        if(option_name_to_id_map.contains(identifier)) throw "caca";
+        options_names.emplace_back(identifier);
+        options_costs.emplace_back(c);
+        option_name_to_id_map[identifier] = i;
+        return i;
     }
 
-    /**
-     * @brief Get the number of options
-     * @return int
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
     int getNbOptions() const noexcept { return options_costs.size(); }
 
-    /**
-     * @brief Return true if the restoration plan contains an
-     *      option of id **i**
-     * @param i - Option
-     * @return bool
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
     bool contains(Option i) const noexcept {
         return i >= 0 && i < getNbOptions();
     }
