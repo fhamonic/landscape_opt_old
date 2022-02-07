@@ -16,6 +16,7 @@ void conflicting_options(const boost::program_options::variables_map & vm,
 std::pair<std::string, std::string> split_equality_str(
     const std::string & str) {
     const int split_index = str.find("=");
+    if(split_index == -1) return std::make_pair(str, std::string());
     return std::make_pair(str.substr(0, split_index),
                           str.substr(split_index + 1, -1));
 }

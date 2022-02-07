@@ -48,6 +48,8 @@ target_include_directories(landscape_opt PUBLIC include)
 target_include_directories(landscape_opt PUBLIC thirdparty)
 
 target_link_libraries(landscape_opt CONAN_PKG::fast-cpp-csv-parser)
+target_link_libraries(landscape_opt CONAN_PKG::nlohmann_json)
+target_link_libraries(landscape_opt CONAN_PKG::parallel-hashmap)
 target_link_libraries(landscape_opt CONAN_PKG::tbb)
 target_link_libraries(landscape_opt CONAN_PKG::boost)
 target_link_libraries(landscape_opt CONAN_PKG::fmt)

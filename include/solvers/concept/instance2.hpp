@@ -1,14 +1,5 @@
-/**
- * @file restoration_plan.hpp
- * @author François Hamonic (francois.hamonic@gmail.com)
- * @brief Restorationplan class declaration
- * @version 0.3
- * @date 2021-07-18
- *
- * @copyright Copyright (c) 2021
- */
-#ifndef INSTANCE_HPP
-#define INSTANCE_HPP
+#ifndef INSTANCE2_HPP
+#define INSTANCE2_HPP
 
 #include <cassert>
 #include <list>
@@ -50,9 +41,9 @@ private:
 public:
     Instance2() = default;
 
-    Option addOption(std::string identifier, double c) noexcept {
+    Option addOption(std::string identifier, double c) {
+        assert(!option_name_to_id_map.contains(identifier));
         Option i = options_costs.size();
-        if(option_name_to_id_map.contains(identifier)) throw "caca";
         options_names.emplace_back(identifier);
         options_costs.emplace_back(c);
         option_name_to_id_map[identifier] = i;
@@ -61,27 +52,14 @@ public:
 
     int getNbOptions() const noexcept { return options_costs.size(); }
 
-    bool contains(Option i) const noexcept {
+    bool containsOption(Option i) const noexcept {
         return i >= 0 && i < getNbOptions();
     }
-
-    /**
-     * @brief Set the cost of option **i**
-     * @param i Option
-     * @param c cost
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    void setCost(Option i, double cost) noexcept { options_costs[i] = cost; }
-
-    /**
-     * @brief Get the cost of option **i**
-     * @param i Option
-     * @return double
-     * @time \f$O(1)\f$
-     * @space \f$O(1)\f$
-     */
-    double getCost(Option i) const noexcept { return options_costs[i]; }
+    bool containsOption(std::string identifier) const noexcept {
+        return option_name_to_id_map.contains(identifier);
+    }
+    void setOptionCost(Option i, double cost) noexcept { options_costs[i] = cost; }
+    double getOptionCost(Option i) const noexcept { return options_costs[i]; }
 };
 
-#endif  // RESTORATION_PLAN_2_HPP
+#endif  // INSTANCE2_HPP

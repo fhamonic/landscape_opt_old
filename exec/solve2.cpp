@@ -11,10 +11,16 @@
 #include <filesystem>
 #include <iostream>
 
-#include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm.hpp>
+namespace br = boost::range;
 
-#include "parsers/std_mutable_landscape_parser.hpp"
-#include "parsers/std_restoration_plan_parser.hpp"
+#include <boost/program_options.hpp>
+namespace bpo = boost::program_options;
+
+#include <boost/log/core.hpp>
+#include <boost/log/expressions.hpp>
+#include <boost/log/trivial.hpp>
+namespace logging = boost::log;
 
 #include "solvers/bogo.hpp"
 #include "solvers/glutton_eca_dec.hpp"
@@ -27,19 +33,9 @@
 
 #include "helper.hpp"
 #include "print_helper.hpp"
-
-#include <boost/range/algorithm.hpp>
-namespace br = boost::range;
-
-#include <boost/program_options.hpp>
-namespace bpo = boost::program_options;
-
 #include "bpo_utils.hpp"
 
-#include <boost/log/core.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/trivial.hpp>
-namespace logging = boost::log;
+#include "parsers/parse_instance2.hpp"
 
 void init_logging() {
     logging::core::get()->set_filter(logging::trivial::severity >=
@@ -100,9 +96,9 @@ static bool process_command_line(
             return s->name() == solver_name;
         });
         if(it == solvers.end())
-            throw std::invalid_argument(
+            throw std::invalid_argument("'" +
                 solver_name +
-                " is not an available solver, see --list-solvers.");
+                "' is not an available solver, see --list-solvers.");
         solver = *it;
         if(vm.count("list-params")) {
             std::cout << "Available options for " << solver_name << ":"
@@ -116,16 +112,14 @@ static bool process_command_line(
                 BPOUtils::split_equality_str(param);
             bool param_exists =
                 solver->setParam(param_name, param_value.data());
-            if(!param_exists) {
-                std::cout << "Invalid parameter '" << param << "' for "
-                          << solver_name << ", see --list-params." << std::endl;
-                return false;
-            }
-            if(param_value.empty()) {
-                 std::cout << "Invalid value for parameter '" << param_name << "' of "
-                          << solver_name << std::endl;
-                return false;
-            }
+            if(!param_exists)
+                throw std::invalid_argument(
+                    "'" + param + "' is not a valid parameter for " +
+                    solver_name + ", see --list-params.");
+            if(param_value.empty())
+                throw std::invalid_argument("Invalid value for parameter '" +
+                                            param_name + "' of " + solver_name);
+            solver->setParam(param_name, param_value.data());
         }
         output_in_file = vm.count("output");
     } catch(std::exception & e) {
@@ -148,13 +142,15 @@ int main(int argc, const char * argv[]) {
     if(!valid_command) return EXIT_FAILURE;
     init_logging();
 
-    // Instance2 instance = parse_instance(instances_description_json);
+    Instance2 instance = parse_instance2(instances_description_json);
 
     // Helper::assert_well_formed(instance.landscape, instance.plan);
 
-    // Solution solution = solver.solve(instance.landscape, instance.plan, instance.budget);
+    // Solution solution = solver.solve(instance.landscape, instance.plan,
+    // instance.budget);
 
-    // Helper::printSolution(instance.landscape, instance.plan, name, solver, instance.budget, solution);
+    // Helper::printSolution(instance.landscape, instance.plan, name, solver,
+    // instance.budget, solution);
 
     return EXIT_SUCCESS;
 }
