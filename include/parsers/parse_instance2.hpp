@@ -10,6 +10,29 @@
 #include <fast-cpp-csv-parser/csv.h>
 #include <nlohmann/json.hpp>
 
+template <typename T>
+void assert_json_property(T json_object, std::string property,
+                          std::string parent = "") {
+    if(!instance_json.contains("options"))
+        throw std::invalid_argument(
+            "No 'file' property" +
+            (parent.empty() ? "" : " in '" + parent + "'"));
+}
+
+template <typename T>
+void warn_unused_json_properties(T json_object, std::initializer_list<std::string, nlhomann::detail::value_t> properties) {
+
+
+
+    
+    if(!instance_json.contains("options"))
+        throw std::invalid_argument(
+            "No 'file' property" +
+            (parent.empty() ? "" : " in '" + parent + "'"));
+}
+
+
+
 Instance2 parse_instance2(std::filesystem::path instance_path) {
     Instance2 instance;
 
@@ -17,14 +40,10 @@ Instance2 parse_instance2(std::filesystem::path instance_path) {
     nlohmann::json instance_json;
     instance_stream >> instance_json;
 
-    if(!instance_json.contains("options"))
-        throw std::invalid_argument("No 'options' property in " +
-                                    instance_path.string());
+    instance_json.type()
 
+    assert_json_property(instance_json, "options");
     auto options_json = instance_json["options"];
-    if(!instance_json.contains("options"))
-        throw std::invalid_argument("No 'file' property in 'options' of " +
-                                    instance_path.string());
     std::filesystem::path options_csv_path = options_json["file"];
     if(options_csv_path.is_relative())
         options_csv_path = (instance_path.parent_path() / options_csv_path);
@@ -50,6 +69,10 @@ Instance2 parse_instance2(std::filesystem::path instance_path) {
                                         "' appears multiple times in ");
         instance.addOption(option_id, option_cost);
     }
+
+    if(!instance_json.contains("cases"))
+        throw std::invalid_argument("No 'file' property in 'cases' of " +
+                                    instance_path.string());
 
     return instance;
 }

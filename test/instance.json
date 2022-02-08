@@ -1,16 +1,17 @@
 {
     "options" : {
-        "file" : "/file.csv",
-        "fields" : {
-            "option_id" : "",
-            "cost" : ""
+        "file" : "./options.csv",
+        "columns" : {
+            "id" : "id",
+            "cost" : "cost"
         }
     },
-    "landscapes" : [
+    "cases" : [
         {
+            "name" : "",
             "nodes" : {
                 "file" : "/file.csv",
-                "fields" : {
+                "columns" : {
                     "node_id" : "",
                     "quality" : ""
                 }
