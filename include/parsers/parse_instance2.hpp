@@ -19,19 +19,43 @@ void assert_json_property(T json_object, std::string property,
             (parent.empty() ? "" : " in '" + parent + "'"));
 }
 
-template <typename T>
-void warn_unused_json_properties(T json_object, std::initializer_list<std::string, nlhomann::detail::value_t> properties) {
-
-
-
-    
-    if(!instance_json.contains("options"))
-        throw std::invalid_argument(
-            "No 'file' property" +
-            (parent.empty() ? "" : " in '" + parent + "'"));
+std::string json_type_str(nlhomann::detail::value_t type) {
+    switch(type) {
+        case nlhomann::detail::value_t::null:
+            return "null";
+        case nlhomann::detail::value_t::object:
+            return "object";
+        case nlhomann::detail::value_t::array:
+            return "array";
+        case nlhomann::detail::value_t::string:
+            return "string";
+        case nlhomann::detail::value_t::boolean:
+            return "boolean";
+        case nlhomann::detail::value_t::number_integer:
+            return "number_integer";
+        case nlhomann::detail::value_t::number_unsigned:
+            return "number_unsigned";
+        case nlhomann::detail::value_t::number_float:
+            return "number_float";
+        case nlhomann::detail::value_t::binary:
+            return "binary";
+    }
 }
 
-
+template <typename T>
+void assert_json_properties(
+    T json_object,
+    std::initializer_list<std::string, nlhomann::detail::value_t> properties) {
+    for(const auto & [property, type] : properties) {
+        if(!instance_json.contains("options"))
+            throw std::invalid_argument("No 'file' property");
+        if(!instance_json.type() != type)
+            throw std::invalid_argument(
+                "Property" + property + " expected to of type '" +
+                json_type_str(type) + "' but is '" +
+                json_type_str(instance_json.type()) + "'");
+    }
+}
 
 Instance2 parse_instance2(std::filesystem::path instance_path) {
     Instance2 instance;
@@ -42,7 +66,7 @@ Instance2 parse_instance2(std::filesystem::path instance_path) {
 
     instance_json.type()
 
-    assert_json_property(instance_json, "options");
+        assert_json_property(instance_json, "options");
     auto options_json = instance_json["options"];
     std::filesystem::path options_csv_path = options_json["file"];
     if(options_csv_path.is_relative())
