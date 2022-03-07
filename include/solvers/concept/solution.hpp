@@ -11,6 +11,7 @@ public:
     int nb_vars;
     int nb_constraints;
     int nb_elems;
+    int preprocessing_time;
     double obj;
 
 private:

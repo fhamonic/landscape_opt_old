@@ -1,7 +1,7 @@
 MAKEFLAGS += --no-print-directory
 
 CPUS?=$(shell getconf _NPROCESSORS_ONLN || echo 1)
-CC:=g++-10
+CC:=g++
 
 BUILD_DIR = build
 

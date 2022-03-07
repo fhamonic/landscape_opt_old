@@ -12,6 +12,7 @@ project(
 # ################### Options ####################
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CONAN_DISABLE_CHECK_COMPILER ON)
 
 option(WARNINGS "" OFF)
 option(HARDCORE_WARNINGS "" OFF)
@@ -116,10 +117,10 @@ target_link_libraries(marseille_analysis PUBLIC landscape_opt)
 # target_include_directories(solve PUBLIC thirdparty)
 # target_link_libraries(solve PUBLIC landscape_opt)
 
-add_executable(solve2 exec/solve2.cpp)
-target_include_directories(solve2 PUBLIC include)
-target_include_directories(solve2 PUBLIC thirdparty)
-target_link_libraries(solve2 PUBLIC landscape_opt)
+# add_executable(solve2 exec/solve2.cpp)
+# target_include_directories(solve2 PUBLIC include)
+# target_include_directories(solve2 PUBLIC thirdparty)
+# target_link_libraries(solve2 PUBLIC landscape_opt)
 
 # add_executable(quebec_analysis exec/quebec_analysis.cpp)
 # target_include_directories(quebec_analysis PUBLIC include)

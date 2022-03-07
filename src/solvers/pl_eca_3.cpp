@@ -324,6 +324,7 @@ Solution Solvers::PL_ECA_3::solve(
     if(log_level > 0)
         std::cout << name() << ": Start preprocessing" << std::endl;
     PreprocessedDatas preprocessed_datas(landscape, plan);
+    solution.preprocessing_time = chrono.lapTimeMs();
     OSI_Builder solver_builder = OSI_Builder();
     Variables vars(landscape, plan, preprocessed_datas);
     insert_variables(solver_builder, vars, preprocessed_datas);
