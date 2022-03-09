@@ -28,12 +28,12 @@ int main() {
              << std::endl;
 
     std::vector<double> budget_percents;
-    for(int i = 1; i <= 40; ++i) budget_percents.push_back(i);
+    for(int i = 28; i <= 40; ++i) budget_percents.push_back(i);
 
     Solvers::PL_ECA_2 pl_eca_2;
-    pl_eca_2.setTimeout(36000).setLogLevel(2);
+    pl_eca_2.setTimeout(3600).setLogLevel(2);
     Solvers::PL_ECA_3 pl_eca_3;
-    pl_eca_3.setTimeout(36000).setLogLevel(2);
+    pl_eca_3.setTimeout(3600).setLogLevel(2);
 
     const double median = 300;
     Instance instance = make_instance_quebec_frog(1, 0, median);

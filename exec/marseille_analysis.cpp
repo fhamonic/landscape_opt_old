@@ -31,9 +31,9 @@ int main() {
     for(int i = 0; i <= 40; ++i) budget_percents.push_back(i);
 
     Solvers::PL_ECA_2 pl_eca_2;
-    pl_eca_2.setTimeout(36000).setLogLevel(2);
+    pl_eca_2.setTimeout(3600).setLogLevel(2);
     Solvers::PL_ECA_3 pl_eca_3;
-    pl_eca_3.setTimeout(36000).setLogLevel(2);
+    pl_eca_3.setTimeout(3600).setLogLevel(2);
 
     const double median = 3000;
     Instance instance = make_instance_marseille(1, 0.135, median, 100);
