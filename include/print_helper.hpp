@@ -346,7 +346,7 @@ public:
                 prev_color = _nodeColors[u];
             }
             dot_file.print("{} [width=\"{}\" pos=\"{},{}!\"]\n", _graph.id(u),
-                           scale_size(std::sqrt(_nodeSizes[u])), scale_x(_nodePos[u].x),
+                           scale_size(2 * std::sqrt(_nodeSizes[u] / 3.1416)), scale_x(_nodePos[u].x),
                            scale_y(_nodePos[u].y));
         }
 

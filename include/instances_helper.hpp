@@ -454,6 +454,105 @@ Instance make_instance_biorevaix_level_2_all_troncons(
     return instance;
 }
 
+Instance make_instance_biorevaix_level_1_all_troncons_updated(
+    const double restoration_coef = 2, const double distance_coef = 1) {
+    Instance instance;
+    MutableLandscape & landscape = instance.landscape;
+    const MutableLandscape::Graph & graph = landscape.getNetwork();
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
+
+    const double light_vege_prob = std::pow(0.8, distance_coef);
+    const double road_prob = std::pow(0.4, distance_coef);
+    const double vege_road_prob = std::pow(0.5, distance_coef);
+
+    auto prob = [&](const double cost) {
+        return cost == 1     ? std::pow(1, distance_coef)
+               : cost == 10  ? std::pow(0.98, distance_coef)
+               : cost == 150 ? light_vege_prob
+               : cost == 300 ? std::pow(0.6, distance_coef)
+               : cost == 800 ? road_prob
+                             : 0;
+    };
+
+    std::array<MutableLandscape::Node, 688408> nodes1;
+    nodes1.fill(lemon::INVALID);
+    std::array<std::vector<MutableLandscape::Node>, 98344> nodes2;
+    MutableLandscape::Graph::NodeMap<double> node_prob(graph, 0.0);
+    MutableLandscape::Graph::NodeMap<double> enhanced_node_prob(graph, 0.0);
+
+    io::CSVReader<5> patches(
+        "../landscape_opt_datas/BiorevAix/raw/vertexN1_v2.csv");
+    patches.read_header(io::ignore_extra_column, "N1_id", "X", "Y", "N2_id",
+                        "cost");
+    int N1_id, N2_id;
+    double X, Y, cost;
+    while(patches.read_row(N1_id, X, Y, N2_id, cost)) {
+        if(cost == 1000) continue;
+        MutableLandscape::Node u =
+            landscape.addNode((cost == 1 ? 1 : 0), Point(X, Y));
+        nodes1[N1_id] = u;
+        nodes2[N2_id].push_back(u);
+        node_prob[u] = prob(cost);
+    }
+
+    io::CSVReader<2> links("../landscape_opt_datas/BiorevAix/raw/AL_N1.csv");
+    links.read_header(io::ignore_extra_column, "from", "to");
+    int from, to;
+    while(links.read_row(from, to)) {
+        const MutableLandscape::Node u = nodes1[from];
+        const MutableLandscape::Node v = nodes1[to];
+        if(u == lemon::INVALID || v == lemon::INVALID) continue;
+        if(node_prob[u] == 0 || node_prob[v] == 0) continue;
+
+        double probability = std::sqrt(node_prob[u] * node_prob[v]);
+        probability = std::max(std::min(probability, 1.0), 0.0);
+
+        const MutableLandscape::Arc uv = landscape.addArc(u, v, probability);
+        const MutableLandscape::Arc vu = landscape.addArc(v, u, probability);
+    }
+
+    std::array<RestorationPlan<MutableLandscape>::Option, 5460> troncon_option;
+    for(int i = 0; i < 5460; ++i) {
+        troncon_option[i] = plan.addOption(0);
+    }
+    io::CSVReader<2> troncons(
+        "../landscape_opt_datas/BiorevAix/croisemt_troncon_hexagN2.txt");
+    troncons.read_header(io::ignore_extra_column, "troncon_id", "N2_id");
+    int troncon_id;
+
+    for(MutableLandscape::Graph::NodeIt u(graph, u); u != lemon::INVALID; ++u)
+        enhanced_node_prob[u] = node_prob[u];
+
+    while(troncons.read_row(troncon_id, N2_id)) {
+        for(const MutableLandscape::Node & u : nodes2[N2_id]) {
+            if(enhanced_node_prob[u] == 0) continue;
+            if(enhanced_node_prob[u] == road_prob) enhanced_node_prob[u] = vege_road_prob;
+            enhanced_node_prob[u] = light_vege_prob;
+        }
+
+        for(const MutableLandscape::Node & u : nodes2[N2_id]) {
+            RestorationPlan<MutableLandscape>::Option option =
+                troncon_option[troncon_id];
+
+            plan.setCost(option, plan.getCost(option) + 1);
+
+            for(MutableLandscape::Graph::OutArcIt uv(graph, u);
+                uv != lemon::INVALID; ++uv) {
+                const MutableLandscape::Node v = graph.target(uv);
+                const double probability = landscape.getProbability(uv);
+                double restored_prob = std::sqrt(enhanced_node_prob[u] * enhanced_node_prob[v]);
+                if(restored_prob <= probability) continue;
+                plan.addArc(option, uv, restored_prob);
+            }
+        }
+
+        for(const MutableLandscape::Node & u : nodes2[N2_id]) {
+            enhanced_node_prob[u] = node_prob[u];
+        }
+    }
+    return instance;
+}
+
 Instance make_instance_marseille(double pow, double thresold, double median,
                                  int nb_friches = 100) {
     Instance instance;
@@ -500,7 +599,8 @@ Instance make_instance_marseille(double pow, double thresold, double median,
             MutableLandscape::Node u = landscape.addNode(area, Point(x, y));
             (void)u;
             ///////////////////////////////////////////////////////////////////
-            // std::cout << graph.id(u) << ",parc," << area << "," << x << "," << y
+            // std::cout << graph.id(u) << ",parc," << area << "," << x << ","
+            // << y
             //           << std::endl;
             ///////////////////////////////////////////////////////////////////
             continue;
@@ -518,7 +618,8 @@ Instance make_instance_marseille(double pow, double thresold, double median,
         FricheData data = friches_chooser.pick();
         MutableLandscape::Node u = landscape.addNode(0, data.p);
         ///////////////////////////////////////////////////////////////////////
-        // std::cout << graph.id(u) << ",friche," << area << "," << data.p.x << ","
+        // std::cout << graph.id(u) << ",friche," << area << "," << data.p.x <<
+        // ","
         //           << data.p.y << std::endl;
         ///////////////////////////////////////////////////////////////////////
         data.node = u;

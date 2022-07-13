@@ -40,7 +40,7 @@
 
 Instance make_instance(const double dist_coef, const double restoration_coef) {
     //*
-    Instance raw_instance = make_instance_biorevaix_level_2_all_troncons(
+    Instance raw_instance = make_instance_biorevaix_level_1_all_troncons_updated(
         restoration_coef, dist_coef);
     Instance instance = trivial_reformulate(std::move(raw_instance));
     /*/
@@ -72,58 +72,64 @@ Instance make_instance(const double dist_coef, const double restoration_coef) {
 }
 
 int main() {
-    // const double dist_coef = 1.5;
-    // const double restoration_coef = 6;
+    const int from_option = 0;
+    const int to_option = 2928;
 
-    // Instance instance = make_instance(dist_coef, restoration_coef);
-    // const MutableLandscape & landscape = instance.landscape;
-    // RestorationPlan<MutableLandscape> & plan = instance.plan;
 
-    // Chrono chrono;
+    const double dist_coef = 1.5;
+    const double restoration_coef = 6;
 
-    // // const double eca = ECA().eval(landscape);
-    // const double prec_eca = Parallel_ECA().eval(landscape);
+    Instance instance = make_instance(dist_coef, restoration_coef);
+    const MutableLandscape & landscape = instance.landscape;
+    RestorationPlan<MutableLandscape> & plan = instance.plan;
 
-    // std::cout << "prec ECA: " << prec_eca << " in " << chrono.timeMs() << "
-    // ms"
-    //           << std::endl;
+    Chrono chrono;
 
-    // const auto nodeOptions = plan.computeNodeOptionsMap();
-    // const auto arcOptions = plan.computeArcOptionsMap();
+    // const double eca = ECA().eval(landscape);
+    const double prec_eca = Parallel_ECA().eval(landscape);
 
-    // DecoredLandscape<MutableLandscape> decored_landscape(landscape);
-    // for(auto option : plan.options()) {
-    //     if(option < 3222) continue;
-    //     decored_landscape.reset();
-    //     decored_landscape.apply(nodeOptions[option], arcOptions[option]);
+    std::cout << "prec ECA: " << prec_eca << " in " << chrono.timeMs() << " ms"
+              << std::endl;
 
-    //     const double eca = Parallel_ECA().eval(decored_landscape);
-    //     const double delta_eca = (eca - prec_eca);
-    //     const double ratio = delta_eca / plan.getCost(option);
+    const auto nodeOptions = plan.computeNodeOptionsMap();
+    const auto arcOptions = plan.computeArcOptionsMap();
 
-    //     std::cout << "option " << option << " delta " << delta_eca << " ratio
-    //     " << ratio << std::endl;
-    // }
+    DecoredLandscape<MutableLandscape> decored_landscape(landscape);
+    for(auto option : plan.options()) {
+        if(!(from_option < option && option < to_option)) continue;
+        decored_landscape.reset();
+        decored_landscape.apply(nodeOptions[option], arcOptions[option]);
 
-    io::CSVReader<3> options("log");
-    options.read_header(io::ignore_extra_column, "option", "delta", "ratio");
-    io::CSVReader<2> troncons("log copy");
-    troncons.read_header(io::ignore_extra_column, "option", "troncon");
+        const double eca = Parallel_ECA().eval(decored_landscape);
+        const double delta_eca = (eca - prec_eca);
+        const double ratio = delta_eca / plan.getCost(option);
 
-    int option;
-    double delta, ratio;
-    int option_2, troncon;
-    while(options.read_row(option, delta, ratio)) {
-        troncons.read_row(option_2, troncon);
-
-        if(option != option_2) {
-            std::cout << "caca !" << std::endl;
-            break;
-        };
-        if(delta < 0.01) continue;
-
-        std::cout << std::fixed << troncon << "," << delta << "," << ratio << std::endl;
+        std::cout << "option " << option << " delta " << delta_eca << " ratio " << ratio << std::endl;
     }
+
+
+
+
+
+    // io::CSVReader<3> options("log");
+    // options.read_header(io::ignore_extra_column, "option", "delta", "ratio");
+    // io::CSVReader<2> troncons("log copy");
+    // troncons.read_header(io::ignore_extra_column, "option", "troncon");
+
+    // int option;
+    // double delta, ratio;
+    // int option_2, troncon;
+    // while(options.read_row(option, delta, ratio)) {
+    //     troncons.read_row(option_2, troncon);
+
+    //     if(option != option_2) {
+    //         std::cout << "caca !" << std::endl;
+    //         break;
+    //     };
+    //     if(delta < 0.01) continue;
+
+    //     std::cout << std::fixed << troncon << "," << delta << "," << ratio << std::endl;
+    // }
 
     return EXIT_SUCCESS;
 }
