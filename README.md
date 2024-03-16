@@ -1,3 +1,5 @@
+Due to significant breaking changes, development of this project has been migrated to [https://github.com/fhamonic/gecot](https://github.com/fhamonic/gecot)
+
 # Landscape_Opt
 
 Library for modeling and optimizing ecological landscapes according to the PC connectivity indicator.
